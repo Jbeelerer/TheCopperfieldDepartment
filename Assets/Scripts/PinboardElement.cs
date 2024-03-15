@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Unity.VisualScripting;
 
 public class PinboardElement : MonoBehaviour
 {
@@ -48,12 +49,12 @@ public class PinboardElement : MonoBehaviour
             // TODO move threads
             foreach (LineRenderer l in startingThreads)
             {
-                l.SetPosition(0, transform.position);
+                l.SetPosition(0, transform.GetChild(0).position);
                 print("setting position");
             }
             foreach (LineRenderer l in endingThreads)
             {
-                l.SetPosition(1, transform.position);
+                l.SetPosition(1, transform.GetChild(0).position);
                 print("setting position");
             }
         }
@@ -62,5 +63,26 @@ public class PinboardElement : MonoBehaviour
     public void SetText(string text)
     {
         gameObject.GetComponentInChildren<TextMeshProUGUI>().text = text;
+    }
+    public void SetContent(ScriptableObject o)
+    {
+        TextMeshProUGUI textElement = gameObject.GetComponentInChildren<TextMeshProUGUI>();
+        switch (o)
+        {
+            case Person:
+                Person person = ConversionUtility.Convert<Person>(o);
+                textElement.text = person.personName;
+                break;
+            case SocialMediaPost:
+                // connect to user
+                SocialMediaPost post = ConversionUtility.Convert<SocialMediaPost>(o);
+                textElement.text = post.content;
+                break;
+            case SocialMediaUser:
+                SocialMediaUser user = ConversionUtility.Convert<SocialMediaUser>(o);
+                textElement.text = user.username;
+                break;
+
+        }
     }
 }

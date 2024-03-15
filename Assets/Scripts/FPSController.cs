@@ -158,7 +158,7 @@ public class FPSController : MonoBehaviour
         if (Input.GetMouseButtonDown(1) && currentSelectedObject != null && currentSelectedObject.name == "pinboardElement(Clone)")
         {
             currentThread = Instantiate(thread, pinboard.transform).GetComponent<LineRenderer>();
-            currentThread.SetPosition(0, currentSelectedObject.transform.position);
+            currentThread.SetPosition(0, currentSelectedObject.transform.GetChild(0).position);
             currentSelectedObject.GetComponent<PinboardElement>().AddStartingThread(currentThread);
         }
         // handle moving ponboardElement position

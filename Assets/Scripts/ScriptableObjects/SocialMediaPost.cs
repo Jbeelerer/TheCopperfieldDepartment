@@ -5,7 +5,7 @@ public class SocialMediaPost : ScriptableObject
 {
     public int id;
     public string content;
-    public string author;
+    public SocialMediaUser author;
     public string date;
-    public string image;
+    public Sprite image;
 }

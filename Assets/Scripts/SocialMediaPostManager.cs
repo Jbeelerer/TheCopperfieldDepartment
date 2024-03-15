@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class SocialMediaPostManager : MonoBehaviour
@@ -25,14 +26,18 @@ public class SocialMediaPostManager : MonoBehaviour
     }
     public void AddPostToPinboard(string type)
     {
+
         switch (type)
         {
             case "name":
                 pinboard.AddPin(post.author);
                 break;
             case "content":
-                print(pinboard);
-                pinboard.AddPin(post.content);
+                pinboard.AddPin(post.author);
+                pinboard.AddPin(post);
+                break;
+            case "person":
+                pinboard.AddPin("Person");
                 break;
         }
     }

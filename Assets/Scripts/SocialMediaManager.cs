@@ -63,7 +63,7 @@ public class SocialMediaManager : MonoBehaviour
         newPost.GetComponentInChildren<Button>().interactable = false;
         newPost.name = "Post" + instanceNumber;
         instanceNumber++;
-        newPost.transform.Find("name").GetComponent<TextMeshProUGUI>().text = post.author;
+        newPost.transform.Find("name").GetComponent<TextMeshProUGUI>().text = post.author.username;
         newPost.transform.Find("content").GetComponent<TextMeshProUGUI>().text = post.content;
     }
 
