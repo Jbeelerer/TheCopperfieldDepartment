@@ -44,7 +44,8 @@ public class ComputerControls : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             // Clicked window bar
-            CheckWindowClicked();
+            CheckWindowMouseDown();
+
             cursor.transform.SetAsLastSibling();
         }
 
@@ -55,8 +56,12 @@ public class ComputerControls : MonoBehaviour
                 window.isMoving = false;
             }
 
+            // Clicked window
+            CheckWindowMouseUp();
+
             // Clicked an app
-            CheckAppClicked();
+            CheckAppMouseUp();
+
             cursor.transform.SetAsLastSibling();
         }
     }
@@ -88,7 +93,7 @@ public class ComputerControls : MonoBehaviour
         }
     }
 
-    private void CheckWindowClicked()
+    private void CheckWindowMouseDown()
     {
         foreach (OSWindow window in windows)
         {
@@ -105,7 +110,24 @@ public class ComputerControls : MonoBehaviour
         }
     }
 
-    private void CheckAppClicked()
+    private void CheckWindowMouseUp()
+    {
+        foreach (OSWindow window in windows)
+        {
+            // Clicked buttonRight
+            if (PointInsideRect(cursor.position, window.buttonRight))
+            {
+                // Check if window is behind another element
+                if (TargetIsInFront(window.topBar.gameObject))
+                {
+                    // TODO: position window on right
+                    return;
+                }
+            }
+        }
+    }
+
+    private void CheckAppMouseUp()
     {
         foreach (OSApplication app in apps)
         {
