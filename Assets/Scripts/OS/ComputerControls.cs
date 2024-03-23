@@ -16,7 +16,7 @@ public enum OSAppType
 
 public class ComputerControls : MonoBehaviour
 {
-    public float speed = 1;
+    public float mouseSensitivity = 1;
     public RectTransform cursor;
     public RectTransform background;
     public RectTransform taskBar;
@@ -25,8 +25,8 @@ public class ComputerControls : MonoBehaviour
     public List<OSApplication> apps = new List<OSApplication>();
 
     private RectTransform screen;
-    private float h;
-    private float v;
+    private float mouseSpeedX;
+    private float mouseSpeedY;
     private List<OSWindow> windows = new List<OSWindow>();
     private OSWindow rightWindow;
     private OSWindow leftWindow;
@@ -43,12 +43,12 @@ public class ComputerControls : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        h = speed * Input.GetAxis("Mouse X");
-        v = speed * Input.GetAxis("Mouse Y");
+        mouseSpeedX = mouseSensitivity * Input.GetAxis("Mouse X");
+        mouseSpeedY = mouseSensitivity * Input.GetAxis("Mouse Y");
 
         if (Input.GetMouseButtonDown(0))
         {
-            // Clicked window bar
+            // Clicked window
             CheckWindowMouseDown();
         }
 
@@ -82,26 +82,28 @@ public class ComputerControls : MonoBehaviour
 
     private void FixedUpdate()
     {
-        cursor.anchoredPosition += new Vector2(h, v);
+        // Move cursor
+        cursor.anchoredPosition += new Vector2(mouseSpeedX, mouseSpeedY);
 
+        // Move selected window with the cursor
         foreach (OSWindow window in windows)
         {
             if (window.isMoving)
             {
-                window.MoveWindow(new Vector2(h, v));
+                window.MoveWindow(new Vector2(mouseSpeedX, mouseSpeedY));
             }
         }
 
         // Reverse the movement if the cursor went outside the screen
         if (!PointInsideRect(cursor.position, screen))
         {
-            cursor.anchoredPosition -= new Vector2(h, v);
+            cursor.anchoredPosition -= new Vector2(mouseSpeedX, mouseSpeedY);
 
             foreach (OSWindow window in windows)
             {
                 if (window.isMoving)
                 {
-                    window.MoveWindow(-(new Vector2(h, v)));
+                    window.MoveWindow(-(new Vector2(mouseSpeedX, mouseSpeedY)));
                 }
             }
         }
@@ -136,18 +138,40 @@ public class ComputerControls : MonoBehaviour
         {
             if (PointInsideRect(cursor.position, window.rectTrans))
             {
-                // Bring clicked window to front
-                window.transform.SetAsLastSibling();
+                GameObject hitObject = GetFirstHitObject();
+
+                // Check if any parent of the hit object is the window
+                GameObject nextParentObj = hitObject;
+                while (nextParentObj.transform.parent != null)
+                {
+                    nextParentObj = nextParentObj.transform.parent.gameObject;
+                    if (Object.ReferenceEquals(nextParentObj, window.gameObject))
+                    {
+                        // Bring clicked window to front
+                        window.transform.SetAsLastSibling();
+
+                        // Set as current right/left window if in long mode
+                        if (window.currWindowSize == WindowSize.LONG_LEFT)
+                        {
+                            leftWindow = window;
+                        }
+                        else if (window.currWindowSize == WindowSize.LONG_RIGHT)
+                        {
+                            rightWindow = window;
+                        }
+
+                        break;
+                    }
+                }
 
                 // Check if topbar was hit
-                GameObject hitObject = GetFirstHitObject();
                 if (Object.ReferenceEquals(hitObject, window.topBar.gameObject))
                 {
                     // Start moving the affected window with the cursor
                     window.isMoving = true;
 
                     // Reset window to small mode if moved while in another size mode
-                    if (!window.isInSmallMode)
+                    if (window.currWindowSize != WindowSize.SMALL)
                     {
                         ResizeWindowSmall(window);
                         window.rectTrans.position = new Vector2(cursor.position.x, cursor.position.y - window.rectTrans.anchorMax.y);
@@ -179,7 +203,6 @@ public class ComputerControls : MonoBehaviour
                 else if (Object.ReferenceEquals(hitObject, window.buttonSmall.gameObject))
                 {
                     // Make window small
-                    RemoveLeftRightWindow(window);
                     ResizeWindowSmall(window);
                     return;
                 }
@@ -188,33 +211,46 @@ public class ComputerControls : MonoBehaviour
                     // Make window long, position on left or right
                     if (!leftWindow)
                     {
-                        window.rectTrans.anchorMin = new Vector2(0, 0);// new Vector2(screen.pivot.x, screen.anchorMin.y);
-                        window.rectTrans.anchorMax = new Vector2(0.5f, 1);// screen.anchorMax;
-                        window.rectTrans.offsetMin = new Vector2(0, 0);
-                        window.rectTrans.offsetMax = new Vector2(0, 0);
-                        leftWindow = window;
+                        ResizeWindowLongLeft(window);
                     }
-                    else
+                    else if (window != leftWindow)
                     {
-                        window.rectTrans.anchorMin = new Vector2(0.5f, 0);
-                        window.rectTrans.anchorMax = new Vector2(1, 1);
-                        window.rectTrans.offsetMin = new Vector2(0, 0);
-                        window.rectTrans.offsetMax = new Vector2(0, 0);
-                        rightWindow = window;
+                        ResizeWindowLongRight(window);
                     }
-                    window.isInSmallMode = false;
                     return;
                 }
                 else if (Object.ReferenceEquals(hitObject, window.buttonBig.gameObject))
                 {
                     // Make window fullscreen
-                    RemoveLeftRightWindow(window);
-
-                    window.rectTrans.anchorMin = new Vector2(0, 0);
-                    window.rectTrans.anchorMax = new Vector2(1, 1);
-                    window.rectTrans.offsetMin = new Vector2(0, 0);
-                    window.rectTrans.offsetMax = new Vector2(0, 0);
-                    window.isInSmallMode = false;
+                    ResizeWindowBig(window);
+                    return;
+                }
+                else if (Object.ReferenceEquals(hitObject, window.sideswapRight.gameObject))
+                {
+                    // Swap current left window with the one on the right
+                    if (window.currWindowSize == WindowSize.LONG_LEFT)
+                    {
+                        RemoveLeftRightWindow(window);
+                        if (rightWindow)
+                        {
+                            ResizeWindowLongLeft(rightWindow);
+                        }
+                        ResizeWindowLongRight(window);
+                    }
+                    return;
+                }
+                else if (Object.ReferenceEquals(hitObject, window.sideswapLeft.gameObject))
+                {
+                    // Swap current right window with the one on the left
+                    if (window.currWindowSize == WindowSize.LONG_RIGHT)
+                    {
+                        RemoveLeftRightWindow(window);
+                        if (leftWindow)
+                        {
+                            ResizeWindowLongRight(leftWindow);
+                        }
+                        ResizeWindowLongLeft(window);
+                    }
                     return;
                 }
             }
@@ -226,7 +262,8 @@ public class ComputerControls : MonoBehaviour
         if (Object.ReferenceEquals(window, leftWindow))
         {
             leftWindow = null;
-        } else if (Object.ReferenceEquals(window, rightWindow))
+        }
+        else if (Object.ReferenceEquals(window, rightWindow))
         {
             rightWindow = null;
         }
@@ -234,10 +271,41 @@ public class ComputerControls : MonoBehaviour
 
     private void ResizeWindowSmall(OSWindow window)
     {
+        RemoveLeftRightWindow(window);
         window.rectTrans.anchorMin = new Vector2(0.5f, 0.5f);
         window.rectTrans.anchorMax = new Vector2(0.5f, 0.5f);
         window.rectTrans.sizeDelta = new Vector2(450, 300);
-        window.isInSmallMode = true;
+        window.currWindowSize = WindowSize.SMALL;
+    }
+
+    private void ResizeWindowLongLeft(OSWindow window)
+    {
+        window.rectTrans.anchorMin = new Vector2(0, 0);
+        window.rectTrans.anchorMax = new Vector2(0.5f, 1);
+        window.rectTrans.offsetMin = new Vector2(0, 0);
+        window.rectTrans.offsetMax = new Vector2(0, 0);
+        leftWindow = window;
+        window.currWindowSize = WindowSize.LONG_LEFT;
+    }
+
+    private void ResizeWindowLongRight(OSWindow window)
+    {
+        window.rectTrans.anchorMin = new Vector2(0.5f, 0);
+        window.rectTrans.anchorMax = new Vector2(1, 1);
+        window.rectTrans.offsetMin = new Vector2(0, 0);
+        window.rectTrans.offsetMax = new Vector2(0, 0);
+        rightWindow = window;
+        window.currWindowSize = WindowSize.LONG_RIGHT;
+    }
+
+    private void ResizeWindowBig(OSWindow window)
+    {
+        RemoveLeftRightWindow(window);
+        window.rectTrans.anchorMin = new Vector2(0, 0);
+        window.rectTrans.anchorMax = new Vector2(1, 1);
+        window.rectTrans.offsetMin = new Vector2(0, 0);
+        window.rectTrans.offsetMax = new Vector2(0, 0);
+        window.currWindowSize = WindowSize.BIG;
     }
 
     private GameObject GetFirstHitObject()

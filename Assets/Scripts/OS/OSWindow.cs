@@ -3,6 +3,14 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+public enum WindowSize
+{
+    SMALL,
+    LONG_LEFT,
+    LONG_RIGHT,
+    BIG
+}
+
 public class OSWindow : MonoBehaviour
 {
     [HideInInspector] public RectTransform rectTrans;
@@ -15,7 +23,7 @@ public class OSWindow : MonoBehaviour
     [HideInInspector] public RectTransform sideswapLeft;
     [HideInInspector] public RectTransform sideswapRight;
     [HideInInspector] public bool isMoving = false;
-    [HideInInspector] public bool isInSmallMode = true;
+    [HideInInspector] public WindowSize currWindowSize = WindowSize.SMALL;
 
     // Start is called before the first frame update
     void Start()
