@@ -8,11 +8,44 @@ public class PinboardElement : MonoBehaviour
 {
     private List<LineRenderer> startingThreads = new List<LineRenderer>();
     private List<LineRenderer> endingThreads = new List<LineRenderer>();
+    private List<PinboardElement> connectedElements = new List<PinboardElement>();
+
+    private float animationTimer = 0;
+    private float animationTime;
     private bool isMoving = false;
+
+    private ScriptableObject content;
+
+    public ScriptableObject GetContent()
+    {
+        return content;
+    }
     public void setIsMoving(bool b)
     {
-        print("setting is moving" + b);
         isMoving = b;
+        if (!isMoving)
+        {
+            print("Reapply");
+            reApplyCollider(startingThreads);
+            reApplyCollider(endingThreads);
+        }
+    }
+    private void reApplyCollider(List<LineRenderer> lineRenderers)
+    {
+        List<LineRenderer> tempThreads = new List<LineRenderer>();
+        Pinboard p = transform.GetComponentInParent<Pinboard>();
+        foreach (LineRenderer l in lineRenderers)
+        {
+            if (l == null)
+            {
+                tempThreads.Add(l);
+                continue;
+            }
+            if (lineRenderers == endingThreads)
+                l.SetPosition(1, transform.GetChild(0).position);
+            p.MakeColliderMatchLineRenderer(l, l.GetPosition(0), l.GetPosition(1));
+        }
+
     }
     // Start is called before the first frame update
     public void AddStartingThread(LineRenderer l)
@@ -38,27 +71,51 @@ public class PinboardElement : MonoBehaviour
     }
     void Start()
     {
-
+        animationTime = GetComponent<Animator>().GetAnimatorTransitionInfo(0).duration;
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        if (isMoving)
+        if (isMoving || animationTimer <= animationTime)
         {
+            if (!isMoving)
+                animationTime += Time.deltaTime;
             // TODO move threads
+            List<LineRenderer> tempThreads = new List<LineRenderer>();
             foreach (LineRenderer l in startingThreads)
             {
+                if (l == null)
+                {
+                    tempThreads.Add(l);
+                    //startingThreads.Remove(l);
+                    continue;
+                }
                 l.SetPosition(0, transform.GetChild(0).position);
-                print("setting position");
             }
+            removeThreads(tempThreads, startingThreads);
             foreach (LineRenderer l in endingThreads)
             {
+                if (l == null)
+                {
+                    tempThreads.Add(l);
+                    // endingThreads.Remove(l);
+                    continue;
+                }
                 l.SetPosition(1, transform.GetChild(0).position);
-                print("setting position");
             }
+            removeThreads(tempThreads, startingThreads);
         }
 
+    }
+
+    private List<LineRenderer> removeThreads(List<LineRenderer> toRemove, List<LineRenderer> removeFrom)
+    {
+        foreach (LineRenderer l in toRemove)
+        {
+            removeFrom.Remove(l);
+        }
+        return removeFrom;
     }
     public void SetText(string text)
     {
@@ -67,6 +124,7 @@ public class PinboardElement : MonoBehaviour
     public void SetContent(ScriptableObject o)
     {
         TextMeshProUGUI textElement = gameObject.GetComponentInChildren<TextMeshProUGUI>();
+        content = o;
         switch (o)
         {
             case Person:
@@ -83,6 +141,40 @@ public class PinboardElement : MonoBehaviour
                 textElement.text = user.username;
                 break;
 
+        }
+    }
+    public void DeleteElement()
+    {
+        foreach (PinboardElement p in connectedElements)
+        {  // remove threads
+            foreach (LineRenderer l in startingThreads)
+            {
+                p.DeleteThread(l);
+            }
+            foreach (LineRenderer l in endingThreads)
+            {
+                p.DeleteThread(l);
+            }
+        }
+        foreach (LineRenderer l in startingThreads)
+        {
+            Destroy(l);
+        }
+        foreach (LineRenderer l in endingThreads)
+        {
+            Destroy(l);
+        }
+        Destroy(gameObject);
+    }
+    public void DeleteThread(LineRenderer l)
+    {
+        if (startingThreads.Contains(l))
+        {
+            startingThreads.Remove(l);
+        }
+        if (endingThreads.Contains(l))
+        {
+            endingThreads.Remove(l);
         }
     }
 }

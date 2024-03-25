@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System.Threading;
+using Unity.VisualScripting;
+using UnityEngine.Experimental.GlobalIllumination;
 
 [RequireComponent(typeof(CharacterController))]
 public class FPSController : MonoBehaviour
@@ -13,6 +16,7 @@ public class FPSController : MonoBehaviour
     public float lookXLimit = 45f;
     public float interactionReach = 3f;
 
+    private bool deletionMode = false;
 
     Vector3 moveDirection = Vector3.zero;
     float rotationX = 0;
@@ -31,13 +35,18 @@ public class FPSController : MonoBehaviour
     [SerializeField] private GameObject thread;
     private LineRenderer currentThread;
 
+    private float hoverStart = -1f;
+    private bool detailMode = false;
+
     // TODO: Remove pinboard when OS is ready
     [SerializeField] public Pinboard pinboard;
+
+    private float removingTime = -1f;
     void Start()
     {
         characterController = GetComponent<CharacterController>();
-        // Cursor.lockState = CursorLockMode.Locked;
-        // Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
 
         // Hide the input overlay 
         if (inputOverlay != null)
@@ -46,9 +55,28 @@ public class FPSController : MonoBehaviour
             inputOverlayText = inputOverlay.GetComponentInChildren<TextMeshProUGUI>();
         }
     }
-
+    private void FixedUpdate()
+    {
+        if (hoverStart != -1f)
+        {
+            hoverStart += Time.deltaTime;
+        }
+        if (hoverStart > 1f)
+        {
+            hoverStart = -1f;
+        }
+    }
     void Update()
     {
+        // on e key pressed
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            Cursor.lockState = Cursor.visible ? CursorLockMode.Locked : CursorLockMode.None;
+            Cursor.visible = !Cursor.visible;
+
+        }
+
+
 
         #region Handles Movment
         Vector3 forward = transform.TransformDirection(Vector3.forward);
@@ -78,13 +106,21 @@ public class FPSController : MonoBehaviour
 
         RaycastHit hit;
         Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out hit))
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            removingTime = -1f;
+        }
+
+        // if removingTime is the default value it is active and the currentselectedObject shouldn't change
+        if (Physics.Raycast(ray, out hit) && removingTime == -1)
         {
             if (Vector3.Distance(hit.collider.gameObject.transform.position, transform.position) <= interactionReach)
             {
                 if (hit.collider.gameObject.tag == "Interactable")
                 {
                     inputOverlay.SetActive(true);
+
                     // Set the text based on the object
                     switch (hit.collider.gameObject.name)
                     {
@@ -96,6 +132,20 @@ public class FPSController : MonoBehaviour
                             break;
                         case "pinboardElement(Clone)":
                             inputOverlayText.text = "click to move Element";
+                            print(!detailMode && hoverStart > 0.4f);
+                            print(hoverStart > 0.4f);
+                            if (!detailMode && hoverStart > 0.7f)
+                            {
+                                AdditionalInfoBoard aib = transform.GetChild(0).Find("MoreInfo").GetComponent<AdditionalInfoBoard>();
+                                aib.ShowInfo(true);
+                                print(hit.collider.gameObject.GetComponent<PinboardElement>());
+                                print(hit.collider.gameObject.GetComponent<PinboardElement>().GetContent());
+                                aib.SetContent(hit.collider.gameObject.GetComponent<PinboardElement>().GetContent());
+
+                                detailMode = true;
+                            }
+                            else if (!detailMode && hoverStart == -1f)
+                                hoverStart = 0;
                             break;
                         case "PC":
                             inputOverlayText.text = "Click to add Element";
@@ -105,6 +155,12 @@ public class FPSController : MonoBehaviour
                             break;
                     }
                     currentSelectedObject = hit.collider.gameObject;
+                    if (hit.collider.gameObject.name != "pinboardElement(Clone)")
+                    {
+                        hoverStart = -1;
+                        detailMode = false;
+                        transform.GetChild(0).Find("MoreInfo").GetComponent<AdditionalInfoBoard>().ShowInfo(false);
+                    }
                 }
                 else
                 {
@@ -118,20 +174,36 @@ public class FPSController : MonoBehaviour
                 currentSelectedObject = null;
             }
         }
-
+        // default val
+        else if (removingTime != -1)
+        {
+            removingTime -= Time.deltaTime;
+            print(removingTime);
+            if (removingTime <= 0)
+            {
+                print(currentSelectedObject);
+                currentSelectedObject.transform.parent.GetComponent<PinboardElement>().DeleteElement();
+                removingTime = -1;
+            }
+        }
 
         if (Input.GetMouseButtonDown(0) && currentSelectedObject != null)
         {
             if (currentThread != null && currentSelectedObject.name == "pinboardElement(Clone)")
             {
-
                 currentSelectedObject.GetComponent<PinboardElement>().AddEndingThreads(currentThread);
+                currentSelectedObject.GetComponent<PinboardElement>().setIsMoving(false);
+                /*  Vector2[] edgeColl = currentThread.GetComponent<EdgeCollider2D>().points;
+                  List<Vector2> list = new List<Vector2>();
+                  list.Add(currentThread.GetComponent<EdgeCollider2D>().points[0]); 
+                  list.Add(currentSelectedObject.transform.GetChild(0).position);
+                  currentThread.GetComponent<EdgeCollider2D>().SetPoints(list);*/
                 currentThread = null;
             }
             else if (selectedPinboardElement != null)
-            {
-                // change back to default layer so it can be selected again
+            {  // change back to default layer so it can be selected again
                 selectedPinboardElement.gameObject.layer = 0;
+                selectedPinboardElement.GetComponentInParent<Animator>().SetBool("pinNormal", true);
                 selectedPinboardElement.GetComponent<PinboardElement>().setIsMoving(false);
                 selectedPinboardElement = null;
             }
@@ -142,6 +214,7 @@ public class FPSController : MonoBehaviour
                     case "pinboard":
                         break;
                     case "pinboardElement(Clone)":
+                        currentSelectedObject.GetComponentInParent<Animator>().SetBool("pinNormal", false);
                         selectedPinboardElement = currentSelectedObject;
                         selectedPinboardElement.GetComponent<PinboardElement>().setIsMoving(true);
                         // change to ignore raycast layer so it won't overflow the pinboard
@@ -149,6 +222,13 @@ public class FPSController : MonoBehaviour
                         break;
                     case "PC":
                         pinboard.AddPin();
+                        break;
+                    case "threadCollider":
+                        Destroy(hit.collider.transform.parent.gameObject);
+                        break;
+                    case "pin":
+                        currentSelectedObject.GetComponentInParent<Animator>().SetTrigger("remove");
+                        removingTime = 0.5f;
                         break;
                     default:
                         break;
