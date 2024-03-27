@@ -17,6 +17,16 @@ public class Pinboard : MonoBehaviour
     {
     }
 
+    public void removeThingOnPinboardByElement(PinboardElement pe)
+    {
+        var keyOfValueToRemove = thingsOnPinboard.FirstOrDefault(x => x.Value == pe).Key;
+        if (keyOfValueToRemove != null)
+        {
+            thingsOnPinboard.Remove(keyOfValueToRemove);
+        }
+
+    }
+
     // Update is called once per frame
     void Update()
     {

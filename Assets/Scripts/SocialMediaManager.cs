@@ -51,7 +51,6 @@ public class SocialMediaManager : MonoBehaviour
         foreach (SocialMediaPost s in scripts)
         {
             instanctiatePost(s);
-            print(s.content);
         }
     }
 

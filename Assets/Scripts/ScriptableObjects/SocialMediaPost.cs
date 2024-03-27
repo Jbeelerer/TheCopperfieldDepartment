@@ -4,6 +4,7 @@ using UnityEngine;
 public class SocialMediaPost : ScriptableObject
 {
     public int id;
+    public string contentShort;
     public string content;
     public SocialMediaUser author;
     public string date;

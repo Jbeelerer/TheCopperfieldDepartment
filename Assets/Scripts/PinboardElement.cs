@@ -16,6 +16,9 @@ public class PinboardElement : MonoBehaviour
 
     private ScriptableObject content;
 
+    private GameObject circle;
+    private GameObject crossThrough;
+
     public ScriptableObject GetContent()
     {
         return content;
@@ -71,6 +74,10 @@ public class PinboardElement : MonoBehaviour
     }
     void Start()
     {
+        circle = transform.GetChild(3).GetChild(0).gameObject;
+        crossThrough = transform.GetChild(3).GetChild(1).gameObject;
+        circle.SetActive(false);
+        crossThrough.SetActive(false);
         animationTime = GetComponent<Animator>().GetAnimatorTransitionInfo(0).duration;
     }
 
@@ -134,13 +141,12 @@ public class PinboardElement : MonoBehaviour
             case SocialMediaPost:
                 // connect to user
                 SocialMediaPost post = ConversionUtility.Convert<SocialMediaPost>(o);
-                textElement.text = post.content;
+                textElement.text = post.contentShort;
                 break;
             case SocialMediaUser:
                 SocialMediaUser user = ConversionUtility.Convert<SocialMediaUser>(o);
                 textElement.text = user.username;
                 break;
-
         }
     }
     public void DeleteElement()
@@ -164,6 +170,7 @@ public class PinboardElement : MonoBehaviour
         {
             Destroy(l);
         }
+        GetComponentInParent<Pinboard>().removeThingOnPinboardByElement(this);
         Destroy(gameObject);
     }
     public void DeleteThread(LineRenderer l)
@@ -176,5 +183,19 @@ public class PinboardElement : MonoBehaviour
         {
             endingThreads.Remove(l);
         }
+    }
+
+    public void annotateCircle()
+    {
+        circle.SetActive(true);
+    }
+    public void annotateStrikeThrough()
+    {
+        crossThrough.SetActive(true);
+    }
+    public void clearAnnotations()
+    {
+        crossThrough.SetActive(false);
+        circle.SetActive(false);
     }
 }
