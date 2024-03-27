@@ -188,10 +188,12 @@ public class PinboardElement : MonoBehaviour
     public void annotateCircle()
     {
         circle.SetActive(true);
+        crossThrough.SetActive(false);
     }
     public void annotateStrikeThrough()
     {
         crossThrough.SetActive(true);
+        circle.SetActive(false);
     }
     public void clearAnnotations()
     {

@@ -10,6 +10,7 @@ using UnityEngine.Experimental.GlobalIllumination;
 public class FPSController : MonoBehaviour
 {
     public Camera playerCamera;
+    public Transform cameraObject;
     public float walkSpeed = 6f;
 
     public float lookSpeed = 4f;
@@ -39,6 +40,8 @@ public class FPSController : MonoBehaviour
 
     private AudioSource audioSource;
 
+    private bool frozen = false;
+
     [SerializeField] private AudioClip threadCuttingSound;
     [SerializeField] private AudioClip pickupSound;
     [SerializeField] private AudioClip deleteSound;
@@ -49,6 +52,7 @@ public class FPSController : MonoBehaviour
     private float removingTime = -1f;
 
     private Animator selectedPenAnim;
+    private Vector3 penPos;
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
@@ -83,212 +87,227 @@ public class FPSController : MonoBehaviour
             Cursor.visible = !Cursor.visible;
         }
 
-        #region Handles Movment
-        Vector3 forward = transform.TransformDirection(Vector3.forward);
-        Vector3 right = transform.TransformDirection(Vector3.right);
-
-        float curSpeedX = canMove ? walkSpeed * Input.GetAxis("Vertical") : 0;
-        float curSpeedY = canMove ? walkSpeed * Input.GetAxis("Horizontal") : 0;
-        moveDirection = (forward * curSpeedX) + (right * curSpeedY);
-
-        #endregion
-
-        #region Handles Rotation
-
-        characterController.Move(moveDirection * Time.deltaTime);
-
-        if (canMove)
+        if (!frozen)
         {
-            rotationX += -Input.GetAxis("Mouse Y") * lookSpeed;
-            rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
-            playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
-            transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
-        }
+            #region Handles Movment
+            Vector3 forward = transform.TransformDirection(Vector3.forward);
+            Vector3 right = transform.TransformDirection(Vector3.right);
 
-        #endregion
+            float curSpeedX = canMove ? walkSpeed * Input.GetAxis("Vertical") : 0;
+            float curSpeedY = canMove ? walkSpeed * Input.GetAxis("Horizontal") : 0;
+            moveDirection = (forward * curSpeedX) + (right * curSpeedY);
 
-        #region Handles Interaction
+            #endregion
 
-        RaycastHit hit;
-        Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
+            #region Handles Rotation
 
-        if (Input.GetMouseButtonUp(0))
-        {
-            removingTime = -1f;
-        }
+            characterController.Move(moveDirection * Time.deltaTime);
 
-        // if removingTime is the default value it is active and the currentselectedObject shouldn't change
-        if (Physics.Raycast(ray, out hit) && removingTime == -1)
-        {
-            if (Vector3.Distance(hit.collider.gameObject.transform.position, transform.position) <= interactionReach && hit.collider.gameObject.tag == "Interactable")
+            if (canMove)
             {
-                inputOverlay.SetActive(true);
-                // Set the text based on the object
-                switch (hit.collider.gameObject.name)
-                {
-                    case "pinboard":
-                        inputOverlayText.text = "";
-                        break;
-                    case "Button":
-                        inputOverlayText.text = "press button";
-                        break;
-                    case "pinboardElement(Clone)":
-                        inputOverlayText.text = "click to move Element";
-                        print(!detailMode && hoverStart > 0.4f);
-                        print(hoverStart > 0.4f);
-                        if (!detailMode && hoverStart > 0.7f)
-                        {
-                            AdditionalInfoBoard aib = transform.GetChild(0).Find("MoreInfo").GetComponent<AdditionalInfoBoard>();
-                            aib.ShowInfo(true);
-                            print(hit.collider.gameObject.GetComponent<PinboardElement>());
-                            print(hit.collider.gameObject.GetComponent<PinboardElement>().GetContent());
-                            aib.SetContent(hit.collider.gameObject.GetComponent<PinboardElement>().GetContent());
+                rotationX += -Input.GetAxis("Mouse Y") * lookSpeed;
+                rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
+                cameraObject.localRotation = Quaternion.Euler(rotationX, 0, 0);
+                transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
+            }
 
-                            detailMode = true;
-                        }
-                        else if (!detailMode && hoverStart == -1f)
-                            hoverStart = 0;
-                        break;
-                    case "PC":
-                        inputOverlayText.text = "Click to add Element";
-                        break;
-                    default:
-                        inputOverlayText.text = "";
-                        break;
-                }
-                currentSelectedObject = hit.collider.gameObject;
-                if (hit.collider.gameObject.name != "pinboardElement(Clone)")
+            #endregion
+
+            #region Handles Interaction
+
+            RaycastHit hit;
+            Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
+
+            if (Input.GetMouseButtonUp(0))
+            {
+                removingTime = -1f;
+            }
+
+            // if removingTime is the default value it is active and the currentselectedObject shouldn't change
+            if (Physics.Raycast(ray, out hit) && removingTime == -1)
+            {
+                if (Vector3.Distance(hit.collider.gameObject.transform.position, transform.position) <= interactionReach && hit.collider.gameObject.tag == "Interactable")
                 {
-                    hoverStart = -1;
-                    detailMode = false;
-                    transform.GetChild(0).Find("MoreInfo").GetComponent<AdditionalInfoBoard>().ShowInfo(false);
+                    inputOverlay.SetActive(true);
+                    // Set the text based on the object
+                    switch (hit.collider.gameObject.name)
+                    {
+                        case "pinboard":
+                            inputOverlayText.text = "";
+                            break;
+                        case "Button":
+                            inputOverlayText.text = "press button";
+                            break;
+                        case "pinboardElement(Clone)":
+                            inputOverlayText.text = "click to move Element";
+                            print(!detailMode && hoverStart > 0.4f);
+                            print(hoverStart > 0.4f);
+                            if (!detailMode && hoverStart > 0.7f)
+                            {
+                                AdditionalInfoBoard aib = transform.GetChild(0).Find("MoreInfo").GetComponent<AdditionalInfoBoard>();
+                                aib.ShowInfo(true);
+                                print(hit.collider.gameObject.GetComponent<PinboardElement>());
+                                print(hit.collider.gameObject.GetComponent<PinboardElement>().GetContent());
+                                aib.SetContent(hit.collider.gameObject.GetComponent<PinboardElement>().GetContent());
+
+                                detailMode = true;
+                            }
+                            else if (!detailMode && hoverStart == -1f)
+                                hoverStart = 0;
+                            break;
+                        case "PC":
+                            inputOverlayText.text = "Click to add Element";
+                            break;
+                        default:
+                            inputOverlayText.text = "";
+                            break;
+                    }
+                    currentSelectedObject = hit.collider.gameObject;
+                    if (hit.collider.gameObject.name != "pinboardElement(Clone)")
+                    {
+                        hoverStart = -1;
+                        detailMode = false;
+                        transform.GetChild(0).Find("MoreInfo").GetComponent<AdditionalInfoBoard>().ShowInfo(false);
+                    }
+                }
+                else
+                {
+                    inputOverlay.SetActive(false);
+                    if (selectedPinboardElement != null)
+                    {
+                        selectedPinboardElement.gameObject.layer = 0;
+                        selectedPinboardElement.GetComponentInParent<Animator>().SetBool("pinNormal", true);
+                        selectedPinboardElement.GetComponent<PinboardElement>().setIsMoving(false);
+                        PlayReverseAudio(pickupSound);
+                        selectedPinboardElement = null;
+                    }
+                    currentSelectedObject = null;
                 }
             }
-            else
+            // default val
+            else if (removingTime != -1)
             {
-                inputOverlay.SetActive(false);
-                if (selectedPinboardElement != null)
+                removingTime -= Time.deltaTime;
+                print(removingTime);
+                if (removingTime <= 0)
                 {
+                    print(currentSelectedObject);
+                    currentSelectedObject.transform.parent.GetComponent<PinboardElement>().DeleteElement();
+                    audioSource.PlayOneShot(deleteSound);
+                    removingTime = -1;
+                }
+            }
+
+            if (Input.GetMouseButtonDown(0) && currentSelectedObject != null)
+            {
+                if (currentThread != null && currentSelectedObject.name == "pinboardElement(Clone)")
+                {
+                    currentSelectedObject.GetComponent<PinboardElement>().AddEndingThreads(currentThread);
+                    currentSelectedObject.GetComponent<PinboardElement>().setIsMoving(false);
+                    /*  Vector2[] edgeColl = currentThread.GetComponent<EdgeCollider2D>().points;
+                      List<Vector2> list = new List<Vector2>();
+                      list.Add(currentThread.GetComponent<EdgeCollider2D>().points[0]); 
+                      list.Add(currentSelectedObject.transform.GetChild(0).position);
+                      currentThread.GetComponent<EdgeCollider2D>().SetPoints(list);*/
+                    currentThread = null;
+                }
+                else if (selectedPinboardElement != null)
+                {  // change back to default layer so it can be selected again
                     selectedPinboardElement.gameObject.layer = 0;
                     selectedPinboardElement.GetComponentInParent<Animator>().SetBool("pinNormal", true);
                     selectedPinboardElement.GetComponent<PinboardElement>().setIsMoving(false);
                     PlayReverseAudio(pickupSound);
                     selectedPinboardElement = null;
                 }
-                currentSelectedObject = null;
-            }
-        }
-        // default val
-        else if (removingTime != -1)
-        {
-            removingTime -= Time.deltaTime;
-            print(removingTime);
-            if (removingTime <= 0)
-            {
-                print(currentSelectedObject);
-                currentSelectedObject.transform.parent.GetComponent<PinboardElement>().DeleteElement();
-                audioSource.PlayOneShot(deleteSound);
-                removingTime = -1;
-            }
-        }
-
-        if (Input.GetMouseButtonDown(0) && currentSelectedObject != null)
-        {
-            if (currentThread != null && currentSelectedObject.name == "pinboardElement(Clone)")
-            {
-                currentSelectedObject.GetComponent<PinboardElement>().AddEndingThreads(currentThread);
-                currentSelectedObject.GetComponent<PinboardElement>().setIsMoving(false);
-                /*  Vector2[] edgeColl = currentThread.GetComponent<EdgeCollider2D>().points;
-                  List<Vector2> list = new List<Vector2>();
-                  list.Add(currentThread.GetComponent<EdgeCollider2D>().points[0]); 
-                  list.Add(currentSelectedObject.transform.GetChild(0).position);
-                  currentThread.GetComponent<EdgeCollider2D>().SetPoints(list);*/
-                currentThread = null;
-            }
-            else if (selectedPinboardElement != null)
-            {  // change back to default layer so it can be selected again
-                selectedPinboardElement.gameObject.layer = 0;
-                selectedPinboardElement.GetComponentInParent<Animator>().SetBool("pinNormal", true);
-                selectedPinboardElement.GetComponent<PinboardElement>().setIsMoving(false);
-                PlayReverseAudio(pickupSound);
-                selectedPinboardElement = null;
-            }
-            else
-            {
-
-                print(currentSelectedObject.name);
-                switch (currentSelectedObject.name)
+                else
                 {
-                    case "pinboard":
-                        selectedPenAnim.gameObject.layer = 0;
-                        selectedPenAnim.SetBool("pickedup", false);
-                        selectedPenAnim = null;
-                        break;
-                    case "pinboardElement(Clone)":
-                        if (selectedPenAnim != null)
-                        {
-                            selectedPenAnim.SetTrigger("circle");
-                        }
-                        else
-                        {
-                            currentSelectedObject.GetComponentInParent<Animator>().SetBool("pinNormal", false);
-                            selectedPinboardElement = currentSelectedObject;
-                            selectedPinboardElement.GetComponent<PinboardElement>().setIsMoving(true);
+                    // Deselect pen if clicking somewhere, where you can't draw
+                    if (selectedPenAnim != null)
+                    {
+                        print(currentSelectedObject.name);
+                    }
+                    if (selectedPenAnim != null && !(currentSelectedObject.name == "pin" || currentSelectedObject.name == "Pen" || currentSelectedObject.name == "pinboardElement(Clone)"))
+                    {
+                        DeselectPen();
+                    }
+                    switch (currentSelectedObject.name)
+                    {
+                        case "pinboardElement(Clone)":
+                            if (selectedPenAnim != null)
+                            {
+                                currentSelectedObject.GetComponent<PinboardElement>().annotateCircle();
+                                selectedPenAnim.SetTrigger("circle");
+                            }
+                            else
+                            {
+                                currentSelectedObject.GetComponentInParent<Animator>().SetBool("pinNormal", false);
+                                selectedPinboardElement = currentSelectedObject;
+                                selectedPinboardElement.GetComponent<PinboardElement>().setIsMoving(true);
+                                audioSource.PlayOneShot(pickupSound);
+                                // change to ignore raycast layer so it won't overflow the pinboard
+                                selectedPinboardElement.gameObject.layer = 2;
+                            }
+                            break;
+                        case "PC":
+                            pinboard.AddPin();
+                            break;
+                        case "threadCollider":
+                            audioSource.PlayOneShot(threadCuttingSound);
+                            Destroy(hit.collider.transform.parent.gameObject);
+                            break;
+                        case "pin":
+                            currentSelectedObject.GetComponentInParent<Animator>().SetTrigger("remove");
                             audioSource.PlayOneShot(pickupSound);
-                            // change to ignore raycast layer so it won't overflow the pinboard
-                            selectedPinboardElement.gameObject.layer = 2;
-                        }
-                        break;
-                    case "PC":
-                        pinboard.AddPin();
-                        break;
-                    case "threadCollider":
-                        audioSource.PlayOneShot(threadCuttingSound);
-                        Destroy(hit.collider.transform.parent.gameObject);
-                        break;
-                    case "pin":
-                        currentSelectedObject.GetComponentInParent<Animator>().SetTrigger("remove");
-                        audioSource.PlayOneShot(pickupSound);
-                        removingTime = 0.5f;
-                        break;
-                    case "Pen":
-                        selectedPenAnim = currentSelectedObject.GetComponentInChildren<Animator>();
-                        selectedPenAnim.gameObject.layer = 2;
-                        selectedPenAnim.SetBool("pickedup", true);
-                        break;
-                    default:
-                        break;
+                            removingTime = 0.5f;
+                            break;
+                        case "Pen":
+                            penPos = currentSelectedObject.transform.position;
+                            selectedPenAnim = currentSelectedObject.GetComponentInChildren<Animator>();
+                            selectedPenAnim.transform.parent.gameObject.layer = 2;
+                            selectedPenAnim.SetBool("pickedup", true);
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
-        }
-        if (Input.GetMouseButtonDown(1) && currentSelectedObject != null && currentSelectedObject.name == "pinboardElement(Clone)")
-        {
-            currentThread = Instantiate(thread, pinboard.transform).GetComponent<LineRenderer>();
-            currentThread.SetPosition(0, currentSelectedObject.transform.GetChild(0).position);
-            currentSelectedObject.GetComponent<PinboardElement>().AddStartingThread(currentThread);
-        }
-        // handle moving ponboardElement position
-        if (selectedPinboardElement != null && currentSelectedObject != null)
-        {
-            selectedPinboardElement.transform.position = new Vector3(selectedPinboardElement.transform.position.x, hit.point.y, hit.point.z);
-        }
-        // handle moving thread position
-        if (currentThread != null)
-        {
-            currentThread.SetPosition(1, hit.point);
-            if (currentSelectedObject == null)
+            if (Input.GetMouseButtonDown(1) && currentSelectedObject != null && currentSelectedObject.name == "pinboardElement(Clone)")
             {
-                Destroy(currentThread);
+                if (selectedPenAnim != null)
+                {
+                    currentSelectedObject.GetComponent<PinboardElement>().annotateStrikeThrough();
+                    selectedPenAnim.SetTrigger("cross");
+                }
+                else
+                {
+                    currentThread = Instantiate(thread, pinboard.transform).GetComponent<LineRenderer>();
+                    currentThread.SetPosition(0, currentSelectedObject.transform.GetChild(0).position);
+                    currentSelectedObject.GetComponent<PinboardElement>().AddStartingThread(currentThread);
+                }
             }
+            // handle moving ponboardElement position
+            if (selectedPinboardElement != null && currentSelectedObject != null)
+            {
+                selectedPinboardElement.transform.position = new Vector3(selectedPinboardElement.transform.position.x, hit.point.y, hit.point.z);
+            }
+            // handle moving thread position
+            if (currentThread != null)
+            {
+                currentThread.SetPosition(1, hit.point);
+                if (currentSelectedObject == null)
+                {
+                    Destroy(currentThread);
+                }
+            }
+
+            if (selectedPenAnim != null)
+            {
+                selectedPenAnim.transform.parent.position = new Vector3(pinboard.transform.position.x, hit.point.y, hit.point.z);
+            }
+
+            #endregion
+
         }
-
-        if (selectedPenAnim != null)
-        {
-            selectedPenAnim.transform.parent.position = new Vector3(pinboard.transform.position.x + 0.5f, hit.point.y, hit.point.z);
-        }
-
-        #endregion
-
     }
     public void PlayReverseAudio(AudioClip audioClip)
     {
@@ -306,6 +325,21 @@ public class FPSController : MonoBehaviour
         audioSource.time = 0;
     }
 
+    private void DeselectPen()
+    {
+        print("deselect");
+        selectedPenAnim.transform.parent.gameObject.layer = 0;
+        selectedPenAnim.SetBool("pickedup", false);
+        selectedPenAnim.transform.parent.position = penPos;
+        selectedPenAnim = null;
+    }
+
+    public IEnumerator freezeForX(float X)
+    {
+        yield return new WaitForSeconds(X);
+        audioSource.pitch = 1;
+        audioSource.time = 0;
+    }
 
 
 }
