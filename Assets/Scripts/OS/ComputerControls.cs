@@ -20,8 +20,11 @@ public class ComputerControls : MonoBehaviour
     public RectTransform cursor;
     public RectTransform background;
     public RectTransform taskBar;
+    public Transform tabContainer;
     public OSWindow testWindow;
+    public OSTab testTab;
     public GameObject windowPrefab;
+    public GameObject tabPrefab;
     public List<OSApplication> apps = new List<OSApplication>();
 
     private RectTransform screen;
@@ -34,10 +37,12 @@ public class ComputerControls : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+        UnityEngine.Cursor.lockState = CursorLockMode.Confined;
+        UnityEngine.Cursor.visible = false;
 
         screen = GetComponent<RectTransform>();
         windows.Add(testWindow);
+        testWindow.associatedTab = testTab;
     }
 
     // Update is called once per frame
@@ -60,6 +65,9 @@ public class ComputerControls : MonoBehaviour
             // Clicked an app
             CheckAppMouseUp();
 
+            // Clicked a tab
+            CheckTabMouseUp();
+
             OSWindow windowToBeDeleted = null;
             foreach (OSWindow window in windows)
             {
@@ -75,6 +83,7 @@ public class ComputerControls : MonoBehaviour
             if (windowToBeDeleted)
             {
                 windows.Remove(windowToBeDeleted);
+                Destroy(windowToBeDeleted.associatedTab.gameObject);
                 Destroy(windowToBeDeleted.gameObject);
             }
         }
@@ -124,10 +133,28 @@ public class ComputerControls : MonoBehaviour
                         return;
                     }
                 }
+                // Create window
                 GameObject newWindow = Instantiate(windowPrefab, transform.position, transform.rotation, background.transform);
                 newWindow.GetComponent<OSWindow>().appType = app.appType;
                 windows.Add(newWindow.GetComponent<OSWindow>());
+                // Create tab
+                GameObject newTab = Instantiate(tabPrefab, transform.position, transform.rotation, tabContainer.transform);
+                newTab.GetComponent<OSTab>().appType = app.appType;
+                newWindow.GetComponent<OSWindow>().associatedTab = newTab.GetComponent<OSTab>();
                 return;
+            }
+        }
+    }
+
+    private void CheckTabMouseUp()
+    {
+        foreach (OSWindow window in windows)
+        {
+            // Check if a tab was hit
+            GameObject hitObject = GetFirstHitObject();
+            if (Object.ReferenceEquals(hitObject, window.associatedTab.gameObject))
+            {
+                BringWindowToFront(window);
             }
         }
     }
@@ -147,19 +174,7 @@ public class ComputerControls : MonoBehaviour
                     nextParentObj = nextParentObj.transform.parent.gameObject;
                     if (Object.ReferenceEquals(nextParentObj, window.gameObject))
                     {
-                        // Bring clicked window to front
-                        window.transform.SetAsLastSibling();
-
-                        // Set as current right/left window if in long mode
-                        if (window.currWindowSize == WindowSize.LONG_LEFT)
-                        {
-                            leftWindow = window;
-                        }
-                        else if (window.currWindowSize == WindowSize.LONG_RIGHT)
-                        {
-                            rightWindow = window;
-                        }
-
+                        BringWindowToFront(window);
                         break;
                     }
                 }
@@ -197,6 +212,7 @@ public class ComputerControls : MonoBehaviour
                     // Close window
                     RemoveLeftRightWindow(window);
                     windows.Remove(window);
+                    Destroy(window.associatedTab.gameObject);
                     Destroy(window.gameObject);
                     return;
                 }
@@ -257,6 +273,22 @@ public class ComputerControls : MonoBehaviour
         }
     }
 
+    private void BringWindowToFront(OSWindow window)
+    {
+        // Bring clicked window to front
+        window.transform.SetAsLastSibling();
+
+        // Set as current right/left window if in long mode
+        if (window.currWindowSize == WindowSize.LONG_LEFT)
+        {
+            leftWindow = window;
+        }
+        else if (window.currWindowSize == WindowSize.LONG_RIGHT)
+        {
+            rightWindow = window;
+        }
+    }
+
     private void RemoveLeftRightWindow(OSWindow window)
     {
         if (Object.ReferenceEquals(window, leftWindow))
@@ -308,6 +340,7 @@ public class ComputerControls : MonoBehaviour
         window.currWindowSize = WindowSize.BIG;
     }
 
+    // Shoot raycast at current cursor position and get the first (topmost) hit object
     private GameObject GetFirstHitObject()
     {
         GraphicRaycaster gr = this.GetComponent<GraphicRaycaster>();
@@ -318,6 +351,7 @@ public class ComputerControls : MonoBehaviour
         return results[0].gameObject;
     }
 
+    // Check if point is inside a given rect
     private bool PointInsideRect(Vector2 point, RectTransform rectTransform)
     {
         Rect rect = rectTransform.rect;

@@ -24,6 +24,7 @@ public class OSWindow : MonoBehaviour
     [HideInInspector] public RectTransform sideswapRight;
     [HideInInspector] public bool isMoving = false;
     [HideInInspector] public WindowSize currWindowSize = WindowSize.SMALL;
+    [HideInInspector] public OSTab associatedTab;
 
     // Start is called before the first frame update
     void Start()
