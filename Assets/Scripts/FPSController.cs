@@ -237,6 +237,7 @@ public class FPSController : MonoBehaviour
                             {
                                 currentSelectedObject.GetComponent<PinboardElement>().annotateCircle();
                                 selectedPenAnim.SetTrigger("circle");
+                                freezeForX(0.5f);
                             }
                             else
                             {
@@ -277,6 +278,7 @@ public class FPSController : MonoBehaviour
                 {
                     currentSelectedObject.GetComponent<PinboardElement>().annotateStrikeThrough();
                     selectedPenAnim.SetTrigger("cross");
+                    freezeForX(0.5f);
                 }
                 else
                 {
@@ -336,9 +338,9 @@ public class FPSController : MonoBehaviour
 
     public IEnumerator freezeForX(float X)
     {
+        frozen = true;
         yield return new WaitForSeconds(X);
-        audioSource.pitch = 1;
-        audioSource.time = 0;
+        frozen = false;
     }
 
 
