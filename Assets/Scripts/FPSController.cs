@@ -244,9 +244,7 @@ public class FPSController : MonoBehaviour
                         case "pinboardElement(Clone)":
                             if (selectedPenAnim != null)
                             {
-                                currentSelectedObject.GetComponent<PinboardElement>().annotateCircle();
-                                selectedPenAnim.SetTrigger("circle");
-                                freezeForX(0.5f);
+                                StartCoroutine(PlayPenAnimation("circle"));
                             }
                             else
                             {
@@ -290,9 +288,7 @@ public class FPSController : MonoBehaviour
             {
                 if (selectedPenAnim != null)
                 {
-                    currentSelectedObject.GetComponent<PinboardElement>().annotateStrikeThrough();
-                    selectedPenAnim.SetTrigger("cross");
-                    freezeForX(0.5f);
+                    StartCoroutine(PlayPenAnimation("cross"));
                 }
                 else
                 {
@@ -350,12 +346,24 @@ public class FPSController : MonoBehaviour
         selectedPenAnim = null;
     }
 
-    public IEnumerator freezeForX(float X)
+    public IEnumerator PlayPenAnimation(string animName)
     {
-        frozen = true;
-        yield return new WaitForSeconds(X);
-        frozen = false;
-    }
+        PinboardElement pe = currentSelectedObject.GetComponent<PinboardElement>();
 
+        pe.clearAnnotations();
+        frozen = true;
+        selectedPenAnim.SetTrigger(animName);
+        print(selectedPenAnim.runtimeAnimatorController.animationClips[animName == "circle" ? 3 : 4].name);
+        yield return new WaitForSeconds(selectedPenAnim.runtimeAnimatorController.animationClips[animName == "circle" ? 3 : 4].length);
+        frozen = false;
+        if (animName == "circle")
+        {
+            pe.annotateCircle();
+        }
+        else
+        {
+            pe.annotateStrikeThrough();
+        }
+    }
 
 }
