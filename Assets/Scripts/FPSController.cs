@@ -42,6 +42,8 @@ public class FPSController : MonoBehaviour
 
     private bool frozen = false;
 
+    private ComputerControls computerControls;
+
     [SerializeField] private AudioClip threadCuttingSound;
     [SerializeField] private AudioClip pickupSound;
     [SerializeField] private AudioClip deleteSound;
@@ -66,6 +68,8 @@ public class FPSController : MonoBehaviour
             inputOverlay.SetActive(false);
             inputOverlayText = inputOverlay.GetComponentInChildren<TextMeshProUGUI>();
         }
+
+        computerControls = GameObject.Find("DesktopInterface").GetComponent<ComputerControls>();
     }
     private void FixedUpdate()
     {
@@ -81,10 +85,15 @@ public class FPSController : MonoBehaviour
     void Update()
     {
         // on e key pressed
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E) && frozen)
         {
-            Cursor.lockState = Cursor.visible ? CursorLockMode.Locked : CursorLockMode.None;
-            Cursor.visible = !Cursor.visible;
+            //Cursor.lockState = Cursor.visible ? CursorLockMode.Locked : CursorLockMode.None;
+            //Cursor.visible = !Cursor.visible;
+            frozen = false;
+            cameraObject.gameObject.SetActive(true);
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            computerControls.ToggleCursor();
         }
 
         if (!frozen)
@@ -249,8 +258,13 @@ public class FPSController : MonoBehaviour
                                 selectedPinboardElement.gameObject.layer = 2;
                             }
                             break;
-                        case "PC":
-                            pinboard.AddPin();
+                        case "CurvedScreen":
+                            cameraObject.gameObject.SetActive(false);
+                            frozen = true;
+                            Cursor.lockState = CursorLockMode.Confined;
+                            Cursor.visible = false;
+                            computerControls.ToggleCursor();
+                            inputOverlay.gameObject.SetActive(false);
                             break;
                         case "threadCollider":
                             audioSource.PlayOneShot(threadCuttingSound);

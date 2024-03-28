@@ -8,6 +8,7 @@ public class Person : ScriptableObject
     public string personName;
     public Sprite image;
     public SocialMediaUser socialMediaUser;
+    public string description;
     // bool indicates
     public List<string> additionalInfos = new List<string>();
     public List<string> hiddenInfos = new List<string>();

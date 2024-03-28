@@ -26,6 +26,9 @@ public class OSWindow : MonoBehaviour
     [HideInInspector] public WindowSize currWindowSize = WindowSize.SMALL;
     [HideInInspector] public OSTab associatedTab;
 
+    [SerializeField] private GameObject socialMediaContent;
+    [SerializeField] private GameObject govAppContent;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,7 +40,15 @@ public class OSWindow : MonoBehaviour
         buttonClose = transform.Find("TopBar").Find("ButtonClose").GetComponent<RectTransform>();
         sideswapLeft = transform.Find("SideswapLeft").GetComponent<RectTransform>();
         sideswapRight = transform.Find("SideswapRight").GetComponent<RectTransform>();
-        transform.Find("Content").Find("Text").GetComponent<TextMeshProUGUI>().text = appType.ToString();
+        transform.Find("TopBar").Find("Text").GetComponent<TextMeshProUGUI>().text = appType.ToString();
+        if (appType == OSAppType.SOCIAL)
+        {
+            Instantiate(socialMediaContent, transform.Find("Content"));
+        }
+        else if (appType == OSAppType.GOV)
+        {
+            Instantiate(govAppContent, transform.Find("Content"));
+        }
     }
 
     public void MoveWindow(Vector2 moveVec)

@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEditor.PackageManager.UI;
 using UnityEngine;
 using UnityEngine.Device;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
 
 public enum OSAppType
 {
@@ -34,20 +34,28 @@ public class ComputerControls : MonoBehaviour
     private OSWindow rightWindow;
     private OSWindow leftWindow;
 
+    private bool cursorActive = false;
+
     // Start is called before the first frame update
     void Start()
     {
-        UnityEngine.Cursor.lockState = CursorLockMode.Confined;
+        //UnityEngine.Cursor.lockState = CursorLockMode.Confined;
         UnityEngine.Cursor.visible = false;
+        cursor.gameObject.SetActive(cursorActive);
 
         screen = GetComponent<RectTransform>();
         windows.Add(testWindow);
         testWindow.associatedTab = testTab;
+
+        cursor.anchoredPosition = new Vector2(-1000, -1000);
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!cursorActive)
+            return;
+
         mouseSpeedX = mouseSensitivity * Input.GetAxis("Mouse X");
         mouseSpeedY = mouseSensitivity * Input.GetAxis("Mouse Y");
 
@@ -91,6 +99,9 @@ public class ComputerControls : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!cursorActive)
+            return;
+
         // Move cursor
         cursor.anchoredPosition += new Vector2(mouseSpeedX, mouseSpeedY);
 
@@ -116,6 +127,13 @@ public class ComputerControls : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void ToggleCursor()
+    {
+        cursorActive = !cursorActive;
+        cursor.gameObject.SetActive(cursorActive);
+        cursor.anchoredPosition = cursorActive ? new Vector2(0, 0) : new Vector2(-1000, -1000);
     }
 
     private void CheckAppMouseUp()
