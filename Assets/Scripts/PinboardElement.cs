@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEngine.UI;
 
 public class PinboardElement : MonoBehaviour
 {
@@ -18,6 +19,8 @@ public class PinboardElement : MonoBehaviour
 
     private GameObject circle;
     private GameObject crossThrough;
+
+    [SerializeField] private Image image;
 
     public ScriptableObject GetContent()
     {
@@ -140,12 +143,16 @@ public class PinboardElement : MonoBehaviour
                 break;
             case SocialMediaPost:
                 // connect to user
+                image.gameObject.SetActive(false);
                 SocialMediaPost post = ConversionUtility.Convert<SocialMediaPost>(o);
                 textElement.text = post.contentShort;
                 break;
             case SocialMediaUser:
+
                 SocialMediaUser user = ConversionUtility.Convert<SocialMediaUser>(o);
                 textElement.text = user.username;
+                textElement.verticalAlignment = VerticalAlignmentOptions.Bottom;
+                image.sprite = user.image;
                 break;
         }
     }
@@ -184,7 +191,14 @@ public class PinboardElement : MonoBehaviour
             endingThreads.Remove(l);
         }
     }
-
+    public bool CheckIfCircleAnnotated()
+    {
+        return circle.activeSelf;
+    }
+    public bool CheckIfStrikeThroughAnnotated()
+    {
+        return crossThrough.activeSelf;
+    }
     public void annotateCircle()
     {
         circle.SetActive(true);

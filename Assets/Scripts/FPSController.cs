@@ -349,21 +349,29 @@ public class FPSController : MonoBehaviour
     public IEnumerator PlayPenAnimation(string animName)
     {
         PinboardElement pe = currentSelectedObject.GetComponent<PinboardElement>();
-
-        pe.clearAnnotations();
         frozen = true;
-        selectedPenAnim.SetTrigger(animName);
-        print(selectedPenAnim.runtimeAnimatorController.animationClips[animName == "circle" ? 3 : 4].name);
-        yield return new WaitForSeconds(selectedPenAnim.runtimeAnimatorController.animationClips[animName == "circle" ? 3 : 4].length);
-        frozen = false;
-        if (animName == "circle")
+        // clear if the state is the same
+        if (animName == "circle" && pe.CheckIfCircleAnnotated() || animName == "cross" && pe.CheckIfStrikeThroughAnnotated())
         {
-            pe.annotateCircle();
+            selectedPenAnim.SetTrigger("clear");
+            yield return new WaitForSeconds(selectedPenAnim.runtimeAnimatorController.animationClips[5].length);
+            pe.clearAnnotations();
         }
         else
         {
-            pe.annotateStrikeThrough();
+            pe.clearAnnotations();
+            selectedPenAnim.SetTrigger(animName);
+            yield return new WaitForSeconds(selectedPenAnim.runtimeAnimatorController.animationClips[animName == "circle" ? 3 : 4].length);
+            if (animName == "circle")
+            {
+                pe.annotateCircle();
+            }
+            else
+            {
+                pe.annotateStrikeThrough();
+            }
         }
+        frozen = false;
     }
 
 }
