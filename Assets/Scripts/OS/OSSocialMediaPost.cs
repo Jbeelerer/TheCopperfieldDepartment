@@ -7,10 +7,13 @@ public class OSSocialMediaPost : MonoBehaviour
     public SocialMediaPost post;
 
     private Pinboard pinboard;
+    private OSPopupManager popupManager;
+
     // Start is called before the first frame update
     void Start()
     {
         pinboard = GameObject.Find("Pinboard").GetComponent<Pinboard>();
+        popupManager = GameObject.Find("PopupMessage").GetComponent<OSPopupManager>();
     }
 
     public void instanctiatePost(SocialMediaPost post)
@@ -24,8 +27,10 @@ public class OSSocialMediaPost : MonoBehaviour
         {
             case "name":
                 pinboard.AddPin(post.author);
+                popupManager.DisplayUserPinMessage();
                 break;
             case "content":
+                popupManager.DisplayPostPinMessage();
                 pinboard.AddPin(post.author);
                 pinboard.AddPin(post);
                 break;
