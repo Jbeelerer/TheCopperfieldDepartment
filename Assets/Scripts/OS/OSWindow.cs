@@ -43,7 +43,7 @@ public class OSWindow : MonoBehaviour
         transform.Find("TopBar").Find("Text").GetComponent<TextMeshProUGUI>().text = appType.ToString();
         if (appType == OSAppType.SOCIAL)
         {
-            Instantiate(socialMediaContent, transform.Find("Content"));
+            //Instantiate(socialMediaContent, transform.Find("Content"));
         }
         else if (appType == OSAppType.GOV)
         {
