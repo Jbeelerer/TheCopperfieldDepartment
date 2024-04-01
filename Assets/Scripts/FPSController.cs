@@ -87,8 +87,6 @@ public class FPSController : MonoBehaviour
         // on e key pressed
         if (Input.GetKeyDown(KeyCode.E) && frozen)
         {
-            //Cursor.lockState = Cursor.visible ? CursorLockMode.Locked : CursorLockMode.None;
-            //Cursor.visible = !Cursor.visible;
             frozen = false;
             cameraObject.gameObject.SetActive(true);
             Cursor.lockState = CursorLockMode.Locked;
@@ -181,6 +179,7 @@ public class FPSController : MonoBehaviour
                 }
                 else
                 {
+                    DeselectPen();
                     inputOverlay.SetActive(false);
                     if (selectedPinboardElement != null)
                     {
@@ -213,11 +212,6 @@ public class FPSController : MonoBehaviour
                 {
                     currentSelectedObject.GetComponent<PinboardElement>().AddEndingThreads(currentThread);
                     currentSelectedObject.GetComponent<PinboardElement>().setIsMoving(false);
-                    /*  Vector2[] edgeColl = currentThread.GetComponent<EdgeCollider2D>().points;
-                      List<Vector2> list = new List<Vector2>();
-                      list.Add(currentThread.GetComponent<EdgeCollider2D>().points[0]); 
-                      list.Add(currentSelectedObject.transform.GetChild(0).position);
-                      currentThread.GetComponent<EdgeCollider2D>().SetPoints(list);*/
                     currentThread = null;
                 }
                 else if (selectedPinboardElement != null)
@@ -339,7 +333,8 @@ public class FPSController : MonoBehaviour
 
     private void DeselectPen()
     {
-        print("deselect");
+        if (selectedPenAnim == null)
+            return;
         selectedPenAnim.transform.parent.gameObject.layer = 0;
         selectedPenAnim.SetBool("pickedup", false);
         selectedPenAnim.transform.parent.position = penPos;
