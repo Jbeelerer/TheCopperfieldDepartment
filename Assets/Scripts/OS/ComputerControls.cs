@@ -32,6 +32,10 @@ public class ComputerControls : MonoBehaviour
     private List<OSWindow> windows = new List<OSWindow>();
     private OSWindow rightWindow;
     private OSWindow leftWindow;
+    private GameObject cursorTooltip;
+    private bool cursorStopped = false;
+    private float timeCursorStopped = 0;
+    private float tooltipDelay = 1f;
 
     private bool cursorActive = false;
 
@@ -45,6 +49,7 @@ public class ComputerControls : MonoBehaviour
         screen = GetComponent<RectTransform>();
         windows.Add(testWindow);
         testWindow.associatedTab = testTab;
+        cursorTooltip = cursor.transform.Find("Tooltip").gameObject;
 
         cursor.anchoredPosition = new Vector2(-1000, -1000);
     }
@@ -126,6 +131,9 @@ public class ComputerControls : MonoBehaviour
                 }
             }
         }
+
+        // Check if cursor is still and tooltip should be displayed
+        CheckForTooltip();
     }
 
     public void ToggleCursor()
@@ -133,6 +141,34 @@ public class ComputerControls : MonoBehaviour
         cursorActive = !cursorActive;
         cursor.gameObject.SetActive(cursorActive);
         cursor.anchoredPosition = cursorActive ? new Vector2(0, 0) : new Vector2(-1000, -1000);
+    }
+
+    private void CheckForTooltip()
+    {
+        // Start tooltip delay timer if cursor stopped
+        if (!cursorStopped && mouseSpeedX == 0 && mouseSpeedY == 0)
+        {
+            cursorStopped = true;
+            timeCursorStopped = Time.fixedTime;
+        }
+        else if (Mathf.Abs(mouseSpeedX) != 0 || Mathf.Abs(mouseSpeedY) != 0)
+        {
+            cursorStopped = false;
+            // If cursor moving, remove potential tooltip
+            if (cursorTooltip.activeInHierarchy)
+            {
+                cursorTooltip.SetActive(false);
+            }
+        }
+        // Display tooltip if tooltip delay passed and object is tooltippable
+        if (!cursorTooltip.activeInHierarchy && Time.fixedTime > timeCursorStopped + tooltipDelay)
+        {
+            if (GetFirstHitObject().GetComponent<Tooltippable>())
+            {
+                cursorTooltip.GetComponentInChildren<TextMeshProUGUI>().text = GetFirstHitObject().GetComponent<Tooltippable>().tooltipText;
+                cursorTooltip.SetActive(true);
+            }
+        }
     }
 
     private void CheckAppMouseUp()
