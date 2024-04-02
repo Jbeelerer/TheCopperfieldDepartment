@@ -12,4 +12,5 @@ public class Person : ScriptableObject
     // bool indicates
     public List<string> additionalInfos = new List<string>();
     public List<string> hiddenInfos = new List<string>();
+    public Dictionary<ScriptableObject, string> connectionDescription = new Dictionary<ScriptableObject, string>();
 }

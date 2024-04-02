@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "SocialMediaPost", menuName = "ScriptableObjects/SocialMediaPost", order = 1)]
 public class SocialMediaPost : ScriptableObject
@@ -9,4 +10,6 @@ public class SocialMediaPost : ScriptableObject
     public SocialMediaUser author;
     public string date;
     public Sprite image;
+
+
 }

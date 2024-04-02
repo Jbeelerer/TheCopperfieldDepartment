@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Common;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -26,10 +28,12 @@ public class GameManager : MonoBehaviour
     private CompetingEmployee playerOnEmployeeList;
 
     // what happens if the person is found and the post deleted?
-    private investigationStates investigationState = investigationStates.SuspectNotFound;
+    private investigationStates investigationState = investigationStates.SuspectFound; //investigationStates.SuspectNotFound;
     public UnityEvent OnNewDay;
     public UnityEvent OnNewSegment;
     private Case currentCase;
+
+    private Connections[] connections;
 
     public List<CompetingEmployee> GetCompetingEmployees()
     {
@@ -41,6 +45,10 @@ public class GameManager : MonoBehaviour
         return investigationState;
     }
 
+    public Case GetCurrentCase()
+    {
+        return currentCase;
+    }
     // Start is called before the first frame update
     void Awake()
     {
@@ -70,7 +78,7 @@ public class GameManager : MonoBehaviour
 
     public void setNewDay()
     {
-        playerOnEmployeeList.addNewPoints(investigationState == investigationStates.SuspectFound ? 100 : -100);
+        playerOnEmployeeList.addNewPoints(investigationState == investigationStates.SuspectFound ? 100 : investigationState == investigationStates.SuspectSaved ? 0 : -100);
         foreach (CompetingEmployee e in competingEmployees)
         {
             if (e != playerOnEmployeeList)
@@ -79,9 +87,23 @@ public class GameManager : MonoBehaviour
         competingEmployees.Sort((x, y) =>
     y.GetPoints().CompareTo(x.GetPoints()));
         day++;
-        currentCase = Resources.Load<Case>("Case" + Random.Range(1, 2));
+        currentCase = Resources.LoadAll<Case>("Case" + Random.Range(1, 2))[0];//); 
+        // load all connections
+        connections = Resources.LoadAll<Connections>("Case" + currentCase.id + "/Connections");
         daySegment = 0;
         OnNewDay?.Invoke();
+    }
+
+    public string checkForConnectionText(ScriptableObject from, ScriptableObject to)
+    {
+        foreach (Connections c in connections)
+        {
+            if ((c.from.Contains(from) && c.to.Contains(to)) || (c.from.Contains(to) && c.to.Contains(from)))
+            {
+                return c.text;
+            }
+        }
+        return "";
     }
     public void checkSuspect(Person p)
     {

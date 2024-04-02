@@ -31,7 +31,6 @@ public class PinboardElement : MonoBehaviour
         isMoving = b;
         if (!isMoving)
         {
-            print("Reapply");
             reApplyCollider(startingThreads);
             reApplyCollider(endingThreads);
         }
@@ -50,6 +49,11 @@ public class PinboardElement : MonoBehaviour
             if (lineRenderers == endingThreads)
                 l.SetPosition(1, transform.GetChild(0).position);
             p.MakeColliderMatchLineRenderer(l, l.GetPosition(0), l.GetPosition(1));
+            Transform connection = l.transform.Find("Connection(Clone)");
+            if (connection)
+            {
+                connection.position = l.transform.GetChild(0).position - new Vector3(0, 0.05f, 0);
+            }
         }
 
     }

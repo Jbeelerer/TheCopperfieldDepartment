@@ -25,6 +25,7 @@ public class FPSController : MonoBehaviour
     public bool canMove = true;
 
     private GameObject currentSelectedObject;
+    private GameObject lastSelectedObject;
 
     CharacterController characterController;
 
@@ -33,6 +34,7 @@ public class FPSController : MonoBehaviour
 
     private GameObject selectedPinboardElement;
     [SerializeField] private GameObject thread;
+    [SerializeField] private GameObject connectionPrefab;
     private LineRenderer currentThread;
 
     private float hoverStart = -1f;
@@ -55,8 +57,11 @@ public class FPSController : MonoBehaviour
 
     private Animator selectedPenAnim;
     private Vector3 penPos;
+
+    private GameManager gm;
     void Start()
     {
+        gm = GameManager.instance;
         audioSource = GetComponent<AudioSource>();
         characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
@@ -147,14 +152,10 @@ public class FPSController : MonoBehaviour
                             break;
                         case "pinboardElement(Clone)":
                             inputOverlayText.text = "click to move Element";
-                            print(!detailMode && hoverStart > 0.4f);
-                            print(hoverStart > 0.4f);
                             if (!detailMode && hoverStart > 0.7f)
                             {
                                 AdditionalInfoBoard aib = transform.GetChild(0).Find("MoreInfo").GetComponent<AdditionalInfoBoard>();
                                 aib.ShowInfo(true);
-                                print(hit.collider.gameObject.GetComponent<PinboardElement>());
-                                print(hit.collider.gameObject.GetComponent<PinboardElement>().GetContent());
                                 aib.SetContent(hit.collider.gameObject.GetComponent<PinboardElement>().GetContent());
 
                                 detailMode = true;
@@ -196,10 +197,8 @@ public class FPSController : MonoBehaviour
             else if (removingTime != -1)
             {
                 removingTime -= Time.deltaTime;
-                print(removingTime);
                 if (removingTime <= 0)
                 {
-                    print(currentSelectedObject);
                     currentSelectedObject.transform.parent.GetComponent<PinboardElement>().DeleteElement();
                     audioSource.PlayOneShot(deleteSound);
                     removingTime = -1;
@@ -212,6 +211,15 @@ public class FPSController : MonoBehaviour
                 {
                     currentSelectedObject.GetComponent<PinboardElement>().AddEndingThreads(currentThread);
                     currentSelectedObject.GetComponent<PinboardElement>().setIsMoving(false);
+                    string connectionText = gm.checkForConnectionText(currentSelectedObject.GetComponent<PinboardElement>().GetContent(), lastSelectedObject.GetComponent<PinboardElement>().GetContent());
+                    if (connectionText != "")
+                    {
+                        GameObject connectionO = Instantiate(connectionPrefab, currentThread.transform);
+                        connectionO.transform.position = currentThread.transform.GetChild(0).position - new Vector3(0, 0.05f, 0);
+                        connectionO.GetComponentInChildren<TextMeshProUGUI>().text = connectionText;
+                    }
+
+                    lastSelectedObject = null;
                     currentThread = null;
                 }
                 else if (selectedPinboardElement != null)
@@ -225,10 +233,7 @@ public class FPSController : MonoBehaviour
                 else
                 {
                     // Deselect pen if clicking somewhere, where you can't draw
-                    if (selectedPenAnim != null)
-                    {
-                        print(currentSelectedObject.name);
-                    }
+
                     if (selectedPenAnim != null && !(currentSelectedObject.name == "pin" || currentSelectedObject.name == "Pen" || currentSelectedObject.name == "pinboardElement(Clone)"))
                     {
                         DeselectPen();
@@ -289,6 +294,7 @@ public class FPSController : MonoBehaviour
                     currentThread = Instantiate(thread, pinboard.transform).GetComponent<LineRenderer>();
                     currentThread.SetPosition(0, currentSelectedObject.transform.GetChild(0).position);
                     currentSelectedObject.GetComponent<PinboardElement>().AddStartingThread(currentThread);
+                    lastSelectedObject = currentSelectedObject;
                 }
             }
             // handle moving ponboardElement position
@@ -300,6 +306,7 @@ public class FPSController : MonoBehaviour
             if (currentThread != null)
             {
                 currentThread.SetPosition(1, hit.point);
+
                 if (currentSelectedObject == null)
                 {
                     Destroy(currentThread);
