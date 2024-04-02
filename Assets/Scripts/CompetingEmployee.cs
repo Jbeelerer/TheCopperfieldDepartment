@@ -44,6 +44,10 @@ public class CompetingEmployee : MonoBehaviour
         this.skill = skill;
     }
 
+    public void addNewPoints(int newPoints)
+    {
+        points += newPoints;
+    }
     public void addNewPointsRandomly(int min = -100, int max = 100)
     {
         int newPoints = Random.Range(min, max + skill);
