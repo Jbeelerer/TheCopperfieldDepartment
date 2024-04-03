@@ -26,4 +26,16 @@ public class OSPopupManager : MonoBehaviour
         messageText.text = "User added to pinboard!";
         anim.Play("popupMessageSpawn", -1, 0);
     }
+
+    public void DisplayPersonPinMessage()
+    {
+        messageText.text = "Person added to pinboard!";
+        anim.Play("popupMessageSpawn", -1, 0);
+    }
+
+    public void DisplayPersonDetainedMessage()
+    {
+        messageText.text = "Made person disappear (magically)!??";
+        anim.Play("popupMessageSpawn", -1, 0);
+    }
 }

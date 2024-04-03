@@ -16,7 +16,6 @@ public class OSSocialMediaContent : MonoBehaviour
         foreach (SocialMediaPost s in posts)
         {
             InstanciatePost(s);
-            //print(s.content);
         }
     }
 

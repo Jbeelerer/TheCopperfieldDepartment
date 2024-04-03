@@ -28,6 +28,7 @@ public class OSWindow : MonoBehaviour
 
     [SerializeField] private GameObject socialMediaContent;
     [SerializeField] private GameObject govAppContent;
+    [SerializeField] private GameObject peopleListContent;
 
     // Start is called before the first frame update
     void Start()
@@ -48,6 +49,10 @@ public class OSWindow : MonoBehaviour
         else if (appType == OSAppType.GOV)
         {
             Instantiate(govAppContent, transform.Find("Content"));
+        }
+        else if (appType == OSAppType.PEOPLE_LIST)
+        {
+            Instantiate(peopleListContent, transform.Find("Content"));
         }
     }
 

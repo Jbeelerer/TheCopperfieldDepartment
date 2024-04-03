@@ -10,7 +10,8 @@ public enum OSAppType
 {
     SOCIAL,
     GOV,
-    SETTINGS
+    SETTINGS,
+    PEOPLE_LIST
 }
 
 public class ComputerControls : MonoBehaviour
@@ -25,6 +26,8 @@ public class ComputerControls : MonoBehaviour
     public GameObject windowPrefab;
     public GameObject tabPrefab;
     public List<OSApplication> apps = new List<OSApplication>();
+    public Sprite cursorNormal;
+    public Sprite cursorClickable;
 
     private RectTransform screen;
     private float mouseSpeedX;
@@ -134,6 +137,10 @@ public class ComputerControls : MonoBehaviour
 
         // Check if cursor is still and tooltip should be displayed
         CheckForTooltip();
+
+        // Change cursor sprite if hovering over button
+        cursor.GetComponent<Image>().sprite = GetFirstHitObject().GetComponent<Button>() ? cursorClickable : cursorNormal;
+
     }
 
     public void ToggleCursor()
@@ -178,22 +185,7 @@ public class ComputerControls : MonoBehaviour
             GameObject hitObject = GetFirstHitObject();
             if (Object.ReferenceEquals(hitObject, app.gameObject))
             {
-                // Check if the window is already open
-                foreach (OSWindow window in windows)
-                {
-                    if (window.appType == app.appType)
-                    {
-                        return;
-                    }
-                }
-                // Create window
-                GameObject newWindow = Instantiate(windowPrefab, transform.position, transform.rotation, background.transform);
-                newWindow.GetComponent<OSWindow>().appType = app.appType;
-                windows.Add(newWindow.GetComponent<OSWindow>());
-                // Create tab
-                GameObject newTab = Instantiate(tabPrefab, transform.position, transform.rotation, tabContainer.transform);
-                newTab.GetComponent<OSTab>().appType = app.appType;
-                newWindow.GetComponent<OSWindow>().associatedTab = newTab.GetComponent<OSTab>();
+                OpenWindow(app.appType);
                 return;
             }
         }
@@ -255,7 +247,7 @@ public class ComputerControls : MonoBehaviour
     {
         foreach (OSWindow window in windows)
         {
-            if (PointInsideRect(cursor.position, window.rectTrans))
+            if (window.rectTrans && PointInsideRect(cursor.position, window.rectTrans))
             {
                 // Check which element was hit
                 GameObject hitObject = GetFirstHitObject();
@@ -324,6 +316,26 @@ public class ComputerControls : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void OpenWindow(OSAppType type)
+    {
+        // Check if the window is already open
+        foreach (OSWindow window in windows)
+        {
+            if (window.appType == type)
+            {
+                return;
+            }
+        }
+        // Create window
+        GameObject newWindow = Instantiate(windowPrefab, transform.position, transform.rotation, background.transform);
+        newWindow.GetComponent<OSWindow>().appType = type;
+        windows.Add(newWindow.GetComponent<OSWindow>());
+        // Create tab
+        GameObject newTab = Instantiate(tabPrefab, transform.position, transform.rotation, tabContainer.transform);
+        newTab.GetComponent<OSTab>().appType = type;
+        newWindow.GetComponent<OSWindow>().associatedTab = newTab.GetComponent<OSTab>();
     }
 
     private void BringWindowToFront(OSWindow window)

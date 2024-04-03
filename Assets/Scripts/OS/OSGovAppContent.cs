@@ -2,30 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class OSGovAppContent : MonoBehaviour
+public class OSGovAppContent : MonoBehaviour, IPointerClickHandler
 {
-    [SerializeField] private GameObject profileContainer;
-    [SerializeField] private GameObject personProfilePrefab;
-    private int personNumber = 1;
+    [SerializeField] private TMP_Text mailTextMesh;
+    private Camera canvasCam;
+    private ComputerControls computerControls;
 
-    // Start is called before the first frame update
     void Start()
     {
-        Person[] people = Resources.LoadAll<Person>("People");
-        foreach (Person p in people)
-        {
-            InstanciatePerson(p);
-        }
+        canvasCam = GameObject.Find("computerTextureCam").GetComponent<Camera>();
+        computerControls = GetComponentInParent<ComputerControls>();
     }
 
-    public void InstanciatePerson(Person person)
+    public void OnPointerClick(PointerEventData eventData)
     {
-        GameObject newProfile = Instantiate(personProfilePrefab, profileContainer.transform);
-        //newProfile.GetComponent<OSSocialMediaPost>().instanctiatePost(post);
-        newProfile.name = "Profile" + personNumber;
-        personNumber++;
-        newProfile.transform.Find("name").GetComponent<TextMeshProUGUI>().text = person.personName;
-        newProfile.transform.Find("info").GetComponent<TextMeshProUGUI>().text = person.description;
+        int linkIndex = TMP_TextUtilities.FindIntersectingLink(mailTextMesh, eventData.position, canvasCam);
+        if (linkIndex != -1)
+        {
+            //TMP_LinkInfo linkInfo = mailTextMesh.textInfo.linkInfo[linkIndex];
+            //Application.OpenURL(linkInfo.GetLinkID());
+            computerControls.OpenWindow(OSAppType.PEOPLE_LIST);
+        }
     }
 }
