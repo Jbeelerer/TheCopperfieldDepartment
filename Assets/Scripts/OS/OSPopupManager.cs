@@ -35,7 +35,7 @@ public class OSPopupManager : MonoBehaviour
 
     public void DisplayPersonDetainedMessage()
     {
-        messageText.text = "Made person disappear (magically)!??";
+        messageText.text = "Made person disappear (magically)!";
         anim.Play("popupMessageSpawn", -1, 0);
     }
 }

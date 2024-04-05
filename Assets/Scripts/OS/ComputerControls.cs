@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 public enum OSAppType
 {
+    TEST,
     SOCIAL,
     GOV,
     SETTINGS,
@@ -252,7 +253,7 @@ public class ComputerControls : MonoBehaviour
                 // Check which element was hit
                 GameObject hitObject = GetFirstHitObject();
 
-                if (Object.ReferenceEquals(hitObject, window.buttonClose.gameObject))
+                if (window.buttonClose && Object.ReferenceEquals(hitObject, window.buttonClose.gameObject))
                 {
                     // Close window
                     RemoveLeftRightWindow(window);
@@ -261,13 +262,13 @@ public class ComputerControls : MonoBehaviour
                     Destroy(window.gameObject);
                     return;
                 }
-                else if (Object.ReferenceEquals(hitObject, window.buttonSmall.gameObject))
+                else if (window.buttonSmall && Object.ReferenceEquals(hitObject, window.buttonSmall.gameObject))
                 {
                     // Make window small
                     ResizeWindowSmall(window);
                     return;
                 }
-                else if (Object.ReferenceEquals(hitObject, window.buttonLong.gameObject))
+                else if (window.buttonLong && Object.ReferenceEquals(hitObject, window.buttonLong.gameObject))
                 {
                     // Make window long, position on left or right
                     if (!leftWindow)
@@ -280,7 +281,7 @@ public class ComputerControls : MonoBehaviour
                     }
                     return;
                 }
-                else if (Object.ReferenceEquals(hitObject, window.buttonBig.gameObject))
+                else if (window.buttonBig && Object.ReferenceEquals(hitObject, window.buttonBig.gameObject))
                 {
                     // Make window fullscreen
                     ResizeWindowBig(window);
@@ -316,6 +317,14 @@ public class ComputerControls : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void HideWindowSizeButton(OSWindow window, RectTransform button)
+    {
+        window.buttonBig.gameObject.SetActive(true);
+        window.buttonLong.gameObject.SetActive(true);
+        window.buttonSmall.gameObject.SetActive(true);
+        button.gameObject.SetActive(false);
     }
 
     public void OpenWindow(OSAppType type)
@@ -373,6 +382,7 @@ public class ComputerControls : MonoBehaviour
         window.rectTrans.anchorMax = new Vector2(0.5f, 0.5f);
         window.rectTrans.sizeDelta = new Vector2(450, 300);
         window.currWindowSize = WindowSize.SMALL;
+        HideWindowSizeButton(window, window.buttonSmall);
     }
 
     private void ResizeWindowLongLeft(OSWindow window)
@@ -383,6 +393,7 @@ public class ComputerControls : MonoBehaviour
         window.rectTrans.offsetMax = new Vector2(0, 0);
         leftWindow = window;
         window.currWindowSize = WindowSize.LONG_LEFT;
+        HideWindowSizeButton(window, window.buttonLong);
     }
 
     private void ResizeWindowLongRight(OSWindow window)
@@ -393,6 +404,7 @@ public class ComputerControls : MonoBehaviour
         window.rectTrans.offsetMax = new Vector2(0, 0);
         rightWindow = window;
         window.currWindowSize = WindowSize.LONG_RIGHT;
+        HideWindowSizeButton(window, window.buttonLong);
     }
 
     private void ResizeWindowBig(OSWindow window)
@@ -403,6 +415,7 @@ public class ComputerControls : MonoBehaviour
         window.rectTrans.offsetMin = new Vector2(0, 0);
         window.rectTrans.offsetMax = new Vector2(0, 0);
         window.currWindowSize = WindowSize.BIG;
+        HideWindowSizeButton(window, window.buttonBig);
     }
 
     // Shoot raycast at current cursor position and get the first (topmost) hit object

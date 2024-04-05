@@ -35,24 +35,33 @@ public class OSWindow : MonoBehaviour
     {
         rectTrans = GetComponent<RectTransform>();
         topBar = transform.Find("TopBar").GetComponent<RectTransform>();
-        buttonSmall = transform.Find("TopBar").Find("ButtonSmall").GetComponent<RectTransform>();
-        buttonLong = transform.Find("TopBar").Find("ButtonLong").GetComponent<RectTransform>();
-        buttonBig = transform.Find("TopBar").Find("ButtonBig").GetComponent<RectTransform>();
-        buttonClose = transform.Find("TopBar").Find("ButtonClose").GetComponent<RectTransform>();
+        buttonSmall = transform.Find("TopBar").Find("Buttons").Find("ButtonSmall").GetComponent<RectTransform>();
+        buttonLong = transform.Find("TopBar").Find("Buttons").Find("ButtonLong").GetComponent<RectTransform>();
+        buttonBig = transform.Find("TopBar").Find("Buttons").Find("ButtonBig").GetComponent<RectTransform>();
+        buttonClose = transform.Find("TopBar").Find("Buttons").Find("ButtonClose").GetComponent<RectTransform>();
         sideswapLeft = transform.Find("SideswapLeft").GetComponent<RectTransform>();
         sideswapRight = transform.Find("SideswapRight").GetComponent<RectTransform>();
         transform.Find("TopBar").Find("Text").GetComponent<TextMeshProUGUI>().text = appType.ToString();
-        if (appType == OSAppType.SOCIAL)
+        if (appType == OSAppType.TEST)
         {
-            //Instantiate(socialMediaContent, transform.Find("Content"));
+            buttonSmall.gameObject.SetActive(false);
+        }
+        else if (appType == OSAppType.SOCIAL)
+        {
+            Instantiate(socialMediaContent, transform.Find("Content"));
+            buttonSmall.gameObject.SetActive(false);
         }
         else if (appType == OSAppType.GOV)
         {
             Instantiate(govAppContent, transform.Find("Content"));
+            buttonBig.gameObject.SetActive(false);
+            buttonLong.gameObject.SetActive(false);
+            buttonSmall.gameObject.SetActive(false);
         }
         else if (appType == OSAppType.PEOPLE_LIST)
         {
             Instantiate(peopleListContent, transform.Find("Content"));
+            buttonSmall.gameObject.SetActive(false);
         }
     }
 

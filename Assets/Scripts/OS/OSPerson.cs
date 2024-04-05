@@ -23,7 +23,7 @@ public class OSPerson : MonoBehaviour
 
     public void AddPersonToPinboard()
     {
-        pinboard.AddPin(person.personName);
+        pinboard.AddPin(person);
         popupManager.DisplayPersonPinMessage();
     }
 
