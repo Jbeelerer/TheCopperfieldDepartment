@@ -38,4 +38,10 @@ public class OSPopupManager : MonoBehaviour
         messageText.text = "Made person disappear (magically)!";
         anim.Play("popupMessageSpawn", -1, 0);
     }
+
+    public void DisplayPostDeleteMessage()
+    {
+        messageText.text = "Cannot delete posts right now";
+        anim.Play("popupMessageSpawn", -1, 0);
+    }
 }

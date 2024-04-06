@@ -39,7 +39,7 @@ public class ComputerControls : MonoBehaviour
     private GameObject cursorTooltip;
     private bool cursorStopped = false;
     private float timeCursorStopped = 0;
-    private float tooltipDelay = 1f;
+    private float tooltipDelay = 0.5f;
 
     private bool cursorActive = false;
 
@@ -380,7 +380,7 @@ public class ComputerControls : MonoBehaviour
         RemoveLeftRightWindow(window);
         window.rectTrans.anchorMin = new Vector2(0.5f, 0.5f);
         window.rectTrans.anchorMax = new Vector2(0.5f, 0.5f);
-        window.rectTrans.sizeDelta = new Vector2(450, 300);
+        window.rectTrans.sizeDelta = new Vector2(400, 300);
         window.currWindowSize = WindowSize.SMALL;
         HideWindowSizeButton(window, window.buttonSmall);
     }

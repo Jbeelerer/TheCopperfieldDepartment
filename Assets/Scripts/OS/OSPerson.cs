@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class OSPerson : MonoBehaviour
 {
@@ -25,6 +26,7 @@ public class OSPerson : MonoBehaviour
     {
         pinboard.AddPin(person);
         popupManager.DisplayPersonPinMessage();
+        transform.Find("PinPerson").GetComponent<Image>().color = Color.red;
     }
 
     public void AccusePerson()

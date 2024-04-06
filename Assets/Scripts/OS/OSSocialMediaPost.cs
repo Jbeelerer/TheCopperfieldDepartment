@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
@@ -10,6 +11,9 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
     private Pinboard pinboard;
     private OSPopupManager popupManager;
     private GameObject postOptions;
+
+    private bool postPinned = false;
+    private bool userPinned = false;
 
     // Start is called before the first frame update
     void Start()
@@ -24,6 +28,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
         // Instantiate the post
         this.post = post;
     }
+
     public void AddPostToPinboard(string type)
     {
         switch (type)
@@ -31,11 +36,15 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
             case "name":
                 pinboard.AddPin(post.author);
                 popupManager.DisplayUserPinMessage();
+                userPinned = true;
+                postOptions.transform.Find("PinUser").GetComponent<Image>().color = Color.red;
                 break;
             case "content":
                 popupManager.DisplayPostPinMessage();
                 pinboard.AddPin(post.author);
                 pinboard.AddPin(post);
+                postPinned = true;
+                postOptions.transform.Find("PinPost").GetComponent<Image>().color = Color.red;
                 break;
             case "person":
                 pinboard.AddPin("Person");
@@ -43,13 +52,30 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
         }
     }
 
+    public void DeletePost()
+    {
+        popupManager.DisplayPostDeleteMessage();
+    }
+
     public void OnPointerEnter(PointerEventData eventData)
     {
-        postOptions.SetActive(true);
+        foreach (Transform option in postOptions.transform)
+        {
+            option.gameObject.SetActive(true);
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        postOptions.SetActive(false);
+        foreach (Transform option in postOptions.transform)
+        {
+            option.gameObject.SetActive(false);
+
+            if ((option.name == "PinPost" && postPinned)
+                || (option.name == "PinUser" && userPinned))
+            {
+                option.gameObject.SetActive(true);
+            }
+        }
     }
 }
