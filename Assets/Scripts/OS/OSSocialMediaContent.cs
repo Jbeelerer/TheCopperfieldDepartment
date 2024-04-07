@@ -8,12 +8,18 @@ public class OSSocialMediaContent : MonoBehaviour
     [SerializeField] private GameObject socialMediaPostContainer;
     [SerializeField] private GameObject postPrefab;
     private int postNumber = 1;
+    private GameManager gm;
 
     // Start is called before the first frame update
     void Start()
     {
-        SocialMediaPost[] posts = Resources.LoadAll<SocialMediaPost>("Posts");
-        foreach (SocialMediaPost s in posts)
+        gm = GameManager.instance;
+        UpdateContent();
+    }
+
+    private void UpdateContent()
+    {
+        foreach (SocialMediaPost s in gm.GetPosts())
         {
             InstanciatePost(s);
         }

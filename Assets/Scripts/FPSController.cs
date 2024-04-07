@@ -163,8 +163,11 @@ public class FPSController : MonoBehaviour
                             else if (!detailMode && hoverStart == -1f)
                                 hoverStart = 0;
                             break;
-                        case "PC":
-                            inputOverlayText.text = "Click to add Element";
+                        case "CurvedScreen":
+                            inputOverlayText.text = "Click to interact";
+                            break;
+                        case "pin":
+                            inputOverlayText.text = "Hold to remove";
                             break;
                         default:
                             inputOverlayText.text = "";

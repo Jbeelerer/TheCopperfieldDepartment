@@ -34,9 +34,24 @@ public class GameManager : MonoBehaviour
     private Case currentCase;
 
     private Connections[] connections;
-    private SocialMediaPost[] posts;
+    [SerializeField] private SocialMediaPost[] posts;
     private SocialMediaUser[] users;
     private Person[] people;
+
+    public Person[] GetPeople()
+    {
+        return people;
+    }
+
+    public SocialMediaUser[] GetUsers()
+    {
+        return users;
+    }
+
+    public SocialMediaPost[] GetPosts()
+    {
+        return posts;
+    }
 
     public List<CompetingEmployee> GetCompetingEmployees()
     {
