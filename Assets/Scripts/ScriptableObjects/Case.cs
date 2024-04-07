@@ -5,6 +5,7 @@ using UnityEngine;
 public class Case : ScriptableObject
 {
     public int id;
+    public ScriptableObject[] people;
     public ScriptableObject guiltyPerson;
     public ScriptableObject incriminatingPost;
 }

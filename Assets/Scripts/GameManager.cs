@@ -34,6 +34,9 @@ public class GameManager : MonoBehaviour
     private Case currentCase;
 
     private Connections[] connections;
+    private SocialMediaPost[] posts;
+    private SocialMediaUser[] users;
+    private Person[] people;
 
     public List<CompetingEmployee> GetCompetingEmployees()
     {
@@ -90,6 +93,21 @@ public class GameManager : MonoBehaviour
         currentCase = Resources.LoadAll<Case>("Case" + Random.Range(1, 2))[0];//); 
         // load all connections
         connections = Resources.LoadAll<Connections>("Case" + currentCase.id + "/Connections");
+        posts = Resources.LoadAll<SocialMediaPost>("Case" + currentCase.id + "/Posts");
+
+        //using lists to add new values dynamicly, afterwards convert to array, because it won't change and will be more performant
+        List<Person> tempPeople = new List<Person>();
+        List<SocialMediaUser> tempUsers = new List<SocialMediaUser>();
+        foreach (SocialMediaPost p in posts)
+        {
+            if (!tempUsers.Contains(p.author))
+            {
+                tempUsers.Add(p.author);
+                tempPeople.Add(p.author.realPerson);
+            }
+        }
+        people = tempPeople.ToArray();
+        users = tempUsers.ToArray();
         daySegment = 0;
         OnNewDay?.Invoke();
     }
