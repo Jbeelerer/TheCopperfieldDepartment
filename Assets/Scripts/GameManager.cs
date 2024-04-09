@@ -60,7 +60,9 @@ public class GameManager : MonoBehaviour
 
     public investigationStates GetInvestigationState()
     {
-        return investigationState;
+        investigationStates result = investigationState;
+        investigationState = investigationStates.SuspectNotFound;
+        return result;
     }
 
     public Case GetCurrentCase()
@@ -144,12 +146,20 @@ public class GameManager : MonoBehaviour
         {
             investigationState = investigationStates.SuspectFound;
         }
+        else
+        {
+            investigationState = investigationStates.SuspectNotFound;
+        }
     }
     public void checkDeletedPost(SocialMediaPost p)
     {
-        if (p == currentCase.incriminatingPost && investigationState == investigationStates.SuspectNotFound)
+        if (p == currentCase.incriminatingPost)
         {
             investigationState = investigationStates.SuspectSaved;
+        }
+        else
+        {
+            investigationState = investigationStates.SuspectNotFound;
         }
     }
     private void initiateNewDay(int segments)
