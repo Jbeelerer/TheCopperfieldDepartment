@@ -140,8 +140,20 @@ public class ComputerControls : MonoBehaviour
         CheckForTooltip();
 
         // Change cursor sprite if hovering over button
-        cursor.GetComponent<Image>().sprite = GetFirstHitObject().GetComponent<Button>() ? cursorClickable : cursorNormal;
+        GameObject hitObject = GetFirstHitObject();
+        if (hitObject)
+        {
+            cursor.GetComponent<Image>().sprite = hitObject.GetComponent<Button>() ? cursorClickable : cursorNormal;
+        }
+    }
 
+    public void LeaveComputer(bool frozen, Transform camObject)
+    {
+        frozen = false;
+        camObject.gameObject.SetActive(true);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        ToggleCursor();
     }
 
     public void ToggleCursor()
@@ -171,7 +183,11 @@ public class ComputerControls : MonoBehaviour
         // Display tooltip if tooltip delay passed and object is tooltippable
         if (!cursorTooltip.activeInHierarchy && Time.fixedTime > timeCursorStopped + tooltipDelay)
         {
-            if (GetFirstHitObject().GetComponent<Tooltippable>())
+            GameObject hitObject = GetFirstHitObject();
+            if (!hitObject)
+                return;
+
+            if (hitObject.GetComponent<Tooltippable>())
             {
                 cursorTooltip.GetComponentInChildren<TextMeshProUGUI>().text = GetFirstHitObject().GetComponent<Tooltippable>().tooltipText;
                 cursorTooltip.SetActive(true);
@@ -184,6 +200,9 @@ public class ComputerControls : MonoBehaviour
         foreach (OSApplication app in apps)
         {
             GameObject hitObject = GetFirstHitObject();
+            if (!hitObject)
+                return;
+
             if (Object.ReferenceEquals(hitObject, app.gameObject))
             {
                 OpenWindow(app.appType);
@@ -198,6 +217,9 @@ public class ComputerControls : MonoBehaviour
         {
             // Check if a tab was hit
             GameObject hitObject = GetFirstHitObject();
+            if (!hitObject)
+                return;
+
             if (Object.ReferenceEquals(hitObject, window.associatedTab.gameObject))
             {
                 BringWindowToFront(window);
@@ -212,6 +234,8 @@ public class ComputerControls : MonoBehaviour
             if (PointInsideRect(cursor.position, window.rectTrans))
             {
                 GameObject hitObject = GetFirstHitObject();
+                if (!hitObject)
+                    return;
 
                 // Check if any parent of the hit object is the window
                 GameObject nextParentObj = hitObject;
@@ -253,7 +277,11 @@ public class ComputerControls : MonoBehaviour
                 // Check which element was hit
                 GameObject hitObject = GetFirstHitObject();
 
-                if (window.buttonClose && Object.ReferenceEquals(hitObject, window.buttonClose.gameObject))
+                if (!hitObject)
+                {
+                    return;
+                }
+                else if (window.buttonClose && Object.ReferenceEquals(hitObject, window.buttonClose.gameObject))
                 {
                     // Close window
                     RemoveLeftRightWindow(window);
@@ -426,6 +454,10 @@ public class ComputerControls : MonoBehaviour
         ped.position = GetComponent<Canvas>().worldCamera.WorldToScreenPoint(cursor.position);
         List<RaycastResult> results = new List<RaycastResult>();
         gr.Raycast(ped, results);
+        if (results.Count <= 0)
+        {
+            return null;
+        }
         return results[0].gameObject;
     }
 
