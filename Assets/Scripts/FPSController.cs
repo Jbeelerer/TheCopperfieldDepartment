@@ -27,6 +27,8 @@ public class FPSController : MonoBehaviour
     private GameObject currentSelectedObject;
     private GameObject lastSelectedObject;
 
+    private string nameOfThingLookedAt = "";
+
     CharacterController characterController;
 
     [SerializeField] private GameObject inputOverlay;
@@ -141,8 +143,9 @@ public class FPSController : MonoBehaviour
                 if (Vector3.Distance(hit.collider.gameObject.transform.position, transform.position) <= interactionReach && hit.collider.gameObject.tag == "Interactable")
                 {
                     inputOverlay.SetActive(true);
+                    nameOfThingLookedAt = hit.collider.gameObject.name;
                     // Set the text based on the object
-                    switch (hit.collider.gameObject.name)
+                    switch (nameOfThingLookedAt)
                     {
                         case "pinboard":
                             inputOverlayText.text = "";
@@ -300,8 +303,8 @@ public class FPSController : MonoBehaviour
                     lastSelectedObject = currentSelectedObject;
                 }
             }
-            // handle moving ponboardElement position
-            if (selectedPinboardElement != null && currentSelectedObject != null)
+            // handle moving ponboardElement position 
+            if (selectedPinboardElement != null && currentSelectedObject != null && nameOfThingLookedAt == "PinboardModel")
             {
                 selectedPinboardElement.transform.position = new Vector3(selectedPinboardElement.transform.position.x, hit.point.y, hit.point.z);
             }
