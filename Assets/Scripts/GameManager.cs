@@ -93,20 +93,23 @@ public class GameManager : MonoBehaviour
     }
     void Start()
     {
-        setNewDay();
+        setNewDay(true);
     }
 
-    public void setNewDay()
+    public void setNewDay(bool firstDay = false)
     {
-        playerOnEmployeeList.addNewPoints(investigationState == investigationStates.SuspectFound ? 100 : investigationState == investigationStates.SuspectSaved ? 0 : -100);
-        foreach (CompetingEmployee e in competingEmployees)
+        if (!firstDay)
         {
-            if (e != playerOnEmployeeList)
-                e.addNewPointsRandomly();
+            playerOnEmployeeList.addNewPoints(investigationState == investigationStates.SuspectFound ? 100 : investigationState == investigationStates.SuspectSaved ? 0 : -100);
+            foreach (CompetingEmployee e in competingEmployees)
+            {
+                if (e != playerOnEmployeeList)
+                    e.addNewPointsRandomly();
+            }
+            day++;
         }
         competingEmployees.Sort((x, y) =>
     y.GetPoints().CompareTo(x.GetPoints()));
-        day++;
         currentCase = Resources.LoadAll<Case>("Case" + Random.Range(1, 2))[0];//); 
         // load all connections
         connections = Resources.LoadAll<Connections>("Case" + currentCase.id + "/Connections");
