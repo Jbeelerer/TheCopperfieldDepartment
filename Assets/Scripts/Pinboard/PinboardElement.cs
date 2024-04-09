@@ -20,7 +20,7 @@ public class PinboardElement : MonoBehaviour
     private GameObject circle;
     private GameObject crossThrough;
 
-    [SerializeField] private Image image;
+    [SerializeField] private GameObject image;
 
     public ScriptableObject GetContent()
     {
@@ -147,7 +147,7 @@ public class PinboardElement : MonoBehaviour
                 break;
             case SocialMediaPost:
                 // connect to user
-                image.gameObject.SetActive(false);
+                image.SetActive(false);
                 SocialMediaPost post = ConversionUtility.Convert<SocialMediaPost>(o);
                 textElement.text = post.contentShort;
                 break;
@@ -156,7 +156,8 @@ public class PinboardElement : MonoBehaviour
                 SocialMediaUser user = ConversionUtility.Convert<SocialMediaUser>(o);
                 textElement.text = user.username;
                 textElement.verticalAlignment = VerticalAlignmentOptions.Bottom;
-                image.sprite = user.image;
+                //image.sprite = user.image;
+                image.GetComponent<Renderer>().material.SetTexture("test", user.image.texture);
                 break;
         }
     }
