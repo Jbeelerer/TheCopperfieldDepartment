@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Pinboard : MonoBehaviour
 {
@@ -12,6 +13,9 @@ public class Pinboard : MonoBehaviour
 
     private Dictionary<ScriptableObject, PinboardElement> thingsOnPinboard = new Dictionary<ScriptableObject, PinboardElement>();
     [SerializeField] private GameObject thread;
+
+    public UnityEvent OnPinDeletion;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -32,6 +36,10 @@ public class Pinboard : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            AddPin(new Person());
+        }
     }
     public void AddPin()
     {
@@ -98,8 +106,8 @@ public class Pinboard : MonoBehaviour
             positionOnGrid = everyPos.FirstOrDefault(x => x.Value == key).Key + new Vector3(0, transform.position.y, transform.position.z);
         }
         PinboardElement pinboardElement = Instantiate(pinPrefab, transform).GetComponent<PinboardElement>();
-        pinboardElement.transform.position = thingsOnPinboard.Count > 0 ? positionOnGrid : pinboardModel.position + new Vector3(pinboardModel.localScale.z / 2, pinboardModel.localScale.y / 2, 0);
-        // auto connect post to user
+        pinboardElement.transform.position = thingsOnPinboard.Count > 0 ? positionOnGrid : pinboardModel.position + new Vector3(pinboardModel.localScale.z / 2, 0, 0);
+        // auto connect post to user   
         if (o is SocialMediaPost)
         {
             ScriptableObject so = ConversionUtility.Convert<SocialMediaPost>(o).author;
@@ -128,7 +136,6 @@ public class Pinboard : MonoBehaviour
     }
     public void MakeColliderMatchLineRenderer(LineRenderer lr, Vector3 pointA, Vector3 pointB)
     {
-        print("in FUNCTIOOOON");
         BoxCollider collider = lr.GetComponentInChildren<BoxCollider>();
         //make collider match linerenderer
 

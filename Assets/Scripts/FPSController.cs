@@ -5,6 +5,12 @@ using TMPro;
 using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine.Experimental.GlobalIllumination;
+using UnityEngine.Events;
+
+
+[System.Serializable]
+public class DeletionEvent : UnityEvent<ScriptableObject> { }
+
 
 [RequireComponent(typeof(CharacterController))]
 public class FPSController : MonoBehaviour
@@ -14,10 +20,8 @@ public class FPSController : MonoBehaviour
     public float walkSpeed = 6f;
 
     public float lookSpeed = 4f;
-    public float lookXLimit = 45f;
+    public float lookXLimit = 50f;
     public float interactionReach = 3f;
-
-    private bool deletionMode = false;
 
     Vector3 moveDirection = Vector3.zero;
     float rotationX = 0;
@@ -27,6 +31,7 @@ public class FPSController : MonoBehaviour
     private GameObject currentSelectedObject;
     private GameObject lastSelectedObject;
 
+    // used to determine if player still looks at board, otherwise the pinboardElement will be deselected
     private string nameOfThingLookedAt = "";
 
     CharacterController characterController;
@@ -40,17 +45,25 @@ public class FPSController : MonoBehaviour
     private LineRenderer currentThread;
 
     private float hoverStart = -1f;
+    // in detailmode the additional info board is shown
     private bool detailMode = false;
-
-    private AudioSource audioSource;
-
     private bool frozen = false;
 
     private ComputerControls computerControls;
 
+    //audio
+    private AudioSource audioSource;
     [SerializeField] private AudioClip threadCuttingSound;
     [SerializeField] private AudioClip pickupSound;
     [SerializeField] private AudioClip deleteSound;
+
+    // icons:
+
+    [SerializeField] private Sprite handOpen;
+    [SerializeField] private Sprite handClosed;
+    [SerializeField] private Sprite trash;
+    [SerializeField] private Sprite scissors;
+    [SerializeField] private Sprite inspect;
 
     // TODO: Remove pinboard when OS is ready
     [SerializeField] public Pinboard pinboard;
@@ -61,6 +74,9 @@ public class FPSController : MonoBehaviour
     private Vector3 penPos;
 
     private GameManager gm;
+
+
+    public DeletionEvent OnPinDeletion;
 
     public void SetIsFrozen(bool isFrozen)
     {
@@ -150,29 +166,31 @@ public class FPSController : MonoBehaviour
                     switch (nameOfThingLookedAt)
                     {
                         case "pinboard":
-                            inputOverlayText.text = "";
+                            inputOverlay.SetActive(false);
                             break;
                         case "Button":
                             inputOverlayText.text = "press button";
                             break;
                         case "pinboardElement(Clone)":
-                            inputOverlayText.text = "click to move Element";
+                            inputOverlay.GetComponent<UnityEngine.UI.Image>().sprite = handOpen;
                             if (!detailMode && hoverStart > 0.4f)
                             {
                                 AdditionalInfoBoard aib = transform.GetChild(0).Find("MoreInfo").GetComponent<AdditionalInfoBoard>();
                                 aib.ShowInfo(true);
                                 aib.SetContent(hit.collider.gameObject.GetComponent<PinboardElement>().GetContent());
-
                                 detailMode = true;
                             }
                             else if (!detailMode && hoverStart == -1f)
                                 hoverStart = 0;
                             break;
                         case "CurvedScreen":
-                            inputOverlayText.text = "Click to interact";
+                            inputOverlay.GetComponent<UnityEngine.UI.Image>().sprite = inspect;
                             break;
                         case "pin":
-                            inputOverlayText.text = "Hold to remove";
+                            inputOverlay.GetComponent<UnityEngine.UI.Image>().sprite = trash;
+                            break;
+                        case "threadCollider":
+                            inputOverlay.GetComponent<UnityEngine.UI.Image>().sprite = scissors;
                             break;
                         default:
                             inputOverlayText.text = "";
@@ -207,6 +225,7 @@ public class FPSController : MonoBehaviour
                 removingTime -= Time.deltaTime;
                 if (removingTime <= 0)
                 {
+                    OnPinDeletion?.Invoke(currentSelectedObject.transform.parent.GetComponent<PinboardElement>().GetContent());
                     currentSelectedObject.transform.parent.GetComponent<PinboardElement>().DeleteElement();
                     audioSource.PlayOneShot(deleteSound);
                     removingTime = -1;
@@ -255,6 +274,7 @@ public class FPSController : MonoBehaviour
                             }
                             else
                             {
+                                inputOverlay.GetComponent<UnityEngine.UI.Image>().sprite = handClosed;
                                 currentSelectedObject.GetComponentInParent<Animator>().SetBool("pinNormal", false);
                                 selectedPinboardElement = currentSelectedObject;
                                 selectedPinboardElement.GetComponent<PinboardElement>().setIsMoving(true);
