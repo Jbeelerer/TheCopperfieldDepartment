@@ -100,9 +100,7 @@ public class ComputerControls : MonoBehaviour
 
             if (windowToBeDeleted)
             {
-                windows.Remove(windowToBeDeleted);
-                Destroy(windowToBeDeleted.associatedTab.gameObject);
-                Destroy(windowToBeDeleted.gameObject);
+                CloseWindow(windowToBeDeleted);
             }
         }
     }
@@ -286,10 +284,7 @@ public class ComputerControls : MonoBehaviour
                 else if (window.buttonClose && Object.ReferenceEquals(hitObject, window.buttonClose.gameObject))
                 {
                     // Close window
-                    RemoveLeftRightWindow(window);
-                    windows.Remove(window);
-                    Destroy(window.associatedTab.gameObject);
-                    Destroy(window.gameObject);
+                    CloseWindow(window);
                     return;
                 }
                 else if (window.buttonSmall && Object.ReferenceEquals(hitObject, window.buttonSmall.gameObject))
@@ -357,6 +352,16 @@ public class ComputerControls : MonoBehaviour
         button.gameObject.SetActive(false);
     }
 
+    private void CloseWindow(OSWindow window)
+    {
+        RemoveLeftRightWindow(window);
+        //windows.Remove(window);
+        //Destroy(window.associatedTab.gameObject);
+        //Destroy(window.gameObject);
+        window.associatedTab.gameObject.SetActive(false);
+        window.gameObject.SetActive(false);
+    }
+
     public void OpenWindow(OSAppType type)
     {
         // Check if the window is already open
@@ -364,6 +369,12 @@ public class ComputerControls : MonoBehaviour
         {
             if (window.appType == type)
             {
+                // Reveal window if it exists but isn't active
+                if (!window.gameObject.activeInHierarchy)
+                {
+                    window.gameObject.SetActive(true);
+                    window.associatedTab.gameObject.SetActive(true);
+                }
                 return;
             }
         }

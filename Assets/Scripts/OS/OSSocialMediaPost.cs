@@ -11,6 +11,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
     private Pinboard pinboard;
     private OSPopupManager popupManager;
     private GameObject postOptions;
+    private FPSController fpsController;
 
     private bool postPinned = false;
     private bool userPinned = false;
@@ -21,6 +22,30 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
         pinboard = GameObject.Find("Pinboard").GetComponent<Pinboard>();
         popupManager = GameObject.Find("PopupMessage").GetComponent<OSPopupManager>();
         postOptions = transform.Find("PostOptions").gameObject;
+        fpsController = GameObject.Find("Player").GetComponent<FPSController>();
+
+        fpsController.OnPinDeletion.AddListener(RemovePinned);
+    }
+
+    private void RemovePinned(ScriptableObject so)
+    {
+        switch (so)
+        {
+            case SocialMediaPost:
+                if(so == post)
+                {
+                    postOptions.transform.Find("PinPost").GetComponent<Image>().color = Color.black;
+                    postPinned = false;
+                }
+                break;
+            case SocialMediaUser:
+                if (so == post.author)
+                {
+                    postOptions.transform.Find("PinUser").GetComponent<Image>().color = Color.black;
+                    userPinned = false;
+                }
+                break;
+        }
     }
 
     public void instanctiatePost(SocialMediaPost post)
@@ -34,20 +59,19 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
         switch (type)
         {
             case "name":
-                pinboard.AddPin(post.author);
                 popupManager.DisplayUserPinMessage();
+                pinboard.AddPin(post.author);
                 userPinned = true;
                 postOptions.transform.Find("PinUser").GetComponent<Image>().color = Color.red;
                 break;
             case "content":
                 popupManager.DisplayPostPinMessage();
                 pinboard.AddPin(post.author);
+                userPinned = true;
+                postOptions.transform.Find("PinUser").GetComponent<Image>().color = Color.red;
                 pinboard.AddPin(post);
                 postPinned = true;
                 postOptions.transform.Find("PinPost").GetComponent<Image>().color = Color.red;
-                break;
-            case "person":
-                pinboard.AddPin("Person");
                 break;
         }
     }

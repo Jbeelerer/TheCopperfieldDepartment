@@ -33,15 +33,15 @@ public class OSPopupManager : MonoBehaviour
         anim.Play("popupMessageSpawn", -1, 0);
     }
 
-    public void DisplayPersonDetainedMessage()
+    public void DisplayPersonAccusedMessage()
     {
-        messageText.text = "Made person disappear (magically)!";
+        messageText.text = "Marked person as prime suspect!";
         anim.Play("popupMessageSpawn", -1, 0);
     }
 
     public void DisplayPostDeleteMessage()
     {
-        messageText.text = "Cannot delete posts right now";
+        messageText.text = "Post flagged for deletion!";
         anim.Play("popupMessageSpawn", -1, 0);
     }
 }
