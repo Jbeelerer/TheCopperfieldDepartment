@@ -155,7 +155,7 @@ public class FPSController : MonoBehaviour
                             break;
                         case "pinboardElement(Clone)":
                             inputOverlayText.text = "click to move Element";
-                            if (!detailMode && hoverStart > 0.7f)
+                            if (!detailMode && hoverStart > 0.4f)
                             {
                                 AdditionalInfoBoard aib = transform.GetChild(0).Find("MoreInfo").GetComponent<AdditionalInfoBoard>();
                                 aib.ShowInfo(true);

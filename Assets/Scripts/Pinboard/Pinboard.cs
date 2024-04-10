@@ -15,6 +15,8 @@ public class Pinboard : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //instantiate a pin for the suspect 
+        AddPin(new ScriptableObject());
     }
 
     public void removeThingOnPinboardByElement(PinboardElement pe)

@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class PinboardElement : MonoBehaviour
 {
+    [SerializeField] private Material mysteriousPersonMaterial;
     private List<LineRenderer> startingThreads = new List<LineRenderer>();
     private List<LineRenderer> endingThreads = new List<LineRenderer>();
     private List<PinboardElement> connectedElements = new List<PinboardElement>();
@@ -157,7 +158,14 @@ public class PinboardElement : MonoBehaviour
                 textElement.text = user.username;
                 textElement.verticalAlignment = VerticalAlignmentOptions.Bottom;
                 //image.sprite = user.image;
-                image.GetComponent<Renderer>().material.SetTexture("test", user.image.texture);
+                image.GetComponent<Renderer>().material.mainTexture = user.image.texture;
+                break;
+            default:
+                // misterious person
+                textElement.gameObject.SetActive(false);
+                gameObject.transform.GetChild(2).GetComponent<Renderer>().material = mysteriousPersonMaterial;
+                image.SetActive(false);
+                transform.transform.GetChild(2).Rotate(new Vector3(0, 0, 180));
                 break;
         }
     }
