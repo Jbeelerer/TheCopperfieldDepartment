@@ -61,6 +61,12 @@ public class FPSController : MonoBehaviour
     private Vector3 penPos;
 
     private GameManager gm;
+
+    public void SetIsFrozen(bool isFrozen)
+    {
+        frozen = isFrozen;
+    }
+
     void Start()
     {
         gm = GameManager.instance;
@@ -94,11 +100,7 @@ public class FPSController : MonoBehaviour
         // on e key pressed
         if (Input.GetKeyDown(KeyCode.E) && frozen)
         {
-            frozen = false;
-            cameraObject.gameObject.SetActive(true);
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-            computerControls.ToggleCursor();
+            computerControls.LeaveComputer();
         }
 
         if (!frozen)

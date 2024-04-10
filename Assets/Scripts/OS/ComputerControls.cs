@@ -40,6 +40,7 @@ public class ComputerControls : MonoBehaviour
     private bool cursorStopped = false;
     private float timeCursorStopped = 0;
     private float tooltipDelay = 0.5f;
+    private FPSController fpsController;
 
     private bool cursorActive = false;
 
@@ -54,6 +55,7 @@ public class ComputerControls : MonoBehaviour
         windows.Add(testWindow);
         testWindow.associatedTab = testTab;
         cursorTooltip = cursor.transform.Find("Tooltip").gameObject;
+        fpsController = GameObject.Find("Player").GetComponent<FPSController>();
 
         cursor.anchoredPosition = new Vector2(-1000, -1000);
     }
@@ -147,12 +149,12 @@ public class ComputerControls : MonoBehaviour
         }
     }
 
-    public void LeaveComputer(bool frozen, Transform camObject)
+    public void LeaveComputer()
     {
-        frozen = false;
-        camObject.gameObject.SetActive(true);
+        fpsController.cameraObject.gameObject.SetActive(true);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        fpsController.SetIsFrozen(false);
         ToggleCursor();
     }
 

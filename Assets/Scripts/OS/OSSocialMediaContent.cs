@@ -14,11 +14,6 @@ public class OSSocialMediaContent : MonoBehaviour
     void Start()
     {
         gm = GameManager.instance;
-        UpdateContent();
-    }
-
-    private void UpdateContent()
-    {
         foreach (SocialMediaPost s in gm.GetPosts())
         {
             InstanciatePost(s);
