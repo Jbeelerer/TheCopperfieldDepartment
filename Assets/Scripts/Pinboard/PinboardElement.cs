@@ -47,6 +47,7 @@ public class PinboardElement : MonoBehaviour
                 tempThreads.Add(l);
                 continue;
             }
+            l.transform.GetChild(0).gameObject.SetActive(true);
             if (lineRenderers == endingThreads)
                 l.SetPosition(1, transform.GetChild(0).position);
             p.MakeColliderMatchLineRenderer(l, l.GetPosition(0), l.GetPosition(1));

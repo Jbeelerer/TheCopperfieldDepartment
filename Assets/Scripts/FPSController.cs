@@ -59,8 +59,10 @@ public class FPSController : MonoBehaviour
 
     // icons:
 
+    [SerializeField] private Sprite defaultIcon;
     [SerializeField] private Sprite handOpen;
     [SerializeField] private Sprite handClosed;
+    [SerializeField] private Sprite handThread;
     [SerializeField] private Sprite trash;
     [SerializeField] private Sprite scissors;
     [SerializeField] private Sprite inspect;
@@ -162,39 +164,44 @@ public class FPSController : MonoBehaviour
                 {
                     inputOverlay.SetActive(true);
                     nameOfThingLookedAt = hit.collider.gameObject.name;
-                    // Set the text based on the object
-                    switch (nameOfThingLookedAt)
+                    // if lastSelectedObject the player is grabing a thread and shouldn't be able see anything else
+                    if (lastSelectedObject == null)
                     {
-                        case "pinboard":
-                            inputOverlay.SetActive(false);
-                            break;
-                        case "Button":
-                            inputOverlayText.text = "press button";
-                            break;
-                        case "pinboardElement(Clone)":
-                            inputOverlay.GetComponent<UnityEngine.UI.Image>().sprite = handOpen;
-                            if (!detailMode && hoverStart > 0.4f)
-                            {
-                                AdditionalInfoBoard aib = transform.GetChild(0).Find("MoreInfo").GetComponent<AdditionalInfoBoard>();
-                                aib.ShowInfo(true);
-                                aib.SetContent(hit.collider.gameObject.GetComponent<PinboardElement>().GetContent());
-                                detailMode = true;
-                            }
-                            else if (!detailMode && hoverStart == -1f)
-                                hoverStart = 0;
-                            break;
-                        case "CurvedScreen":
-                            inputOverlay.GetComponent<UnityEngine.UI.Image>().sprite = inspect;
-                            break;
-                        case "pin":
-                            inputOverlay.GetComponent<UnityEngine.UI.Image>().sprite = trash;
-                            break;
-                        case "threadCollider":
-                            inputOverlay.GetComponent<UnityEngine.UI.Image>().sprite = scissors;
-                            break;
-                        default:
-                            inputOverlayText.text = "";
-                            break;
+                        // Set the text based on the object
+                        switch (nameOfThingLookedAt)
+                        {
+                            case "PinboardModel":
+                                if (selectedPinboardElement == null && currentThread == null)//TODO: add Pen exxption
+                                    inputOverlay.GetComponent<UnityEngine.UI.Image>().sprite = defaultIcon;
+                                //inputOverlay.SetActive(false);  
+                                break;
+                            case "Button":
+                                break;
+                            case "pinboardElement(Clone)":
+                                inputOverlay.GetComponent<UnityEngine.UI.Image>().sprite = handOpen;
+                                if (!detailMode && hoverStart > 0.5f)
+                                {
+                                    AdditionalInfoBoard aib = transform.GetChild(0).Find("MoreInfo").GetComponent<AdditionalInfoBoard>();
+                                    aib.ShowInfo(true);
+                                    aib.SetContent(hit.collider.gameObject.GetComponent<PinboardElement>().GetContent());
+                                    detailMode = true;
+                                }
+                                else if (!detailMode && hoverStart == -1f)
+                                    hoverStart = 0;
+                                break;
+                            case "CurvedScreen":
+                                inputOverlay.GetComponent<UnityEngine.UI.Image>().sprite = inspect;
+                                break;
+                            case "pin":
+                                inputOverlay.GetComponent<UnityEngine.UI.Image>().sprite = trash;
+                                break;
+                            case "threadCollider":
+                                inputOverlay.GetComponent<UnityEngine.UI.Image>().sprite = scissors;
+                                break;
+                            default:
+                                inputOverlayText.text = "";
+                                break;
+                        }
                     }
                     currentSelectedObject = hit.collider.gameObject;
                     if (hit.collider.gameObject.name != "pinboardElement(Clone)")
@@ -319,10 +326,12 @@ public class FPSController : MonoBehaviour
                 }
                 else
                 {
-                    currentThread = Instantiate(thread, pinboard.transform).GetComponent<LineRenderer>();
+                    currentThread = Instantiate(thread, currentSelectedObject.transform.parent.transform).GetComponent<LineRenderer>();
                     currentThread.SetPosition(0, currentSelectedObject.transform.GetChild(0).position);
+                    currentThread.transform.GetChild(0).gameObject.SetActive(false);
                     currentSelectedObject.GetComponent<PinboardElement>().AddStartingThread(currentThread);
                     lastSelectedObject = currentSelectedObject;
+                    inputOverlay.GetComponent<UnityEngine.UI.Image>().sprite = handThread;
                 }
             }
             // handle moving ponboardElement position 

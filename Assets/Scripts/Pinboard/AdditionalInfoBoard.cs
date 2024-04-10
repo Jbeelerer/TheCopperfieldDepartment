@@ -46,7 +46,6 @@ public class AdditionalInfoBoard : MonoBehaviour
 
     public void SetContent(ScriptableObject o)
     {
-
         contentParent.gameObject.SetActive(!(o is Person || o is SocialMediaUser));
         personParent.gameObject.SetActive(o is Person || o is SocialMediaUser);
         additionalInfos.text = "";
