@@ -11,6 +11,8 @@ public class OSPerson : MonoBehaviour
     private OSPopupManager popupManager;
     private GameManager gm;
     private FPSController fpsController;
+    private OSPeopleListContent peopleListContent;
+    private ComputerControls computerControls;
 
     // Start is called before the first frame update
     void Start()
@@ -19,6 +21,8 @@ public class OSPerson : MonoBehaviour
         popupManager = GameObject.Find("PopupMessage").GetComponent<OSPopupManager>();
         gm = GameManager.instance;
         fpsController = GameObject.Find("Player").GetComponent<FPSController>();
+        peopleListContent = transform.GetComponentInParent<OSPeopleListContent>();
+        computerControls = transform.GetComponentInParent<ComputerControls>();
 
         fpsController.OnPinDeletion.AddListener(RemovePinned);
     }
@@ -50,6 +54,17 @@ public class OSPerson : MonoBehaviour
 
     public void AccusePerson()
     {
+        computerControls.OpenWindow(OSAppType.WARNING, "You are about to accuse this person. Any post flagged for deletion will be undone.", AccusePersonSuccess);
+    }
+
+    public void AccusePersonSuccess()
+    {
+        peopleListContent.ClearAccusedPeople();
+        computerControls.investigationState = OSInvestigationState.PERSON_ACCUSED;
+        if (computerControls.GetComponentInChildren<OSSocialMediaContent>())
+        {
+            computerControls.GetComponentInChildren<OSSocialMediaContent>().ClearDeletedPost();
+        }
         gm.checkSuspect(person);
         popupManager.DisplayPersonAccusedMessage();
         transform.Find("AccusePerson").GetComponent<Image>().color = Color.red;

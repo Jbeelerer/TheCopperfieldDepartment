@@ -12,7 +12,15 @@ public enum OSAppType
     SOCIAL,
     GOV,
     SETTINGS,
-    PEOPLE_LIST
+    PEOPLE_LIST,
+    WARNING
+}
+
+public enum OSInvestigationState
+{
+    NONE,
+    PERSON_ACCUSED,
+    POST_DELETED
 }
 
 public class ComputerControls : MonoBehaviour
@@ -29,6 +37,7 @@ public class ComputerControls : MonoBehaviour
     public List<OSApplication> apps = new List<OSApplication>();
     public Sprite cursorNormal;
     public Sprite cursorClickable;
+    public OSInvestigationState investigationState = OSInvestigationState.NONE;
 
     private RectTransform screen;
     private float mouseSpeedX;
@@ -253,7 +262,10 @@ public class ComputerControls : MonoBehaviour
                 if (Object.ReferenceEquals(hitObject, window.topBar.gameObject))
                 {
                     // Start moving the affected window with the cursor
-                    window.isMoving = true;
+                    if (window.canBeMoved)
+                    {
+                        window.isMoving = true;
+                    }
 
                     // Reset window to small mode if moved while in another size mode
                     if (window.currWindowSize != WindowSize.SMALL)
@@ -355,14 +367,11 @@ public class ComputerControls : MonoBehaviour
     private void CloseWindow(OSWindow window)
     {
         RemoveLeftRightWindow(window);
-        //windows.Remove(window);
-        //Destroy(window.associatedTab.gameObject);
-        //Destroy(window.gameObject);
         window.associatedTab.gameObject.SetActive(false);
         window.gameObject.SetActive(false);
     }
 
-    public void OpenWindow(OSAppType type)
+    public void OpenWindow(OSAppType type, string warningMessage = "Warning message", System.Action successFunc = null)
     {
         // Check if the window is already open
         foreach (OSWindow window in windows)
@@ -381,7 +390,12 @@ public class ComputerControls : MonoBehaviour
         // Create window
         GameObject newWindow = Instantiate(windowPrefab, transform.position, transform.rotation, background.transform);
         newWindow.GetComponent<OSWindow>().appType = type;
-        windows.Add(newWindow.GetComponent<OSWindow>());
+        newWindow.GetComponent<OSWindow>().warningMessage = warningMessage;
+        newWindow.GetComponent<OSWindow>().warningSuccessFunc = successFunc;
+        if (newWindow.GetComponent<OSWindow>().appType != OSAppType.WARNING)
+            windows.Add(newWindow.GetComponent<OSWindow>());
+        if (newWindow.GetComponent<OSWindow>().appType == OSAppType.WARNING)
+            newWindow.GetComponent<OSWindow>().rectTrans.sizeDelta = new Vector2(300, 200);
         // Create tab
         GameObject newTab = Instantiate(tabPrefab, transform.position, transform.rotation, tabContainer.transform);
         newTab.GetComponent<OSTab>().appType = type;

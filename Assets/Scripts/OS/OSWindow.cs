@@ -14,7 +14,7 @@ public enum WindowSize
 public class OSWindow : MonoBehaviour
 {
     [HideInInspector] public RectTransform rectTrans;
-    [HideInInspector] public OSAppType appType;
+    public OSAppType appType;
     [HideInInspector] public RectTransform topBar;
     [HideInInspector] public RectTransform buttonSmall;
     [HideInInspector] public RectTransform buttonLong;
@@ -23,24 +23,33 @@ public class OSWindow : MonoBehaviour
     [HideInInspector] public RectTransform sideswapLeft;
     [HideInInspector] public RectTransform sideswapRight;
     [HideInInspector] public bool isMoving = false;
+    [HideInInspector] public bool canBeMoved = true;
     [HideInInspector] public WindowSize currWindowSize = WindowSize.SMALL;
     [HideInInspector] public OSTab associatedTab;
+    [HideInInspector] public string warningMessage = "";
+    [HideInInspector] public System.Action warningSuccessFunc = null;
 
     [SerializeField] private GameObject socialMediaContent;
     [SerializeField] private GameObject govAppContent;
     [SerializeField] private GameObject peopleListContent;
+    [SerializeField] private GameObject warningContent;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
         rectTrans = GetComponent<RectTransform>();
+
+        sideswapLeft = transform.Find("SideswapLeft").GetComponent<RectTransform>();
+        sideswapRight = transform.Find("SideswapRight").GetComponent<RectTransform>();
+    }
+
+    void Start()
+    {
         topBar = transform.Find("TopBar").GetComponent<RectTransform>();
         buttonSmall = transform.Find("TopBar").Find("Buttons").Find("ButtonSmall").GetComponent<RectTransform>();
         buttonLong = transform.Find("TopBar").Find("Buttons").Find("ButtonLong").GetComponent<RectTransform>();
         buttonBig = transform.Find("TopBar").Find("Buttons").Find("ButtonBig").GetComponent<RectTransform>();
         buttonClose = transform.Find("TopBar").Find("Buttons").Find("ButtonClose").GetComponent<RectTransform>();
-        sideswapLeft = transform.Find("SideswapLeft").GetComponent<RectTransform>();
-        sideswapRight = transform.Find("SideswapRight").GetComponent<RectTransform>();
+        
         transform.Find("TopBar").Find("Text").GetComponent<TextMeshProUGUI>().text = appType.ToString();
         if (appType == OSAppType.TEST)
         {
@@ -62,6 +71,17 @@ public class OSWindow : MonoBehaviour
         {
             Instantiate(peopleListContent, transform.Find("Content"));
             buttonSmall.gameObject.SetActive(false);
+        }
+        else if (appType == OSAppType.WARNING)
+        {
+            GameObject content = Instantiate(warningContent, transform.Find("Content"));
+            content.GetComponent<OSWarningContent>().SetWarningMessage(warningMessage);
+            content.GetComponent<OSWarningContent>().SetWarningSuccessFunc(warningSuccessFunc);
+            buttonClose.gameObject.SetActive(false);
+            buttonBig.gameObject.SetActive(false);
+            buttonLong.gameObject.SetActive(false);
+            buttonSmall.gameObject.SetActive(false);
+            canBeMoved = false;
         }
     }
 

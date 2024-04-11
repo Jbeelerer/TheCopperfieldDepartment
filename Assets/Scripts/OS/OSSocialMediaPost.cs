@@ -12,6 +12,9 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
     private OSPopupManager popupManager;
     private GameObject postOptions;
     private FPSController fpsController;
+    private GameManager gm;
+    private OSSocialMediaContent socialMediaContent;
+    private ComputerControls computerControls;
 
     private bool postPinned = false;
     private bool userPinned = false;
@@ -21,8 +24,11 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
     {
         pinboard = GameObject.Find("Pinboard").GetComponent<Pinboard>();
         popupManager = GameObject.Find("PopupMessage").GetComponent<OSPopupManager>();
+        gm = GameManager.instance;
         postOptions = transform.Find("PostOptions").gameObject;
         fpsController = GameObject.Find("Player").GetComponent<FPSController>();
+        socialMediaContent = transform.GetComponentInParent<OSSocialMediaContent>();
+        computerControls = transform.GetComponentInParent<ComputerControls>();
 
         fpsController.OnPinDeletion.AddListener(RemovePinned);
     }
@@ -78,7 +84,20 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     public void DeletePost()
     {
+        computerControls.OpenWindow(OSAppType.WARNING, "You are about to flag this post for deletion. Any currently accused person will be undone.", DeletePostSuccess);
+    }
+
+    private void DeletePostSuccess()
+    {
+        socialMediaContent.ClearDeletedPost();
+        computerControls.investigationState = OSInvestigationState.POST_DELETED;
+        if (computerControls.GetComponentInChildren<OSPeopleListContent>())
+        {
+            computerControls.GetComponentInChildren<OSPeopleListContent>().ClearAccusedPeople();
+        }
         popupManager.DisplayPostDeleteMessage();
+        postOptions.transform.Find("DeletePost").GetComponent<Image>().color = Color.red;
+        gm.checkDeletedPost(post);
     }
 
     public void OnPointerEnter(PointerEventData eventData)
