@@ -14,7 +14,6 @@ public class Pinboard : MonoBehaviour
     private Dictionary<ScriptableObject, PinboardElement> thingsOnPinboard = new Dictionary<ScriptableObject, PinboardElement>();
     [SerializeField] private GameObject thread;
 
-    public UnityEvent OnPinDeletion;
 
     // Start is called before the first frame update
     void Start()
@@ -136,6 +135,7 @@ public class Pinboard : MonoBehaviour
     }
     public void MakeColliderMatchLineRenderer(LineRenderer lr, Vector3 pointA, Vector3 pointB)
     {
+        pointB.x = pointA.x;
         BoxCollider collider = lr.GetComponentInChildren<BoxCollider>();
         //make collider match linerenderer
 

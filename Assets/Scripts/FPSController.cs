@@ -36,7 +36,7 @@ public class FPSController : MonoBehaviour
 
     CharacterController characterController;
 
-    [SerializeField] private GameObject inputOverlay;
+    [SerializeField] private InputOverlay inputOverlay;
     private TextMeshProUGUI inputOverlayText;
 
     private GameObject selectedPinboardElement;
@@ -57,15 +57,6 @@ public class FPSController : MonoBehaviour
     [SerializeField] private AudioClip pickupSound;
     [SerializeField] private AudioClip deleteSound;
 
-    // icons:
-
-    [SerializeField] private Sprite defaultIcon;
-    [SerializeField] private Sprite handOpen;
-    [SerializeField] private Sprite handClosed;
-    [SerializeField] private Sprite handThread;
-    [SerializeField] private Sprite trash;
-    [SerializeField] private Sprite scissors;
-    [SerializeField] private Sprite inspect;
 
     // TODO: Remove pinboard when OS is ready
     [SerializeField] public Pinboard pinboard;
@@ -92,13 +83,7 @@ public class FPSController : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-
-        // Hide the input overlay 
-        if (inputOverlay != null)
-        {
-            inputOverlay.SetActive(false);
-            inputOverlayText = inputOverlay.GetComponentInChildren<TextMeshProUGUI>();
-        }
+        inputOverlay = gameObject.GetComponentInChildren<InputOverlay>();
 
         computerControls = GameObject.Find("DesktopInterface").GetComponent<ComputerControls>();
     }
@@ -154,6 +139,7 @@ public class FPSController : MonoBehaviour
 
             if (Input.GetMouseButtonUp(0))
             {
+                inputOverlay.stopHold();
                 removingTime = -1f;
             }
 
@@ -162,7 +148,6 @@ public class FPSController : MonoBehaviour
             {
                 if (Vector3.Distance(hit.collider.gameObject.transform.position, transform.position) <= interactionReach && hit.collider.gameObject.tag == "Interactable")
                 {
-                    inputOverlay.SetActive(true);
                     nameOfThingLookedAt = hit.collider.gameObject.name;
                     // if lastSelectedObject the player is grabing a thread and shouldn't be able see anything else
                     if (lastSelectedObject == null)
@@ -172,13 +157,13 @@ public class FPSController : MonoBehaviour
                         {
                             case "PinboardModel":
                                 if (selectedPinboardElement == null && currentThread == null)//TODO: add Pen exxption
-                                    inputOverlay.GetComponent<UnityEngine.UI.Image>().sprite = defaultIcon;
+                                    inputOverlay.SetIcon("default");
                                 //inputOverlay.SetActive(false);  
                                 break;
                             case "Button":
                                 break;
                             case "pinboardElement(Clone)":
-                                inputOverlay.GetComponent<UnityEngine.UI.Image>().sprite = handOpen;
+                                inputOverlay.SetIcon("handOpen");
                                 if (!detailMode && hoverStart > 0.5f)
                                 {
                                     AdditionalInfoBoard aib = transform.GetChild(0).Find("MoreInfo").GetComponent<AdditionalInfoBoard>();
@@ -190,16 +175,15 @@ public class FPSController : MonoBehaviour
                                     hoverStart = 0;
                                 break;
                             case "CurvedScreen":
-                                inputOverlay.GetComponent<UnityEngine.UI.Image>().sprite = inspect;
+                                inputOverlay.SetIcon("inspect");
                                 break;
                             case "pin":
-                                inputOverlay.GetComponent<UnityEngine.UI.Image>().sprite = trash;
+                                inputOverlay.SetIcon("trash");
                                 break;
                             case "threadCollider":
-                                inputOverlay.GetComponent<UnityEngine.UI.Image>().sprite = scissors;
+                                inputOverlay.SetIcon("scissors");
                                 break;
                             default:
-                                inputOverlayText.text = "";
                                 break;
                         }
                     }
@@ -214,7 +198,7 @@ public class FPSController : MonoBehaviour
                 else
                 {
                     DeselectPen();
-                    inputOverlay.SetActive(false);
+                    inputOverlay.SetIcon("");
                     if (selectedPinboardElement != null)
                     {
                         selectedPinboardElement.gameObject.layer = 0;
@@ -236,6 +220,7 @@ public class FPSController : MonoBehaviour
                     currentSelectedObject.transform.parent.GetComponent<PinboardElement>().DeleteElement();
                     audioSource.PlayOneShot(deleteSound);
                     removingTime = -1;
+                    inputOverlay.stopHold();
                 }
             }
 
@@ -281,7 +266,7 @@ public class FPSController : MonoBehaviour
                             }
                             else
                             {
-                                inputOverlay.GetComponent<UnityEngine.UI.Image>().sprite = handClosed;
+                                inputOverlay.SetIcon("handClosed");
                                 currentSelectedObject.GetComponentInParent<Animator>().SetBool("pinNormal", false);
                                 selectedPinboardElement = currentSelectedObject;
                                 selectedPinboardElement.GetComponent<PinboardElement>().setIsMoving(true);
@@ -296,7 +281,7 @@ public class FPSController : MonoBehaviour
                             Cursor.lockState = CursorLockMode.Confined;
                             Cursor.visible = false;
                             computerControls.ToggleCursor();
-                            inputOverlay.gameObject.SetActive(false);
+                            inputOverlay.SetIcon("");
                             break;
                         case "threadCollider":
                             audioSource.PlayOneShot(threadCuttingSound);
@@ -306,6 +291,7 @@ public class FPSController : MonoBehaviour
                             currentSelectedObject.GetComponentInParent<Animator>().SetTrigger("remove");
                             audioSource.PlayOneShot(pickupSound);
                             removingTime = 0.5f;
+                            inputOverlay.startHold(removingTime);
                             break;
                         case "Pen":
                             penPos = currentSelectedObject.transform.position;
@@ -331,7 +317,7 @@ public class FPSController : MonoBehaviour
                     currentThread.transform.GetChild(0).gameObject.SetActive(false);
                     currentSelectedObject.GetComponent<PinboardElement>().AddStartingThread(currentThread);
                     lastSelectedObject = currentSelectedObject;
-                    inputOverlay.GetComponent<UnityEngine.UI.Image>().sprite = handThread;
+                    inputOverlay.SetIcon("handThread");
                 }
             }
             // handle moving ponboardElement position 
