@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,6 +18,8 @@ public class OSSocialMediaContent : MonoBehaviour
     private Pinboard pinboard;
     private OSPopupManager popupManager;
     private SocialMediaUser currentUser;
+    private List<SocialMediaUser> pinnedUsers = new List<SocialMediaUser>();
+    private FPSController fpsController;
 
     // Start is called before the first frame update
     void Awake()
@@ -28,11 +31,14 @@ public class OSSocialMediaContent : MonoBehaviour
     {
         pinboard = GameObject.Find("Pinboard").GetComponent<Pinboard>();
         popupManager = GameObject.Find("PopupMessage").GetComponent<OSPopupManager>();
+        fpsController = GameObject.Find("Player").GetComponent<FPSController>();
         gm = GameManager.instance;
         foreach (SocialMediaPost s in gm.GetPosts())
         {
             InstanciatePost(s);
         }
+
+        fpsController.OnPinDeletion.AddListener(RemovePinnedUser);
     }
 
     private void OnEnable()
@@ -72,6 +78,14 @@ public class OSSocialMediaContent : MonoBehaviour
         profilePageheader.Find("ImageMask").Find("Image").GetComponent<Image>().sprite = user.image;
         profilePageheader.Find("Name").GetComponent<TextMeshProUGUI>().text = user.username;
         profilePageheader.Find("Description").GetComponent<TextMeshProUGUI>().text = user.bioText;
+        if (pinnedUsers.Contains(user))
+        {
+            profilePageheader.Find("PinUser").GetComponent<Image>().color = Color.red;
+        }
+        else
+        {
+            profilePageheader.Find("PinUser").GetComponent<Image>().color = Color.black;
+        }
     }
 
     public void CloseUserProfile()
@@ -84,7 +98,27 @@ public class OSSocialMediaContent : MonoBehaviour
     {
         popupManager.DisplayUserPinMessage();
         pinboard.AddPin(currentUser);
-        //userPinned = true;
         profilePageheader.Find("PinUser").GetComponent<Image>().color = Color.red;
+        AddToPinnedUserList(currentUser);
+    }
+
+    private void RemovePinnedUser(ScriptableObject so)
+    {
+        if (so is not SocialMediaUser)
+            return;
+
+        if (pinnedUsers.Contains((SocialMediaUser)so))
+        {
+            pinnedUsers.Remove((SocialMediaUser)so);
+        }
+        if (so == currentUser)
+        {
+            profilePageheader.Find("PinUser").GetComponent<Image>().color = Color.black;
+        }
+    }
+
+    public void AddToPinnedUserList(SocialMediaUser user)
+    {
+        pinnedUsers.Add(user);
     }
 }

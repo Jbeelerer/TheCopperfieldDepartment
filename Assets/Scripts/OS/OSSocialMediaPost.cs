@@ -67,12 +67,14 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
             case "name":
                 popupManager.DisplayUserPinMessage();
                 pinboard.AddPin(post.author);
+                socialMediaContent.AddToPinnedUserList(post.author);
                 userPinned = true;
                 postOptions.transform.Find("PinUser").GetComponent<Image>().color = Color.red;
                 break;
             case "content":
                 popupManager.DisplayPostPinMessage();
                 pinboard.AddPin(post.author);
+                socialMediaContent.AddToPinnedUserList(post.author);
                 userPinned = true;
                 postOptions.transform.Find("PinUser").GetComponent<Image>().color = Color.red;
                 pinboard.AddPin(post);
