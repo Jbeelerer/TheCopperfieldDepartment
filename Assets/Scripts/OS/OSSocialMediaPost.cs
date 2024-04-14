@@ -100,6 +100,11 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
         gm.checkDeletedPost(post);
     }
 
+    public void OpenProfile()
+    {
+        socialMediaContent.ShowUserProfile(post.author);
+    }
+
     public void OnPointerEnter(PointerEventData eventData)
     {
         foreach (Transform option in postOptions.transform)

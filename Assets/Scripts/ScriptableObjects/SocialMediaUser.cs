@@ -10,4 +10,6 @@ public class SocialMediaUser : ScriptableObject
     public Sprite image;
     public List<string> additionalInfos = new List<string>();
     public List<string> hiddenInfos = new List<string>();
+    public string bioText;
+    public Sprite profileBanner;
 }
