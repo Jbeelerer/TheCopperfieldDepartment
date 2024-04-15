@@ -21,6 +21,9 @@ public class OSSocialMediaContent : MonoBehaviour
     private List<SocialMediaUser> pinnedUsers = new List<SocialMediaUser>();
     private FPSController fpsController;
 
+    // TODO: remove
+    public ScriptableObject userToDelete;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -46,6 +49,15 @@ public class OSSocialMediaContent : MonoBehaviour
         if (computerControls.investigationState == OSInvestigationState.PERSON_ACCUSED)
         {
             ClearDeletedPost();
+        }
+    }
+
+    // TODO: remove
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            RemovePinnedUser(userToDelete);
         }
     }
 

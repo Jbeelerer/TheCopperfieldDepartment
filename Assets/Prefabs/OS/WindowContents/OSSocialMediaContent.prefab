@@ -1863,8 +1863,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4279970760208437650}
   m_HandleRect: {fileID: 2026619397500719613}
   m_Direction: 2
-  m_Value: 0.9999995
-  m_Size: 0.7759941
+  m_Value: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2484,6 +2484,7 @@ MonoBehaviour:
     type: 3}
   profilePage: {fileID: 7975330575423622604}
   profilePageheader: {fileID: 2547240002117591928}
+  userToDelete: {fileID: 11400000, guid: 6ccad4a76f52b9e45a49746ee88cd3bd, type: 2}
 --- !u!1 &7536749173515341286
 GameObject:
   m_ObjectHideFlags: 0
@@ -2634,9 +2635,9 @@ RectTransform:
   - {fileID: 7141110664176786197}
   m_Father: {fileID: 7665812342974751159}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 150.0875, y: -92.72}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 300, y: 185.44}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3551850964116166943
@@ -3126,6 +3127,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: OSPost
+      objectReference: {fileID: 0}
+    - target: {fileID: 5792041163278725035, guid: 97a16835a1b191449a0898b826656869,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8579505139913672273, guid: 97a16835a1b191449a0898b826656869,
         type: 3}
