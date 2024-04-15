@@ -8,6 +8,8 @@ using UnityEngine.UI;
 public class PinboardElement : MonoBehaviour
 {
     [SerializeField] private Material mysteriousPersonMaterial;
+
+    // The reason for starting and ending threads, is that the lineRenderer has 0 and 1 for the start and endpoint respectively. This way the threads can be moved with the element.
     private List<LineRenderer> startingThreads = new List<LineRenderer>();
     private List<LineRenderer> endingThreads = new List<LineRenderer>();
     private List<PinboardElement> connectedElements = new List<PinboardElement>();
@@ -23,6 +25,7 @@ public class PinboardElement : MonoBehaviour
 
     [SerializeField] private GameObject image;
 
+
     public ScriptableObject GetContent()
     {
         return content;
@@ -32,8 +35,27 @@ public class PinboardElement : MonoBehaviour
         isMoving = b;
         if (!isMoving)
         {
+            foreach (LineRenderer l in startingThreads)
+            {
+                l.transform.GetComponentInChildren<Collider>().enabled = true;
+            }
+            foreach (LineRenderer l in endingThreads)
+            {
+                l.transform.GetComponentInChildren<Collider>().enabled = true;
+            }
             reApplyCollider(startingThreads);
             reApplyCollider(endingThreads);
+        }
+        else
+        {
+            foreach (LineRenderer l in startingThreads)
+            {
+                l.transform.GetComponentInChildren<Collider>().enabled = false;
+            }
+            foreach (LineRenderer l in endingThreads)
+            {
+                l.transform.GetComponentInChildren<Collider>().enabled = false;
+            }
         }
     }
     private void reApplyCollider(List<LineRenderer> lineRenderers)
@@ -191,7 +213,7 @@ public class PinboardElement : MonoBehaviour
         {
             Destroy(l);
         }
-        GetComponentInParent<Pinboard>().removeThingOnPinboardByElement(this);
+        GetComponentInParent<Pinboard>().RemoveThingOnPinboardByElement(this);
         Destroy(gameObject);
     }
     public void DeleteThread(LineRenderer l)
