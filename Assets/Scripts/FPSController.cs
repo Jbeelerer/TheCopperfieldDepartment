@@ -68,6 +68,7 @@ public class FPSController : MonoBehaviour
 
     private GameManager gm;
 
+    private bool onHoldDown = false;
 
     public DeletionEvent OnPinDeletion;
 
@@ -97,6 +98,21 @@ public class FPSController : MonoBehaviour
         {
             hoverStart = -1f;
         }
+
+        if (removingTime != -1)
+        {
+            removingTime -= Time.deltaTime;
+            if (removingTime <= 0)
+            {
+                PinboardElement pe = currentSelectedObject.name == "pin" ? currentSelectedObject.transform.parent.GetComponent<PinboardElement>() : selectedPinboardElement.GetComponent<PinboardElement>();
+                OnPinDeletion?.Invoke(pe.GetContent());
+                pe.DeleteElement();
+                audioSource.PlayOneShot(deleteSound);
+                removingTime = -1;
+                inputOverlay.stopHold();
+                selectedPinboardElement = null;
+            }
+        }
     }
     void Update()
     {
@@ -121,7 +137,7 @@ public class FPSController : MonoBehaviour
             #region Handles Rotation
 
             characterController.Move(moveDirection * Time.deltaTime);
-
+            // TODO: Add a freeze when in the deadzone, but only towards the direction currently moving, so you can cancel by going back
             if (canMove)
             {
                 rotationX += -Input.GetAxis("Mouse Y") * lookSpeed;
@@ -137,27 +153,48 @@ public class FPSController : MonoBehaviour
             RaycastHit hit;
             Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
 
-            if (Input.GetMouseButtonUp(0))
-            {
-                inputOverlay.stopHold();
-                removingTime = -1f;
-            }
-
             // if removingTime is the default value it is active and the currentselectedObject shouldn't change
-            if (Physics.Raycast(ray, out hit) && removingTime == -1)
+
+
+            // TODO: PROOOBLME HEEERE IS HOLDING
+            if (Physics.Raycast(ray, out hit) && !onHoldDown)
             {
                 if (Vector3.Distance(hit.collider.gameObject.transform.position, transform.position) <= interactionReach && hit.collider.gameObject.tag == "Interactable")
                 {
                     nameOfThingLookedAt = hit.collider.gameObject.name;
+                    print(nameOfThingLookedAt + " " + lastSelectedObject + " " + selectedPinboardElement);
                     // if lastSelectedObject the player is grabing a thread and shouldn't be able see anything else
                     if (lastSelectedObject == null)
                     {
-                        // Set the text based on the object
+                        // handle interaction, while just looking
                         switch (nameOfThingLookedAt)
                         {
                             case "PinboardModel":
                                 if (selectedPinboardElement == null && currentThread == null)//TODO: add Pen exxption
+                                {
                                     inputOverlay.SetIcon("default");
+                                }
+                                print(selectedPinboardElement);
+                                if (selectedPinboardElement != null)
+                                {
+                                    if (removingTime != -1)
+                                    {
+                                        removingTime = -1f;
+                                        inputOverlay.stopHold();
+                                        inputOverlay.SetIcon("handClosed");
+                                    }
+                                }
+                                break;
+                            case "DeadZone":
+                                print(selectedPinboardElement);
+                                if (selectedPinboardElement != null && removingTime == -1)
+                                {
+                                    inputOverlay.SetIcon("trash", true);
+                                    // the typical animation makes no sense here TODO: Maybe add a new animation
+                                    audioSource.PlayOneShot(pickupSound);
+                                    removingTime = 1f;
+                                    inputOverlay.startHold(removingTime);
+                                }
                                 break;
                             case "Button":
                                 break;
@@ -186,7 +223,11 @@ public class FPSController : MonoBehaviour
                                 break;
                         }
                     }
-                    currentSelectedObject = hit.collider.gameObject;
+                    // dont reset the currentSelectedObject if the player is removing a pinboardElement
+                    if (nameOfThingLookedAt != "DeadZone")
+                    {
+                        currentSelectedObject = hit.collider.gameObject;
+                    }
                     if (hit.collider.gameObject.name != "pinboardElement(Clone)")
                     {
                         hoverStart = -1;
@@ -194,7 +235,7 @@ public class FPSController : MonoBehaviour
                         transform.GetChild(0).Find("MoreInfo").GetComponent<AdditionalInfoBoard>().ShowInfo(false);
                     }
                 }
-                else
+                else if (currentSelectedObject != null && removingTime == -1)
                 {
                     DeselectPen();
                     inputOverlay.SetIcon("");
@@ -205,22 +246,10 @@ public class FPSController : MonoBehaviour
                         selectedPinboardElement.GetComponent<PinboardElement>().setIsMoving(false);
                         PlayReverseAudio(pickupSound);
                         selectedPinboardElement = null;
+                        inputOverlay.SetIcon("default");
+
                     }
                     currentSelectedObject = null;
-                }
-            }
-            // default val
-            else if (removingTime != -1)
-            {
-                removingTime -= Time.deltaTime;
-                if (removingTime <= 0)
-                {
-                    print(currentSelectedObject);
-                    OnPinDeletion?.Invoke(currentSelectedObject.transform.parent.GetComponent<PinboardElement>().GetContent());
-                    currentSelectedObject.transform.parent.GetComponent<PinboardElement>().DeleteElement();
-                    audioSource.PlayOneShot(deleteSound);
-                    removingTime = -1;
-                    inputOverlay.stopHold();
                 }
             }
 
@@ -288,6 +317,7 @@ public class FPSController : MonoBehaviour
                             Destroy(hit.collider.transform.parent.gameObject);
                             break;
                         case "pin":
+                            onHoldDown = true;
                             currentSelectedObject.GetComponentInParent<Animator>().SetTrigger("remove");
                             audioSource.PlayOneShot(pickupSound);
                             removingTime = 0.5f;
@@ -303,6 +333,12 @@ public class FPSController : MonoBehaviour
                             break;
                     }
                 }
+            }
+            else if (Input.GetMouseButtonUp(0) && onHoldDown)
+            {
+                onHoldDown = false;
+                inputOverlay.stopHold();
+                removingTime = -1f;
             }
             if (Input.GetMouseButtonDown(1) && currentSelectedObject != null && currentSelectedObject.name == "pinboardElement(Clone)")
             {
@@ -321,7 +357,7 @@ public class FPSController : MonoBehaviour
                 }
             }
             // handle moving ponboardElement position 
-            if (selectedPinboardElement != null && currentSelectedObject != null && nameOfThingLookedAt == "PinboardModel")
+            if (selectedPinboardElement != null && currentSelectedObject != null && (nameOfThingLookedAt == "PinboardModel" || nameOfThingLookedAt == "DeadZone"))
             {
                 selectedPinboardElement.transform.position = new Vector3(selectedPinboardElement.transform.position.x, hit.point.y, hit.point.z);
             }

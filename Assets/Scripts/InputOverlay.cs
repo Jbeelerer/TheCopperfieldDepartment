@@ -21,6 +21,11 @@ public class InputOverlay : MonoBehaviour
     private Image image;
 
     private bool isHolding = false;
+
+    public bool GetIsHolding()
+    {
+        return isHolding;
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -30,11 +35,11 @@ public class InputOverlay : MonoBehaviour
         image.enabled = false;
         GetComponentInChildren<TextMeshProUGUI>().gameObject.SetActive(false);
     }
-    public void SetIcon(string imageName)
+    public void SetIcon(string imageName, bool forceIcon = false)
     {
         image.enabled = true;
         // don't allow any icon changes while moving pins
-        if (image.sprite == handClosed && imageName != "handOpen")
+        if (!forceIcon && image.sprite == handClosed && imageName != "handOpen")
         {
             return;
         }
