@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -31,6 +33,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
         computerControls = transform.GetComponentInParent<ComputerControls>();
 
         fpsController.OnPinDeletion.AddListener(RemovePinned);
+        socialMediaContent.OnPinned.AddListener(MarkPinned);
     }
 
     private void RemovePinned(ScriptableObject so)
@@ -38,7 +41,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
         switch (so)
         {
             case SocialMediaPost:
-                if(so == post)
+                if (so == post)
                 {
                     postOptions.transform.Find("PinPost").GetComponent<Image>().color = Color.black;
                     postPinned = false;
@@ -54,6 +57,41 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
         }
     }
 
+    private void MarkPinned(ScriptableObject so)
+    {
+        switch (so)
+        {
+            case SocialMediaPost:
+                if (((SocialMediaPost)so).author == post.author)
+                {
+                    postOptions.transform.Find("PinUser").GetComponent<Image>().color = Color.red;
+                    userPinned = true;
+                    pinboard.AddPin(post.author);
+                    socialMediaContent.AddToPinnedUserList(post.author);
+                }
+                if (so == post)
+                {
+                    postOptions.transform.Find("PinPost").GetComponent<Image>().color = Color.red;
+                    postPinned = true;
+                    pinboard.AddPin(post);
+                    
+                    popupManager.DisplayPostPinMessage();
+                }
+                break;
+            case SocialMediaUser:
+                if (so == post.author)
+                {
+                    postOptions.transform.Find("PinUser").GetComponent<Image>().color = Color.red;
+                    userPinned = true;
+                    pinboard.AddPin(post.author);
+                    socialMediaContent.AddToPinnedUserList(post.author);
+
+                    popupManager.DisplayUserPinMessage();
+                }
+                break;
+        }
+    }
+
     public void instanctiatePost(SocialMediaPost post)
     {
         // Instantiate the post
@@ -62,26 +100,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     public void AddPostToPinboard(string type)
     {
-        switch (type)
-        {
-            case "name":
-                popupManager.DisplayUserPinMessage();
-                pinboard.AddPin(post.author);
-                socialMediaContent.AddToPinnedUserList(post.author);
-                userPinned = true;
-                postOptions.transform.Find("PinUser").GetComponent<Image>().color = Color.red;
-                break;
-            case "content":
-                popupManager.DisplayPostPinMessage();
-                pinboard.AddPin(post.author);
-                socialMediaContent.AddToPinnedUserList(post.author);
-                userPinned = true;
-                postOptions.transform.Find("PinUser").GetComponent<Image>().color = Color.red;
-                pinboard.AddPin(post);
-                postPinned = true;
-                postOptions.transform.Find("PinPost").GetComponent<Image>().color = Color.red;
-                break;
-        }
+        socialMediaContent.PinPost(type, post);
     }
 
     public void DeletePost()

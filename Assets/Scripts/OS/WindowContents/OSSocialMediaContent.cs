@@ -1,28 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using TMPro;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
+
+[System.Serializable]
+public class PinEvent : UnityEvent<ScriptableObject> { }
 
 public class OSSocialMediaContent : MonoBehaviour
 {
     [SerializeField] private GameObject socialMediaPostContainer;
     [SerializeField] private GameObject postPrefab;
     [SerializeField] private GameObject profilePage;
+    [SerializeField] private GameObject profilePageContent;
     [SerializeField] private Transform profilePageheader;
+
     private int postNumber = 1;
     private GameManager gm;
     private List<OSSocialMediaPost> postList = new List<OSSocialMediaPost>();
     private ComputerControls computerControls;
-    private Pinboard pinboard;
-    private OSPopupManager popupManager;
     private SocialMediaUser currentUser;
     private List<SocialMediaUser> pinnedUsers = new List<SocialMediaUser>();
     private FPSController fpsController;
 
-    // TODO: remove
-    public ScriptableObject userToDelete;
+    public PinEvent OnPinned;
 
     // Start is called before the first frame update
     void Awake()
@@ -32,8 +37,6 @@ public class OSSocialMediaContent : MonoBehaviour
 
     private void Start()
     {
-        pinboard = GameObject.Find("Pinboard").GetComponent<Pinboard>();
-        popupManager = GameObject.Find("PopupMessage").GetComponent<OSPopupManager>();
         fpsController = GameObject.Find("Player").GetComponent<FPSController>();
         gm = GameManager.instance;
         foreach (SocialMediaPost s in gm.GetPosts())
@@ -52,12 +55,16 @@ public class OSSocialMediaContent : MonoBehaviour
         }
     }
 
-    // TODO: remove
-    void Update()
+    public void PinPost(string type, SocialMediaPost post)
     {
-        if (Input.GetKeyDown(KeyCode.I))
+        switch (type)
         {
-            RemovePinnedUser(userToDelete);
+            case "name":
+                OnPinned?.Invoke(post.author);
+                break;
+            case "content":
+                OnPinned?.Invoke(post);
+                break;
         }
     }
 
@@ -65,12 +72,11 @@ public class OSSocialMediaContent : MonoBehaviour
     {
         GameObject newPost = Instantiate(postPrefab, socialMediaPostContainer.transform);
         newPost.GetComponent<OSSocialMediaPost>().instanctiatePost(post);
-        //newPost.GetComponent<Button>().interactable = false;
-        //newPost.GetComponentInChildren<Button>().interactable = false;
         newPost.name = "Post" + postNumber;
         postNumber++;
         newPost.transform.Find("name").GetComponent<TextMeshProUGUI>().text = post.author.username;
         newPost.transform.Find("content").GetComponent<TextMeshProUGUI>().text = post.content;
+        Instantiate(newPost, profilePageContent.transform);
         postList.Add(newPost.GetComponent<OSSocialMediaPost>());
     }
 
@@ -92,11 +98,31 @@ public class OSSocialMediaContent : MonoBehaviour
         profilePageheader.Find("Description").GetComponent<TextMeshProUGUI>().text = user.bioText;
         if (pinnedUsers.Contains(user))
         {
+            foreach (SocialMediaUser u in pinnedUsers)
+            {
+                print(u.username);
+            }
             profilePageheader.Find("PinUser").GetComponent<Image>().color = Color.red;
         }
         else
         {
             profilePageheader.Find("PinUser").GetComponent<Image>().color = Color.black;
+        }
+
+        // Show only posts from current user profile
+        foreach (Transform post in profilePageContent.transform)
+        {
+            if (post.GetComponent<OSSocialMediaPost>())
+            {
+                if (post.GetComponent<OSSocialMediaPost>().post.author == user)
+                {
+                    post.gameObject.SetActive(true);
+                }
+                else
+                {
+                    post.gameObject.SetActive(false);
+                }
+            }
         }
     }
 
@@ -108,10 +134,7 @@ public class OSSocialMediaContent : MonoBehaviour
 
     public void PinUser()
     {
-        popupManager.DisplayUserPinMessage();
-        pinboard.AddPin(currentUser);
-        profilePageheader.Find("PinUser").GetComponent<Image>().color = Color.red;
-        AddToPinnedUserList(currentUser);
+        OnPinned?.Invoke(currentUser);
     }
 
     private void RemovePinnedUser(ScriptableObject so)
@@ -131,6 +154,13 @@ public class OSSocialMediaContent : MonoBehaviour
 
     public void AddToPinnedUserList(SocialMediaUser user)
     {
-        pinnedUsers.Add(user);
+        if (!pinnedUsers.Contains(user))
+        {
+            pinnedUsers.Add(user);
+        }
+        if (user == currentUser)
+        {
+            profilePageheader.Find("PinUser").GetComponent<Image>().color = Color.red;
+        }
     }
 }
