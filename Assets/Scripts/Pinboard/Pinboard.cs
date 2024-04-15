@@ -37,6 +37,7 @@ public class Pinboard : MonoBehaviour
         var keyOfValueToRemove = parentsOnPinboard.FirstOrDefault(x => x.Value == pe).Key;
         if (keyOfValueToRemove != null)
         {
+            subPins[pe.GetContent()].Remove(pe.transform);
             parentsOnPinboard.Remove(keyOfValueToRemove);
         }
 
@@ -87,9 +88,31 @@ public class Pinboard : MonoBehaviour
                     }
                     takenPositions.Add(p.transform);
                 }
-
-                // place user or person on pinboard
-                positionOnGrid = GetPointWithGreatestDistanceToOtherPoints(Vector3.zero, pinboardModel.localScale.x, pinboardModel.localScale.y, takenPositions, zoneSizeY / 2, zoneSizeX / 2);
+                foreach (List<Transform> l in subPins.Values)
+                {
+                    foreach (Transform t in l)
+                    {
+                        takenPositions.Add(t);
+                    }
+                }
+                // If subPins contains the key, it has existed in the past and should be placed near its children and be connected with them
+                if (subPins.ContainsKey(o))
+                {
+                    float averageX = subPins[o].Average(x => x.localPosition.x);
+                    float highestY = subPins[o].Max(x => x.localPosition.y);
+                    pinboardElement.transform.localPosition = new Vector3(averageX, highestY + minSpaceBetweenPins, -pinboardModel.localScale.z / 2);
+                    foreach (Transform t in subPins[o])
+                    {
+                        ConnectWithThread(pinboardElement, t.GetComponent<PinboardElement>());
+                    }
+                    subPins[o].Add(pinboardElement.transform);
+                }
+                else
+                {
+                    // place user or person on pinboard
+                    pinboardElement.transform.localPosition = GetPointWithGreatestDistanceToOtherPoints(Vector3.zero, pinboardModel.localScale.x, pinboardModel.localScale.y, takenPositions, zoneSizeY / 2, zoneSizeX / 2);
+                    subPins[o] = new List<Transform> { pinboardElement.transform };
+                }
                 /*   
                 TODO: Maybe add a feature, where the first few elements are placed nearer the center, so it looks less empty
                 if (subPins.Count <= 2)
@@ -97,8 +120,6 @@ public class Pinboard : MonoBehaviour
                        positionOnGrid = positionOnGrid / 3;
                        positionOnGrid.z = -pinboardModel.localScale.z / 2;
                    }*/
-                pinboardElement.transform.localPosition = positionOnGrid;
-                subPins[o] = new List<Transform> { pinboardElement.transform };
             }
             if (o is SocialMediaPost)
             {
@@ -119,23 +140,27 @@ public class Pinboard : MonoBehaviour
                 }
                 else
                 {
-                    // auto connect post to user by thread
-                    LineRenderer threadObject = Instantiate(thread, transform).GetComponent<LineRenderer>();
-                    parentsOnPinboard[so].AddStartingThread(threadObject);
-                    pinboardElement.AddEndingThreads(threadObject);
-
-                    Vector3 pointA = parentsOnPinboard[ConversionUtility.Convert<SocialMediaPost>(o).author].transform.GetChild(0).position;
-                    Vector3 pointB = pinboardElement.transform.GetChild(0).position;
-
-                    threadObject.SetPosition(0, pointA);
-                    threadObject.SetPosition(1, pointB);
-
-                    MakeColliderMatchLineRenderer(threadObject, pointA, pointB);
+                    ConnectWithThread(pinboardElement, parentsOnPinboard[so]);
                 }
             }
         }
         parentsOnPinboard[o] = pinboardElement;
         pinboardElement.SetContent(o);
+    }
+    private void ConnectWithThread(PinboardElement element1, PinboardElement element2)
+    {
+        // auto connect post to user by thread
+        LineRenderer threadObject = Instantiate(thread, transform).GetComponent<LineRenderer>();
+        element1.AddStartingThread(threadObject);
+        element2.AddEndingThreads(threadObject);
+
+        Vector3 pointA = element1.transform.GetChild(0).position;
+        Vector3 pointB = element2.transform.GetChild(0).position;
+
+        threadObject.SetPosition(0, pointA);
+        threadObject.SetPosition(1, pointB);
+
+        MakeColliderMatchLineRenderer(threadObject, pointA, pointB);
     }
 
     // Gets the Point with the greatest distance to other points, to ensure a equal distribution of elements on the pinboard
