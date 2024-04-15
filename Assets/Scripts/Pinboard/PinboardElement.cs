@@ -191,7 +191,7 @@ public class PinboardElement : MonoBehaviour
         {
             Destroy(l);
         }
-        GetComponentInParent<Pinboard>().removeThingOnPinboardByElement(this);
+        GetComponentInParent<Pinboard>().RemoveThingOnPinboardByElement(this);
         Destroy(gameObject);
     }
     public void DeleteThread(LineRenderer l)

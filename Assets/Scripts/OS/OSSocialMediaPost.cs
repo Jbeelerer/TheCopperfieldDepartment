@@ -38,7 +38,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
         switch (so)
         {
             case SocialMediaPost:
-                if(so == post)
+                if (so == post)
                 {
                     postOptions.transform.Find("PinPost").GetComponent<Image>().color = Color.black;
                     postPinned = false;

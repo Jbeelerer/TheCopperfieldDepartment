@@ -14,14 +14,15 @@ public class Pinboard : MonoBehaviour
 
     [SerializeField] private GameObject thread;
 
-    // the key element describes the position of the pinboard element, the list are the positions of the pins inside the zone
-    private Dictionary<ScriptableObject, PinboardElement> thingsOnPinboard = new Dictionary<ScriptableObject, PinboardElement>();
-    private Dictionary<ScriptableObject, List<Vector3>> pinsOnPinboard = new Dictionary<ScriptableObject, List<Vector3>>();
+    //  parentsOnPinboard contains the content and element of the parent element of the pinboard element. These are users and people. The children are posts, the transform of these are stored in subPins. The subPins are stored near their parent inside the defined zone.
+    private Dictionary<ScriptableObject, PinboardElement> parentsOnPinboard = new Dictionary<ScriptableObject, PinboardElement>();
+    // Contains all sub pins of a user or person, this is important for programmaticly adding new pins, so they are near their parent. Use Transform instead of Vector3, so the position will be automaticly update when moved.
+    private Dictionary<ScriptableObject, List<Transform>> subPins = new Dictionary<ScriptableObject, List<Transform>>();
 
     private float zoneSizeX = 1.5f;
     private float zoneSizeY = 1.5f;
 
-    private float minSpaceBetweenPins = 0.3f;
+    private float minSpaceBetweenPins = 0.5f;
 
     // Start is called before the first frame update
     void Start()
@@ -31,12 +32,12 @@ public class Pinboard : MonoBehaviour
         AddPin(new ScriptableObject());
     }
 
-    public void removeThingOnPinboardByElement(PinboardElement pe)
+    public void RemoveThingOnPinboardByElement(PinboardElement pe)
     {
-        var keyOfValueToRemove = thingsOnPinboard.FirstOrDefault(x => x.Value == pe).Key;
+        var keyOfValueToRemove = parentsOnPinboard.FirstOrDefault(x => x.Value == pe).Key;
         if (keyOfValueToRemove != null)
         {
-            thingsOnPinboard.Remove(keyOfValueToRemove);
+            parentsOnPinboard.Remove(keyOfValueToRemove);
         }
 
     }
@@ -62,16 +63,14 @@ public class Pinboard : MonoBehaviour
     }
     public void AddPin(ScriptableObject o)
     {
-        if (thingsOnPinboard.ContainsKey(o))
+        if (parentsOnPinboard.ContainsKey(o))
             return;
-        List<Vector3> takenPositions = new List<Vector3>();
+        List<Transform> takenPositions = new List<Transform>();
 
         PinboardElement pinboardElement = Instantiate(pinPrefab, transform).GetComponent<PinboardElement>();
 
-        //pinboardModel.localScale.z / 2 offset so its on top of pinboard
-        Vector3 positionOnGrid = Vector3.zero;// pinboardModel.position + new Vector3(pinboardModel.localScale.z / 2, 0, 0);
-        // First element is allways the suspect and should be on the top in the center
-        if (thingsOnPinboard.Count <= 0)
+        Vector3 positionOnGrid;
+        if (parentsOnPinboard.Count <= 0)
         {
             pinboardElement.transform.position = pinboardModel.position + new Vector3(pinboardModel.localScale.z / 2, (pinboardModel.localScale.y / 2) - (pinboardElement.transform.localScale.y / 2), 0);
         }
@@ -80,53 +79,52 @@ public class Pinboard : MonoBehaviour
 
             if (o is not SocialMediaPost)
             {
-                foreach (PinboardElement p in thingsOnPinboard.Values)
+                foreach (PinboardElement p in parentsOnPinboard.Values)
                 {
                     if (p == null)
                     {
                         continue;
                     }
-                    takenPositions.Add(p.transform.localPosition);
+                    takenPositions.Add(p.transform);
                 }
 
                 // place user or person on pinboard
                 positionOnGrid = GetPointWithGreatestDistanceToOtherPoints(Vector3.zero, pinboardModel.localScale.x, pinboardModel.localScale.y, takenPositions, zoneSizeY / 2, zoneSizeX / 2);
-                if (pinsOnPinboard.Count <= 2)
-                {
-                    positionOnGrid = positionOnGrid / 3;
-                    positionOnGrid.z = -pinboardModel.localScale.z / 2;
-                }
-                pinsOnPinboard[o] = new List<Vector3> { positionOnGrid };
-                // positionOnGrid += pinboardModel.position + new Vector3(pinboardModel.localScale.z / 2, 0, 0);
+                /*   
+                TODO: Maybe add a feature, where the first few elements are placed nearer the center, so it looks less empty
+                if (subPins.Count <= 2)
+                   {
+                       positionOnGrid = positionOnGrid / 3;
+                       positionOnGrid.z = -pinboardModel.localScale.z / 2;
+                   }*/
                 pinboardElement.transform.localPosition = positionOnGrid;
+                subPins[o] = new List<Transform> { pinboardElement.transform };
             }
-            // auto connect post to user   
             if (o is SocialMediaPost)
             {
                 ScriptableObject so = ConversionUtility.Convert<SocialMediaPost>(o).author;
-                Vector3 centerOfZone = thingsOnPinboard[so].transform.localPosition;
+                Vector3 centerOfZone = parentsOnPinboard[so].transform.localPosition;
+                // go down by half of the zone size to get center of zone, since the user post is allways on top of a zone
                 centerOfZone.y -= zoneSizeY / 2;
                 centerOfZone.z = 0;
-                print(centerOfZone);
                 // place post underneath user inside boundries  
-                positionOnGrid = GetPointWithGreatestDistanceToOtherPoints(centerOfZone, zoneSizeX, zoneSizeY, pinsOnPinboard[so], minSpaceBetweenPins, minSpaceBetweenPins);
+                positionOnGrid = GetPointWithGreatestDistanceToOtherPoints(centerOfZone, zoneSizeX, zoneSizeY, subPins[so], minSpaceBetweenPins, minSpaceBetweenPins);
+                // set the center of zone on top of the pinboard model, so it visible and not inside the model
                 centerOfZone.z = -pinboardModel.localScale.z / 2;
-                // positionOnGrid += centerOfZone; //new Vector3(0, centerOfZone.y, centerOfZone.z);
-                pinsOnPinboard[so].Add(positionOnGrid);
-                print(positionOnGrid);
                 pinboardElement.transform.localPosition = positionOnGrid;
+                subPins[so].Add(pinboardElement.transform);
                 if (so == null)
                 {
-                    thingsOnPinboard.Remove(so);
+                    parentsOnPinboard.Remove(so);
                 }
                 else
                 {
-                    // connect to this
+                    // auto connect post to user by thread
                     LineRenderer threadObject = Instantiate(thread, transform).GetComponent<LineRenderer>();
-                    thingsOnPinboard[so].AddStartingThread(threadObject);
+                    parentsOnPinboard[so].AddStartingThread(threadObject);
                     pinboardElement.AddEndingThreads(threadObject);
 
-                    Vector3 pointA = thingsOnPinboard[ConversionUtility.Convert<SocialMediaPost>(o).author].transform.GetChild(0).position;
+                    Vector3 pointA = parentsOnPinboard[ConversionUtility.Convert<SocialMediaPost>(o).author].transform.GetChild(0).position;
                     Vector3 pointB = pinboardElement.transform.GetChild(0).position;
 
                     threadObject.SetPosition(0, pointA);
@@ -136,47 +134,35 @@ public class Pinboard : MonoBehaviour
                 }
             }
         }
-        thingsOnPinboard[o] = pinboardElement;
+        parentsOnPinboard[o] = pinboardElement;
         pinboardElement.SetContent(o);
     }
 
-    private Vector3 GetPointWithGreatestDistanceToOtherPoints(Vector3 relativePos, float xWidth, float yHeight, List<Vector3> takenPositions, float ySpareSpace, float xSpareSpace)
+    // Gets the Point with the greatest distance to other points, to ensure a equal distribution of elements on the pinboard
+    private Vector3 GetPointWithGreatestDistanceToOtherPoints(Vector3 relativePos, float xWidth, float yHeight, List<Transform> takenPositions, float ySpareSpace, float xSpareSpace)
     {
         Vector3 positionOnGrid = new Vector3(0, 0, -pinboardModel.localScale.z / 2);//startPos;
         Dictionary<Vector3, float> everyPos = new Dictionary<Vector3, float>();
         Vector3 closest = Vector3.zero;
 
-        // das ganze pinboard in einem grid durchgehen und den nächsten post speichern
+        // Iterate through the entire pinboard in a grid and save the distance to the closest element
         for (float y = (yHeight / 2) - ySpareSpace; y > -(yHeight / 2) + ySpareSpace; y -= yHeight / 6)
         {
-            //positionOnGrid = new Vector3(positionOnGrid.x, y, positionOnGrid.z);
             positionOnGrid.y = y;
             for (float x = xSpareSpace - (xWidth / 2); x < (xWidth / 2) - xSpareSpace; x += xWidth / 10)
             {
-                // positionOnGrid = new Vector3(positionOnGrid.x, y, x);
                 positionOnGrid.x = x;
                 Vector3 repositioned = positionOnGrid + relativePos;
-                foreach (Vector3 p in takenPositions)
+                foreach (Transform p in takenPositions)
                 {
-                    //normalizes position of element to grid
-                    Vector3 takenPos = p;
+                    Vector3 takenPos = p.localPosition;
                     if (closest == Vector3.zero)
-                        closest = p;
-                    closest = (Vector3.Distance(repositioned, p) < Vector3.Distance(repositioned, closest)) ? p : closest; //&& Vector3.Distance(positionOnGrid, p) > 1
+                        closest = p.position;
+                    closest = (Vector3.Distance(repositioned, p.localPosition) < Vector3.Distance(repositioned, closest)) ? p.localPosition : closest;
                 }
                 everyPos.Add(repositioned, Vector3.Distance(repositioned, closest));
             }
         }
-
-        /* //  Old code: closer while less than 7
-        if (takenPositions.Count < 7)
-        {
-            List<float> sortedValues = everyPos.Values.ToList();
-            sortedValues.Sort();
-            int count = sortedValues.Count;
-            key = count % 2 == 0 ? sortedValues[(count + 1) / 2] : sortedValues[count / 2];
-        }*/
-
         return everyPos.Count == 0 ? Vector3.zero : everyPos.FirstOrDefault(x => x.Value == everyPos.Values.Max()).Key;
     }
     public void MakeColliderMatchLineRenderer(LineRenderer lr, Vector3 pointA, Vector3 pointB)

@@ -158,7 +158,6 @@ public class FPSController : MonoBehaviour
                             case "PinboardModel":
                                 if (selectedPinboardElement == null && currentThread == null)//TODO: add Pen exxption
                                     inputOverlay.SetIcon("default");
-                                //inputOverlay.SetActive(false);  
                                 break;
                             case "Button":
                                 break;
@@ -216,6 +215,7 @@ public class FPSController : MonoBehaviour
                 removingTime -= Time.deltaTime;
                 if (removingTime <= 0)
                 {
+                    print(currentSelectedObject);
                     OnPinDeletion?.Invoke(currentSelectedObject.transform.parent.GetComponent<PinboardElement>().GetContent());
                     currentSelectedObject.transform.parent.GetComponent<PinboardElement>().DeleteElement();
                     audioSource.PlayOneShot(deleteSound);
@@ -345,16 +345,17 @@ public class FPSController : MonoBehaviour
 
         }
     }
+
+    // TODO: Maybe create an audio manager for all these things
     public void PlayReverseAudio(AudioClip audioClip)
     {
         audioSource.clip = audioClip;
         audioSource.pitch = -1;
         audioSource.time = audioSource.clip.length - 0.01f;
         audioSource.Play();
-        StartCoroutine(resetAudio(audioSource.clip.length));
+        StartCoroutine(ResetAudio(audioSource.clip.length));
     }
-
-    public IEnumerator resetAudio(float length)
+    public IEnumerator ResetAudio(float length)
     {
         yield return new WaitForSeconds(length);
         audioSource.pitch = 1;
