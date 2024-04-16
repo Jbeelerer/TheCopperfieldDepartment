@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ public class Pinboard : MonoBehaviour
     private Dictionary<ScriptableObject, List<Transform>> subPins = new Dictionary<ScriptableObject, List<Transform>>();
 
     private float zoneSizeX = 1.5f;
-    private float zoneSizeY = 1.5f;
+    private float zoneSizeY = 1f;
 
     private float minSpaceBetweenPins = 0.5f;
 
@@ -81,7 +82,7 @@ public class Pinboard : MonoBehaviour
         Vector3 positionOnGrid;
         if (pinsOnPinboard.Count <= 0)
         {
-            pinboardElement.transform.position = pinboardModel.position + new Vector3(pinboardModel.localScale.z / 2, (pinboardModel.localScale.y / 2) - (pinboardElement.transform.localScale.y / 2), 0);
+            pinboardElement.transform.localPosition = new Vector3(0, 0, -pinboardModel.localScale.z / 2); //+ new Vector3(pinboardModel.localScale.z / 2, (pinboardModel.localScale.y / 2) - (pinboardElement.transform.localScale.y / 2), 0);
         }
         else
         {
@@ -117,7 +118,8 @@ public class Pinboard : MonoBehaviour
                 else
                 {
                     // place user or person on pinboard
-                    pinboardElement.transform.localPosition = GetPointWithGreatestDistanceToOtherPoints(Vector3.zero, pinboardModel.localScale.x, pinboardModel.localScale.y, takenPositions, zoneSizeY / 2, zoneSizeX / 2);
+                    Vector3 pos = GetPointWithGreatestDistanceToOtherPoints(Vector3.zero, pinboardModel.localScale.x, pinboardModel.localScale.y, takenPositions, zoneSizeY, zoneSizeX);
+                    pinboardElement.transform.localPosition = pos;
                     subPins[o] = new List<Transform> { pinboardElement.transform };
                 }
                 /*   
@@ -132,11 +134,17 @@ public class Pinboard : MonoBehaviour
             {
                 ScriptableObject so = ConversionUtility.Convert<SocialMediaPost>(o).author;
                 Vector3 centerOfZone = pinsOnPinboard[so].transform.localPosition;
-                // go down by half of the zone size to get center of zone, since the user post is allways on top of a zone
-                centerOfZone.y -= zoneSizeY / 2;
+                float ySection = 0.2f;  //pinboardModel.localScale.y / 6;
+                float xSection = 1f;//pinboardModel.localScale.x / 3/2;  
+                centerOfZone.x += zoneSizeX * (centerOfZone.x / pinboardModel.localScale.x);
+                //centerOfZone.x += centerOfZone.x > xSection ? +zoneSizeX / 2 : centerOfZone.x < -xSection ? -zoneSizeX / 2 : 0;
+                // go down by half of the zone size to get center of zone, since the user post is allways on top of a zone  
+                // centerOfZone.y += centerOfZone.y > ySection ? +zoneSizeY / 2 : centerOfZone.y < -ySection ? -zoneSizeY / 2 : 0;
+                // For Y maybe the older version, on the line above, is better ASK ALEX
+                centerOfZone.y += zoneSizeY * (centerOfZone.y / pinboardModel.localScale.y);
                 centerOfZone.z = 0;
                 // place post underneath user inside boundries  
-                positionOnGrid = GetPointWithGreatestDistanceToOtherPoints(centerOfZone, zoneSizeX, zoneSizeY, subPins[so], minSpaceBetweenPins, minSpaceBetweenPins);
+                positionOnGrid = GetPointWithGreatestDistanceToOtherPoints(centerOfZone, zoneSizeX, zoneSizeY, subPins[so], minSpaceBetweenPins / 2, minSpaceBetweenPins / 2);
                 // set the center of zone on top of the pinboard model, so it visible and not inside the model
                 centerOfZone.z = -pinboardModel.localScale.z / 2;
                 pinboardElement.transform.localPosition = positionOnGrid;
