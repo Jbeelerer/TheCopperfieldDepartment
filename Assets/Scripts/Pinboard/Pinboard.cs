@@ -143,7 +143,10 @@ public class Pinboard : MonoBehaviour
                 // For Y maybe the older version, on the line above, is better ASK ALEX
                 centerOfZone.y += zoneSizeY * (centerOfZone.y / pinboardModel.localScale.y);
                 centerOfZone.z = 0;
-                // place post underneath user inside boundries  
+                // ensure that the pin is still inside the pinboard
+                centerOfZone.x = Mathf.Clamp(centerOfZone.x, (-pinboardModel.localScale.x / 2) + minSpaceBetweenPins / 2, (pinboardModel.localScale.x / 2) - minSpaceBetweenPins / 2);
+                centerOfZone.y = Mathf.Clamp(centerOfZone.y, (-pinboardModel.localScale.y / 2) + minSpaceBetweenPins / 2, (pinboardModel.localScale.y / 2) - minSpaceBetweenPins / 2);
+                // place post underneath user inside boundries       
                 positionOnGrid = GetPointWithGreatestDistanceToOtherPoints(centerOfZone, zoneSizeX, zoneSizeY, subPins[so], minSpaceBetweenPins / 2, minSpaceBetweenPins / 2);
                 // set the center of zone on top of the pinboard model, so it visible and not inside the model
                 centerOfZone.z = -pinboardModel.localScale.z / 2;
