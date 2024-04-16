@@ -15,7 +15,7 @@ public class Pinboard : MonoBehaviour
     [SerializeField] private GameObject thread;
 
     //  parentsOnPinboard contains the content and element of the parent element of the pinboard element. These are users and people. The children are posts, the transform of these are stored in subPins. The subPins are stored near their parent inside the defined zone.
-    private Dictionary<ScriptableObject, PinboardElement> parentsOnPinboard = new Dictionary<ScriptableObject, PinboardElement>();
+    private Dictionary<ScriptableObject, PinboardElement> pinsOnPinboard = new Dictionary<ScriptableObject, PinboardElement>();
     // Contains all sub pins of a user or person, this is important for programmaticly adding new pins, so they are near their parent. Use Transform instead of Vector3, so the position will be automaticly update when moved.
     private Dictionary<ScriptableObject, List<Transform>> subPins = new Dictionary<ScriptableObject, List<Transform>>();
 
@@ -34,13 +34,21 @@ public class Pinboard : MonoBehaviour
 
     public void RemoveThingOnPinboardByElement(PinboardElement pe)
     {
-        var keyOfValueToRemove = parentsOnPinboard.FirstOrDefault(x => x.Value == pe).Key;
+        var keyOfValueToRemove = pinsOnPinboard.FirstOrDefault(x => x.Value == pe).Key;
         if (keyOfValueToRemove != null)
         {
-            subPins[pe.GetContent()].Remove(pe.transform);
-            parentsOnPinboard.Remove(keyOfValueToRemove);
+            pinsOnPinboard.Remove(keyOfValueToRemove);
+            if (keyOfValueToRemove is SocialMediaPost)
+            {
+                // removing childeren not yet working correctly
+                SocialMediaPost p = (SocialMediaPost)keyOfValueToRemove;
+                subPins[p.author].Remove(pe.transform);
+            }
+            else
+            {
+                subPins[keyOfValueToRemove].Remove(pe.transform);
+            }
         }
-
     }
 
     // Update is called once per frame
@@ -64,23 +72,22 @@ public class Pinboard : MonoBehaviour
     }
     public void AddPin(ScriptableObject o)
     {
-        if (parentsOnPinboard.ContainsKey(o))
+        if (pinsOnPinboard.ContainsKey(o))
             return;
         List<Transform> takenPositions = new List<Transform>();
 
         PinboardElement pinboardElement = Instantiate(pinPrefab, transform).GetComponent<PinboardElement>();
 
         Vector3 positionOnGrid;
-        if (parentsOnPinboard.Count <= 0)
+        if (pinsOnPinboard.Count <= 0)
         {
             pinboardElement.transform.position = pinboardModel.position + new Vector3(pinboardModel.localScale.z / 2, (pinboardModel.localScale.y / 2) - (pinboardElement.transform.localScale.y / 2), 0);
         }
         else
         {
-
             if (o is not SocialMediaPost)
             {
-                foreach (PinboardElement p in parentsOnPinboard.Values)
+                foreach (PinboardElement p in pinsOnPinboard.Values)
                 {
                     if (p == null)
                     {
@@ -124,7 +131,7 @@ public class Pinboard : MonoBehaviour
             if (o is SocialMediaPost)
             {
                 ScriptableObject so = ConversionUtility.Convert<SocialMediaPost>(o).author;
-                Vector3 centerOfZone = parentsOnPinboard[so].transform.localPosition;
+                Vector3 centerOfZone = pinsOnPinboard[so].transform.localPosition;
                 // go down by half of the zone size to get center of zone, since the user post is allways on top of a zone
                 centerOfZone.y -= zoneSizeY / 2;
                 centerOfZone.z = 0;
@@ -136,15 +143,15 @@ public class Pinboard : MonoBehaviour
                 subPins[so].Add(pinboardElement.transform);
                 if (so == null)
                 {
-                    parentsOnPinboard.Remove(so);
+                    pinsOnPinboard.Remove(so);
                 }
                 else
                 {
-                    ConnectWithThread(pinboardElement, parentsOnPinboard[so]);
+                    ConnectWithThread(pinboardElement, pinsOnPinboard[so]);
                 }
             }
         }
-        parentsOnPinboard[o] = pinboardElement;
+        pinsOnPinboard[o] = pinboardElement;
         pinboardElement.SetContent(o);
     }
     private void ConnectWithThread(PinboardElement element1, PinboardElement element2)
@@ -157,8 +164,11 @@ public class Pinboard : MonoBehaviour
         Vector3 pointA = element1.transform.GetChild(0).position;
         Vector3 pointB = element2.transform.GetChild(0).position;
 
+        threadObject.positionCount = 4;
         threadObject.SetPosition(0, pointA);
-        threadObject.SetPosition(1, pointB);
+        threadObject.SetPosition(1, pointA);
+        threadObject.SetPosition(2, pointB);
+        threadObject.SetPosition(3, pointB);
 
         MakeColliderMatchLineRenderer(threadObject, pointA, pointB);
     }

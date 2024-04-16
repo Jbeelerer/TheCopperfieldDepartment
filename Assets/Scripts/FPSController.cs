@@ -349,7 +349,10 @@ public class FPSController : MonoBehaviour
                 else
                 {
                     currentThread = Instantiate(thread, currentSelectedObject.transform.parent.transform).GetComponent<LineRenderer>();
+                    // TODO: The reason for 4 positions, is so it won't clip through the pinboardElement, not completely implemented yet
+                    currentThread.positionCount = 4;
                     currentThread.SetPosition(0, currentSelectedObject.transform.GetChild(0).position);
+                    currentThread.SetPosition(1, currentSelectedObject.transform.GetChild(0).position);
                     currentThread.transform.GetChild(0).gameObject.SetActive(false);
                     currentSelectedObject.GetComponent<PinboardElement>().AddStartingThread(currentThread);
                     lastSelectedObject = currentSelectedObject;
@@ -364,7 +367,8 @@ public class FPSController : MonoBehaviour
             // handle moving thread position
             if (currentThread != null)
             {
-                currentThread.SetPosition(1, hit.point);
+                currentThread.SetPosition(2, hit.point);
+                currentThread.SetPosition(3, hit.point);
 
                 if (currentSelectedObject == null)
                 {

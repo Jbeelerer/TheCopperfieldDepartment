@@ -35,28 +35,32 @@ public class PinboardElement : MonoBehaviour
         isMoving = b;
         if (!isMoving)
         {
-            foreach (LineRenderer l in startingThreads)
-            {
-                l.transform.GetComponentInChildren<Collider>().enabled = true;
-            }
-            foreach (LineRenderer l in endingThreads)
-            {
-                l.transform.GetComponentInChildren<Collider>().enabled = true;
-            }
+            enableThreadCollider(true, startingThreads);
+            enableThreadCollider(true, startingThreads);
+
             reApplyCollider(startingThreads);
             reApplyCollider(endingThreads);
         }
         else
         {
-            foreach (LineRenderer l in startingThreads)
-            {
-                l.transform.GetComponentInChildren<Collider>().enabled = false;
-            }
-            foreach (LineRenderer l in endingThreads)
-            {
-                l.transform.GetComponentInChildren<Collider>().enabled = false;
-            }
+            enableThreadCollider(false, startingThreads);
+            enableThreadCollider(false, endingThreads);
         }
+    }
+    // Enables or disables the collider of the threads and returns a list of still existing threads
+    private List<LineRenderer> enableThreadCollider(bool b, List<LineRenderer> lineRenderers)
+    {
+        List<LineRenderer> cleanList = new List<LineRenderer>();
+        foreach (LineRenderer l in lineRenderers)
+        {
+            if (l == null)
+            {
+                continue;
+            }
+            l.transform.GetComponentInChildren<Collider>().enabled = b;
+            cleanList.Add(l);
+        }
+        return cleanList;
     }
     private void reApplyCollider(List<LineRenderer> lineRenderers)
     {
@@ -71,7 +75,10 @@ public class PinboardElement : MonoBehaviour
             }
             l.transform.GetChild(0).gameObject.SetActive(true);
             if (lineRenderers == endingThreads)
+            {
                 l.SetPosition(1, transform.GetChild(0).position);
+                l.SetPosition(2, transform.GetChild(0).position);
+            }
             p.MakeColliderMatchLineRenderer(l, l.GetPosition(0), l.GetPosition(1));
             Transform connection = l.transform.Find("Connection(Clone)");
             if (connection)
@@ -130,6 +137,7 @@ public class PinboardElement : MonoBehaviour
                     continue;
                 }
                 l.SetPosition(0, transform.GetChild(0).position);
+                l.SetPosition(1, transform.GetChild(0).position);
             }
             removeThreads(tempThreads, startingThreads);
             foreach (LineRenderer l in endingThreads)
@@ -140,7 +148,8 @@ public class PinboardElement : MonoBehaviour
                     // endingThreads.Remove(l);
                     continue;
                 }
-                l.SetPosition(1, transform.GetChild(0).position);
+                l.SetPosition(2, transform.GetChild(0).position);
+                l.SetPosition(3, transform.GetChild(0).position);
             }
             removeThreads(tempThreads, startingThreads);
         }
