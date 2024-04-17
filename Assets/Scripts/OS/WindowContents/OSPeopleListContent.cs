@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class OSPeopleListContent : MonoBehaviour
@@ -12,10 +13,13 @@ public class OSPeopleListContent : MonoBehaviour
     private List<OSPerson> peopleList = new List<OSPerson>();
     private ComputerControls computerControls;
 
+    public UnityEvent OnAccusedPersonClear;
+
     private void Awake()
     {
         computerControls = transform.GetComponentInParent<ComputerControls>();
     }
+
     void Start()
     {
         Person[] people = Resources.LoadAll<Person>("People");
@@ -37,7 +41,6 @@ public class OSPeopleListContent : MonoBehaviour
     {
         GameObject newProfile = Instantiate(personProfilePrefab, profileContainer.transform);
         newProfile.GetComponent<OSPerson>().InstantiatePerson(person);
-        //newProfile.GetComponent<OSSocialMediaPost>().instanctiatePost(post);
         newProfile.name = "Profile" + personNumber;
         personNumber++;
         newProfile.transform.Find("name").GetComponent<TextMeshProUGUI>().text = person.personName;
@@ -47,9 +50,10 @@ public class OSPeopleListContent : MonoBehaviour
 
     public void ClearAccusedPeople()
     {
-        foreach (OSPerson p in peopleList)
+        OnAccusedPersonClear?.Invoke();
+        /*foreach (OSPerson p in peopleList)
         {
             p.gameObject.transform.Find("AccusePerson").GetComponent<Image>().color = Color.black;
-        }
+        }*/
     }
 }

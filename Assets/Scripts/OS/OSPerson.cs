@@ -25,6 +25,7 @@ public class OSPerson : MonoBehaviour
         computerControls = transform.GetComponentInParent<ComputerControls>();
 
         fpsController.OnPinDeletion.AddListener(RemovePinned);
+        peopleListContent.OnAccusedPersonClear.AddListener(ClearAccused);
     }
 
     private void RemovePinned(ScriptableObject so)
@@ -68,5 +69,10 @@ public class OSPerson : MonoBehaviour
         gm.checkSuspect(person);
         popupManager.DisplayPersonAccusedMessage();
         transform.Find("AccusePerson").GetComponent<Image>().color = Color.red;
+    }
+
+    private void ClearAccused()
+    {
+        transform.Find("AccusePerson").GetComponent<Image>().color = Color.black;
     }
 }

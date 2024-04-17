@@ -34,6 +34,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
         fpsController.OnPinDeletion.AddListener(RemovePinned);
         socialMediaContent.OnPinned.AddListener(MarkPinned);
+        socialMediaContent.OnDeletedPostClear.AddListener(ClearDeleted);
     }
 
     private void RemovePinned(ScriptableObject so)
@@ -90,6 +91,11 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
                 }
                 break;
         }
+    }
+
+    private void ClearDeleted()
+    {
+        postOptions.transform.Find("DeletePost").GetComponent<Image>().color = Color.black;
     }
 
     public void instanctiatePost(SocialMediaPost post)

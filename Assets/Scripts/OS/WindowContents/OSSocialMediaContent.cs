@@ -28,6 +28,7 @@ public class OSSocialMediaContent : MonoBehaviour
     private FPSController fpsController;
 
     public PinEvent OnPinned;
+    public UnityEvent OnDeletedPostClear;
 
     // Start is called before the first frame update
     void Awake()
@@ -82,10 +83,12 @@ public class OSSocialMediaContent : MonoBehaviour
 
     public void ClearDeletedPost()
     {
-        foreach (OSSocialMediaPost p in postList)
+        OnDeletedPostClear?.Invoke();
+
+        /*foreach (OSSocialMediaPost p in postList)
         {
             p.gameObject.transform.Find("PostOptions").Find("DeletePost").GetComponent<Image>().color = Color.black;
-        }
+        }*/
     }
 
     public void ShowUserProfile(SocialMediaUser user)
@@ -98,10 +101,6 @@ public class OSSocialMediaContent : MonoBehaviour
         profilePageheader.Find("Description").GetComponent<TextMeshProUGUI>().text = user.bioText;
         if (pinnedUsers.Contains(user))
         {
-            foreach (SocialMediaUser u in pinnedUsers)
-            {
-                print(u.username);
-            }
             profilePageheader.Find("PinUser").GetComponent<Image>().color = Color.red;
         }
         else

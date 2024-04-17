@@ -383,6 +383,7 @@ public class ComputerControls : MonoBehaviour
                 {
                     window.gameObject.SetActive(true);
                     window.associatedTab.gameObject.SetActive(true);
+                    BringWindowToFront(window);
                 }
                 return;
             }
