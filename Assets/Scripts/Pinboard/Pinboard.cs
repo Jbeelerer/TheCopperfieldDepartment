@@ -106,9 +106,28 @@ public class Pinboard : MonoBehaviour
                 // If subPins contains the key, it has existed in the past and should be placed near its children and be connected with them
                 if (subPins.ContainsKey(o))
                 {
-                    float averageX = subPins[o].Average(x => x.localPosition.x);
-                    float highestY = subPins[o].Max(x => x.localPosition.y);
-                    pinboardElement.transform.localPosition = new Vector3(averageX, highestY + minSpaceBetweenPins, -pinboardModel.localScale.z / 2);
+                    // place user or person on pinboard, when children are already on the pinboard
+                    float xPos = subPins[o].Average(x => x.localPosition.x);
+                    float yPos = subPins[o].Average(x => x.localPosition.y);
+
+                    if (xPos > 1)
+                    {
+                        xPos = subPins[o].Min(x => x.localPosition.x) - minSpaceBetweenPins;
+                    }
+                    else if (xPos < -1)
+                    {
+                        xPos = subPins[o].Max(x => x.localPosition.x) + minSpaceBetweenPins;
+                    }
+                    if (yPos > 0.2f)
+                    {
+                        yPos = subPins[o].Min(x => x.localPosition.y) - minSpaceBetweenPins;
+                    }
+                    else if (yPos < -0.2f)
+                    {
+                        yPos = subPins[o].Max(x => x.localPosition.y) + minSpaceBetweenPins;
+                    }
+
+                    pinboardElement.transform.localPosition = new Vector3(xPos, yPos, -pinboardModel.localScale.z / 2);
                     foreach (Transform t in subPins[o])
                     {
                         ConnectWithThread(pinboardElement, t.GetComponent<PinboardElement>());
@@ -139,9 +158,9 @@ public class Pinboard : MonoBehaviour
                 centerOfZone.x += zoneSizeX * (centerOfZone.x / pinboardModel.localScale.x);
                 //centerOfZone.x += centerOfZone.x > xSection ? +zoneSizeX / 2 : centerOfZone.x < -xSection ? -zoneSizeX / 2 : 0;
                 // go down by half of the zone size to get center of zone, since the user post is allways on top of a zone  
-                // centerOfZone.y += centerOfZone.y > ySection ? +zoneSizeY / 2 : centerOfZone.y < -ySection ? -zoneSizeY / 2 : 0;
+                centerOfZone.y += centerOfZone.y > ySection ? +zoneSizeY / 2 : centerOfZone.y < -ySection ? -zoneSizeY / 2 : 0;
                 // For Y maybe the older version, on the line above, is better ASK ALEX
-                centerOfZone.y += zoneSizeY * (centerOfZone.y / pinboardModel.localScale.y);
+                // centerOfZone.y += zoneSizeY * (centerOfZone.y / pinboardModel.localScale.y);
                 centerOfZone.z = 0;
                 // ensure that the pin is still inside the pinboard
                 centerOfZone.x = Mathf.Clamp(centerOfZone.x, (-pinboardModel.localScale.x / 2) + minSpaceBetweenPins / 2, (pinboardModel.localScale.x / 2) - minSpaceBetweenPins / 2);
