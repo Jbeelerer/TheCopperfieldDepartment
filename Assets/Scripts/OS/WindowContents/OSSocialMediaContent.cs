@@ -18,6 +18,7 @@ public class OSSocialMediaContent : MonoBehaviour
     [SerializeField] private GameObject profilePage;
     [SerializeField] private GameObject profilePageContent;
     [SerializeField] private Transform profilePageheader;
+    [SerializeField] private Transform searchBar;
 
     private int postNumber = 1;
     private GameManager gm;
@@ -56,6 +57,18 @@ public class OSSocialMediaContent : MonoBehaviour
         }
     }
 
+    public void InstanciatePost(SocialMediaPost post)
+    {
+        GameObject newPost = Instantiate(postPrefab, socialMediaPostContainer.transform);
+        newPost.GetComponent<OSSocialMediaPost>().instanctiatePost(post);
+        newPost.name = "Post" + postNumber;
+        postNumber++;
+        newPost.transform.Find("name").GetComponent<TextMeshProUGUI>().text = post.author.username;
+        newPost.transform.Find("content").GetComponent<TextMeshProUGUI>().text = post.content;
+        Instantiate(newPost, profilePageContent.transform);
+        postList.Add(newPost.GetComponent<OSSocialMediaPost>());
+    }
+
     public void PinPost(string type, SocialMediaPost post)
     {
         switch (type)
@@ -69,18 +82,6 @@ public class OSSocialMediaContent : MonoBehaviour
         }
     }
 
-    public void InstanciatePost(SocialMediaPost post)
-    {
-        GameObject newPost = Instantiate(postPrefab, socialMediaPostContainer.transform);
-        newPost.GetComponent<OSSocialMediaPost>().instanctiatePost(post);
-        newPost.name = "Post" + postNumber;
-        postNumber++;
-        newPost.transform.Find("name").GetComponent<TextMeshProUGUI>().text = post.author.username;
-        newPost.transform.Find("content").GetComponent<TextMeshProUGUI>().text = post.content;
-        Instantiate(newPost, profilePageContent.transform);
-        postList.Add(newPost.GetComponent<OSSocialMediaPost>());
-    }
-
     public void ClearDeletedPost()
     {
         OnDeletedPostClear?.Invoke();
@@ -90,6 +91,37 @@ public class OSSocialMediaContent : MonoBehaviour
             p.gameObject.transform.Find("PostOptions").Find("DeletePost").GetComponent<Image>().color = Color.black;
         }*/
     }
+
+    public void FilterHomefeed(string filterTerm)
+    {
+        CloseUserProfile();
+
+        searchBar.Find("SearchText").GetComponent<TextMeshProUGUI>().text = "Searching for: <b>" + filterTerm + "</b>";
+        searchBar.gameObject.SetActive(true);
+
+        foreach (Transform post in socialMediaPostContainer.transform)
+        {
+            if (post.GetComponent<OSSocialMediaPost>().post.content.Contains(filterTerm))
+            {
+                post.gameObject.SetActive(true);
+            }
+            else
+            {
+                post.gameObject.SetActive(false);
+            }
+        }
+    }
+
+    public void ResetHomeFeed()
+    {
+        searchBar.gameObject.SetActive(false);
+
+        foreach (Transform post in socialMediaPostContainer.transform)
+        {
+            post.gameObject.SetActive(true);
+        }
+    }
+
 
     public void ShowUserProfile(SocialMediaUser user)
     {
