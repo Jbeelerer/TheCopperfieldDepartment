@@ -393,6 +393,7 @@ public class ComputerControls : MonoBehaviour
         newWindow.GetComponent<OSWindow>().appType = type;
         newWindow.GetComponent<OSWindow>().warningMessage = warningMessage;
         newWindow.GetComponent<OSWindow>().warningSuccessFunc = successFunc;
+        BringWindowToFront(newWindow.GetComponent<OSWindow>());
         if (newWindow.GetComponent<OSWindow>().appType != OSAppType.WARNING)
             windows.Add(newWindow.GetComponent<OSWindow>());
         if (newWindow.GetComponent<OSWindow>().appType == OSAppType.WARNING)
@@ -407,6 +408,11 @@ public class ComputerControls : MonoBehaviour
     {
         // Bring clicked window to front
         window.transform.SetAsLastSibling();
+        foreach (OSWindow w in windows)
+        {
+            w.topBar.GetComponent<Image>().color = new Color(w.topBar.GetComponent<Image>().color.r, w.topBar.GetComponent<Image>().color.g, w.topBar.GetComponent<Image>().color.b, 0.6f);
+        }
+        window.topBar.GetComponent<Image>().color = new Color(window.topBar.GetComponent<Image>().color.r, window.topBar.GetComponent<Image>().color.g, window.topBar.GetComponent<Image>().color.b, 1f);
 
         // Set as current right/left window if in long mode
         if (window.currWindowSize == WindowSize.LONG_LEFT)
