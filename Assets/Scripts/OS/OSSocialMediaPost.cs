@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     public SocialMediaPost post;
 
@@ -17,6 +18,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
     private GameManager gm;
     private OSSocialMediaContent socialMediaContent;
     private ComputerControls computerControls;
+    private Camera canvasCam;
 
     private bool postPinned = false;
     private bool userPinned = false;
@@ -31,9 +33,11 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
         fpsController = GameObject.Find("Player").GetComponent<FPSController>();
         socialMediaContent = transform.GetComponentInParent<OSSocialMediaContent>();
         computerControls = transform.GetComponentInParent<ComputerControls>();
+        canvasCam = GameObject.Find("computerTextureCam").GetComponent<Camera>();
 
         fpsController.OnPinDeletion.AddListener(RemovePinned);
         socialMediaContent.OnPinned.AddListener(MarkPinned);
+        socialMediaContent.OnDeletedPostClear.AddListener(ClearDeleted);
     }
 
     private void RemovePinned(ScriptableObject so)
@@ -92,6 +96,11 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
         }
     }
 
+    private void ClearDeleted()
+    {
+        postOptions.transform.Find("DeletePost").GetComponent<Image>().color = Color.black;
+    }
+
     public void instanctiatePost(SocialMediaPost post)
     {
         // Instantiate the post
@@ -124,6 +133,18 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
     public void OpenProfile()
     {
         socialMediaContent.ShowUserProfile(post.author);
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        TextMeshProUGUI textMesh = transform.Find("content").GetComponent<TextMeshProUGUI>();
+        int linkIndex = TMP_TextUtilities.FindIntersectingLink(textMesh, eventData.position, canvasCam);
+        if (linkIndex != -1)
+        {
+            TMP_LinkInfo linkInfo = textMesh.textInfo.linkInfo[linkIndex];
+            //Application.OpenURL(linkInfo.GetLinkID());
+            socialMediaContent.FilterHomefeed(linkInfo.GetLinkText());
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)

@@ -37,6 +37,7 @@ public class OSWindow : MonoBehaviour
     private void Awake()
     {
         rectTrans = GetComponent<RectTransform>();
+        topBar = transform.Find("TopBar").GetComponent<RectTransform>();
 
         sideswapLeft = transform.Find("SideswapLeft").GetComponent<RectTransform>();
         sideswapRight = transform.Find("SideswapRight").GetComponent<RectTransform>();
@@ -44,7 +45,7 @@ public class OSWindow : MonoBehaviour
 
     void Start()
     {
-        topBar = transform.Find("TopBar").GetComponent<RectTransform>();
+        
         buttonSmall = transform.Find("TopBar").Find("Buttons").Find("ButtonSmall").GetComponent<RectTransform>();
         buttonLong = transform.Find("TopBar").Find("Buttons").Find("ButtonLong").GetComponent<RectTransform>();
         buttonBig = transform.Find("TopBar").Find("Buttons").Find("ButtonBig").GetComponent<RectTransform>();
