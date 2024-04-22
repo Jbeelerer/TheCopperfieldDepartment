@@ -162,7 +162,6 @@ public class FPSController : MonoBehaviour
                 if (Vector3.Distance(hit.collider.gameObject.transform.position, transform.position) <= interactionReach && hit.collider.gameObject.tag == "Interactable")
                 {
                     nameOfThingLookedAt = hit.collider.gameObject.name;
-                    print(nameOfThingLookedAt + " " + lastSelectedObject + " " + selectedPinboardElement);
                     // if lastSelectedObject the player is grabing a thread and shouldn't be able see anything else
                     if (lastSelectedObject == null)
                     {
@@ -174,7 +173,6 @@ public class FPSController : MonoBehaviour
                                 {
                                     inputOverlay.SetIcon("default");
                                 }
-                                print(selectedPinboardElement);
                                 if (selectedPinboardElement != null)
                                 {
                                     if (removingTime != -1)
@@ -186,7 +184,6 @@ public class FPSController : MonoBehaviour
                                 }
                                 break;
                             case "DeadZone":
-                                print(selectedPinboardElement);
                                 if (selectedPinboardElement != null && removingTime == -1)
                                 {
                                     inputOverlay.SetIcon("trash", true);
@@ -247,12 +244,10 @@ public class FPSController : MonoBehaviour
                         PlayReverseAudio(pickupSound);
                         selectedPinboardElement = null;
                         inputOverlay.SetIcon("default");
-
                     }
                     currentSelectedObject = null;
                 }
             }
-
             if (Input.GetMouseButtonDown(0) && currentSelectedObject != null)
             {
                 if (currentThread != null && currentSelectedObject.name == "pinboardElement(Clone)")
@@ -378,7 +373,7 @@ public class FPSController : MonoBehaviour
 
             if (selectedPenAnim != null)
             {
-                selectedPenAnim.transform.parent.position = new Vector3(pinboard.transform.position.x, hit.point.y, hit.point.z);
+                selectedPenAnim.transform.parent.position = new Vector3(selectedPenAnim.transform.parent.position.x, hit.point.y, hit.point.z);
             }
 
             #endregion
@@ -414,30 +409,32 @@ public class FPSController : MonoBehaviour
 
     public IEnumerator PlayPenAnimation(string animName)
     {
-        PinboardElement pe = currentSelectedObject.GetComponent<PinboardElement>();
-        frozen = true;
-        // clear if the state is the same
-        if (animName == "circle" && pe.CheckIfCircleAnnotated() || animName == "cross" && pe.CheckIfStrikeThroughAnnotated())
+        if (!frozen)
         {
-            selectedPenAnim.SetTrigger("clear");
-            yield return new WaitForSeconds(selectedPenAnim.runtimeAnimatorController.animationClips[5].length);
-            pe.clearAnnotations();
-        }
-        else
-        {
-            pe.clearAnnotations();
-            selectedPenAnim.SetTrigger(animName);
-            yield return new WaitForSeconds(selectedPenAnim.runtimeAnimatorController.animationClips[animName == "circle" ? 3 : 4].length);
-            if (animName == "circle")
+            PinboardElement pe = currentSelectedObject.GetComponent<PinboardElement>();
+            frozen = true;
+            // clear if the state is the same
+            if (animName == "circle" && pe.GetAnnotationType() == AnnotationType.Circle || animName == "cross" && pe.GetAnnotationType() == AnnotationType.StrikeThrough)
             {
-                pe.annotateCircle();
+                selectedPenAnim.SetTrigger("clear");
+                yield return new WaitForSeconds(selectedPenAnim.runtimeAnimatorController.animationClips[5].length);
+                pe.SetAnnotationType(AnnotationType.None);
             }
             else
             {
-                pe.annotateStrikeThrough();
+                selectedPenAnim.SetTrigger(animName);
+                yield return new WaitForSeconds(selectedPenAnim.runtimeAnimatorController.animationClips[animName == "circle" ? 3 : 4].length);
+                if (animName == "circle")
+                {
+                    pe.SetAnnotationType(AnnotationType.Circle);
+                }
+                else
+                {
+                    pe.SetAnnotationType(AnnotationType.StrikeThrough);
+                }
             }
+            //pe.SetAnnotationType(animName == "circle" ? AnnotationType.Circle : animName == "cross" ? AnnotationType.StrikeThrough : AnnotationType.StrikeThrough);
+            frozen = false;
         }
-        frozen = false;
     }
-
 }

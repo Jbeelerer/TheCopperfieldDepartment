@@ -7,29 +7,42 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: MisteryBlackAndWhite
-  m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
+  m_Name: Post-It
+  m_Shader: {fileID: -6465566751694194690, guid: 18c359fb481d04f70a95066dfe7e7ed5,
+    type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - _ISCIRCLE
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap:
-    RenderType: Opaque
+  stringTagMap: {}
   disabledShaderPasses: []
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _AnnotationSprite:
+        m_Texture: {fileID: 2800000, guid: 81df670c17b62496ba60e318e810b09f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Base:
+        m_Texture: {fileID: 2800000, guid: c838446f933e94a568eb5a079c2f4e62, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BaseMap:
         m_Texture: {fileID: 2800000, guid: 12500913a0c774daebbf26c0b75c1dc0, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CircleAnnotation:
+        m_Texture: {fileID: 2800000, guid: 51fb3d2cc8c014f9ea10a055cec92322, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -49,7 +62,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 12500913a0c774daebbf26c0b75c1dc0, type: 3}
+        m_Texture: {fileID: 10307, guid: 0000000000000000f000000000000000, type: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Marker:
+        m_Texture: {fileID: 2800000, guid: 81df670c17b62496ba60e318e810b09f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -64,8 +81,52 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_844b212b1ea146b6bab8341e29de75be_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 81df670c17b62496ba60e318e810b09f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_b5f09a15bae64a6895cbc18c63b8fc53_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 51fb3d2cc8c014f9ea10a055cec92322, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SecondLayer:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SecondTexture:
+        m_Texture: {fileID: 2800000, guid: 1da09b44fcf8b4eaf8a0b13163484f8a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _StrikeThroughAnnotation:
+        m_Texture: {fileID: 2800000, guid: 6546fa729839c4e51b544b4df6ff44c0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ThirdLayer:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _t1:
+        m_Texture: {fileID: 2800000, guid: d766d4b3a826e4d3696a015bfdcee329, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _t2:
+        m_Texture: {fileID: 2800000, guid: d766d4b3a826e4d3696a015bfdcee329, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _t3:
+        m_Texture: {fileID: 2800000, guid: d766d4b3a826e4d3696a015bfdcee329, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _t4:
+        m_Texture: {fileID: 2800000, guid: d766d4b3a826e4d3696a015bfdcee329, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _t5:
+        m_Texture: {fileID: 2800000, guid: d766d4b3a826e4d3696a015bfdcee329, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -84,8 +145,10 @@ Material:
     m_Floats:
     - _AlphaClip: 0
     - _AlphaToMask: 0
+    - _AnnotationAlpha: 0.8
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
+    - _BlendOp: 0
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
@@ -99,9 +162,14 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _ISCIRCLE: 1
+    - _ISSTRIKETHROUGH: 0
+    - _IsCircle: 1
+    - _IsStrikeThrough: 0
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
+    - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Smoothness: 0.5
@@ -112,11 +180,23 @@ Material:
     - _Surface: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
+    - _ac: 0
+    - _acm: 0
+    - _rb: 0
+    - _rc: 1
+    - _rg: 0
+    - num: 5
     m_Colors:
+    - _AnnotationColor: {r: 0.6037736, g: 0.2705589, b: 0.2705589, a: 1}
     - _BaseColor: {r: 1, g: 0.8156863, b: 0, a: 1}
     - _Color: {r: 1, g: 0.8156863, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _TextColor: {r: 0.28301883, g: 0.23945352, b: 0.16420433, a: 1}
+    - _tint1: {r: 1, g: 1, b: 1, a: 0}
+    - _tint2: {r: 1, g: 1, b: 1, a: 0}
+    - _tint3: {r: 1, g: 1, b: 1, a: 0}
+    - _tint5: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &3185060817631327348
 MonoBehaviour:

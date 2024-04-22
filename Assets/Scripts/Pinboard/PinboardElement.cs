@@ -4,10 +4,18 @@ using UnityEngine;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine.UI;
+using UnityEngine.Rendering;
+using UnityEditor;
 
+public enum AnnotationType
+{
+    None,
+    Circle,
+    StrikeThrough
+}
 public class PinboardElement : MonoBehaviour
 {
-    [SerializeField] private Material mysteriousPersonMaterial;
+    [SerializeField] private Texture mysteriousPersonMaterial;
 
     // The reason for starting and ending threads, is that the lineRenderer has 0 and 1 for the start and endpoint respectively. This way the threads can be moved with the element.
     private List<LineRenderer> startingThreads = new List<LineRenderer>();
@@ -18,13 +26,33 @@ public class PinboardElement : MonoBehaviour
     private float animationTime;
     private bool isMoving = false;
 
-    private ScriptableObject content;
+    private ScriptableObject content = null;
 
-    private GameObject circle;
-    private GameObject crossThrough;
+    private AnnotationType annotationType = AnnotationType.None;
 
-    [SerializeField] private GameObject image;
+    private GameObject image;
 
+    [SerializeField] private GameObject[] postItMeshes;
+    private GameObject postItMesh;
+
+    private Coroutine waitingForContentToBeSet;
+
+    public Texture2D canvasTexture;
+    public Texture2D transparent;
+    public Texture2D circle;
+    public Texture2D strikeThrough;
+    public Camera canvasCamera;
+
+    public AnnotationType GetAnnotationType()
+    {
+        return annotationType;
+    }
+
+    public void SetAnnotationType(AnnotationType annotationType)
+    {
+        this.annotationType = annotationType;
+        postItMesh.GetComponent<Renderer>().material.SetTexture("_AnnotationSprite", annotationType == AnnotationType.Circle ? circle : annotationType == AnnotationType.StrikeThrough ? strikeThrough : transparent);
+    }
 
     public ScriptableObject GetContent()
     {
@@ -110,14 +138,28 @@ public class PinboardElement : MonoBehaviour
         endingThreads.Clear();
         startingThreads.Clear();
     }
+    void Awake()
+    {
+        postItMesh = Instantiate(postItMeshes[Random.Range(0, postItMeshes.Length - 1)], transform);
+        image = postItMesh.transform.GetChild(0).gameObject;
+        postItMesh = postItMesh.transform.GetChild(1).gameObject;
+        postItMesh.transform.Rotate(new Vector3(Random.Range(-10, 10), 0, 0));
+        //        postItMesh.transform.GetChild(0).Rotate(new Vector3(0, 0, Random.Range(-5, 5)));
+        postItMesh.transform.SetAsLastSibling();
+        animationTime = GetComponent<Animator>().GetAnimatorTransitionInfo(0).duration;
+
+    }
+
     void Start()
     {
-        circle = transform.GetChild(3).GetChild(0).gameObject;
-        crossThrough = transform.GetChild(3).GetChild(1).gameObject;
-        circle.SetActive(false);
-        crossThrough.SetActive(false);
-        animationTime = GetComponent<Animator>().GetAnimatorTransitionInfo(0).duration;
+        RenderPipelineManager.endCameraRendering += this.OnEndCameraRendering;
     }
+    void OnEndCameraRendering(ScriptableRenderContext context, Camera camera)
+    {
+        if (this.waitingForContentToBeSet == null && camera == canvasCamera && camera != null && camera.gameObject != null)
+            this.waitingForContentToBeSet = StartCoroutine(WaitForContentToBeSet(camera));
+    }
+
 
     // Update is called once per frame
     void FixedUpdate()
@@ -168,10 +210,45 @@ public class PinboardElement : MonoBehaviour
     {
         gameObject.GetComponentInChildren<TextMeshProUGUI>().text = text;
     }
+    private IEnumerator WaitForContentToBeSet(Camera camera)
+    {
+        // wait for content to be set
+        while (content == null)
+        {
+            yield return new WaitForSeconds(0.5f);
+        }
+        if (content is Person || content is SocialMediaPost || content is SocialMediaUser)
+        {
+            int res = 300;
+            // Res must be min the size of the screen, otherwise it will crash... because readpixles uses the screen size
+            // to handle previous mentioned problem
+            if (res > Screen.width || res > Screen.height)
+            {
+                res = Screen.width < Screen.height ? Screen.width : Screen.height;
+            }
+            canvasTexture = new Texture2D(res, res, TextureFormat.RGBA64, false);
+            Rect regionToReadFrom = new Rect((Screen.width / 2) - (res / 2), (Screen.height / 2) - (res / 2), res, res);//new Rect((Screen.width / 2) - (Screen.height / 2), (Screen.height / 2) - (Screen.height / 2), Screen.height, Screen.height);//new Rect(canvasTexture.width / 2, 0, canvasTexture.width, canvasTexture.height);
+            int xPosToWriteTo = 0;
+            int yPosToWriteTo = 0;
+            bool updateMipMapsAutomatically = false;
+            canvasTexture.ReadPixels(regionToReadFrom, xPosToWriteTo, yPosToWriteTo, updateMipMapsAutomatically);
+            canvasTexture.Apply();
+            Material material = new Material(postItMesh.GetComponent<Renderer>().material);
+            material.name = "PostItMaterial" + transform.position.x + transform.position.y;
+            material.SetTexture("_SecondTexture", canvasTexture);
+            postItMesh.GetComponent<Renderer>().material = material;     //delete camera and canvas after rendering and saving the texture   
+            Destroy(camera.gameObject);
+            Destroy(transform.GetChild(2).gameObject);//transform.Find("Canvas").gameObject);
+                                                      // Put the code that you want to execute after the camera renders here
+                                                      // If you are using URP or HDRP, Unity calls this method automatically
+                                                      // If you are writing a custom SRP, you must call RenderPipeline.EndCameraRendering
+        }
+    }
     public void SetContent(ScriptableObject o)
     {
         TextMeshProUGUI textElement = gameObject.GetComponentInChildren<TextMeshProUGUI>();
         content = o;
+
         switch (o)
         {
             case Person:
@@ -189,15 +266,13 @@ public class PinboardElement : MonoBehaviour
                 SocialMediaUser user = ConversionUtility.Convert<SocialMediaUser>(o);
                 textElement.text = user.username;
                 textElement.verticalAlignment = VerticalAlignmentOptions.Bottom;
-                //image.sprite = user.image;
                 image.GetComponent<Renderer>().material.mainTexture = user.image.texture;
                 break;
             default:
-                // misterious person
-                textElement.gameObject.SetActive(false);
-                gameObject.transform.GetChild(2).GetComponent<Renderer>().material = mysteriousPersonMaterial;
+                // misterious person  
+                postItMesh.GetComponent<Renderer>().material.SetTexture("_SecondTexture", mysteriousPersonMaterial);
                 image.SetActive(false);
-                transform.transform.GetChild(2).Rotate(new Vector3(0, 0, 180));
+                //transform.transform.GetChild(2).Rotate(new Vector3(0, 0, 180));
                 break;
         }
     }
@@ -235,28 +310,5 @@ public class PinboardElement : MonoBehaviour
         {
             endingThreads.Remove(l);
         }
-    }
-    public bool CheckIfCircleAnnotated()
-    {
-        return circle.activeSelf;
-    }
-    public bool CheckIfStrikeThroughAnnotated()
-    {
-        return crossThrough.activeSelf;
-    }
-    public void annotateCircle()
-    {
-        circle.SetActive(true);
-        crossThrough.SetActive(false);
-    }
-    public void annotateStrikeThrough()
-    {
-        crossThrough.SetActive(true);
-        circle.SetActive(false);
-    }
-    public void clearAnnotations()
-    {
-        crossThrough.SetActive(false);
-        circle.SetActive(false);
     }
 }
