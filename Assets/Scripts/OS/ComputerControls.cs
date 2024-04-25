@@ -150,7 +150,7 @@ public class ComputerControls : MonoBehaviour
 
         // Change cursor sprite if hovering over button
         GameObject hitObject = GetFirstHitObject();
-        if (hitObject)
+        if (hitObject && !hitObject.GetComponent<TextMeshProUGUI>())
         {
             cursor.GetComponent<Image>().sprite = hitObject.GetComponent<Button>() ? cursorClickable : cursorNormal;
         }
@@ -481,7 +481,7 @@ public class ComputerControls : MonoBehaviour
     }
 
     // Shoot raycast at current cursor position and get the first (topmost) hit object
-    private GameObject GetFirstHitObject()
+    public GameObject GetFirstHitObject()
     {
         GraphicRaycaster gr = this.GetComponent<GraphicRaycaster>();
         PointerEventData ped = new PointerEventData(null);

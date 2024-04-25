@@ -7,7 +7,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IPointerMoveHandler
 {
     public SocialMediaPost post;
 
@@ -78,7 +78,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
                     postOptions.transform.Find("PinPost").GetComponent<Image>().color = Color.red;
                     postPinned = true;
                     pinboard.AddPin(post);
-                    
+
                     popupManager.DisplayPostPinMessage();
                 }
                 break;
@@ -152,6 +152,14 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
         foreach (Transform option in postOptions.transform)
         {
             option.gameObject.SetActive(true);
+        }
+    }
+
+    public void OnPointerMove(PointerEventData eventData)
+    {
+        int linkIndex = TMP_TextUtilities.FindIntersectingLink(transform.Find("content").GetComponent<TMP_Text>(), eventData.position, canvasCam);
+        if (computerControls.GetFirstHitObject() && !computerControls.GetFirstHitObject().GetComponent<Button>()) {
+            computerControls.cursor.GetComponent<Image>().sprite = linkIndex != -1 ? computerControls.cursorClickable : computerControls.cursorNormal;
         }
     }
 
