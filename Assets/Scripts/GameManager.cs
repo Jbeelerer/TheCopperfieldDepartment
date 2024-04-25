@@ -38,6 +38,8 @@ public class GameManager : MonoBehaviour
     private SocialMediaUser[] users;
     private Person[] people;
 
+    [SerializeField] private ScriptableObject customCase;
+
     public Person[] GetPeople()
     {
         return people;
@@ -110,7 +112,10 @@ public class GameManager : MonoBehaviour
         }
         competingEmployees.Sort((x, y) =>
     y.GetPoints().CompareTo(x.GetPoints()));
-        currentCase = Resources.LoadAll<Case>("Case" + Random.Range(1, 2))[0];//); 
+        if (customCase == null)
+            currentCase = Resources.LoadAll<Case>("Case" + Random.Range(1, 2))[0];//); 
+        else
+            currentCase = (Case)customCase;
         // load all connections
         connections = Resources.LoadAll<Connections>("Case" + currentCase.id + "/Connections");
         posts = Resources.LoadAll<SocialMediaPost>("Case" + currentCase.id + "/Posts");

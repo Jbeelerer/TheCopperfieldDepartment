@@ -219,7 +219,7 @@ public class PinboardElement : MonoBehaviour
         }
         if (content is Person || content is SocialMediaPost || content is SocialMediaUser)
         {
-            int res = 300;
+            int res = 500;
             // Res must be min the size of the screen, otherwise it will crash... because readpixles uses the screen size
             // to handle previous mentioned problem
             if (res > Screen.width || res > Screen.height)
@@ -247,13 +247,14 @@ public class PinboardElement : MonoBehaviour
     public void SetContent(ScriptableObject o)
     {
         TextMeshProUGUI textElement = gameObject.GetComponentInChildren<TextMeshProUGUI>();
-        content = o;
 
         switch (o)
         {
             case Person:
                 Person person = ConversionUtility.Convert<Person>(o);
                 textElement.text = person.personName;
+                textElement.verticalAlignment = VerticalAlignmentOptions.Bottom;
+                image.GetComponent<Renderer>().material.mainTexture = person.image.texture;
                 break;
             case SocialMediaPost:
                 // connect to user
@@ -275,6 +276,7 @@ public class PinboardElement : MonoBehaviour
                 //transform.transform.GetChild(2).Rotate(new Vector3(0, 0, 180));
                 break;
         }
+        content = o;
     }
     public void DeleteElement()
     {

@@ -55,6 +55,7 @@ public class AdditionalInfoBoard : MonoBehaviour
             case Person:
                 Person p = (Person)o;
                 title.text = p.personName;
+                image.sprite = p.image;
                 foreach (string info in p.additionalInfos)
                 {
                     additionalInfos.text += "- " + info + "<br>";

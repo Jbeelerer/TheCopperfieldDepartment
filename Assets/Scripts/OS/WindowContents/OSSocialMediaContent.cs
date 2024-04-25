@@ -63,6 +63,7 @@ public class OSSocialMediaContent : MonoBehaviour
         newPost.GetComponent<OSSocialMediaPost>().instanctiatePost(post);
         newPost.name = "Post" + postNumber;
         postNumber++;
+        newPost.transform.Find("imageMask").GetChild(0).GetComponent<Image>().sprite = post.author.image;
         newPost.transform.Find("name").GetComponent<TextMeshProUGUI>().text = post.author.username;
         newPost.transform.Find("content").GetComponent<TextMeshProUGUI>().text = post.content;
         Instantiate(newPost, profilePageContent.transform);

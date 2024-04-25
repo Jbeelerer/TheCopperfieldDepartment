@@ -43,6 +43,7 @@ public class OSPeopleListContent : MonoBehaviour
         newProfile.GetComponent<OSPerson>().InstantiatePerson(person);
         newProfile.name = "Profile" + personNumber;
         personNumber++;
+        newProfile.transform.Find("Image").GetComponent<Image>().sprite = person.image;
         newProfile.transform.Find("name").GetComponent<TextMeshProUGUI>().text = person.personName;
         newProfile.transform.Find("info").GetComponent<TextMeshProUGUI>().text = person.description;
         peopleList.Add(newProfile.GetComponent<OSPerson>());
