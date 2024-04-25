@@ -37,6 +37,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
         fpsController.OnPinDeletion.AddListener(RemovePinned);
         socialMediaContent.OnPinned.AddListener(MarkPinned);
+        socialMediaContent.OnUnpinned.AddListener(RemovePinned);
         socialMediaContent.OnDeletedPostClear.AddListener(ClearDeleted);
     }
 
@@ -49,6 +50,8 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
                 {
                     postOptions.transform.Find("PinPost").GetComponent<Image>().color = Color.black;
                     postPinned = false;
+
+                    popupManager.DisplayPostUnpinMessage();
                 }
                 break;
             case SocialMediaUser:
@@ -56,6 +59,8 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
                 {
                     postOptions.transform.Find("PinUser").GetComponent<Image>().color = Color.black;
                     userPinned = false;
+
+                    popupManager.DisplayUserUnpinMessage();
                 }
                 break;
         }
@@ -66,6 +71,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
         switch (so)
         {
             case SocialMediaPost:
+                // Pin specific post and its user
                 if (((SocialMediaPost)so).author == post.author)
                 {
                     postOptions.transform.Find("PinUser").GetComponent<Image>().color = Color.red;
@@ -83,6 +89,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
                 }
                 break;
             case SocialMediaUser:
+                // Pin only user
                 if (so == post.author)
                 {
                     postOptions.transform.Find("PinUser").GetComponent<Image>().color = Color.red;
@@ -109,7 +116,29 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     public void AddPostToPinboard(string type)
     {
-        socialMediaContent.PinPost(type, post);
+        switch (type)
+        {
+            case "name":
+                if (!userPinned)
+                {
+                    socialMediaContent.PinPost(type, post);
+                }
+                else
+                {
+                    socialMediaContent.UnpinPost(type, post);
+                }
+                break;
+            case "content":
+                if (!postPinned)
+                {
+                    socialMediaContent.PinPost(type, post);
+                }
+                else
+                {
+                    socialMediaContent.UnpinPost(type, post);
+                }
+                break;
+        }
     }
 
     public void DeletePost()
@@ -158,7 +187,8 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
     public void OnPointerMove(PointerEventData eventData)
     {
         int linkIndex = TMP_TextUtilities.FindIntersectingLink(transform.Find("content").GetComponent<TMP_Text>(), eventData.position, canvasCam);
-        if (computerControls.GetFirstHitObject() && !computerControls.GetFirstHitObject().GetComponent<Button>()) {
+        if (computerControls.GetFirstHitObject() && !computerControls.GetFirstHitObject().GetComponent<Button>())
+        {
             computerControls.cursor.GetComponent<Image>().sprite = linkIndex != -1 ? computerControls.cursorClickable : computerControls.cursorNormal;
         }
     }

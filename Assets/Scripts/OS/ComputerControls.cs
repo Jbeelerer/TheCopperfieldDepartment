@@ -48,7 +48,7 @@ public class ComputerControls : MonoBehaviour
     private GameObject cursorTooltip;
     private bool cursorStopped = false;
     private float timeCursorStopped = 0;
-    private float tooltipDelay = 0.5f;
+    private float tooltipDelay = 0.3f;
     private FPSController fpsController;
 
     private bool cursorActive = false;
@@ -167,6 +167,11 @@ public class ComputerControls : MonoBehaviour
 
     public void ToggleCursor()
     {
+        Invoke("ToggleCursorDelayed", 0.25f);
+    }
+
+    private void ToggleCursorDelayed()
+    {
         cursorActive = !cursorActive;
         cursor.gameObject.SetActive(cursorActive);
         cursor.anchoredPosition = cursorActive ? new Vector2(0, 0) : new Vector2(-1000, -1000);
@@ -276,6 +281,34 @@ public class ComputerControls : MonoBehaviour
 
                     return;
                 }
+                else if (Object.ReferenceEquals(hitObject, window.sideswapRight.gameObject))
+                {
+                    // Swap current left window with the one on the right
+                    if (window.currWindowSize == WindowSize.LONG_LEFT)
+                    {
+                        RemoveLeftRightWindow(window);
+                        if (rightWindow)
+                        {
+                            ResizeWindowLongLeft(rightWindow);
+                        }
+                        ResizeWindowLongRight(window);
+                    }
+                    return;
+                }
+                else if (Object.ReferenceEquals(hitObject, window.sideswapLeft.gameObject))
+                {
+                    // Swap current right window with the one on the left
+                    if (window.currWindowSize == WindowSize.LONG_RIGHT)
+                    {
+                        RemoveLeftRightWindow(window);
+                        if (leftWindow)
+                        {
+                            ResizeWindowLongRight(leftWindow);
+                        }
+                        ResizeWindowLongLeft(window);
+                    }
+                    return;
+                }
             }
         }
     }
@@ -322,34 +355,6 @@ public class ComputerControls : MonoBehaviour
                 {
                     // Make window fullscreen
                     ResizeWindowBig(window);
-                    return;
-                }
-                else if (Object.ReferenceEquals(hitObject, window.sideswapRight.gameObject))
-                {
-                    // Swap current left window with the one on the right
-                    if (window.currWindowSize == WindowSize.LONG_LEFT)
-                    {
-                        RemoveLeftRightWindow(window);
-                        if (rightWindow)
-                        {
-                            ResizeWindowLongLeft(rightWindow);
-                        }
-                        ResizeWindowLongRight(window);
-                    }
-                    return;
-                }
-                else if (Object.ReferenceEquals(hitObject, window.sideswapLeft.gameObject))
-                {
-                    // Swap current right window with the one on the left
-                    if (window.currWindowSize == WindowSize.LONG_RIGHT)
-                    {
-                        RemoveLeftRightWindow(window);
-                        if (leftWindow)
-                        {
-                            ResizeWindowLongRight(leftWindow);
-                        }
-                        ResizeWindowLongLeft(window);
-                    }
                     return;
                 }
             }

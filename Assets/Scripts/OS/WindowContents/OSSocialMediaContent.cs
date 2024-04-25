@@ -29,6 +29,7 @@ public class OSSocialMediaContent : MonoBehaviour
     private FPSController fpsController;
 
     public PinEvent OnPinned;
+    public PinEvent OnUnpinned;
     public UnityEvent OnDeletedPostClear;
 
     // Start is called before the first frame update
@@ -47,6 +48,8 @@ public class OSSocialMediaContent : MonoBehaviour
         }
 
         fpsController.OnPinDeletion.AddListener(RemovePinnedUser);
+
+        ResetHomeFeed();
     }
 
     private void OnEnable()
@@ -79,6 +82,19 @@ public class OSSocialMediaContent : MonoBehaviour
                 break;
             case "content":
                 OnPinned?.Invoke(post);
+                break;
+        }
+    }
+
+    public void UnpinPost(string type, SocialMediaPost post)
+    {
+        switch (type)
+        {
+            case "name":
+                OnUnpinned?.Invoke(post.author);
+                break;
+            case "content":
+                OnUnpinned?.Invoke(post);
                 break;
         }
     }
@@ -117,9 +133,17 @@ public class OSSocialMediaContent : MonoBehaviour
     {
         searchBar.gameObject.SetActive(false);
 
+        // Display all posts that aren't flagged to be hidden in the home feed
         foreach (Transform post in socialMediaPostContainer.transform)
         {
-            post.gameObject.SetActive(true);
+            if (!post.GetComponent<OSSocialMediaPost>().post.hiddenInHomeFeed)
+            {
+                post.gameObject.SetActive(true);
+            }
+            else
+            {
+                post.gameObject.SetActive(false);
+            }
         }
     }
 

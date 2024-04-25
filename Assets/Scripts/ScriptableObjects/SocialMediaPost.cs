@@ -10,6 +10,6 @@ public class SocialMediaPost : ScriptableObject
     public SocialMediaUser author;
     public string date;
     public Sprite image;
-
+    public bool hiddenInHomeFeed;
 
 }

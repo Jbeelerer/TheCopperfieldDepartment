@@ -33,6 +33,24 @@ public class OSPopupManager : MonoBehaviour
         anim.Play("popupMessageSpawn", -1, 0);
     }
 
+    public void DisplayPostUnpinMessage()
+    {
+        messageText.text = "Removed Post Pin";
+        anim.Play("popupMessageSpawn", -1, 0);
+    }
+
+    public void DisplayUserUnpinMessage()
+    {
+        messageText.text = "Removed User Pin";
+        anim.Play("popupMessageSpawn", -1, 0);
+    }
+
+    public void DisplayPersonUnpinMessage()
+    {
+        messageText.text = "Removed Person Pin";
+        anim.Play("popupMessageSpawn", -1, 0);
+    }
+
     public void DisplayPersonAccusedMessage()
     {
         messageText.text = "Marked person as prime suspect!";

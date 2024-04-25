@@ -48,9 +48,19 @@ public class OSPerson : MonoBehaviour
 
     public void AddPersonToPinboard()
     {
-        pinboard.AddPin(person);
-        popupManager.DisplayPersonPinMessage();
-        transform.Find("PinPerson").GetComponent<Image>().color = Color.red;
+        if (transform.Find("PinPerson").GetComponent<Image>().color == Color.black)
+        {
+            pinboard.AddPin(person);
+            transform.Find("PinPerson").GetComponent<Image>().color = Color.red;
+
+            popupManager.DisplayPersonPinMessage();
+        }
+        else
+        {
+            transform.Find("PinPerson").GetComponent<Image>().color = Color.black;
+
+            popupManager.DisplayPersonUnpinMessage();
+        }
     }
 
     public void AccusePerson()
