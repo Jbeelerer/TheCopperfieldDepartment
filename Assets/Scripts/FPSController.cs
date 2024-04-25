@@ -72,6 +72,8 @@ public class FPSController : MonoBehaviour
 
     public DeletionEvent OnPinDeletion;
 
+    private Vector3 originalPosition;
+
     public void SetIsFrozen(bool isFrozen)
     {
         frozen = isFrozen;
@@ -105,9 +107,21 @@ public class FPSController : MonoBehaviour
             if (removingTime <= 0)
             {
                 PinboardElement pe = currentSelectedObject.name == "pin" ? currentSelectedObject.transform.parent.GetComponent<PinboardElement>() : selectedPinboardElement.GetComponent<PinboardElement>();
-                OnPinDeletion?.Invoke(pe.GetContent());
-                pe.DeleteElement();
-                audioSource.PlayOneShot(deleteSound);
+
+                if (pe.GetIfDeletable())
+                {
+                    OnPinDeletion?.Invoke(pe.GetContent());
+                    pe.DeleteElement();
+                    audioSource.PlayOneShot(deleteSound);
+                }
+                else
+                {
+                    pe.transform.position = originalPosition;
+                    PlayReverseAudio(pickupSound);
+                    pe.GetComponentInParent<Animator>().SetBool("pinNormal", true);
+                    pe.gameObject.layer = 0;
+                }
+
                 removingTime = -1;
                 inputOverlay.stopHold();
                 selectedPinboardElement = null;
@@ -197,7 +211,7 @@ public class FPSController : MonoBehaviour
                                 break;
                             case "pinboardElement(Clone)":
                                 inputOverlay.SetIcon("handOpen");
-                                if (!detailMode && hoverStart > 0.5f)
+                                if (!detailMode && hoverStart > 0.5f && hit.collider.gameObject.GetComponent<PinboardElement>().GetIfDeletable())
                                 {
                                     AdditionalInfoBoard aib = transform.GetChild(0).Find("MoreInfo").GetComponent<AdditionalInfoBoard>();
                                     aib.ShowInfo(true);
@@ -290,6 +304,7 @@ public class FPSController : MonoBehaviour
                             }
                             else
                             {
+                                originalPosition = currentSelectedObject.transform.position;
                                 inputOverlay.SetIcon("handClosed");
                                 currentSelectedObject.GetComponentInParent<Animator>().SetBool("pinNormal", false);
                                 selectedPinboardElement = currentSelectedObject;

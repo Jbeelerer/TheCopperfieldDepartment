@@ -15,6 +15,7 @@ public enum AnnotationType
 }
 public class PinboardElement : MonoBehaviour
 {
+    private bool isDeletable = true;
     [SerializeField] private Texture mysteriousPersonMaterial;
 
     // The reason for starting and ending threads, is that the lineRenderer has 0 and 1 for the start and endpoint respectively. This way the threads can be moved with the element.
@@ -43,6 +44,10 @@ public class PinboardElement : MonoBehaviour
     public Texture2D strikeThrough;
     public Camera canvasCamera;
 
+    public bool GetIfDeletable()
+    {
+        return isDeletable;
+    }
     public AnnotationType GetAnnotationType()
     {
         return annotationType;
@@ -242,6 +247,10 @@ public class PinboardElement : MonoBehaviour
                                                       // Put the code that you want to execute after the camera renders here
                                                       // If you are using URP or HDRP, Unity calls this method automatically
                                                       // If you are writing a custom SRP, you must call RenderPipeline.EndCameraRendering
+        }
+        else
+        {
+            isDeletable = false;
         }
     }
     public void SetContent(ScriptableObject o)
