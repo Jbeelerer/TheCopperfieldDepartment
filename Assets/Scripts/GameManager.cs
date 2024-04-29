@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
         private int interval = 10;
         */
 
-    private int day = 0;
+    private int day = 1;
     private int daySegment = 0;
     private int totalDaySegments = 0;
 
@@ -38,7 +38,26 @@ public class GameManager : MonoBehaviour
     private SocialMediaUser[] users;
     private Person[] people;
 
+    private Vector3 startPosition;
+    private Quaternion startRotation;
+
     [SerializeField] private ScriptableObject customCase;
+
+    [SerializeField] private GameObject newDayPrefab;
+
+    public void SetStartTransform(Transform t)
+    {
+        startPosition = t.position;
+        startRotation = t.rotation;
+    }
+    public Vector3 GetStartPosition()
+    {
+        return startPosition;
+    }
+    public Quaternion GetStartRotation()
+    {
+        return startRotation;
+    }
 
     public Person[] GetPeople()
     {
@@ -100,6 +119,7 @@ public class GameManager : MonoBehaviour
 
     public void setNewDay(bool firstDay = false)
     {
+        Instantiate(newDayPrefab);
         if (!firstDay)
         {
             playerOnEmployeeList.addNewPoints(investigationState == investigationStates.SuspectFound ? 100 : investigationState == investigationStates.SuspectSaved ? 0 : -100);
@@ -112,10 +132,18 @@ public class GameManager : MonoBehaviour
         }
         competingEmployees.Sort((x, y) =>
     y.GetPoints().CompareTo(x.GetPoints()));
-        if (customCase == null)
-            currentCase = Resources.LoadAll<Case>("Case" + Random.Range(1, 2))[0];//); 
+        if (Resources.LoadAll<Case>("Case" + day).Count() == 0)
+        {
+            // TODO: implement endgame   
+            print("Game Over");
+        }
         else
-            currentCase = (Case)customCase;
+        {
+            if (customCase == null)
+                currentCase = Resources.LoadAll<Case>("Case" + day)[0];// Random.Range(1, 2))[0];//); 
+            else
+                currentCase = (Case)customCase;
+        }
         // load all connections
         connections = Resources.LoadAll<Connections>("Case" + currentCase.id + "/Connections");
         posts = Resources.LoadAll<SocialMediaPost>("Case" + currentCase.id + "/Posts");

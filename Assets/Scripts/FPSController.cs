@@ -89,6 +89,7 @@ public class FPSController : MonoBehaviour
         inputOverlay = gameObject.GetComponentInChildren<InputOverlay>();
 
         computerControls = GameObject.Find("DesktopInterface").GetComponent<ComputerControls>();
+        gm.SetStartTransform(transform);
     }
     private void FixedUpdate()
     {
@@ -338,6 +339,11 @@ public class FPSController : MonoBehaviour
                             selectedPenAnim = currentSelectedObject.GetComponentInChildren<Animator>();
                             selectedPenAnim.transform.parent.gameObject.layer = 2;
                             selectedPenAnim.SetBool("pickedup", true);
+                            break;
+                        case "Door":
+                            gm.setNewDay();
+                            transform.position = gm.GetStartPosition();
+                            transform.rotation = gm.GetStartRotation();
                             break;
                         default:
                             break;
