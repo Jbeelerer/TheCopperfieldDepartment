@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Device;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -37,6 +39,7 @@ public class ComputerControls : MonoBehaviour
     public List<OSApplication> apps = new List<OSApplication>();
     public Sprite cursorNormal;
     public Sprite cursorClickable;
+    public Sprite cursorForbidden;
     public OSInvestigationState investigationState = OSInvestigationState.NONE;
 
     private RectTransform screen;
@@ -50,8 +53,12 @@ public class ComputerControls : MonoBehaviour
     private float timeCursorStopped = 0;
     private float tooltipDelay = 0.3f;
     private FPSController fpsController;
-
+    private GameManager gm;
     private bool cursorActive = false;
+    private List <SocialMediaPost> todaysPosts = new List<SocialMediaPost>();
+    private List <Person> todaysPeople = new List<Person>();
+
+    public UnityEvent OnContentUpdate;
 
     // Start is called before the first frame update
     void Start()
@@ -67,6 +74,9 @@ public class ComputerControls : MonoBehaviour
         fpsController = GameObject.Find("Player").GetComponent<FPSController>();
 
         cursor.anchoredPosition = new Vector2(-1000, -1000);
+
+        gm = GameManager.instance;
+        gm.OnNewDay.AddListener(UpdateContent);
     }
 
     // Update is called once per frame
@@ -148,12 +158,33 @@ public class ComputerControls : MonoBehaviour
         // Check if cursor is still and tooltip should be displayed
         CheckForTooltip();
 
-        // Change cursor sprite if hovering over button
         GameObject hitObject = GetFirstHitObject();
-        if (hitObject && !hitObject.GetComponent<TextMeshProUGUI>())
+        // Change cursor sprite if hovering over button
+        if (hitObject && (!hitObject.GetComponent<TextMeshProUGUI>() || hitObject.GetComponent<Button>()))
         {
             cursor.GetComponent<Image>().sprite = hitObject.GetComponent<Button>() ? cursorClickable : cursorNormal;
         }
+        // Change cursor sprite if hovering over disabled button
+        if (hitObject && hitObject.GetComponent<Button>() && !hitObject.GetComponent<Button>().isActiveAndEnabled)
+        {
+            cursor.GetComponent<Image>().sprite = cursorForbidden;
+        }
+    }
+
+    private void UpdateContent()
+    {
+        todaysPosts = gm.GetPosts().ToList();
+        todaysPeople = gm.GetPeople().ToList();
+    }
+
+    public List<SocialMediaPost> GetPosts()
+    {
+        return todaysPosts;
+    }
+
+    public List<Person> GetPeople()
+    {
+        return todaysPeople;
     }
 
     public void LeaveComputer()

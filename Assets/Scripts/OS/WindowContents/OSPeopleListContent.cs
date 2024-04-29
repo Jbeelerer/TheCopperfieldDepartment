@@ -22,8 +22,8 @@ public class OSPeopleListContent : MonoBehaviour
 
     void Start()
     {
-        Person[] people = Resources.LoadAll<Person>("People");
-        foreach (Person p in people)
+        //Person[] people = Resources.LoadAll<Person>("People");
+        foreach (Person p in computerControls.GetPeople())
         {
             InstanciatePerson(p);
         }

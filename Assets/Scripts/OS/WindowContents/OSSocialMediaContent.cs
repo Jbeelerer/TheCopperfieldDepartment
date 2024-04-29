@@ -19,9 +19,12 @@ public class OSSocialMediaContent : MonoBehaviour
     [SerializeField] private GameObject profilePageContent;
     [SerializeField] private Transform profilePageheader;
     [SerializeField] private Transform searchBar;
+    [SerializeField] private GameObject searchHistoryContent;
+    [SerializeField] private GameObject searchTermPrefab;
+    [SerializeField] private Sprite searchTermIconHashtag;
+    [SerializeField] private Sprite searchTermIconUser;
 
     private int postNumber = 1;
-    private GameManager gm;
     private List<OSSocialMediaPost> postList = new List<OSSocialMediaPost>();
     private ComputerControls computerControls;
     private SocialMediaUser currentUser;
@@ -41,8 +44,7 @@ public class OSSocialMediaContent : MonoBehaviour
     private void Start()
     {
         fpsController = GameObject.Find("Player").GetComponent<FPSController>();
-        gm = GameManager.instance;
-        foreach (SocialMediaPost s in gm.GetPosts())
+        foreach (SocialMediaPost s in computerControls.GetPosts())
         {
             InstanciatePost(s);
         }
@@ -127,6 +129,20 @@ public class OSSocialMediaContent : MonoBehaviour
                 post.gameObject.SetActive(false);
             }
         }
+
+        // Add filter term to search history
+        string termWithoutHash = filterTerm.Substring(1);
+        foreach (Transform term in searchHistoryContent.transform)
+        {
+            if (term.Find("Name").GetComponent<TextMeshProUGUI>().text == termWithoutHash)
+            {
+                term.SetAsLastSibling();
+                return;
+            }
+        }
+        GameObject newSearchTerm = Instantiate(searchTermPrefab, searchHistoryContent.transform);
+        newSearchTerm.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = termWithoutHash;
+        newSearchTerm.transform.Find("Icon").GetComponent<Image>().sprite = searchTermIconHashtag;
     }
 
     public void ResetHomeFeed()
@@ -146,7 +162,6 @@ public class OSSocialMediaContent : MonoBehaviour
             }
         }
     }
-
 
     public void ShowUserProfile(SocialMediaUser user)
     {
@@ -180,6 +195,20 @@ public class OSSocialMediaContent : MonoBehaviour
                 }
             }
         }
+
+        // Add user to search history
+        foreach (Transform term in searchHistoryContent.transform)
+        {
+            if (term.Find("Name").GetComponent<TextMeshProUGUI>().text == user.username)
+            {
+                term.SetAsLastSibling();
+                return;
+            }
+        }
+        GameObject newSearchTerm = Instantiate(searchTermPrefab, searchHistoryContent.transform);
+        newSearchTerm.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = user.username;
+        newSearchTerm.transform.Find("Icon").GetComponent<Image>().sprite = searchTermIconUser;
+        newSearchTerm.GetComponent<OSSearchTerm>().user = user;
     }
 
     public void CloseUserProfile()
