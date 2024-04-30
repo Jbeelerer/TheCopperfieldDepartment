@@ -171,7 +171,6 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
         if (linkIndex != -1)
         {
             TMP_LinkInfo linkInfo = textMesh.textInfo.linkInfo[linkIndex];
-            //Application.OpenURL(linkInfo.GetLinkID());
             socialMediaContent.FilterHomefeed(linkInfo.GetLinkText());
         }
     }

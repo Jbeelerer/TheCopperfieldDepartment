@@ -45,7 +45,6 @@ public class OSWindow : MonoBehaviour
 
     void Start()
     {
-        
         buttonSmall = transform.Find("TopBar").Find("Buttons").Find("ButtonSmall").GetComponent<RectTransform>();
         buttonLong = transform.Find("TopBar").Find("Buttons").Find("ButtonLong").GetComponent<RectTransform>();
         buttonBig = transform.Find("TopBar").Find("Buttons").Find("ButtonBig").GetComponent<RectTransform>();
