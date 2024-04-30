@@ -114,7 +114,7 @@ public class GameManager : MonoBehaviour
     }
     void Start()
     {
-        setNewDay(true);
+        StartCoroutine(DelayFirstDay());
     }
 
     public void setNewDay(bool firstDay = false)
@@ -236,4 +236,11 @@ public class GameManager : MonoBehaviour
             print("EndDay");
         }
     }*/
+
+
+    private IEnumerator DelayFirstDay()
+    {
+        yield return null;
+        setNewDay(true);
+    }
 }
