@@ -7,14 +7,28 @@ using UnityEngine.UI;
 
 public class OSGovAppContent : MonoBehaviour, IPointerClickHandler, IPointerMoveHandler
 {
-    [SerializeField] private TMP_Text mailTextMesh;
+    public TMP_Text mailTextMesh;
+    public TMP_Text mailTitle;
+    public TMP_Text mailSender;
+    public GameObject mailContainer;
+    public GameObject mailPrefab;
+
     private Camera canvasCam;
     private ComputerControls computerControls;
+    private Mail[] mails;
 
     void Start()
     {
         canvasCam = GameObject.Find("computerTextureCam").GetComponent<Camera>();
         computerControls = GetComponentInParent<ComputerControls>();
+
+        // TODO: Load mails through GameManager
+        mails = Resources.LoadAll<Mail>("Case1/Mails");
+        foreach (Mail m in mails)
+        {
+            GameObject newMail = Instantiate(mailPrefab, mailContainer.transform);
+            newMail.GetComponent<OSMail>().mail = m;
+        }
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -22,8 +36,6 @@ public class OSGovAppContent : MonoBehaviour, IPointerClickHandler, IPointerMove
         int linkIndex = TMP_TextUtilities.FindIntersectingLink(mailTextMesh, eventData.position, canvasCam);
         if (linkIndex != -1)
         {
-            //TMP_LinkInfo linkInfo = mailTextMesh.textInfo.linkInfo[linkIndex];
-            //Application.OpenURL(linkInfo.GetLinkID());
             computerControls.OpenWindow(OSAppType.PEOPLE_LIST);
         }
     }
