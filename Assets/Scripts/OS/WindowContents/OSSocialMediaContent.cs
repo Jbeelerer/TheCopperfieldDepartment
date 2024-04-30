@@ -32,7 +32,6 @@ public class OSSocialMediaContent : MonoBehaviour
     private FPSController fpsController;
 
     public PinEvent OnPinned;
-    public PinEvent OnUnpinned;
     public UnityEvent OnDeletedPostClear;
 
     // Start is called before the first frame update
@@ -44,12 +43,12 @@ public class OSSocialMediaContent : MonoBehaviour
     private void Start()
     {
         fpsController = GameObject.Find("Player").GetComponent<FPSController>();
+        fpsController.OnPinDeletion.AddListener(RemovePinnedUser);
+
         foreach (SocialMediaPost s in computerControls.GetPosts())
         {
             InstanciatePost(s);
         }
-
-        fpsController.OnPinDeletion.AddListener(RemovePinnedUser);
 
         ResetHomeFeed();
     }
@@ -93,10 +92,10 @@ public class OSSocialMediaContent : MonoBehaviour
         switch (type)
         {
             case "name":
-                OnUnpinned?.Invoke(post.author);
+                computerControls.OnUnpinned?.Invoke(post.author);
                 break;
             case "content":
-                OnUnpinned?.Invoke(post);
+                computerControls.OnUnpinned?.Invoke(post);
                 break;
         }
     }

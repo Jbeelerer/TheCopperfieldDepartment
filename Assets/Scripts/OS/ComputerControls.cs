@@ -55,10 +55,10 @@ public class ComputerControls : MonoBehaviour
     private FPSController fpsController;
     private GameManager gm;
     private bool cursorActive = false;
-    private List <SocialMediaPost> todaysPosts = new List<SocialMediaPost>();
-    private List <Person> todaysPeople = new List<Person>();
+    private SocialMediaPost[] todaysPosts;
+    private Person[] todaysPeople;
 
-    public UnityEvent OnContentUpdate;
+    public PinEvent OnUnpinned;
 
     // Start is called before the first frame update
     void Start()
@@ -173,16 +173,16 @@ public class ComputerControls : MonoBehaviour
 
     private void UpdateContent()
     {
-        todaysPosts = gm.GetPosts().ToList();
-        todaysPeople = gm.GetPeople().ToList();
+        todaysPosts = gm.GetPosts();
+        todaysPeople = gm.GetPeople();
     }
 
-    public List<SocialMediaPost> GetPosts()
+    public SocialMediaPost[] GetPosts()
     {
         return todaysPosts;
     }
 
-    public List<Person> GetPeople()
+    public Person[] GetPeople()
     {
         return todaysPeople;
     }
@@ -394,7 +394,8 @@ public class ComputerControls : MonoBehaviour
 
     private void HideWindowSizeButton(OSWindow window, RectTransform button)
     {
-        window.buttonBig.gameObject.SetActive(true);
+        // Dont show buttonBig for the moment
+        //window.buttonBig.gameObject.SetActive(true);
         window.buttonLong.gameObject.SetActive(true);
         window.buttonSmall.gameObject.SetActive(true);
         button.gameObject.SetActive(false);

@@ -37,7 +37,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
         fpsController.OnPinDeletion.AddListener(RemovePinned);
         socialMediaContent.OnPinned.AddListener(MarkPinned);
-        socialMediaContent.OnUnpinned.AddListener(RemovePinned);
+        computerControls.OnUnpinned.AddListener(RemovePinned);
         socialMediaContent.OnDeletedPostClear.AddListener(ClearDeleted);
     }
 

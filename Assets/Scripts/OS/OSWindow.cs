@@ -51,6 +51,10 @@ public class OSWindow : MonoBehaviour
         buttonClose = transform.Find("TopBar").Find("Buttons").Find("ButtonClose").GetComponent<RectTransform>();
         
         transform.Find("TopBar").Find("Text").GetComponent<TextMeshProUGUI>().text = appType.ToString();
+
+        // deactivate buttonBig for every window, not sure if even needed anymore
+        buttonBig.gameObject.SetActive(false);
+
         if (appType == OSAppType.TEST)
         {
             buttonSmall.gameObject.SetActive(false);

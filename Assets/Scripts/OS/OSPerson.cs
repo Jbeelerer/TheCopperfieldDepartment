@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -48,6 +49,7 @@ public class OSPerson : MonoBehaviour
 
     public void AddPersonToPinboard()
     {
+        // Pinning person
         if (transform.Find("PinPerson").GetComponent<Image>().color == Color.black)
         {
             pinboard.AddPin(person);
@@ -55,9 +57,11 @@ public class OSPerson : MonoBehaviour
 
             popupManager.DisplayPersonPinMessage();
         }
+        // Unpinning person
         else
         {
             transform.Find("PinPerson").GetComponent<Image>().color = Color.black;
+            computerControls.OnUnpinned?.Invoke(person);
 
             popupManager.DisplayPersonUnpinMessage();
         }
