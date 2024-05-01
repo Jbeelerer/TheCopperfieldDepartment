@@ -45,6 +45,13 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private GameObject newDayPrefab;
 
+    private bool answerCommited = false;
+    private Narration narration;
+
+    public bool GetAnswerCommited()
+    {
+        return answerCommited;
+    }
     public void SetStartTransform(Transform t)
     {
         startPosition = t.position;
@@ -115,10 +122,12 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         StartCoroutine(DelayFirstDay());
+        narration = FindObjectOfType<Narration>();
     }
 
     public void setNewDay(bool firstDay = false)
     {
+        answerCommited = false;
         Instantiate(newDayPrefab);
         if (!firstDay)
         {
@@ -178,6 +187,8 @@ public class GameManager : MonoBehaviour
     }
     public void checkSuspect(Person p)
     {
+        answerCommited = true;
+        narration.Say("suspectFound");
         if (p == currentCase.guiltyPerson)
         {
             investigationState = investigationStates.SuspectFound;
@@ -189,6 +200,8 @@ public class GameManager : MonoBehaviour
     }
     public void checkDeletedPost(SocialMediaPost p)
     {
+        answerCommited = true;
+        narration.Say("deletePost");
         if (p == currentCase.incriminatingPost)
         {
             investigationState = investigationStates.SuspectSaved;

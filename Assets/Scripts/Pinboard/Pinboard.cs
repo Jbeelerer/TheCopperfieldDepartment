@@ -25,12 +25,15 @@ public class Pinboard : MonoBehaviour
 
     private float minSpaceBetweenPins = 0.5f;
 
+    private Narration narration;
+
     // Start is called before the first frame update
     void Start()
     {
         //instantiate a pin for the suspect 
         pinboardModel = transform.GetChild(0);
         AddPin(new ScriptableObject());
+        narration = FindObjectOfType<Narration>();
     }
 
     public void RemoveThingOnPinboardByElement(PinboardElement pe)
@@ -183,6 +186,17 @@ public class Pinboard : MonoBehaviour
         }
         pinsOnPinboard[o] = pinboardElement;
         pinboardElement.SetContent(o);
+        if (o is IPinnable temp)
+        {
+            if (temp.suspicious)
+            {
+                narration.Say("positiveFeedback");
+            }
+            else if (temp.notSuspicious)
+            {
+                narration.Say("negativeFeedback");
+            }
+        }
     }
     private void ConnectWithThread(PinboardElement element1, PinboardElement element2)
     {

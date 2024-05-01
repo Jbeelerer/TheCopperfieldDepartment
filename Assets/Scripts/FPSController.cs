@@ -57,6 +57,8 @@ public class FPSController : MonoBehaviour
     [SerializeField] private AudioClip pickupSound;
     [SerializeField] private AudioClip deleteSound;
 
+    private Narration narration;
+
 
     // TODO: Remove pinboard when OS is ready
     [SerializeField] public Pinboard pinboard;
@@ -90,6 +92,7 @@ public class FPSController : MonoBehaviour
 
         computerControls = GameObject.Find("DesktopInterface").GetComponent<ComputerControls>();
         gm.SetStartTransform(transform);
+        narration = GetComponentInChildren<Narration>();
     }
     private void FixedUpdate()
     {
@@ -186,7 +189,7 @@ public class FPSController : MonoBehaviour
                             case "PinboardModel":
                                 if (selectedPinboardElement == null && currentThread == null)//TODO: add Pen exxption
                                 {
-                                    inputOverlay.SetIcon("default");
+                                    inputOverlay.SetIcon("defaultIcon");
                                 }
                                 if (selectedPinboardElement != null)
                                 {
@@ -231,6 +234,9 @@ public class FPSController : MonoBehaviour
                             case "threadCollider":
                                 inputOverlay.SetIcon("scissors");
                                 break;
+                            case "Door":
+                                inputOverlay.SetIcon("exit");
+                                break;
                             default:
                                 break;
                         }
@@ -258,7 +264,7 @@ public class FPSController : MonoBehaviour
                         selectedPinboardElement.GetComponent<PinboardElement>().setIsMoving(false);
                         PlayReverseAudio(pickupSound);
                         selectedPinboardElement = null;
-                        inputOverlay.SetIcon("default");
+                        inputOverlay.SetIcon("defaultIcon");
                     }
                     currentSelectedObject = null;
                 }
@@ -341,9 +347,18 @@ public class FPSController : MonoBehaviour
                             selectedPenAnim.SetBool("pickedup", true);
                             break;
                         case "Door":
-                            gm.setNewDay();
-                            transform.position = gm.GetStartPosition();
-                            transform.rotation = gm.GetStartRotation();
+                            if (gm.GetAnswerCommited())
+                            {
+                                gm.setNewDay();
+                                transform.position = gm.GetStartPosition();
+                                transform.rotation = gm.GetStartRotation();
+                            }
+                            else
+                            {
+                                // Todo: implement player feedback
+                                print("Answer not commited");
+                                narration.Say("notLeaving");
+                            }
                             break;
                         default:
                             break;
@@ -458,4 +473,5 @@ public class FPSController : MonoBehaviour
             frozen = false;
         }
     }
+
 }

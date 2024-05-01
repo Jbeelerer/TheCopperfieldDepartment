@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "SocialMediaPost", menuName = "ScriptableObjects/SocialMediaPost", order = 1)]
-public class SocialMediaPost : ScriptableObject
+public class SocialMediaPost : ScriptableObject, IPinnable
 {
     public int id;
     public string contentShort;
@@ -11,5 +11,8 @@ public class SocialMediaPost : ScriptableObject
     public string date;
     public Sprite image;
     public bool hiddenInHomeFeed;
-
+    public bool suspicious;
+    public bool notSuspicious;
+    bool IPinnable.suspicious { get => suspicious; }
+    bool IPinnable.notSuspicious { get => notSuspicious; }
 }

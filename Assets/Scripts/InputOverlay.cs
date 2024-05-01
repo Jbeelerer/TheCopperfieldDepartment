@@ -7,7 +7,6 @@ using UnityEngine.UI;
 
 public class InputOverlay : MonoBehaviour
 {
-
     [SerializeField] private Sprite defaultIcon;
     [SerializeField] private Sprite handOpen;
     [SerializeField] private Sprite handClosed;
@@ -15,6 +14,10 @@ public class InputOverlay : MonoBehaviour
     [SerializeField] private Sprite trash;
     [SerializeField] private Sprite scissors;
     [SerializeField] private Sprite inspect;
+    [SerializeField] private Sprite exit;
+    [SerializeField] private Sprite pen;
+    [SerializeField] private Sprite draw;
+
 
     private Slider onHoldDisplay;
 
@@ -65,6 +68,15 @@ public class InputOverlay : MonoBehaviour
                 break;
             case "inspect":
                 image.sprite = inspect;
+                break;
+            case "exit":
+                image.sprite = exit;
+                break;
+            case "pen":
+                image.sprite = pen;
+                break;
+            case "draw":
+                image.sprite = draw;
                 break;
             default:
                 image.enabled = false;
