@@ -8,4 +8,5 @@ public class Mail : ScriptableObject
     public string sender;
     public string title;
     public string message;
+    public bool isMainCase;
 }

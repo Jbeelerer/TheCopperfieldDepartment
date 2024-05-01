@@ -41,6 +41,8 @@ public class ComputerControls : MonoBehaviour
     public Sprite cursorClickable;
     public Sprite cursorForbidden;
     public OSInvestigationState investigationState = OSInvestigationState.NONE;
+    public TextMeshProUGUI computerTime;
+    public TextMeshProUGUI computerDate;
 
     private RectTransform screen;
     private float mouseSpeedX;
@@ -128,6 +130,9 @@ public class ComputerControls : MonoBehaviour
     {
         if (!cursorActive)
             return;
+
+        // Update computer time
+        computerTime.text = System.DateTime.Now.ToString("HH:mm");
 
         // Move cursor
         cursor.anchoredPosition += new Vector2(mouseSpeedX, mouseSpeedY);
