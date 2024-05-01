@@ -157,6 +157,7 @@ public class PinboardElement : MonoBehaviour
 
     void Start()
     {
+
         RenderPipelineManager.endCameraRendering += this.OnEndCameraRendering;
     }
     void OnEndCameraRendering(ScriptableRenderContext context, Camera camera)
@@ -242,11 +243,11 @@ public class PinboardElement : MonoBehaviour
             material.name = "PostItMaterial" + transform.position.x + transform.position.y;
             material.SetTexture("_SecondTexture", canvasTexture);
             postItMesh.GetComponent<Renderer>().material = material;     //delete camera and canvas after rendering and saving the texture   
-            Destroy(camera.gameObject);
-            Destroy(transform.GetChild(2).gameObject);//transform.Find("Canvas").gameObject);
-                                                      // Put the code that you want to execute after the camera renders here
-                                                      // If you are using URP or HDRP, Unity calls this method automatically
-                                                      // If you are writing a custom SRP, you must call RenderPipeline.EndCameraRendering
+                                                                         //Destroy(camera.gameObject);
+                                                                         //Destroy(transform.GetChild(2).gameObject);//transform.Find("Canvas").gameObject);
+                                                                         // Put the code that you want to execute after the camera renders here
+                                                                         // If you are using URP or HDRP, Unity calls this method automatically
+                                                                         // If you are writing a custom SRP, you must call RenderPipeline.EndCameraRendering
         }
         else
         {
