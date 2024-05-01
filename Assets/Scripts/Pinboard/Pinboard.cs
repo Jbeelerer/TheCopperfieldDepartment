@@ -81,7 +81,14 @@ public class Pinboard : MonoBehaviour
         List<Transform> takenPositions = new List<Transform>();
 
         PinboardElement pinboardElement = Instantiate(pinPrefab, transform).GetComponent<PinboardElement>();
+        if (o is SocialMediaUser)
+        {
+            Transform canvas = pinboardElement.transform.Find("Canvas");
+            Transform canvasCam = pinboardElement.transform.Find("CanvasCamera");
+            canvas.localPosition += new Vector3(100, 0, 0);
+            canvasCam.localPosition += new Vector3(100, 0, 0);
 
+        }
         Vector3 positionOnGrid;
         if (pinsOnPinboard.Count <= 0)
         {
