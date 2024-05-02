@@ -2,10 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class OSMail : MonoBehaviour
 {
     public Mail mail;
+
+    [SerializeField] private Sprite mailOpenedIcon;
 
     private OSGovAppContent govAppContent;
     private ComputerControls computerControls;
@@ -19,7 +22,7 @@ public class OSMail : MonoBehaviour
         transform.Find("Date").GetComponent<TextMeshProUGUI>().text = "<b>" + computerControls.computerDate.text;
         transform.Find("Sender").GetComponent<TextMeshProUGUI>().text = "<b>" + mail.sender;
         transform.Find("Title").GetComponent<TextMeshProUGUI>().text = "<b>" + mail.title;
-        transform.Find("Icon").gameObject.SetActive(mail.isMainCase);
+        transform.Find("MainCaseIcon").gameObject.SetActive(mail.isMainCase);
     }
 
     public void OpenMail()
@@ -30,6 +33,7 @@ public class OSMail : MonoBehaviour
             transform.Find("Date").GetComponent<TextMeshProUGUI>().text = transform.Find("Date").GetComponent<TextMeshProUGUI>().text.Substring(3);
             transform.Find("Sender").GetComponent<TextMeshProUGUI>().text = transform.Find("Sender").GetComponent<TextMeshProUGUI>().text.Substring(3);
             transform.Find("Title").GetComponent<TextMeshProUGUI>().text = transform.Find("Title").GetComponent<TextMeshProUGUI>().text.Substring(3);
+            transform.Find("MailReadIcon").GetComponent<Image>().sprite = mailOpenedIcon;
             isUnopened = false;
         }
 

@@ -25,7 +25,7 @@ public enum OSInvestigationState
     POST_DELETED
 }
 
-public class ComputerControls : MonoBehaviour
+public class ComputerControls : MonoBehaviour, IPointerClickHandler
 {
     public float mouseSensitivity = 1;
     public RectTransform cursor;
@@ -43,7 +43,8 @@ public class ComputerControls : MonoBehaviour
     public OSInvestigationState investigationState = OSInvestigationState.NONE;
     public TextMeshProUGUI computerTime;
     public TextMeshProUGUI computerDate;
-
+    public OSPointySystem pointySystem;
+    
     private RectTransform screen;
     private float mouseSpeedX;
     private float mouseSpeedY;
@@ -174,6 +175,12 @@ public class ComputerControls : MonoBehaviour
         {
             cursor.GetComponent<Image>().sprite = cursorForbidden;
         }
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        // TODO: check clicks with the pointy system and see if the object that progresses the pointy system is clicked
+        //print(eventData.pointerClick.gameObject.name);
     }
 
     private void UpdateContent()
