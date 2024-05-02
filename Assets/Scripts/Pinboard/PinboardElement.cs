@@ -243,11 +243,11 @@ public class PinboardElement : MonoBehaviour
             material.name = "PostItMaterial" + transform.position.x + transform.position.y;
             material.SetTexture("_SecondTexture", canvasTexture);
             postItMesh.GetComponent<Renderer>().material = material;     //delete camera and canvas after rendering and saving the texture   
-                                                                         //Destroy(camera.gameObject);
-                                                                         //Destroy(transform.GetChild(2).gameObject);//transform.Find("Canvas").gameObject);
-                                                                         // Put the code that you want to execute after the camera renders here
-                                                                         // If you are using URP or HDRP, Unity calls this method automatically
-                                                                         // If you are writing a custom SRP, you must call RenderPipeline.EndCameraRendering
+            Destroy(camera.gameObject);
+            Destroy(transform.GetChild(2).gameObject);//transform.Find("Canvas").gameObject);
+                                                      // Put the code that you want to execute after the camera renders here
+                                                      // If you are using URP or HDRP, Unity calls this method automatically
+                                                      // If you are writing a custom SRP, you must call RenderPipeline.EndCameraRendering
         }
         else
         {
@@ -321,6 +321,18 @@ public class PinboardElement : MonoBehaviour
         if (endingThreads.Contains(l))
         {
             endingThreads.Remove(l);
+        }
+    }
+
+    public void HighlightElement(bool b)
+    {
+        if (b)
+        {
+            postItMesh.GetComponent<Renderer>().material.SetFloat("_Contrast", 1.6f);
+        }
+        else
+        {
+            postItMesh.GetComponent<Renderer>().material.SetFloat("_Contrast", 1f);
         }
     }
 }

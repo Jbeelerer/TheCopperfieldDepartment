@@ -215,6 +215,9 @@ public class FPSController : MonoBehaviour
                                 break;
                             case "pinboardElement(Clone)":
                                 inputOverlay.SetIcon("handOpen");
+                                // highlight and scale the pinboardElement
+                                hit.collider.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
+                                hit.collider.transform.GetComponent<PinboardElement>().HighlightElement(true);
                                 if (!detailMode && hoverStart > 0.5f && hit.collider.gameObject.GetComponent<PinboardElement>().GetIfDeletable())
                                 {
                                     AdditionalInfoBoard aib = transform.GetChild(0).Find("MoreInfo").GetComponent<AdditionalInfoBoard>();
@@ -241,16 +244,22 @@ public class FPSController : MonoBehaviour
                                 break;
                         }
                     }
+                    if (hit.collider.gameObject.name != "pinboardElement(Clone)")
+                    {
+                        // undoes highlight and scaling of the pinboardElement
+                        if (currentSelectedObject != null && selectedPinboardElement == null && currentSelectedObject.name == "pinboardElement(Clone)")
+                        {
+                            currentSelectedObject.transform.localScale = new Vector3(1, 1, 1);
+                            currentSelectedObject.GetComponent<PinboardElement>().HighlightElement(false);
+                        }
+                        hoverStart = -1;
+                        detailMode = false;
+                        transform.GetChild(0).Find("MoreInfo").GetComponent<AdditionalInfoBoard>().ShowInfo(false);
+                    }
                     // dont reset the currentSelectedObject if the player is removing a pinboardElement
                     if (nameOfThingLookedAt != "DeadZone")
                     {
                         currentSelectedObject = hit.collider.gameObject;
-                    }
-                    if (hit.collider.gameObject.name != "pinboardElement(Clone)")
-                    {
-                        hoverStart = -1;
-                        detailMode = false;
-                        transform.GetChild(0).Find("MoreInfo").GetComponent<AdditionalInfoBoard>().ShowInfo(false);
                     }
                 }
                 else if (currentSelectedObject != null && removingTime == -1)
