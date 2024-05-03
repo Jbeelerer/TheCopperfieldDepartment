@@ -25,7 +25,7 @@ public enum OSInvestigationState
     POST_DELETED
 }
 
-public class ComputerControls : MonoBehaviour, IPointerClickHandler
+public class ComputerControls : MonoBehaviour
 {
     public float mouseSensitivity = 1;
     public RectTransform cursor;
@@ -60,6 +60,7 @@ public class ComputerControls : MonoBehaviour, IPointerClickHandler
     private bool cursorActive = false;
     private SocialMediaPost[] todaysPosts;
     private Person[] todaysPeople;
+    private OSWindow currentFocusedWindow;
 
     public PinEvent OnUnpinned;
 
@@ -79,7 +80,8 @@ public class ComputerControls : MonoBehaviour, IPointerClickHandler
         cursor.anchoredPosition = new Vector2(-1000, -1000);
 
         gm = GameManager.instance;
-        gm.OnNewDay.AddListener(UpdateContent);
+
+        OpenPointy();
     }
 
     // Update is called once per frame
@@ -99,6 +101,9 @@ public class ComputerControls : MonoBehaviour, IPointerClickHandler
 
         if (Input.GetMouseButtonUp(0))
         {
+            // Check if pointy is active and should progress
+            CheckPointyProgress();
+
             // Clicked window
             CheckWindowMouseUp();
 
@@ -177,26 +182,49 @@ public class ComputerControls : MonoBehaviour, IPointerClickHandler
         }
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    public void CheckPointyProgress()
     {
-        // TODO: check clicks with the pointy system and see if the object that progresses the pointy system is clicked
-        //print(eventData.pointerClick.gameObject.name);
+        // If Pointy is active, he will progress if the next target object is clicked
+        if (GetFirstHitObject() != pointySystem.spotlight
+            && pointySystem.GetNextTargetObject() && PointInsideRect(cursor.position, pointySystem.GetNextTargetObject().GetComponent<RectTransform>()))
+        {
+            pointySystem.ProgressPointy();
+        }
     }
 
-    private void UpdateContent()
+    public void OpenPointy()
     {
-        todaysPosts = gm.GetPosts();
-        todaysPeople = gm.GetPeople();
+        if (!currentFocusedWindow)
+        {
+            // Start desktop tutorial because no specific window is focused
+            pointySystem.StartTutorial("Desktop");
+            return;
+        }
+
+        switch (currentFocusedWindow.appType)
+        {
+            case OSAppType.SOCIAL:
+                pointySystem.StartTutorial("SocialMedia");
+                break;
+            case OSAppType.GOV:
+                pointySystem.StartTutorial("GovApp");
+                break;
+            case OSAppType.PEOPLE_LIST:
+                pointySystem.StartTutorial("PeopleList");
+                break;
+            default:
+                break;
+        }
     }
 
     public SocialMediaPost[] GetPosts()
     {
-        return todaysPosts;
+        return gm.GetPosts();
     }
 
     public Person[] GetPeople()
     {
-        return todaysPeople;
+        return gm.GetPeople();
     }
 
     public void LeaveComputer()
@@ -416,6 +444,7 @@ public class ComputerControls : MonoBehaviour, IPointerClickHandler
     private void CloseWindow(OSWindow window)
     {
         RemoveLeftRightWindow(window);
+        currentFocusedWindow = null;
         window.associatedTab.gameObject.SetActive(false);
         window.gameObject.SetActive(false);
     }
@@ -451,12 +480,15 @@ public class ComputerControls : MonoBehaviour, IPointerClickHandler
         GameObject newTab = Instantiate(tabPrefab, transform.position, transform.rotation, tabContainer.transform);
         newTab.GetComponent<OSTab>().appType = type;
         newWindow.GetComponent<OSWindow>().associatedTab = newTab.GetComponent<OSTab>();
+        // Open Pointy Tutorial if it exists for the window
+        OpenPointy();
     }
 
     private void BringWindowToFront(OSWindow window)
     {
         // Bring clicked window to front
         window.transform.SetAsLastSibling();
+        currentFocusedWindow = window;
         foreach (OSWindow w in windows)
         {
             w.topBar.GetComponent<Image>().color = new Color(w.topBar.GetComponent<Image>().color.r, w.topBar.GetComponent<Image>().color.g, w.topBar.GetComponent<Image>().color.b, 0.6f);

@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class OSGovAppContent : MonoBehaviour, IPointerClickHandler, IPointerMoveHandler
+public class OSGovAppContent : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerMoveHandler
 {
     public TMP_Text mailTextMesh;
     public TMP_Text mailTitle;
@@ -31,13 +31,20 @@ public class OSGovAppContent : MonoBehaviour, IPointerClickHandler, IPointerMove
         }
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
     {
         int linkIndex = TMP_TextUtilities.FindIntersectingLink(mailTextMesh, eventData.position, canvasCam);
         if (linkIndex != -1)
         {
             computerControls.OpenWindow(OSAppType.PEOPLE_LIST);
         }
+
+        //computerControls.CheckPointyProgress();
     }
 
     public void OnPointerMove(PointerEventData eventData)
