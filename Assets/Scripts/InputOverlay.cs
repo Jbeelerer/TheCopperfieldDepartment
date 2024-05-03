@@ -48,7 +48,7 @@ public class InputOverlay : MonoBehaviour
         }
         switch (imageName)
         {
-            case "default":
+            case "defaultIcon":
                 image.sprite = defaultIcon;
                 break;
             case "handOpen":

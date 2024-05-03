@@ -128,9 +128,9 @@ public class GameManager : MonoBehaviour
     public void setNewDay(bool firstDay = false)
     {
         answerCommited = false;
-        Instantiate(newDayPrefab);
         if (!firstDay)
         {
+            Instantiate(newDayPrefab);
             playerOnEmployeeList.addNewPoints(investigationState == investigationStates.SuspectFound ? 100 : investigationState == investigationStates.SuspectSaved ? 0 : -100);
             foreach (CompetingEmployee e in competingEmployees)
             {

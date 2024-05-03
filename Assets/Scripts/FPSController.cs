@@ -218,7 +218,11 @@ public class FPSController : MonoBehaviour
                                 // highlight and scale the pinboardElement
                                 hit.collider.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
                                 hit.collider.transform.GetComponent<PinboardElement>().HighlightElement(true);
-                                if (!detailMode && hoverStart > 0.5f && hit.collider.gameObject.GetComponent<PinboardElement>().GetIfDeletable())
+                                if (selectedPenAnim != null)
+                                {
+                                    inputOverlay.SetIcon("pen");
+                                }
+                                else if (!detailMode && hoverStart > 0.5f && hit.collider.gameObject.GetComponent<PinboardElement>().GetIfDeletable())
                                 {
                                     AdditionalInfoBoard aib = transform.GetChild(0).Find("MoreInfo").GetComponent<AdditionalInfoBoard>();
                                     aib.ShowInfo(true);
@@ -239,6 +243,9 @@ public class FPSController : MonoBehaviour
                                 break;
                             case "Door":
                                 inputOverlay.SetIcon("exit");
+                                break;
+                            case "Pen":
+                                inputOverlay.SetIcon("handOpen");
                                 break;
                             default:
                                 break;
