@@ -44,7 +44,7 @@ public class ComputerControls : MonoBehaviour, IPointerClickHandler
     public TextMeshProUGUI computerTime;
     public TextMeshProUGUI computerDate;
     public OSPointySystem pointySystem;
-    
+
     private RectTransform screen;
     private float mouseSpeedX;
     private float mouseSpeedY;

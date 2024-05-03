@@ -2,8 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
+using SaveSystem;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public enum investigationStates
 {
@@ -11,7 +13,7 @@ public enum investigationStates
     SuspectFound,
     SuspectSaved
 }
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviour, ISavable
 {
     public static GameManager instance;
     /*
@@ -21,6 +23,7 @@ public class GameManager : MonoBehaviour
         */
 
     private int day = 1;
+    private int furthestDay = 1;
     private int daySegment = 0;
     private int totalDaySegments = 0;
 
@@ -48,6 +51,33 @@ public class GameManager : MonoBehaviour
     private bool answerCommited = false;
     private Narration narration;
 
+
+    private int saveFile;
+
+    public void SetSaveFile(int saveFile)
+    {
+        instance.saveFile = saveFile;
+    }
+    public int GetSaveFile()
+    {
+        return instance.saveFile;
+    }
+
+    public int GetFurthestDay()
+    {
+        return furthestDay;
+    }
+
+    public void SaveData(SaveData data)
+    {
+        data.currentDay = furthestDay;
+        data.firstTryResult.Add(investigationState);
+        data.points = playerOnEmployeeList.GetPoints();
+    }
+    public void LoadData(SaveData data)
+    {
+        furthestDay = data.currentDay;
+    }
     public bool GetAnswerCommited()
     {
         return answerCommited;
@@ -109,6 +139,15 @@ public class GameManager : MonoBehaviour
         {
             DontDestroyOnLoad(gameObject);
             instance = this;
+            if (Utility.CheckSaveFileExists(instance.saveFile.ToString()))
+            {
+                SaveManager.instance.SetupSaveFile(instance.saveFile.ToString());
+                if (Utility.CheckSaveFileExists(instance.saveFile.ToString()))
+                {
+                    print("loading.........");
+                    SaveManager.instance.LoadGame();
+                }
+            }
         }
 
         // initiate competing employees
@@ -125,22 +164,9 @@ public class GameManager : MonoBehaviour
         narration = FindObjectOfType<Narration>();
     }
 
-    public void setNewDay(bool firstDay = false)
+    public void LoadNewDay(int day)
     {
-        answerCommited = false;
-        if (!firstDay)
-        {
-            Instantiate(newDayPrefab);
-            playerOnEmployeeList.addNewPoints(investigationState == investigationStates.SuspectFound ? 100 : investigationState == investigationStates.SuspectSaved ? 0 : -100);
-            foreach (CompetingEmployee e in competingEmployees)
-            {
-                if (e != playerOnEmployeeList)
-                    e.addNewPointsRandomly();
-            }
-            day++;
-        }
-        competingEmployees.Sort((x, y) =>
-    y.GetPoints().CompareTo(x.GetPoints()));
+        this.day = day;
         if (Resources.LoadAll<Case>("Case" + day).Count() == 0)
         {
             // TODO: implement endgame   
@@ -172,6 +198,30 @@ public class GameManager : MonoBehaviour
         users = tempUsers.ToArray();
         daySegment = 0;
         OnNewDay?.Invoke();
+    }
+
+    public void setNewDay(bool firstDay = false)
+    {
+        answerCommited = false;
+        if (!firstDay)
+        {
+            SaveManager.instance.SaveGame();
+            Instantiate(newDayPrefab);
+            playerOnEmployeeList.addNewPoints(investigationState == investigationStates.SuspectFound ? 100 : investigationState == investigationStates.SuspectSaved ? 0 : -100);
+            foreach (CompetingEmployee e in competingEmployees)
+            {
+                if (e != playerOnEmployeeList)
+                    e.addNewPointsRandomly();
+            }
+            day++;
+            if (day > furthestDay)
+            {
+                furthestDay = day;
+            }
+        }
+        competingEmployees.Sort((x, y) =>
+    y.GetPoints().CompareTo(x.GetPoints()));
+        LoadNewDay(day);
     }
 
     public string checkForConnectionText(ScriptableObject from, ScriptableObject to)
