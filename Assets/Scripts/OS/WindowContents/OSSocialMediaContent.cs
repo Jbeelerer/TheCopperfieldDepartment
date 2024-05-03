@@ -103,11 +103,6 @@ public class OSSocialMediaContent : MonoBehaviour
     public void ClearDeletedPost()
     {
         OnDeletedPostClear?.Invoke();
-
-        /*foreach (OSSocialMediaPost p in postList)
-        {
-            p.gameObject.transform.Find("PostOptions").Find("DeletePost").GetComponent<Image>().color = Color.black;
-        }*/
     }
 
     public void FilterHomefeed(string filterTerm)
