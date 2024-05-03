@@ -27,12 +27,18 @@ public class Pinboard : MonoBehaviour
 
     private Narration narration;
 
+    [SerializeField] private Texture mysteriousPersonMaterial;
+    [SerializeField] private Texture rightPenClickInfo;
+    [SerializeField] private Texture leftPenClickInfo;
+
     // Start is called before the first frame update
     void Start()
     {
         //instantiate a pin for the suspect 
         pinboardModel = transform.GetChild(0);
-        AddPin(new ScriptableObject());
+        AddPin(mysteriousPersonMaterial, new Vector3(0, 0, -pinboardModel.localScale.z / 2));
+        AddPin(rightPenClickInfo, new Vector3(0.5f - (pinboardModel.localScale.x / 2), 0.5f - (pinboardModel.localScale.y / 2), -pinboardModel.localScale.z / 2));
+        AddPin(leftPenClickInfo, new Vector3(0.5f + minSpaceBetweenPins - (pinboardModel.localScale.x / 2), 0.5f - (pinboardModel.localScale.y / 2), -pinboardModel.localScale.z / 2));
         narration = FindObjectOfType<Narration>();
     }
 
@@ -48,7 +54,7 @@ public class Pinboard : MonoBehaviour
                 SocialMediaPost p = (SocialMediaPost)keyOfValueToRemove;
                 subPins[p.author].Remove(pe.transform);
             }
-            else
+            else if (subPins.ContainsKey(keyOfValueToRemove))
             {
                 subPins[keyOfValueToRemove].Remove(pe.transform);
             }
@@ -72,6 +78,20 @@ public class Pinboard : MonoBehaviour
     {
         PinboardElement pinboardElement = Instantiate(pinPrefab, transform).GetComponent<PinboardElement>();
         pinboardElement.SetText(text);
+
+    }
+    public void AddPin(Texture image, Vector3 position)
+    {
+        PinboardElement pinboardElement = Instantiate(pinPrefab, transform).GetComponent<PinboardElement>();
+        // first pin is the mysterious person, so it should not be deletable
+        if (pinsOnPinboard.Count <= 0)
+        {
+            pinboardElement.MakeUndeletable();
+        }
+        pinboardElement.transform.localPosition = position;
+        ScriptableObject o = new ScriptableObject();
+        pinsOnPinboard[o] = pinboardElement;
+        pinboardElement.SetContent(image);
 
     }
     public void AddPin(ScriptableObject o)
@@ -151,13 +171,6 @@ public class Pinboard : MonoBehaviour
                     pinboardElement.transform.localPosition = pos;
                     subPins[o] = new List<Transform> { pinboardElement.transform };
                 }
-                /*   
-                TODO: Maybe add a feature, where the first few elements are placed nearer the center, so it looks less empty
-                if (subPins.Count <= 2)
-                   {
-                       positionOnGrid = positionOnGrid / 3;
-                       positionOnGrid.z = -pinboardModel.localScale.z / 2;
-                   }*/
             }
             if (o is SocialMediaPost)
             {
@@ -259,8 +272,10 @@ public class Pinboard : MonoBehaviour
 
         // Set the position to be the midpoint between A and B
         collider.transform.position = (pointA + pointB) / 2;
+        // put the collider on the surface of the pinboard
+        collider.transform.localPosition = new Vector3(collider.transform.localPosition.x, collider.transform.localPosition.y, -pinboardModel.localScale.z / 2);
 
-        // Set the scale's y-component to be the distance between A and B
+        // Set the scale's y-component to be the distance between A and B   
         collider.transform.localScale = new Vector3(0.01f, Vector3.Distance(pointA, pointB), 0.1f);
 
         // Rotate the collider to align with the line from A to B

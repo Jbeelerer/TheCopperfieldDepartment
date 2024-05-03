@@ -232,24 +232,6 @@ public class GameManager : MonoBehaviour
 
     }
 
-    /*
-    private void FixedUpdate()
-    {
-        // implement day 
-        time += Time.deltaTime;
-        // print(time % dayLength / intervalAmount == 0); 
-        print((int)(time % interval));
-        if (time % interval == 0)
-        {
-            print(time);
-        }
-        if (dayLength <= time)
-        {
-            day++;
-            print("EndDay");
-        }
-    }*/
-
 
     private IEnumerator DelayFirstDay()
     {

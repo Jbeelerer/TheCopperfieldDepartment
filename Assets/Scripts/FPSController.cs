@@ -134,8 +134,8 @@ public class FPSController : MonoBehaviour
     }
     void Update()
     {
-        // on e key pressed
-        if (Input.GetKeyDown(KeyCode.E) && frozen)
+        // on e key pressed ExitPC is "E"
+        if (Input.GetButtonDown("ExitPC") && frozen)
         {
             computerControls.LeaveComputer();
         }
@@ -172,9 +172,7 @@ public class FPSController : MonoBehaviour
             Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
 
             // if removingTime is the default value it is active and the currentselectedObject shouldn't change
-
-
-            // TODO: PROOOBLME HEEERE IS HOLDING
+            #region Look at things
             if (Physics.Raycast(ray, out hit) && !onHoldDown)
             {
                 if (Vector3.Distance(hit.collider.gameObject.transform.position, transform.position) <= interactionReach && hit.collider.gameObject.tag == "Interactable")
@@ -214,19 +212,20 @@ public class FPSController : MonoBehaviour
                             case "Button":
                                 break;
                             case "pinboardElement(Clone)":
+                                PinboardElement pe = hit.collider.gameObject.GetComponent<PinboardElement>();
                                 inputOverlay.SetIcon("handOpen");
                                 // highlight and scale the pinboardElement
-                                hit.collider.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
-                                hit.collider.transform.GetComponent<PinboardElement>().HighlightElement(true);
+                                pe.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
+                                pe.HighlightElement(true);
                                 if (selectedPenAnim != null)
                                 {
                                     inputOverlay.SetIcon("pen");
                                 }
-                                else if (!detailMode && hoverStart > 0.5f && hit.collider.gameObject.GetComponent<PinboardElement>().GetIfDeletable())
+                                else if (!detailMode && hoverStart > 0.5f && pe.GetIfHasInfo())
                                 {
                                     AdditionalInfoBoard aib = transform.GetChild(0).Find("MoreInfo").GetComponent<AdditionalInfoBoard>();
                                     aib.ShowInfo(true);
-                                    aib.SetContent(hit.collider.gameObject.GetComponent<PinboardElement>().GetContent());
+                                    aib.SetContent(pe.GetContent());
                                     detailMode = true;
                                 }
                                 else if (!detailMode && hoverStart == -1f)
@@ -285,23 +284,36 @@ public class FPSController : MonoBehaviour
                     currentSelectedObject = null;
                 }
             }
+
+            #endregion
+
+            #region Handle left click
             if (Input.GetMouseButtonDown(0) && currentSelectedObject != null)
             {
-                if (currentThread != null && currentSelectedObject.name == "pinboardElement(Clone)")
+                //Connect threat to pinboardElement
+                if (currentThread != null)
                 {
-                    currentSelectedObject.GetComponent<PinboardElement>().AddEndingThreads(currentThread);
-                    currentSelectedObject.GetComponent<PinboardElement>().setIsMoving(false);
-                    string connectionText = gm.checkForConnectionText(currentSelectedObject.GetComponent<PinboardElement>().GetContent(), lastSelectedObject.GetComponent<PinboardElement>().GetContent());
-                    if (connectionText != "")
+                    if (currentSelectedObject.name == "pinboardElement(Clone)")
                     {
-                        GameObject connectionO = Instantiate(connectionPrefab, currentThread.transform);
-                        connectionO.transform.position = currentThread.transform.GetChild(0).position - new Vector3(0, 0.05f, 0);
-                        connectionO.GetComponentInChildren<TextMeshProUGUI>().text = connectionText;
+                        currentSelectedObject.GetComponent<PinboardElement>().AddEndingThreads(currentThread);
+                        currentSelectedObject.GetComponent<PinboardElement>().setIsMoving(false);
+                        string connectionText = gm.checkForConnectionText(currentSelectedObject.GetComponent<PinboardElement>().GetContent(), lastSelectedObject.GetComponent<PinboardElement>().GetContent());
+                        if (connectionText != "")
+                        {
+                            GameObject connectionO = Instantiate(connectionPrefab, currentThread.transform);
+                            connectionO.transform.position = currentThread.transform.GetChild(0).position - new Vector3(0, 0.05f, 0);
+                            connectionO.GetComponentInChildren<TextMeshProUGUI>().text = connectionText;
+                        }
                     }
-
+                    else
+                    {
+                        // Reset threat
+                        Destroy(currentThread);
+                    }
                     lastSelectedObject = null;
                     currentThread = null;
                 }
+                // places the pinboardElement back to the pinboard
                 else if (selectedPinboardElement != null)
                 {  // change back to default layer so it can be selected again
                     selectedPinboardElement.gameObject.layer = 0;
@@ -313,7 +325,6 @@ public class FPSController : MonoBehaviour
                 else
                 {
                     // Deselect pen if clicking somewhere, where you can't draw
-
                     if (selectedPenAnim != null && !(currentSelectedObject.name == "pin" || currentSelectedObject.name == "Pen" || currentSelectedObject.name == "pinboardElement(Clone)"))
                     {
                         DeselectPen();
@@ -387,6 +398,8 @@ public class FPSController : MonoBehaviour
                 inputOverlay.stopHold();
                 removingTime = -1f;
             }
+            #endregion
+            #region Handle right click
             if (Input.GetMouseButtonDown(1) && currentSelectedObject != null && currentSelectedObject.name == "pinboardElement(Clone)")
             {
                 if (selectedPenAnim != null)
@@ -406,7 +419,9 @@ public class FPSController : MonoBehaviour
                     inputOverlay.SetIcon("handThread");
                 }
             }
-            // handle moving ponboardElement position 
+            #endregion
+            #region handle selected element movement
+            // handle moving pinboardElement position 
             if (selectedPinboardElement != null && currentSelectedObject != null && (nameOfThingLookedAt == "PinboardModel" || nameOfThingLookedAt == "DeadZone"))
             {
                 selectedPinboardElement.transform.position = new Vector3(selectedPinboardElement.transform.position.x, hit.point.y, hit.point.z);
@@ -422,12 +437,12 @@ public class FPSController : MonoBehaviour
                     Destroy(currentThread);
                 }
             }
-
+            // handle pen position
             if (selectedPenAnim != null)
             {
                 selectedPenAnim.transform.parent.position = new Vector3(selectedPenAnim.transform.parent.position.x, hit.point.y, hit.point.z);
             }
-
+            #endregion
             #endregion
 
         }
