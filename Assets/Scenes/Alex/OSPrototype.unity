@@ -10635,6 +10635,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3493752161087761751, guid: c8686aff51ce3c04393610ce2ae55095,
         type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3493752161087761751, guid: c8686aff51ce3c04393610ce2ae55095,
+        type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: TogglePointy
       objectReference: {fileID: 0}
@@ -10695,9 +10700,25 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7083467046700094538, guid: c8686aff51ce3c04393610ce2ae55095,
         type: 3}
+      propertyPath: stepsPeopleList.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7083467046700094538, guid: c8686aff51ce3c04393610ce2ae55095,
+        type: 3}
+      propertyPath: stepsGovApp.Array.data[0].message
+      value: This is your inbox.<br><br>Here you can see important emails by your
+        co-workers.<br><br><b>Click the screen to continue.
+      objectReference: {fileID: 0}
+    - target: {fileID: 7083467046700094538, guid: c8686aff51ce3c04393610ce2ae55095,
+        type: 3}
+      propertyPath: stepsGovApp.Array.data[1].message
+      value: It seems like you got your first email!<br><br><b>Try opening it.
+      objectReference: {fileID: 0}
+    - target: {fileID: 7083467046700094538, guid: c8686aff51ce3c04393610ce2ae55095,
+        type: 3}
       propertyPath: stepsGovApp.Array.data[2].message
       value: Some mails contain attached files.<br><br>They can be opened by clicking
-        on them.<br><br><b>Click to close this tutorial.
+        on them.<br><br><b>Click to continue.
       objectReference: {fileID: 0}
     - target: {fileID: 7083467046700094538, guid: c8686aff51ce3c04393610ce2ae55095,
         type: 3}
@@ -10717,13 +10738,29 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7083467046700094538, guid: c8686aff51ce3c04393610ce2ae55095,
         type: 3}
+      propertyPath: stepsPeopleList.Array.data[0].message
+      value: This is the list of suspects for your current case.
+      objectReference: {fileID: 0}
+    - target: {fileID: 7083467046700094538, guid: c8686aff51ce3c04393610ce2ae55095,
+        type: 3}
+      propertyPath: stepsPeopleList.Array.data[1].message
+      value: This is the list of suspects for your current case.
+      objectReference: {fileID: 0}
+    - target: {fileID: 7083467046700094538, guid: c8686aff51ce3c04393610ce2ae55095,
+        type: 3}
+      propertyPath: stepsPeopleList.Array.data[2].message
+      value: Here, you can look at every citizen's information.<br><br>You can also
+        <b>pin them to your pinboard.
+      objectReference: {fileID: 0}
+    - target: {fileID: 7083467046700094538, guid: c8686aff51ce3c04393610ce2ae55095,
+        type: 3}
       propertyPath: stepsDesktop.Array.data[1].pointAtPointy
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7083467046700094538, guid: c8686aff51ce3c04393610ce2ae55095,
         type: 3}
       propertyPath: stepsDesktop.Array.data[2].pointAtPointy
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7083467046700094538, guid: c8686aff51ce3c04393610ce2ae55095,
         type: 3}
@@ -10744,6 +10781,26 @@ PrefabInstance:
         type: 3}
       propertyPath: stepsDesktop.Array.data[3].targetObjectName
       value: App1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7083467046700094538, guid: c8686aff51ce3c04393610ce2ae55095,
+        type: 3}
+      propertyPath: stepsPeopleList.Array.data[0].pointAtPointy
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7083467046700094538, guid: c8686aff51ce3c04393610ce2ae55095,
+        type: 3}
+      propertyPath: stepsPeopleList.Array.data[0].targetObjectName
+      value: ScreenBlockadePointy
+      objectReference: {fileID: 0}
+    - target: {fileID: 7083467046700094538, guid: c8686aff51ce3c04393610ce2ae55095,
+        type: 3}
+      propertyPath: stepsPeopleList.Array.data[1].targetObjectName
+      value: ScreenBlockadePointy
+      objectReference: {fileID: 0}
+    - target: {fileID: 7083467046700094538, guid: c8686aff51ce3c04393610ce2ae55095,
+        type: 3}
+      propertyPath: stepsPeopleList.Array.data[2].targetObjectName
+      value: PinPerson
       objectReference: {fileID: 0}
     - target: {fileID: 7888584562089628632, guid: c8686aff51ce3c04393610ce2ae55095,
         type: 3}

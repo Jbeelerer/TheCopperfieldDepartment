@@ -43,8 +43,6 @@ public class OSGovAppContent : MonoBehaviour, IPointerDownHandler, IPointerUpHan
         {
             computerControls.OpenWindow(OSAppType.PEOPLE_LIST);
         }
-
-        //computerControls.CheckPointyProgress();
     }
 
     public void OnPointerMove(PointerEventData eventData)
