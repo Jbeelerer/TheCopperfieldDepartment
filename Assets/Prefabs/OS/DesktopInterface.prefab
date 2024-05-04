@@ -195,17 +195,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1132907075910932206}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 8113279834986108582}
+  m_Father: {fileID: 2634386829296273682}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -209.70001, y: 0.0050086975}
-  m_SizeDelta: {x: 40, y: 0}
+  m_AnchoredPosition: {x: -209.70001, y: -249.995}
+  m_SizeDelta: {x: 40, y: -500}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1621311410099089403
 CanvasRenderer:
@@ -2218,6 +2218,7 @@ RectTransform:
   - {fileID: 3463748444408643174}
   - {fileID: 7082448317328211455}
   - {fileID: 8763066935152162777}
+  - {fileID: 2102808024695944766}
   m_Father: {fileID: 1484284951673446103}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2242,25 +2243,32 @@ MonoBehaviour:
   pointySpeechBubbleTop: {fileID: 613414430866184620}
   pointySpeechBubbleBottom: {fileID: 5381382141094340695}
   screenBlockadePointy: {fileID: 7888584562089628632}
+  pointyFinger: {fileID: 0}
   spotlight: {fileID: 8515451179056391996}
   stepsDesktop:
   - targetObjectName: ScreenBlockadePointy
     message: Hey there, I'm Pointy!<br><br>I will guide you through the basics of
       this computer! <br><br><b>Click the screen to continue
+    pointAtPointy: 0
   - targetObjectName: ScreenBlockadePointy
     message: I normally reside in this small icon that looks like me.<br><br>You
       can click it anytime if you have a question.
+    pointAtPointy: 0
   - targetObjectName: App1
     message: First, <b>try clicking this here icon</b> to open your inbox!
+    pointAtPointy: 0
   stepsGovApp:
   - targetObjectName: ScreenBlockadePointy
     message: This is your inbox.<br><br>Here you can see important mails by your
       co-workers.<br><br><b>Click the screen to continue.
+    pointAtPointy: 0
   - targetObjectName: OSMail(Clone)
     message: It seems like you got your first mail!<br><br><b>Try opening it.
+    pointAtPointy: 0
   - targetObjectName: MailTextBody
     message: Some mails contain attached files like this one.<br><br><b>Try opening
       the attached file.
+    pointAtPointy: 0
   stepsPeopleList: []
   stepsSocialMedia: []
 --- !u!1 &5639562176710670930
@@ -3540,7 +3548,6 @@ RectTransform:
   - {fileID: 2338232273787165639}
   - {fileID: 1700595562070733196}
   - {fileID: 3712772788667344805}
-  - {fileID: 2102808024695944766}
   - {fileID: 5119271025421884507}
   m_Father: {fileID: 1484284951673446103}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
