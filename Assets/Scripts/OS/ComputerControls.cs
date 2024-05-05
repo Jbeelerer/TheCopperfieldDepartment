@@ -81,7 +81,7 @@ public class ComputerControls : MonoBehaviour
 
         gm = GameManager.instance;
 
-        OpenPointy();
+        TogglePointy(true);
     }
 
     // Update is called once per frame
@@ -185,34 +185,42 @@ public class ComputerControls : MonoBehaviour
     public void CheckPointyProgress()
     {
         // If Pointy is active, he will progress if the next target object is clicked
-        if (GetFirstHitObject() != pointySystem.spotlight
+        if (GetFirstHitObject() != pointySystem.spotlight && GetFirstHitObject() != pointySystem.pointyButton
             && pointySystem.GetNextTargetObject() && PointInsideRect(cursor.position, pointySystem.GetNextTargetObject().GetComponent<RectTransform>()))
         {
             pointySystem.ProgressPointy();
         }
     }
 
-    public void OpenPointy()
+    public void TogglePointy(bool toggledAutomatically)
     {
+        // Close pointy if currently active
+        if (pointySystem.GetNextTargetObject())
+        {
+            pointySystem.HidePointy();
+            return;
+        }
+
         if (!currentFocusedWindow)
         {
             // Start desktop tutorial because no specific window is focused
-            pointySystem.StartTutorial("Desktop");
+            pointySystem.StartTutorial("Desktop", toggledAutomatically);
             return;
         }
 
         switch (currentFocusedWindow.appType)
         {
             case OSAppType.SOCIAL:
-                pointySystem.StartTutorial("SocialMedia");
+                pointySystem.StartTutorial("SocialMedia", toggledAutomatically);
                 break;
             case OSAppType.GOV:
-                pointySystem.StartTutorial("GovApp");
+                pointySystem.StartTutorial("GovApp", toggledAutomatically);
                 break;
             case OSAppType.PEOPLE_LIST:
-                pointySystem.StartTutorial("PeopleList");
+                pointySystem.StartTutorial("PeopleList", toggledAutomatically);
                 break;
             default:
+                pointySystem.StartTutorial("Default", toggledAutomatically);
                 break;
         }
     }
@@ -481,7 +489,7 @@ public class ComputerControls : MonoBehaviour
         newTab.GetComponent<OSTab>().appType = type;
         newWindow.GetComponent<OSWindow>().associatedTab = newTab.GetComponent<OSTab>();
         // Open Pointy Tutorial if it exists for the window
-        OpenPointy();
+        TogglePointy(true);
     }
 
     private void BringWindowToFront(OSWindow window)

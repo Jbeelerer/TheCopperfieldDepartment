@@ -11,6 +11,7 @@ public class PointyTutorialStep
 {
     public string targetObjectName;
     public string message;
+    public bool pointAtPointy;
 }
 
 public class OSPointySystem : MonoBehaviour
@@ -21,9 +22,12 @@ public class OSPointySystem : MonoBehaviour
     [SerializeField] private GameObject pointySpeechBubbleTop;
     [SerializeField] private GameObject pointySpeechBubbleBottom;
     [SerializeField] private GameObject screenBlockadePointy;
+    [SerializeField] private GameObject pointyFinger;
 
+    public GameObject pointyButton;
     public GameObject spotlight;
 
+    [SerializeField] private List<PointyTutorialStep> stepsDefault = new List<PointyTutorialStep>();
     [SerializeField] private List<PointyTutorialStep> stepsDesktop = new List<PointyTutorialStep>();
     [SerializeField] private List<PointyTutorialStep> stepsGovApp = new List<PointyTutorialStep>();
     [SerializeField] private List<PointyTutorialStep> stepsPeopleList = new List<PointyTutorialStep>();
@@ -32,15 +36,26 @@ public class OSPointySystem : MonoBehaviour
     private GameObject nextTargetObject;
     private List<PointyTutorialStep> currentTutorial;
     private int currentStep;
+    private List<string> completedTutorials = new List<string>();
 
     private void Start()
     {
         spotlight.GetComponent<Image>().alphaHitTestMinimumThreshold = 1f;
     }
 
-    public void StartTutorial(string name)
+    public void StartTutorial(string name, bool toggledAutomatically)
     {
         if (deactivatePointy)
+        {
+            return;
+        }
+
+        // Add tutorial to completed list if loaded for the first time. A once completed tutorial will only show up if toggled manually
+        if (toggledAutomatically && !completedTutorials.Contains(name))
+        {
+            completedTutorials.Add(name);
+        }
+        else if (toggledAutomatically)
         {
             return;
         }
@@ -56,15 +71,16 @@ public class OSPointySystem : MonoBehaviour
             case "SocialMedia":
                 currentTutorial = stepsSocialMedia;
                 break;
-            /*case "PeopleList":
+            case "PeopleList":
                 currentTutorial = stepsPeopleList;
-                break;*/
+                break;
+            case "Default":
             default:
-                return;
+                currentTutorial = stepsDefault;
+                break;
         }
 
         pointy.SetActive(true);
-        screenBlockadePointy.SetActive(true);
         currentStep = 0;
 
         ProgressPointy();
@@ -74,23 +90,33 @@ public class OSPointySystem : MonoBehaviour
     {
         if (currentStep == currentTutorial.Count)
         {
-            nextTargetObject = null;
-            currentTutorial = null;
             HidePointy();
             return;
         }
 
+        screenBlockadePointy.SetActive(true);
+        spotlight.SetActive(true);
+
         PointyTutorialStep step = currentTutorial[currentStep];
         nextTargetObject = GameObject.Find(step.targetObjectName);
-        pointy.transform.position = nextTargetObject.transform.position + new Vector3(1, 0, 0);
 
-        spotlight.transform.position = nextTargetObject.transform.position;
+        if (!nextTargetObject)
+        {
+            Debug.LogError("Could not find target object: " + step.targetObjectName + " Does it not exist in the current window or is it deactivated?");
+        }
 
         if (nextTargetObject == screenBlockadePointy)
         {
-            screenBlockadePointy.SetActive(true);
             spotlight.SetActive(false);
         }
+        else
+        {
+            screenBlockadePointy.SetActive(false);
+        }
+
+        pointy.transform.position = nextTargetObject.transform.position + new Vector3(0.5f, 0, 0);
+
+        spotlight.transform.position = nextTargetObject.transform.position;
 
         pointySpeechBubbleTop.SetActive(false);
         pointySpeechBubbleBottom.SetActive(false);
@@ -105,19 +131,28 @@ public class OSPointySystem : MonoBehaviour
             pointySpeechBubbleBottom.transform.Find("Text").GetComponent<TextMeshProUGUI>().text = step.message;
         }
 
+        if (step.pointAtPointy)
+        {
+            pointyFinger.gameObject.SetActive(true);
+            pointyButton.GetComponent<Button>().enabled = false;
+        }
+        else
+        {
+            pointyFinger.gameObject.SetActive(false);
+            pointyButton.GetComponent<Button>().enabled = true;
+        }
+
         currentStep++;
     }
 
-    private void HidePointy()
+    public void HidePointy()
     {
+        nextTargetObject = null;
+        currentTutorial = null;
         pointy.SetActive(false);
         spotlight.SetActive(false);
-    }
-
-    public void HideBlockade()
-    {
         screenBlockadePointy.SetActive(false);
-        spotlight.SetActive(true);
+        pointyFinger.gameObject.SetActive(false);
     }
 
     public GameObject GetNextTargetObject()
