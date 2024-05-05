@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour, ISavable
         private int interval = 10;
         */
 
-    private int day = 1;
+    [SerializeField] private int day = 1;
     private int furthestDay = 1;
     private int daySegment = 0;
     private int totalDaySegments = 0;
@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour, ISavable
     private CompetingEmployee playerOnEmployeeList;
 
     // what happens if the person is found and the post deleted?
-    private investigationStates investigationState = investigationStates.SuspectFound; //investigationStates.SuspectNotFound;
+    public investigationStates investigationState = investigationStates.SuspectNotFound; //investigationStates.SuspectNotFound;
     public UnityEvent OnNewDay;
     public UnityEvent OnNewSegment;
     private Case currentCase;
@@ -49,11 +49,38 @@ public class GameManager : MonoBehaviour, ISavable
     [SerializeField] private GameObject newDayPrefab;
 
     private bool answerCommited = false;
-    private Narration narration;
+    public Narration narration;
 
 
     private int saveFile;
 
+    private SaveManager saveManager;
+
+
+    private List<investigationStates> firstTryResults = new List<investigationStates>();
+    private List<investigationStates> results = new List<investigationStates>();
+    /*
+        public int GetTotalPoints()
+        {
+            int totalPoints = 0;
+            foreach (int points in pointsPerDay)
+            {
+                totalPoints += points;
+            }
+            return totalPoints;
+        }*/
+    public int GetDay()
+    {
+        return day;
+    }
+    public investigationStates GetResultForDay(int i)
+    {
+        return results[i];
+    }
+    public investigationStates GetFirstTryResultsForDay(int i)
+    {
+        return firstTryResults[i];
+    }
     public void SetSaveFile(int saveFile)
     {
         instance.saveFile = saveFile;
@@ -71,12 +98,34 @@ public class GameManager : MonoBehaviour, ISavable
     public void SaveData(SaveData data)
     {
         data.currentDay = furthestDay;
-        data.firstTryResult.Add(investigationState);
-        data.points = playerOnEmployeeList.GetPoints();
+        data.result = results;
+        data.firstTryResult = firstTryResults;
+        List<SaveableEmployee> tempSE = new List<SaveableEmployee>();
+        foreach (CompetingEmployee e in competingEmployees)
+        {
+            SaveableEmployee se = new SaveableEmployee(e.GetEmployeeName(), e.GetPoints(), e.GetSkill(), e.GetPointsPerDay());
+            se.isPlayer = e == playerOnEmployeeList;
+            tempSE.Add(se);
+        }
+        data.competingEmployees = tempSE;
     }
     public void LoadData(SaveData data)
     {
+        print("load furthest day: " + data.currentDay);
         furthestDay = data.currentDay;
+        results = data.result;
+        firstTryResults = data.firstTryResult;
+        competingEmployees.Clear();
+        foreach (SaveableEmployee se in data.competingEmployees)
+        {
+            CompetingEmployee e = new CompetingEmployee(se.name, se.basePoints, se.skill);
+            e.SetPointsPerDay(se.pointsPerDay);
+            competingEmployees.Add(e);
+            if (se.isPlayer)
+            {
+                playerOnEmployeeList = e;
+            }
+        }
     }
     public bool GetAnswerCommited()
     {
@@ -139,15 +188,6 @@ public class GameManager : MonoBehaviour, ISavable
         {
             DontDestroyOnLoad(gameObject);
             instance = this;
-            if (Utility.CheckSaveFileExists(instance.saveFile.ToString()))
-            {
-                SaveManager.instance.SetupSaveFile(instance.saveFile.ToString());
-                if (Utility.CheckSaveFileExists(instance.saveFile.ToString()))
-                {
-                    print("loading.........");
-                    SaveManager.instance.LoadGame();
-                }
-            }
         }
 
         // initiate competing employees
@@ -155,14 +195,30 @@ public class GameManager : MonoBehaviour, ISavable
         {
             competingEmployees.Add(new CompetingEmployee());
         }
-        playerOnEmployeeList = new CompetingEmployee("Player", 100, 0);
+        playerOnEmployeeList = new CompetingEmployee("Player", 50, 0);
         competingEmployees.Add(playerOnEmployeeList);
     }
     void Start()
     {
-        StartCoroutine(DelayFirstDay());
-        narration = FindObjectOfType<Narration>();
+        saveManager = SaveManager.instance;
+
+        if (Utility.CheckSaveFileExists(instance.saveFile.ToString()))
+        {
+            SaveManager.instance.SetupSaveFile(instance.saveFile.ToString());
+            if (Utility.CheckSaveFileExists(instance.saveFile.ToString()))
+            {
+                print("loading.........");
+                SaveManager.instance.LoadGame();
+            }
+        }
+        // StartCoroutine(DelayFirstDay()); 
     }
+
+    public void SetNarration(Narration n)
+    {
+        narration = n;
+    }
+
 
     public void LoadNewDay(int day)
     {
@@ -171,6 +227,7 @@ public class GameManager : MonoBehaviour, ISavable
         {
             // TODO: implement endgame   
             print("Game Over");
+            return;
         }
         else
         {
@@ -197,30 +254,48 @@ public class GameManager : MonoBehaviour, ISavable
         people = tempPeople.ToArray();
         users = tempUsers.ToArray();
         daySegment = 0;
+        SortCompetingEmployees();
         OnNewDay?.Invoke();
+    }
+
+    public void SortCompetingEmployees()
+    {
+        competingEmployees.Sort((x, y) =>
+    y.GetTotalPoints(day).CompareTo(x.GetTotalPoints(day)));
     }
 
     public void setNewDay(bool firstDay = false)
     {
+        int pointsThisDay = investigationState == investigationStates.SuspectFound ? 100 : investigationState == investigationStates.SuspectSaved ? 0 : -100;
         answerCommited = false;
         if (!firstDay)
         {
-            SaveManager.instance.SaveGame();
             Instantiate(newDayPrefab);
-            playerOnEmployeeList.addNewPoints(investigationState == investigationStates.SuspectFound ? 100 : investigationState == investigationStates.SuspectSaved ? 0 : -100);
+            playerOnEmployeeList.addNewPoints(pointsThisDay, day - 1);
             foreach (CompetingEmployee e in competingEmployees)
             {
-                if (e != playerOnEmployeeList)
-                    e.addNewPointsRandomly();
+                if (e.GetEmployeeName() != playerOnEmployeeList.GetEmployeeName())
+                    e.addNewPointsRandomly(day - 1);
             }
             day++;
             if (day > furthestDay)
             {
                 furthestDay = day;
             }
+
+            if (results.Count <= furthestDay && furthestDay == day)
+            {
+                results.Add(investigationState);
+                firstTryResults.Add(investigationState);
+                // pointsPerDay.Add(pointsThisDay);
+            }
+            else
+            {
+                results[day - 2] = investigationState;
+                // pointsPerDay[day - 2] = pointsThisDay;
+            }
+            SaveManager.instance.SaveGame();
         }
-        competingEmployees.Sort((x, y) =>
-    y.GetPoints().CompareTo(x.GetPoints()));
         LoadNewDay(day);
     }
 

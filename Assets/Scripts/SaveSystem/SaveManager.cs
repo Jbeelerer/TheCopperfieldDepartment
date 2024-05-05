@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Events;
 
 namespace SaveSystem
 {
@@ -28,14 +29,16 @@ namespace SaveSystem
             if (instance == null)
             {
                 instance = this;
-                if (!Utility.CheckSaveFileExists(saveFile))
-                {
-                    SetupSaveFile(saveFile);
-                }
-                else
-                {
-                    instance.LoadGame();
-                }
+                SetupSaveFile(saveFile);
+                /*
+               if (!Utility.CheckSaveFileExists(saveFile))
+               {
+                   SetupSaveFile(saveFile);
+               }
+               else
+               {
+                   instance.LoadGame();
+               }*/
             }
             else
             {
@@ -77,8 +80,8 @@ namespace SaveSystem
 
             print(" SAAAAVE: " + instance.saveFile);
             savables = FindAllISavables();
-            saveData.completedDays.Clear();
-            saveData.firstTryResult.Clear();
+            // saveData.completedDays.Clear();
+            // saveData.firstTryResult.Clear();
             foreach (ISavable s in savables)
             {
                 s.SaveData(saveData);

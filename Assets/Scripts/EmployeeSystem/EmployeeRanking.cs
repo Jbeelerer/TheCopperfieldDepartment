@@ -11,8 +11,9 @@ public class EmployeeRanking : MonoBehaviour
     void Start()
     {
         gm = GameManager.instance;
-        gm.OnNewDay.AddListener(UpdateList);
         list = GetComponent<TextMeshProUGUI>();
+        gm.OnNewDay.AddListener(UpdateList);
+        UpdateList();
     }
 
     // Update is called once per frame
@@ -22,12 +23,11 @@ public class EmployeeRanking : MonoBehaviour
     }
     private void UpdateList()
     {
-
-        print("UpdateList");
         string content = "";
+        gm.SortCompetingEmployees();
         foreach (CompetingEmployee e in gm.GetCompetingEmployees())
         {
-            content += e.GetListString() + "<br>";
+            content += e.GetListString(gm.GetDay()) + "<br>";
         }
         list.text = content;
     }
