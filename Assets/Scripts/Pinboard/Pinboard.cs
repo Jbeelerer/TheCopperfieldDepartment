@@ -40,6 +40,15 @@ public class Pinboard : MonoBehaviour
         AddPin(rightPenClickInfo, new Vector3(0.5f - (pinboardModel.localScale.x / 2), 0.5f - (pinboardModel.localScale.y / 2), -pinboardModel.localScale.z / 2));
         AddPin(leftPenClickInfo, new Vector3(0.5f + minSpaceBetweenPins - (pinboardModel.localScale.x / 2), 0.5f - (pinboardModel.localScale.y / 2), -pinboardModel.localScale.z / 2));
         narration = FindObjectOfType<Narration>();
+        GameObject.FindObjectOfType<ComputerControls>().OnUnpinned.AddListener(RemoveByScriptableObject);
+    }
+
+    private void RemoveByScriptableObject(ScriptableObject o)
+    {
+        if (pinsOnPinboard.ContainsKey(o))
+        {
+            pinsOnPinboard[o].DeleteElement();
+        }
     }
 
     public void RemoveThingOnPinboardByElement(PinboardElement pe)
