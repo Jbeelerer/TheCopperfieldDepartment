@@ -14,6 +14,7 @@ public class OSPerson : MonoBehaviour
     private FPSController fpsController;
     private OSPeopleListContent peopleListContent;
     private ComputerControls computerControls;
+    private bool personPinned = false;
 
     // Start is called before the first frame update
     void Start()
@@ -29,6 +30,11 @@ public class OSPerson : MonoBehaviour
         peopleListContent.OnAccusedPersonClear.AddListener(ClearAccused);
     }
 
+    public void InstantiatePerson(Person person)
+    {
+        this.person = person;
+    }
+
     private void RemovePinned(ScriptableObject so)
     {
         switch (so)
@@ -36,32 +42,30 @@ public class OSPerson : MonoBehaviour
             case Person:
                 if (so == person)
                 {
-                    transform.Find("PinPerson").GetComponent<Image>().color = Color.black;
+                    transform.Find("PinPerson").GetComponent<Image>().color = Color.white;
+                    personPinned = false;
                 }
                 break;
         }
     }
 
-    public void InstantiatePerson(Person person)
-    {
-        this.person = person;
-    }
-
     public void AddPersonToPinboard()
     {
         // Pinning person
-        if (transform.Find("PinPerson").GetComponent<Image>().color == Color.black)
+        if (!personPinned)
         {
             pinboard.AddPin(person);
             transform.Find("PinPerson").GetComponent<Image>().color = Color.red;
+            personPinned = true;
 
             popupManager.DisplayPersonPinMessage();
         }
         // Unpinning person
         else
         {
-            transform.Find("PinPerson").GetComponent<Image>().color = Color.black;
+            transform.Find("PinPerson").GetComponent<Image>().color = Color.white;
             computerControls.OnUnpinned?.Invoke(person);
+            personPinned = false;
 
             popupManager.DisplayPersonUnpinMessage();
         }
@@ -87,6 +91,6 @@ public class OSPerson : MonoBehaviour
 
     private void ClearAccused()
     {
-        transform.Find("AccusePerson").GetComponent<Image>().color = Color.black;
+        transform.Find("AccusePerson").GetComponent<Image>().color = Color.white;
     }
 }
