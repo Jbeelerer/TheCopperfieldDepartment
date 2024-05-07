@@ -64,19 +64,15 @@ public class GameManager : MonoBehaviour, ISavable
 
     private SaveManager saveManager;
 
+    private bool devMode = true;
+
 
     private List<investigationStates> firstTryResults = new List<investigationStates>();
     private List<investigationStates> results = new List<investigationStates>();
-    /*
-        public int GetTotalPoints()
-        {
-            int totalPoints = 0;
-            foreach (int points in pointsPerDay)
-            {
-                totalPoints += points;
-            }
-            return totalPoints;
-        }*/
+    public bool GetIfDevMode()
+    {
+        return devMode;
+    }
     public int GetDay()
     {
         return day;

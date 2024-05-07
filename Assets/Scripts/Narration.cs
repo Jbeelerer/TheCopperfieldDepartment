@@ -56,6 +56,18 @@ public class Narration : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (gm.GetIfDevMode())
+        {
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                StopAllCoroutines();
+
+                gm.SetGameState(GameState.Playing);
+                subtitleText.text = "";
+                subtitleText.fontSize -= 10;
+                blackScreen.SetActive(false);
+            }
+        }
 
     }
     public void Say(string text)
