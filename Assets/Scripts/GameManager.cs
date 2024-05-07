@@ -97,7 +97,7 @@ public class GameManager : MonoBehaviour, ISavable
 
     public void SaveData(SaveData data)
     {
-        data.currentDay = furthestDay;
+        data.currentDay = 1;// Change later  back to furthestDay;
         data.result = results;
         data.firstTryResult = firstTryResults;
         List<SaveableEmployee> tempSE = new List<SaveableEmployee>();
