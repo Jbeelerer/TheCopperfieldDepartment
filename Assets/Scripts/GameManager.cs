@@ -13,9 +13,17 @@ public enum investigationStates
     SuspectFound,
     SuspectSaved
 }
+public enum GameState
+{
+    Playing,
+    Frozen,
+    Paused,
+
+}
 public class GameManager : MonoBehaviour, ISavable
 {
     public static GameManager instance;
+    private GameState gameState = GameState.Playing;
     /*
         private float time = 0;
         private float dayLength = 50;
@@ -72,6 +80,18 @@ public class GameManager : MonoBehaviour, ISavable
     public int GetDay()
     {
         return day;
+    }
+    public void SetGameState(GameState state)
+    {
+        gameState = state;
+    }
+    public bool isFrozen()
+    {
+        return gameState == GameState.Frozen;
+    }
+    public GameState GetGameState()
+    {
+        return gameState;
     }
     public investigationStates GetResultForDay(int i)
     {
@@ -227,7 +247,6 @@ public class GameManager : MonoBehaviour, ISavable
         }
         playerOnEmployeeList = new CompetingEmployee("Player", 50, 0);
         competingEmployees.Add(playerOnEmployeeList);
-
     }
 
     public void SetNarration(Narration n)

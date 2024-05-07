@@ -47,8 +47,6 @@ public class FPSController : MonoBehaviour
     private float hoverStart = -1f;
     // in detailmode the additional info board is shown
     private bool detailMode = false;
-    private bool frozen = false;
-
     private ComputerControls computerControls;
     private GameObject computerCam;
     private GameObject calendarCam;
@@ -78,9 +76,10 @@ public class FPSController : MonoBehaviour
 
     private Vector3 originalPosition;
 
+    // TODO change in gm directly, for now not fucking with computercontrolls @alex <3
     public void SetIsFrozen(bool isFrozen)
     {
-        frozen = isFrozen;
+        gm.SetGameState(isFrozen ? GameState.Frozen : GameState.Playing);
     }
 
     void Start()
@@ -139,7 +138,7 @@ public class FPSController : MonoBehaviour
     void Update()
     {
         // on e key pressed ExitPC is "E"
-        if (Input.GetButtonDown("ExitPC") && frozen)
+        if (Input.GetButtonDown("ExitPC") && gm.isFrozen())
         {
             if (lastSelectedObject)
             {
@@ -148,7 +147,7 @@ public class FPSController : MonoBehaviour
             handleCamera(cameraObject.gameObject);
         }
 
-        if (!frozen)
+        if (!gm.isFrozen())
         {
             #region Handles Movment
             Vector3 forward = transform.TransformDirection(Vector3.forward);
@@ -482,7 +481,7 @@ public class FPSController : MonoBehaviour
         Cursor.visible = false;
         if (camera != cameraObject.gameObject)
         {
-            frozen = true;
+            gm.SetGameState(GameState.Frozen);
             inputOverlay.SetIcon("");
             Cursor.lockState = CursorLockMode.Confined;
             if (camera == calendarCam)
@@ -493,7 +492,7 @@ public class FPSController : MonoBehaviour
         }
         else
         {
-            frozen = false;
+            gm.SetGameState(GameState.Playing);
         }
         camera.SetActive(true);
     }
@@ -526,10 +525,10 @@ public class FPSController : MonoBehaviour
 
     public IEnumerator PlayPenAnimation(string animName)
     {
-        if (!frozen)
+        if (!gm.isFrozen())
         {
             PinboardElement pe = currentSelectedObject.GetComponent<PinboardElement>();
-            frozen = true;
+            gm.SetGameState(GameState.Frozen);
             // clear if the state is the same
             if (animName == "circle" && pe.GetAnnotationType() == AnnotationType.Circle || animName == "cross" && pe.GetAnnotationType() == AnnotationType.StrikeThrough)
             {
@@ -551,7 +550,7 @@ public class FPSController : MonoBehaviour
                 }
             }
             //pe.SetAnnotationType(animName == "circle" ? AnnotationType.Circle : animName == "cross" ? AnnotationType.StrikeThrough : AnnotationType.StrikeThrough);
-            frozen = false;
+            gm.SetGameState(GameState.Playing);
         }
     }
 
