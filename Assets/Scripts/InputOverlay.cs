@@ -25,6 +25,10 @@ public class InputOverlay : MonoBehaviour
 
     private bool isHolding = false;
 
+    private bool followCursor = false;
+
+    private Vector3 defaultPosition;
+
     public bool GetIsHolding()
     {
         return isHolding;
@@ -37,6 +41,15 @@ public class InputOverlay : MonoBehaviour
         onHoldDisplay.gameObject.SetActive(false);
         image.enabled = false;
         GetComponentInChildren<TextMeshProUGUI>().gameObject.SetActive(false);
+        defaultPosition = transform.position;
+    }
+    public void SetIfFollowCursor(bool b)
+    {
+        followCursor = b;
+        if (!b)
+        {
+            transform.position = defaultPosition;
+        }
     }
     public void SetIcon(string imageName, bool forceIcon = false)
     {
@@ -120,5 +133,12 @@ public class InputOverlay : MonoBehaviour
     void Update()
     {
 
+    }
+    private void FixedUpdate()
+    {
+        if (followCursor)
+        {
+            transform.position = Input.mousePosition;
+        }
     }
 }

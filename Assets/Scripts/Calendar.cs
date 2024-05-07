@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Microsoft.Unity.VisualStudio.Editor;
 using SaveSystem;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,14 +20,17 @@ public class Calendar : MonoBehaviour
 
     void Awake()
     {
-        gm = GameManager.instance;
-        sm = SaveManager.instance;
-        // sm.OnLoaded.AddListener(LoadCalendar);
+        //transform.parent.GetComponent<Canvas>().worldCamera = Camera.main;
+        // sm.OnLoaded.AddListener(LoadCalendar); 
     }
     // Start is called before the first frame update
     void Start()
     {
-        LoadCalendar();
+        gm = GameManager.instance;
+        sm = SaveManager.instance;
+        gm.OnNewDay.AddListener(LoadCalendar);
+        //LoadCalendar();
+        StartCoroutine(LoadCalendarDelayed());
     }
 
     // Update is called once per frame
@@ -35,9 +39,17 @@ public class Calendar : MonoBehaviour
 
     }
 
+    private IEnumerator LoadCalendarDelayed()
+    {
+        yield return new WaitForSeconds(0.1f);
+        LoadCalendar();
+    }
     private void LoadCalendar()
     {
-        print(gm.GetFurthestDay());
+        foreach (Transform child in transform)
+        {
+            Destroy(child.gameObject);
+        }
         for (int i = 1; i < 31; i++)
         {
             GameObject day = Instantiate(dayPrefab, transform);
@@ -45,6 +57,15 @@ public class Calendar : MonoBehaviour
             if (gm.GetFurthestDay() < i)
             {
                 day.transform.GetComponent<UnityEngine.UI.Button>().interactable = false;
+            }
+            if (gm.GetDay() == i)
+            {
+                day.transform.GetComponentInChildren<TextMeshProUGUI>().fontWeight = TMPro.FontWeight.Bold;
+            }
+            else if (gm.GetDay() > i)
+            {
+                day.transform.Find("CalendarState").GetComponent<UnityEngine.UI.Image>().sprite = SuspectNotFound;
+                day.transform.Find("CalendarState").GetComponent<UnityEngine.UI.Image>().color = new Color(1f, 0f, 0f, 0.5f);
             }
             if (gm.GetFurthestDay() > i)
             {
@@ -60,10 +81,6 @@ public class Calendar : MonoBehaviour
         print("Resetting Save");
         sm.DeleteSave();
         sm.LoadGame();
-        foreach (Transform child in transform)
-        {
-            Destroy(child.gameObject);
-        }
         LoadCalendar();
     }
 

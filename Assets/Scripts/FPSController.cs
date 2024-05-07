@@ -50,6 +50,8 @@ public class FPSController : MonoBehaviour
     private bool frozen = false;
 
     private ComputerControls computerControls;
+    private GameObject computerCam;
+    private GameObject calendarCam;
 
     //audio
     private AudioSource audioSource;
@@ -93,6 +95,8 @@ public class FPSController : MonoBehaviour
         computerControls = GameObject.Find("DesktopInterface").GetComponent<ComputerControls>();
         gm.SetStartTransform(transform);
         narration = GetComponentInChildren<Narration>();
+        computerCam = GameObject.Find("ComputerCam");
+        calendarCam = GameObject.Find("CalendarCam");
     }
     private void FixedUpdate()
     {
@@ -137,7 +141,11 @@ public class FPSController : MonoBehaviour
         // on e key pressed ExitPC is "E"
         if (Input.GetButtonDown("ExitPC") && frozen)
         {
-            computerControls.LeaveComputer();
+            if (lastSelectedObject)
+            {
+                computerControls.LeaveComputer();
+            }
+            handleCamera(cameraObject.gameObject);
         }
 
         if (!frozen)
@@ -232,6 +240,7 @@ public class FPSController : MonoBehaviour
                                     hoverStart = 0;
                                 break;
                             case "CurvedScreen":
+                            case "Calendar":
                                 inputOverlay.SetIcon("inspect");
                                 break;
                             case "pin":
@@ -286,7 +295,6 @@ public class FPSController : MonoBehaviour
             }
 
             #endregion
-
             #region Handle left click
             if (Input.GetMouseButtonDown(0) && currentSelectedObject != null)
             {
@@ -349,12 +357,8 @@ public class FPSController : MonoBehaviour
                             }
                             break;
                         case "CurvedScreen":
-                            cameraObject.gameObject.SetActive(false);
-                            frozen = true;
-                            Cursor.lockState = CursorLockMode.Confined;
-                            Cursor.visible = false;
+                            handleCamera(computerCam);
                             computerControls.ToggleCursor();
-                            inputOverlay.SetIcon("");
                             break;
                         case "threadCollider":
                             audioSource.PlayOneShot(threadCuttingSound);
@@ -372,6 +376,9 @@ public class FPSController : MonoBehaviour
                             selectedPenAnim = currentSelectedObject.GetComponentInChildren<Animator>();
                             selectedPenAnim.transform.parent.gameObject.layer = 2;
                             selectedPenAnim.SetBool("pickedup", true);
+                            break;
+                        case "Calendar":
+                            handleCamera(calendarCam);
                             break;
                         case "Door":
                             if (gm.GetAnswerCommited())
@@ -446,6 +453,52 @@ public class FPSController : MonoBehaviour
             #endregion
 
         }
+        else
+        {
+            // TODO: This is not a good way to handle Worldspace UI, but the buttons are not interactable otherwise
+            // IF YOU KNOW WHY PLEASE FIX!!!!!!! (then you can also remove the collider from the button)
+            RaycastHit hit;
+            Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
+            if (Input.GetMouseButtonDown(0) && Physics.Raycast(ray, out hit))
+            {
+                print(hit.collider.gameObject.name);
+                if (hit.collider.gameObject.name == "Day(Clone)")
+                {
+                    hit.collider.gameObject.GetComponent<UnityEngine.UI.Button>().onClick.Invoke();
+                }
+            }
+        }
+    }
+
+    private void handleCamera(GameObject camera)
+    {
+        computerCam.SetActive(false);
+        if (calendarCam)
+        {
+            calendarCam.SetActive(false);
+            calendarCam.transform.parent.parent.GetComponent<Collider>().enabled = true;
+        }
+        cameraObject.gameObject.SetActive(false);
+        //inputOverlay.SetIfFollowCursor(false);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        if (camera != cameraObject.gameObject)
+        {
+            frozen = true;
+            inputOverlay.SetIcon("");
+            Cursor.lockState = CursorLockMode.Confined;
+            if (camera == calendarCam)
+            {
+                Cursor.visible = true;
+                calendarCam.transform.parent.parent.GetComponent<Collider>().enabled = false;
+                // inputOverlay.SetIfFollowCursor(true);
+            }
+        }
+        else
+        {
+            frozen = false;
+        }
+        camera.SetActive(true);
     }
 
     // TODO: Maybe create an audio manager for all these things
