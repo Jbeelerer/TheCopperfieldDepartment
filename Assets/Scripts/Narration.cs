@@ -3,6 +3,18 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+[System.Serializable]
+public class TimedSubtitle
+{
+    public float duration;
+    public string text;
+}
+[System.Serializable]
+public class TimedSubtitles
+{
+    public TimedSubtitle[] intro;
+}
+
 public class Narration : MonoBehaviour
 {
 
@@ -17,8 +29,9 @@ public class Narration : MonoBehaviour
     [SerializeField] private string deletePostText;
     [SerializeField] private string suspectFoundText;
     [SerializeField] private AudioClip introClip;
-    private Dictionary<string, float> intro = new Dictionary<string, float>() { { "Good Morning!", 1f }, { "Happy to have you as part of our team!!", 2.1f }, { "I would like to remind you of the secrecy clause in your contract!", 4.2f }, { "The existence of The Copperfield Department is highly confidential.", 4.2f }, { "Any breach of contract will waive your claim to physical integrity.", 5f }, { "Mister Tery Waldberg will be in touch with you regarding your first assignment.", 4.6f }, { "Have a productive day!", 1.5f } };
+    // private Dictionary<string, float> intro = new Dictionary<string, float>() { { "Good Morning!", 1f }, { "Happy to have you as part of our team!!", 2.1f }, { "I would like to remind you of the secrecy clause in your contract!", 4.2f }, { "The existence of The Copperfield Department is highly confidential.", 4.2f }, { "Any breach of contract will waive your claim to physical integrity.", 5f }, { "Mister Tery Waldberg will be in touch with you regarding your first assignment.", 4.6f }, { "Have a productive day!", 1.5f } };
 
+    private TimedSubtitles timedSubtitles;
     private TextMeshProUGUI subtitleText;
 
     private AudioSource audioSource;
@@ -26,6 +39,7 @@ public class Narration : MonoBehaviour
     private GameManager gm;
 
     private GameObject blackScreen;
+    [SerializeField] private TextAsset jsonFile;
 
     // Start is called before the first frame update
     void Start()
@@ -37,6 +51,10 @@ public class Narration : MonoBehaviour
 
         blackScreen = GameObject.Find("BlackScreen");
         blackScreen.SetActive(false);
+
+
+        timedSubtitles = JsonUtility.FromJson<TimedSubtitles>(jsonFile.text);
+
 
         if (gm.GetDay() == 1)
         {
@@ -50,7 +68,7 @@ public class Narration : MonoBehaviour
         gm.SetGameState(GameState.Frozen);
         audioSource.clip = introClip;
         audioSource.Play();
-        StartCoroutine(PlaySequence(intro));
+        StartCoroutine(PlaySequence(timedSubtitles.intro));
     }
 
     // Update is called once per frame
@@ -113,15 +131,15 @@ public class Narration : MonoBehaviour
         subtitleText.text = "";
     }
 
-    private IEnumerator PlaySequence(Dictionary<string, float> content)
+    private IEnumerator PlaySequence(TimedSubtitle[] content)
     {
         print("Playing sequence");
         blackScreen.SetActive(true);
         subtitleText.fontSize += 10;
-        foreach (KeyValuePair<string, float> entry in content)
+        foreach (TimedSubtitle entry in content)
         {
-            subtitleText.text = entry.Key;
-            yield return new WaitForSeconds(entry.Value);
+            subtitleText.text = entry.text;
+            yield return new WaitForSeconds(entry.duration);
 
         }
 
