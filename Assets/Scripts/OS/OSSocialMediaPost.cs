@@ -22,6 +22,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     private bool postPinned = false;
     private bool userPinned = false;
+    private bool postDeleted = false;
 
     // Start is called before the first frame update
     void Start()
@@ -103,11 +104,6 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
         }
     }
 
-    private void ClearDeleted()
-    {
-        postOptions.transform.Find("DeletePost").GetComponent<Image>().color = Color.black;
-    }
-
     public void instanctiatePost(SocialMediaPost post)
     {
         // Instantiate the post
@@ -156,7 +152,14 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
         }
         popupManager.DisplayPostDeleteMessage();
         postOptions.transform.Find("DeletePost").GetComponent<Image>().color = Color.red;
+        postDeleted = true;
         gm.checkDeletedPost(post);
+    }
+
+    private void ClearDeleted()
+    {
+        postOptions.transform.Find("DeletePost").GetComponent<Image>().color = Color.black;
+        postDeleted = false;
     }
 
     public void OpenProfile()
@@ -199,7 +202,8 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
             option.gameObject.SetActive(false);
 
             if ((option.name == "PinPost" && postPinned)
-                || (option.name == "PinUser" && userPinned))
+                || (option.name == "PinUser" && userPinned)
+                || option.name == "DeletePost" && postDeleted)
             {
                 option.gameObject.SetActive(true);
             }

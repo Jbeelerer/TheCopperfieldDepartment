@@ -15,7 +15,8 @@ public enum OSAppType
     GOV,
     SETTINGS,
     PEOPLE_LIST,
-    WARNING
+    WARNING,
+    START_SETTINGS
 }
 
 public enum OSInvestigationState
@@ -58,8 +59,6 @@ public class ComputerControls : MonoBehaviour
     private FPSController fpsController;
     private GameManager gm;
     private bool cursorActive = false;
-    private SocialMediaPost[] todaysPosts;
-    private Person[] todaysPeople;
     private OSWindow currentFocusedWindow;
 
     public PinEvent OnUnpinned;
@@ -81,7 +80,9 @@ public class ComputerControls : MonoBehaviour
 
         gm = GameManager.instance;
 
-        TogglePointy(true);
+        OpenWindow(OSAppType.START_SETTINGS);
+
+        //TogglePointy(true);
     }
 
     // Update is called once per frame
@@ -92,6 +93,8 @@ public class ComputerControls : MonoBehaviour
 
         mouseSpeedX = mouseSensitivity * Input.GetAxis("Mouse X");
         mouseSpeedY = mouseSensitivity * Input.GetAxis("Mouse Y");
+
+        MoveMouse();
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -138,9 +141,29 @@ public class ComputerControls : MonoBehaviour
             return;
 
         // Update computer time
-        computerTime.text = System.DateTime.Now.ToString("HH:mm");
+        computerTime.text = System.DateTime.Now.ToString("hh:mm tt", new System.Globalization.CultureInfo("en-US"));
 
         // Move cursor
+
+
+        // Check if cursor is still and tooltip should be displayed
+        CheckForTooltip();
+
+        GameObject hitObject = GetFirstHitObject();
+        // Change cursor sprite if hovering over button
+        if (hitObject && (!hitObject.GetComponent<TextMeshProUGUI>() || hitObject.GetComponent<Button>()))
+        {
+            cursor.GetComponent<Image>().sprite = hitObject.GetComponent<Button>() ? cursorClickable : cursorNormal;
+        }
+        // Change cursor sprite if hovering over disabled button
+        if (hitObject && hitObject.GetComponent<Button>() && !hitObject.GetComponent<Button>().isActiveAndEnabled)
+        {
+            cursor.GetComponent<Image>().sprite = cursorForbidden;
+        }
+    }
+
+    private void MoveMouse()
+    {
         cursor.anchoredPosition += new Vector2(mouseSpeedX, mouseSpeedY);
 
         // Move selected window with the cursor
@@ -164,21 +187,6 @@ public class ComputerControls : MonoBehaviour
                     window.MoveWindow(-(new Vector2(mouseSpeedX, mouseSpeedY)));
                 }
             }
-        }
-
-        // Check if cursor is still and tooltip should be displayed
-        CheckForTooltip();
-
-        GameObject hitObject = GetFirstHitObject();
-        // Change cursor sprite if hovering over button
-        if (hitObject && (!hitObject.GetComponent<TextMeshProUGUI>() || hitObject.GetComponent<Button>()))
-        {
-            cursor.GetComponent<Image>().sprite = hitObject.GetComponent<Button>() ? cursorClickable : cursorNormal;
-        }
-        // Change cursor sprite if hovering over disabled button
-        if (hitObject && hitObject.GetComponent<Button>() && !hitObject.GetComponent<Button>().isActiveAndEnabled)
-        {
-            cursor.GetComponent<Image>().sprite = cursorForbidden;
         }
     }
 
@@ -218,6 +226,10 @@ public class ComputerControls : MonoBehaviour
                 break;
             case OSAppType.PEOPLE_LIST:
                 pointySystem.StartTutorial("PeopleList", toggledAutomatically);
+                break;
+            case OSAppType.START_SETTINGS:
+                // Start the desktop tutorial for this one
+                pointySystem.StartTutorial("Desktop", toggledAutomatically);
                 break;
             default:
                 pointySystem.StartTutorial("Default", toggledAutomatically);
@@ -480,8 +492,10 @@ public class ComputerControls : MonoBehaviour
         newWindow.GetComponent<OSWindow>().warningMessage = warningMessage;
         newWindow.GetComponent<OSWindow>().warningSuccessFunc = successFunc;
         BringWindowToFront(newWindow.GetComponent<OSWindow>());
-        if (newWindow.GetComponent<OSWindow>().appType != OSAppType.WARNING)
+        // Don't add to open windows list if its a temporary window like a warning
+        if (newWindow.GetComponent<OSWindow>().appType != OSAppType.WARNING && newWindow.GetComponent<OSWindow>().appType != OSAppType.START_SETTINGS)
             windows.Add(newWindow.GetComponent<OSWindow>());
+        // Make warning window smaller than normal windows
         if (newWindow.GetComponent<OSWindow>().appType == OSAppType.WARNING)
             newWindow.GetComponent<OSWindow>().rectTrans.sizeDelta = new Vector2(300, 200);
         // Create tab
@@ -489,7 +503,8 @@ public class ComputerControls : MonoBehaviour
         newTab.GetComponent<OSTab>().appType = type;
         newWindow.GetComponent<OSWindow>().associatedTab = newTab.GetComponent<OSTab>();
         // Open Pointy Tutorial if it exists for the window
-        TogglePointy(true);
+        if (newWindow.GetComponent<OSWindow>().appType != OSAppType.WARNING && newWindow.GetComponent<OSWindow>().appType != OSAppType.START_SETTINGS)
+            TogglePointy(true);
     }
 
     private void BringWindowToFront(OSWindow window)
