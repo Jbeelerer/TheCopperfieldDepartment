@@ -275,6 +275,13 @@ public class GameManager : MonoBehaviour, ISavable
     y.GetTotalPoints(day).CompareTo(x.GetTotalPoints(day)));
     }
 
+    public void PlayTimeTravelSequence()
+    {
+        GameObject g = Instantiate(newDayPrefab);
+        g.GetComponent<Animator>().Play("TimeTravel");
+
+    }
+
     public void setNewDay(bool firstDay = false)
     {
         int pointsThisDay = investigationState == investigationStates.SuspectFound ? 100 : investigationState == investigationStates.SuspectSaved ? 0 : -100;

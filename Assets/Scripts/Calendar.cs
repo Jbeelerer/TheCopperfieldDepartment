@@ -60,7 +60,8 @@ public class Calendar : MonoBehaviour
             }
             if (gm.GetDay() == i)
             {
-                day.transform.GetComponentInChildren<TextMeshProUGUI>().fontWeight = TMPro.FontWeight.Bold;
+                day.transform.GetComponentInChildren<TextMeshProUGUI>().fontStyle = TMPro.FontStyles.Bold;
+                day.transform.GetComponentInChildren<TextMeshProUGUI>().fontStyle = TMPro.FontStyles.Underline;
             }
             else if (gm.GetDay() > i)
             {

@@ -461,8 +461,7 @@ public class FPSController : MonoBehaviour
             Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
             if (Input.GetMouseButtonDown(0) && Physics.Raycast(ray, out hit))
             {
-                print(hit.collider.gameObject.name);
-                if (hit.collider.gameObject.name == "Day(Clone)")
+                if (hit.collider.gameObject.name == "Day(Clone)" && hit.collider.gameObject.GetComponent<UnityEngine.UI.Button>().interactable)
                 {
                     hit.collider.gameObject.GetComponent<UnityEngine.UI.Button>().onClick.Invoke();
                 }
@@ -479,7 +478,6 @@ public class FPSController : MonoBehaviour
             calendarCam.transform.parent.parent.GetComponent<Collider>().enabled = true;
         }
         cameraObject.gameObject.SetActive(false);
-        //inputOverlay.SetIfFollowCursor(false);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         if (camera != cameraObject.gameObject)
@@ -491,7 +489,6 @@ public class FPSController : MonoBehaviour
             {
                 Cursor.visible = true;
                 calendarCam.transform.parent.parent.GetComponent<Collider>().enabled = false;
-                // inputOverlay.SetIfFollowCursor(true);
             }
         }
         else
