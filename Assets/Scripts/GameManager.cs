@@ -378,7 +378,7 @@ public class GameManager : MonoBehaviour, ISavable
 
     private IEnumerator DelayFirstDay()
     {
-        yield return null;
         LoadNewDay(day);
+        yield return null;
     }
 }
