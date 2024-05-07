@@ -12,6 +12,7 @@ public class PointyTutorialStep
     public string targetObjectName;
     public string message;
     public bool pointAtPointy;
+    public Vector2 spotlightSizeModifier;
 }
 
 public class OSPointySystem : MonoBehaviour
@@ -37,10 +38,12 @@ public class OSPointySystem : MonoBehaviour
     private List<PointyTutorialStep> currentTutorial;
     private int currentStep;
     private List<string> completedTutorials = new List<string>();
+    private Vector2 originalSpotlightSize;
 
     private void Start()
     {
         spotlight.GetComponent<Image>().alphaHitTestMinimumThreshold = 1f;
+        originalSpotlightSize = spotlight.GetComponent<RectTransform>().sizeDelta;
     }
 
     public void StartTutorial(string name, bool toggledAutomatically)
@@ -100,6 +103,13 @@ public class OSPointySystem : MonoBehaviour
         PointyTutorialStep step = currentTutorial[currentStep];
         nextTargetObject = GameObject.Find(step.targetObjectName);
 
+        spotlight.GetComponent<RectTransform>().sizeDelta = originalSpotlightSize;
+        // Resize spotlight if custom size is set
+        if (step.spotlightSizeModifier != Vector2.zero)
+        {
+            spotlight.GetComponent<RectTransform>().sizeDelta = spotlight.GetComponent<RectTransform>().sizeDelta * step.spotlightSizeModifier;
+        }
+
         if (!nextTargetObject)
         {
             Debug.LogError("Could not find target object: " + step.targetObjectName + " Does it not exist in the current window or is it deactivated?");
@@ -114,6 +124,7 @@ public class OSPointySystem : MonoBehaviour
             screenBlockadePointy.SetActive(false);
         }
 
+        // Position pointy next to target object
         pointy.transform.position = nextTargetObject.transform.position + new Vector3(0.5f, 0, 0);
 
         spotlight.transform.position = nextTargetObject.transform.position;

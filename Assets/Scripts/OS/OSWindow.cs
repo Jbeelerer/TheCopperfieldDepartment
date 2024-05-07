@@ -33,6 +33,7 @@ public class OSWindow : MonoBehaviour
     [SerializeField] private GameObject govAppContent;
     [SerializeField] private GameObject peopleListContent;
     [SerializeField] private GameObject warningContent;
+    [SerializeField] private GameObject startSettingsContent;
 
     private void Awake()
     {
@@ -81,6 +82,15 @@ public class OSWindow : MonoBehaviour
             GameObject content = Instantiate(warningContent, transform.Find("Content"));
             content.GetComponent<OSWarningContent>().SetWarningMessage(warningMessage);
             content.GetComponent<OSWarningContent>().SetWarningSuccessFunc(warningSuccessFunc);
+            buttonClose.gameObject.SetActive(false);
+            buttonBig.gameObject.SetActive(false);
+            buttonLong.gameObject.SetActive(false);
+            buttonSmall.gameObject.SetActive(false);
+            canBeMoved = false;
+        }
+        else if (appType == OSAppType.START_SETTINGS)
+        {
+            GameObject content = Instantiate(startSettingsContent, transform.Find("Content"));
             buttonClose.gameObject.SetActive(false);
             buttonBig.gameObject.SetActive(false);
             buttonLong.gameObject.SetActive(false);
