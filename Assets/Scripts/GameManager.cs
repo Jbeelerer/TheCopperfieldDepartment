@@ -97,7 +97,11 @@ public class GameManager : MonoBehaviour, ISavable
 
     public void SaveData(SaveData data)
     {
-        data.currentDay = 1;// Change later  back to furthestDay;
+        if (Resources.LoadAll<Case>("Case" + furthestDay).Count() == 0)
+        {
+            //  return;
+        }
+        data.currentDay = furthestDay;
         data.result = results;
         data.firstTryResult = firstTryResults;
         List<SaveableEmployee> tempSE = new List<SaveableEmployee>();
@@ -126,6 +130,7 @@ public class GameManager : MonoBehaviour, ISavable
                 playerOnEmployeeList = e;
             }
         }
+        LoadNewDay(furthestDay);
     }
     public bool GetAnswerCommited()
     {
@@ -238,15 +243,15 @@ public class GameManager : MonoBehaviour, ISavable
         {
             // TODO: implement endgame   
             print("Game Over");
-            return;
+            //  return; 
+            // todo: Only temp solution...
+            day = 1;
         }
+        if (customCase == null)
+            currentCase = Resources.LoadAll<Case>("Case" + day)[0];// Random.Range(1, 2))[0];//); 
         else
-        {
-            if (customCase == null)
-                currentCase = Resources.LoadAll<Case>("Case" + day)[0];// Random.Range(1, 2))[0];//); 
-            else
-                currentCase = (Case)customCase;
-        }
+            currentCase = (Case)customCase;
+
         // load all connections
         connections = Resources.LoadAll<Connections>("Case" + currentCase.id + "/Connections");
         posts = Resources.LoadAll<SocialMediaPost>("Case" + currentCase.id + "/Posts");
