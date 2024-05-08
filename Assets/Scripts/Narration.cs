@@ -60,8 +60,6 @@ public class Narration : MonoBehaviour
         {
             StartIntro();
         }
-
-
     }
     private void StartIntro()
     {

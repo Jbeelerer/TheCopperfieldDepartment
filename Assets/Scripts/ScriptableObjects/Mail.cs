@@ -7,6 +7,6 @@ public class Mail : ScriptableObject
     public int id;
     public string sender;
     public string title;
-    public string message;
+    [TextArea] public string message;
     public bool isMainCase;
 }

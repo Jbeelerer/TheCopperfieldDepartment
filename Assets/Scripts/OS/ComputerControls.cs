@@ -257,10 +257,6 @@ public class ComputerControls : MonoBehaviour, ISavable
 
     public void LeaveComputer()
     {
-        fpsController.cameraObject.gameObject.SetActive(true);
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-        //fpsController.SetIsFrozen(false);
         gm.SetGameState(GameState.Playing);
         ToggleCursor();
     }

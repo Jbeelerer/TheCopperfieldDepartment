@@ -18,6 +18,8 @@ public enum GameState
     Playing,
     Frozen,
     Paused,
+    OnPC,
+    OnCalendar,
 
 }
 public class GameManager : MonoBehaviour, ISavable
@@ -69,6 +71,10 @@ public class GameManager : MonoBehaviour, ISavable
 
     private List<investigationStates> firstTryResults = new List<investigationStates>();
     private List<investigationStates> results = new List<investigationStates>();
+    private GameObject computerCam;
+    private GameObject calendarCam;
+
+    private GameObject mainCam;
     public bool GetIfDevMode()
     {
         return devMode;
@@ -80,10 +86,22 @@ public class GameManager : MonoBehaviour, ISavable
     public void SetGameState(GameState state)
     {
         gameState = state;
+        computerCam.SetActive(state == GameState.OnPC);
+        if (calendarCam)
+            calendarCam.SetActive(state == GameState.OnCalendar);
+
+        mainCam.SetActive(state == GameState.Playing || state == GameState.Paused || state == GameState.Frozen);
+
+        if (calendarCam)
+            calendarCam.transform.parent.parent.GetComponent<Collider>().enabled = state != GameState.OnCalendar;
+
+        Cursor.visible = state == GameState.OnCalendar;
+        Cursor.lockState = state == GameState.OnPC || state == GameState.OnCalendar ? CursorLockMode.Confined : CursorLockMode.Locked;
     }
+
     public bool isFrozen()
     {
-        return gameState == GameState.Frozen;
+        return gameState == GameState.OnPC || gameState == GameState.OnCalendar || gameState == GameState.Frozen;
     }
     public GameState GetGameState()
     {
@@ -211,7 +229,9 @@ public class GameManager : MonoBehaviour, ISavable
             instance = this;
         }
 
-
+        mainCam = GameObject.Find("Virtual Camera");
+        computerCam = GameObject.Find("ComputerCam");
+        calendarCam = GameObject.Find("CalendarCam");
     }
     void Start()
     {
@@ -274,12 +294,16 @@ public class GameManager : MonoBehaviour, ISavable
         //using lists to add new values dynamicly, afterwards convert to array, because it won't change and will be more performant
         List<Person> tempPeople = new List<Person>();
         List<SocialMediaUser> tempUsers = new List<SocialMediaUser>();
+        foreach (Person p in currentCase.people)
+        {
+            tempPeople.Add(p);
+        }
         foreach (SocialMediaPost p in posts)
         {
             if (!tempUsers.Contains(p.author))
             {
                 tempUsers.Add(p.author);
-                tempPeople.Add(p.author.realPerson);
+                //  tempPeople.Add(p.author.realPerson);
             }
         }
         people = tempPeople.ToArray();

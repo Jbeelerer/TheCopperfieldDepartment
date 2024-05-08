@@ -48,8 +48,6 @@ public class FPSController : MonoBehaviour
     // in detailmode the additional info board is shown
     private bool detailMode = false;
     private ComputerControls computerControls;
-    private GameObject computerCam;
-    private GameObject calendarCam;
 
     //audio
     private AudioSource audioSource;
@@ -76,12 +74,6 @@ public class FPSController : MonoBehaviour
 
     private Vector3 originalPosition;
 
-    // TODO change in gm directly, for now not fucking with computercontrolls @alex <3
-    public void SetIsFrozen(bool isFrozen)
-    {
-        gm.SetGameState(isFrozen ? GameState.Frozen : GameState.Playing);
-    }
-
     void Start()
     {
         gm = GameManager.instance;
@@ -94,8 +86,6 @@ public class FPSController : MonoBehaviour
         computerControls = GameObject.Find("DesktopInterface").GetComponent<ComputerControls>();
         gm.SetStartTransform(transform);
         narration = GetComponentInChildren<Narration>();
-        computerCam = GameObject.Find("ComputerCam");
-        calendarCam = GameObject.Find("CalendarCam");
     }
     private void FixedUpdate()
     {
@@ -140,12 +130,17 @@ public class FPSController : MonoBehaviour
         // on e key pressed ExitPC is "E"
         if (Input.GetButtonDown("ExitPC") && gm.isFrozen())
         {
-            if (lastSelectedObject)
+            if (gm.GetGameState() == GameState.OnPC)
             {
                 computerControls.LeaveComputer();
             }
-            handleCamera(cameraObject.gameObject);
+            else
+            {
+
+                gm.SetGameState(GameState.Playing);
+            }
         }
+
 
         if (!gm.isFrozen())
         {
@@ -356,7 +351,8 @@ public class FPSController : MonoBehaviour
                             }
                             break;
                         case "CurvedScreen":
-                            handleCamera(computerCam);
+                            gm.SetGameState(GameState.OnPC);
+                            inputOverlay.SetIcon("");
                             computerControls.ToggleCursor();
                             break;
                         case "threadCollider":
@@ -377,7 +373,8 @@ public class FPSController : MonoBehaviour
                             selectedPenAnim.SetBool("pickedup", true);
                             break;
                         case "Calendar":
-                            handleCamera(calendarCam);
+                            inputOverlay.SetIcon("");
+                            gm.SetGameState(GameState.OnCalendar);
                             break;
                         case "Door":
                             if (gm.GetAnswerCommited())
@@ -466,35 +463,6 @@ public class FPSController : MonoBehaviour
                 }
             }
         }
-    }
-
-    private void handleCamera(GameObject camera)
-    {
-        computerCam.SetActive(false);
-        if (calendarCam)
-        {
-            calendarCam.SetActive(false);
-            calendarCam.transform.parent.parent.GetComponent<Collider>().enabled = true;
-        }
-        cameraObject.gameObject.SetActive(false);
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-        if (camera != cameraObject.gameObject)
-        {
-            gm.SetGameState(GameState.Frozen);
-            inputOverlay.SetIcon("");
-            Cursor.lockState = CursorLockMode.Confined;
-            if (camera == calendarCam)
-            {
-                Cursor.visible = true;
-                calendarCam.transform.parent.parent.GetComponent<Collider>().enabled = false;
-            }
-        }
-        else
-        {
-            gm.SetGameState(GameState.Playing);
-        }
-        camera.SetActive(true);
     }
 
     // TODO: Maybe create an audio manager for all these things
