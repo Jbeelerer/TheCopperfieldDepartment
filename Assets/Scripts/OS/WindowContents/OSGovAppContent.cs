@@ -12,6 +12,7 @@ public class OSGovAppContent : MonoBehaviour, IPointerDownHandler, IPointerUpHan
     public TMP_Text mailSender;
     public GameObject mailContainer;
     public GameObject mailPrefab;
+    public ScrollRect textScrollArea;
 
     private Camera canvasCam;
     private ComputerControls computerControls;

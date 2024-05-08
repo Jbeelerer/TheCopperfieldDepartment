@@ -36,8 +36,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -26.4, y: 112.7}
-  m_SizeDelta: {x: 175, y: 112.9}
+  m_AnchoredPosition: {x: -26, y: 112}
+  m_SizeDelta: {x: 175, y: 115}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1422108506136677892
 CanvasRenderer:
@@ -60,15 +60,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.97184956, b: 0.8102725, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: -826294641, guid: 4294b96eac6f94672aa701be8c63bf67, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -2291,17 +2291,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5229538090654473367}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6458750512415423247}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 180}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 19, y: -44}
-  m_SizeDelta: {x: 50, y: 50}
+  m_AnchoredPosition: {x: 26, y: -63}
+  m_SizeDelta: {x: 29, y: 18}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2297954095355850588
 CanvasRenderer:
@@ -2324,14 +2324,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.972549, b: 0.8117647, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 1673430401, guid: e6d0d227c01f0df418256a4bafe657f1, type: 3}
+  m_Sprite: {fileID: 891828456, guid: 4294b96eac6f94672aa701be8c63bf67, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2378,7 +2378,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -26.4, y: -119}
-  m_SizeDelta: {x: 175, y: 112.9}
+  m_SizeDelta: {x: 175, y: 115}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1603740512498351728
 CanvasRenderer:
@@ -2401,15 +2401,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.97184956, b: 0.8102725, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: -826294641, guid: 4294b96eac6f94672aa701be8c63bf67, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -2486,7 +2486,7 @@ MonoBehaviour:
     spotlightSizeModifier: {x: 0, y: 0}
   stepsDesktop:
   - targetObjectName: ScreenBlockadePointy
-    message: Hey there, Pointy here!
+    message: Oh, you called? Well then, ahem...
     pointAtPointy: 0
     spotlightSizeModifier: {x: 0, y: 0}
   - targetObjectName: ScreenBlockadePointy
@@ -2501,11 +2501,6 @@ MonoBehaviour:
     spotlightSizeModifier: {x: 0, y: 0}
   - targetObjectName: ScreenBlockadePointy
     message: You can also <b>click it during a tutorial</b> if you want to skip it.
-    pointAtPointy: 0
-    spotlightSizeModifier: {x: 0, y: 0}
-  - targetObjectName: App1
-    message: Now to the features.<br><br>First, <b>try clicking this icon</b> to
-      open your inbox!
     pointAtPointy: 0
     spotlightSizeModifier: {x: 0, y: 0}
   stepsGovApp:
@@ -2542,7 +2537,21 @@ MonoBehaviour:
       culprit.
     pointAtPointy: 0
     spotlightSizeModifier: {x: 0, y: 0}
-  stepsSocialMedia: []
+  stepsSocialMedia:
+  - targetObjectName: ScreenBlockadePointy
+    message: The social media app shows you selected posts relevant for the case.<br><br><b>Click
+      the screen to continue.
+    pointAtPointy: 0
+    spotlightSizeModifier: {x: 0, y: 0}
+  - targetObjectName: ScreenBlockadePointy
+    message: If a user seems interesting, you can <b>hover over their post</b> to
+      see post options.
+    pointAtPointy: 0
+    spotlightSizeModifier: {x: 0, y: 0}
+  - targetObjectName: imageMask
+    message: To view someone's profile page, <b>click their avatar or name.
+    pointAtPointy: 0
+    spotlightSizeModifier: {x: 0, y: 0}
 --- !u!1 &5639562176710670930
 GameObject:
   m_ObjectHideFlags: 0
@@ -4011,17 +4020,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8150343492461987860}
-  m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2445830526087844902}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 180}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 19, y: 47}
-  m_SizeDelta: {x: 50, y: 50}
+  m_AnchoredPosition: {x: 26, y: 63}
+  m_SizeDelta: {x: 29, y: 18}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6955279543131857992
 CanvasRenderer:
@@ -4044,14 +4053,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.972549, b: 0.8117647, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 1673430401, guid: e6d0d227c01f0df418256a4bafe657f1, type: 3}
+  m_Sprite: {fileID: 891828456, guid: 4294b96eac6f94672aa701be8c63bf67, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
