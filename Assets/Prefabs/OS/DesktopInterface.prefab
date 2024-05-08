@@ -2471,7 +2471,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db4dc0f013449d04c86d2c9883ab05be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deactivatePointy: 0
+  deactivatePointy: 1
   pointy: {fileID: 1561082558638717806}
   pointySpeechBubbleTop: {fileID: 613414430866184620}
   pointySpeechBubbleBottom: {fileID: 5381382141094340695}
@@ -2486,7 +2486,7 @@ MonoBehaviour:
     spotlightSizeModifier: {x: 0, y: 0}
   stepsDesktop:
   - targetObjectName: ScreenBlockadePointy
-    message: ......
+    message: Hey there, Pointy here!
     pointAtPointy: 0
     spotlightSizeModifier: {x: 0, y: 0}
   - targetObjectName: ScreenBlockadePointy
@@ -2525,7 +2525,7 @@ MonoBehaviour:
     spotlightSizeModifier: {x: 0, y: 0}
   stepsPeopleList:
   - targetObjectName: ScreenBlockadePointy
-    message: ......
+    message: Hey there, Pointy speaking!
     pointAtPointy: 0
     spotlightSizeModifier: {x: 0, y: 0}
   - targetObjectName: ScreenBlockadePointy
@@ -2535,6 +2535,11 @@ MonoBehaviour:
   - targetObjectName: PinPerson
     message: Here, you can look at every citizen's information.<br><br>You can also
       <b>pin them to your pinboard.
+    pointAtPointy: 0
+    spotlightSizeModifier: {x: 0, y: 0}
+  - targetObjectName: AccusePerson
+    message: You can also <b>accuse them</b> here if you think you've found today's
+      culprit.
     pointAtPointy: 0
     spotlightSizeModifier: {x: 0, y: 0}
   stepsSocialMedia: []

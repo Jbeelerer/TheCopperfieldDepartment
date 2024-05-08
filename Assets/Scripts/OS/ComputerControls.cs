@@ -1,3 +1,4 @@
+using SaveSystem;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,7 @@ public enum OSInvestigationState
     POST_DELETED
 }
 
-public class ComputerControls : MonoBehaviour
+public class ComputerControls : MonoBehaviour, ISavable
 {
     public float mouseSensitivity = 1;
     public RectTransform cursor;
@@ -79,10 +80,13 @@ public class ComputerControls : MonoBehaviour
         cursor.anchoredPosition = new Vector2(-1000, -1000);
 
         gm = GameManager.instance;
+        gm.OnNewDay.AddListener(CloseAllWindows);
 
-        OpenWindow(OSAppType.START_SETTINGS);
-
-        //TogglePointy(true);
+        // Run stuff on first day only
+        if (gm.GetDay() == 1)
+        {
+            OpenWindow(OSAppType.START_SETTINGS);
+        }
     }
 
     // Update is called once per frame
@@ -94,6 +98,7 @@ public class ComputerControls : MonoBehaviour
         mouseSpeedX = mouseSensitivity * Input.GetAxis("Mouse X");
         mouseSpeedY = mouseSensitivity * Input.GetAxis("Mouse Y");
 
+        // Move cursor
         MoveMouse();
 
         if (Input.GetMouseButtonDown(0))
@@ -142,9 +147,6 @@ public class ComputerControls : MonoBehaviour
 
         // Update computer time
         computerTime.text = System.DateTime.Now.ToString("hh:mm tt", new System.Globalization.CultureInfo("en-US"));
-
-        // Move cursor
-
 
         // Check if cursor is still and tooltip should be displayed
         CheckForTooltip();
@@ -202,6 +204,12 @@ public class ComputerControls : MonoBehaviour
 
     public void TogglePointy(bool toggledAutomatically)
     {
+        // Only allow automatic toggle on day 1
+        if (toggledAutomatically && gm.GetDay() != 1)
+        {
+            return;
+        }
+
         // Close pointy if currently active
         if (pointySystem.GetNextTargetObject())
         {
@@ -252,7 +260,8 @@ public class ComputerControls : MonoBehaviour
         fpsController.cameraObject.gameObject.SetActive(true);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        fpsController.SetIsFrozen(false);
+        //fpsController.SetIsFrozen(false);
+        gm.SetGameState(GameState.Playing);
         ToggleCursor();
     }
 
@@ -469,6 +478,14 @@ public class ComputerControls : MonoBehaviour
         window.gameObject.SetActive(false);
     }
 
+    private void CloseAllWindows()
+    {
+        foreach (OSWindow window in windows)
+        {
+            CloseWindow(window);
+        }
+    }
+
     public void OpenWindow(OSAppType type, string warningMessage = "Warning message", System.Action successFunc = null)
     {
         // Check if the window is already open
@@ -608,5 +625,15 @@ public class ComputerControls : MonoBehaviour
 
         return point.x >= rectMin.x && point.x <= rectMax.x &&
                point.y >= rectMin.y && point.y <= rectMax.y;
+    }
+
+    public void LoadData(SaveData data)
+    {
+        mouseSensitivity = data.mouseSensitivity;
+    }
+
+    public void SaveData(SaveData data)
+    {
+        data.mouseSensitivity = mouseSensitivity;
     }
 }

@@ -21,6 +21,8 @@ namespace SaveSystem
         public List<int> pointsPerDay = new List<int>();
         public List<SaveableEmployee> competingEmployees = new List<SaveableEmployee>();
 
+        public float mouseSensitivity;
+
         public SaveData()
         {
 
