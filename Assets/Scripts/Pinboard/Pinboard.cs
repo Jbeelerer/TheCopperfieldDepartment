@@ -63,6 +63,11 @@ public class Pinboard : MonoBehaviour
         if (keyOfValueToRemove != null)
         {
             pinsOnPinboard.Remove(keyOfValueToRemove);
+
+            if (keyOfValueToRemove is Person)
+            {
+                subPins.Remove(keyOfValueToRemove);
+            }
             if (keyOfValueToRemove is SocialMediaPost)
             {
                 // removing childeren not yet working correctly
