@@ -21,7 +21,7 @@ public class EmployeeRanking : MonoBehaviour
     {
 
     }
-    private void UpdateList()
+    public void UpdateList()
     {
         string content = "";
         gm.SortCompetingEmployees();

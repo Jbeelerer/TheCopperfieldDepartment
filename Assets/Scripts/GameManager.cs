@@ -232,6 +232,15 @@ public class GameManager : MonoBehaviour, ISavable
         mainCam = GameObject.Find("Virtual Camera");
         computerCam = GameObject.Find("ComputerCam");
         calendarCam = GameObject.Find("CalendarCam");
+
+        // initiate competing employees
+        for (int i = 0; i < 10; i++)
+        {
+            competingEmployees.Add(new CompetingEmployee());
+        }
+        playerOnEmployeeList = new CompetingEmployee("Player", 50, 0);
+        competingEmployees.Add(playerOnEmployeeList);
+
     }
     void Start()
     {
@@ -255,14 +264,6 @@ public class GameManager : MonoBehaviour, ISavable
         {
             StartCoroutine(DelayFirstDay());
         }
-
-        // initiate competing employees
-        for (int i = 0; i < 10; i++)
-        {
-            competingEmployees.Add(new CompetingEmployee());
-        }
-        playerOnEmployeeList = new CompetingEmployee("Player", 50, 0);
-        competingEmployees.Add(playerOnEmployeeList);
     }
 
     public void SetNarration(Narration n)
