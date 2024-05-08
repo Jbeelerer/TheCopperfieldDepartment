@@ -31,16 +31,22 @@ public class Pinboard : MonoBehaviour
     [SerializeField] private Texture rightPenClickInfo;
     [SerializeField] private Texture leftPenClickInfo;
 
+    private bool firstLoad = true;
+
+    private GameManager gm;
+
     // Start is called before the first frame update
     void Start()
     {
-        //instantiate a pin for the suspect 
+        gm = GameManager.instance;
         pinboardModel = transform.GetChild(0);
+        //instantiate a pin for the suspect      
         AddPin(mysteriousPersonMaterial, new Vector3(0, 0, -pinboardModel.localScale.z / 2));
         AddPin(rightPenClickInfo, new Vector3(0.5f - (pinboardModel.localScale.x / 2), 0.5f - (pinboardModel.localScale.y / 2), -pinboardModel.localScale.z / 2));
         AddPin(leftPenClickInfo, new Vector3(0.5f + minSpaceBetweenPins - (pinboardModel.localScale.x / 2), 0.5f - (pinboardModel.localScale.y / 2), -pinboardModel.localScale.z / 2));
         narration = FindObjectOfType<Narration>();
         GameObject.FindObjectOfType<ComputerControls>().OnUnpinned.AddListener(RemoveByScriptableObject);
+        gm.OnNewDay.AddListener(ResetPinboard);
     }
 
     private void RemoveByScriptableObject(ScriptableObject o)
@@ -70,14 +76,6 @@ public class Pinboard : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            AddPin(new Person());
-        }
-    }
     public void AddPin()
     {
         Instantiate(pinPrefab, transform).GetComponent<PinboardElement>();
@@ -291,6 +289,27 @@ public class Pinboard : MonoBehaviour
         Vector3 direction = pointB - pointA;
         Quaternion rotation = Quaternion.FromToRotation(Vector3.up, direction);
         collider.transform.rotation = rotation;
+    }
+
+    public void ResetPinboard()
+    {
+        if (firstLoad)
+        {
+            firstLoad = false;
+            return;
+        }
+        List<PinboardElement> toDelete = new List<PinboardElement>();
+        foreach (PinboardElement p in pinsOnPinboard.Values)
+        {
+            toDelete.Add(p);
+        }
+        foreach (PinboardElement p in toDelete)
+        {
+            p.DeleteElement();
+        }
+        pinsOnPinboard.Clear();
+        subPins.Clear();
+        AddPin(mysteriousPersonMaterial, new Vector3(0, 0, -pinboardModel.localScale.z / 2));
     }
 }
 
