@@ -39,6 +39,7 @@ public class GameManager : MonoBehaviour, ISavable
     public UnityEvent OnNewDay;
     public UnityEvent OnNewSegment;
     private Case currentCase;
+    private Mail[] mails;
     private Connections[] connections;
     [SerializeField] private SocialMediaPost[] posts;
     private SocialMediaUser[] users;
@@ -268,6 +269,10 @@ public class GameManager : MonoBehaviour, ISavable
         narration = n;
     }
 
+    public Mail[] GetMails()
+    {
+        return mails;
+    }
 
     public void LoadNewDay(int day)
     {
@@ -287,6 +292,7 @@ public class GameManager : MonoBehaviour, ISavable
 
         // load all connections
         connections = Resources.LoadAll<Connections>("Case" + currentCase.id + "/Connections");
+        mails = Resources.LoadAll<Mail>("Case" + currentCase.id + "/Mails");
         posts = Resources.LoadAll<SocialMediaPost>("Case" + currentCase.id + "/Posts");
         //using lists to add new values dynamicly, afterwards convert to array, because it won't change and will be more performant
         List<Person> tempPeople = new List<Person>();

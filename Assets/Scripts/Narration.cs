@@ -107,7 +107,6 @@ public class Narration : MonoBehaviour
 
                 gm.SetGameState(GameState.Playing);
                 subtitleText.text = "";
-                subtitleText.fontSize -= 10;
                 blackScreen.SetActive(false);
             }
         }
