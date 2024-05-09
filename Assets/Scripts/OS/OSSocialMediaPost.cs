@@ -182,7 +182,10 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
     {
         foreach (Transform option in postOptions.transform)
         {
-            option.gameObject.SetActive(true);
+            // TODO: DeletePost option will only be disabled temporarily for FaBa, remove if statement again
+            if (option.name != "DeletePost") {
+                option.gameObject.SetActive(true);
+            }
         }
     }
 
@@ -203,7 +206,8 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
             if ((option.name == "PinPost" && postPinned)
                 || (option.name == "PinUser" && userPinned)
-                || option.name == "DeletePost" && postDeleted)
+                // TODO: DeletePost option will only be disabled temporarily for FaBa, remove if statement again
+                /*|| option.name == "DeletePost" && postDeleted*/)
             {
                 option.gameObject.SetActive(true);
             }

@@ -479,7 +479,10 @@ public class ComputerControls : MonoBehaviour, ISavable
         foreach (OSWindow window in windows)
         {
             CloseWindow(window);
+            Destroy(window.associatedTab.gameObject);
+            Destroy(window.gameObject);
         }
+        windows.Clear();
     }
 
     public void OpenWindow(OSAppType type, string warningMessage = "Warning message", System.Action successFunc = null)
@@ -489,10 +492,11 @@ public class ComputerControls : MonoBehaviour, ISavable
         {
             if (window.appType == type)
             {
-                // Reveal window if it exists but isn't active
+                // Reveal window and set back to screen middle if it exists but isn't active
                 if (!window.gameObject.activeInHierarchy)
                 {
                     window.gameObject.SetActive(true);
+                    window.rectTrans.position = screen.position;
                     window.associatedTab.gameObject.SetActive(true);
                     BringWindowToFront(window);
                 }
