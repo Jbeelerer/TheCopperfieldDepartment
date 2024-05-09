@@ -62,6 +62,12 @@ public class ComputerControls : MonoBehaviour, ISavable
     private bool cursorActive = false;
     private OSWindow currentFocusedWindow;
 
+    [SerializeField] private AudioClip windowOpenSound;
+    [SerializeField] private AudioClip clickDownSound;
+    [SerializeField] private AudioClip clickUpSound;
+
+    [HideInInspector] public AudioManager audioManager;
+
     public PinEvent OnUnpinned;
 
     // Start is called before the first frame update
@@ -80,6 +86,8 @@ public class ComputerControls : MonoBehaviour, ISavable
         cursor.anchoredPosition = new Vector2(-1000, -1000);
 
         gm = GameManager.instance;
+        audioManager = AudioManager.instance;
+
         gm.OnNewDay.AddListener(CloseAllWindows);
 
         // Run stuff on first day only
@@ -103,12 +111,18 @@ public class ComputerControls : MonoBehaviour, ISavable
 
         if (Input.GetMouseButtonDown(0))
         {
+            // Play click down sound
+            audioManager.PlayAudio(clickDownSound);
+
             // Clicked window
             CheckWindowMouseDown();
         }
 
         if (Input.GetMouseButtonUp(0))
         {
+            // Play click up sound
+            audioManager.PlayAudio(clickUpSound);
+
             // Check if pointy is active and should progress
             CheckPointyProgress();
 
@@ -487,6 +501,8 @@ public class ComputerControls : MonoBehaviour, ISavable
 
     public void OpenWindow(OSAppType type, string warningMessage = "Warning message", System.Action successFunc = null)
     {
+        // PLay opening sound
+        audioManager.PlayAudio(windowOpenSound);
         // Check if the window is already open
         foreach (OSWindow window in windows)
         {
