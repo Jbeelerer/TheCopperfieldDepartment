@@ -329,6 +329,7 @@ public class PinboardElement : MonoBehaviour
             Material material = new Material(postItMesh.GetComponent<Renderer>().material);
             material.name = "PostItMaterial" + transform.position.x + transform.position.y;
             material.SetTexture("_SecondTexture", canvasTexture);
+            material.SetColor("_MultiplicationColor", content is Person ? new Color(1, 1, 1, 1) : content is SocialMediaPost ? new Color(1, 0.8f, 1, 1) : new Color(1, 1, 0.8f, 1));
             postItMesh.GetComponent<Renderer>().material = material;
             //delete camera and canvas after rendering and saving the texture 
             DestroyCameraAndCanvas();
