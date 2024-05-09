@@ -16,6 +16,15 @@ public class TimedSubtitles
     public TimedSubtitle[] firstDayFeedbackPositive;
     public TimedSubtitle[] firstDayFeedbackNegative;
 }
+[System.Serializable]
+public class ShortSubtitles
+{
+    public TimedSubtitle notLeaving;
+    public TimedSubtitle positiveFeedback;
+    public TimedSubtitle negativeFeedback;
+    public TimedSubtitle deletePost;
+    public TimedSubtitle suspectFound;
+}
 
 public class Narration : MonoBehaviour
 {
@@ -25,11 +34,6 @@ public class Narration : MonoBehaviour
     [SerializeField] private AudioClip negativeFeedbackVoice;
     [SerializeField] private AudioClip deletePostVoice;
     [SerializeField] private AudioClip suspectFoundVoice;
-    [SerializeField] private string notLeavingText;
-    [SerializeField] private string positiveFeedbackText;
-    [SerializeField] private string negativeFeedbackText;
-    [SerializeField] private string deletePostText;
-    [SerializeField] private string suspectFoundText;
     [SerializeField] private AudioClip introClip;
     [SerializeField] private AudioClip firstDayFeedbackPositiveClip;
     [SerializeField] private AudioClip firstDayFeedbackNegativeClip;
@@ -45,6 +49,9 @@ public class Narration : MonoBehaviour
 
     private GameObject blackScreen;
     [SerializeField] private TextAsset jsonFile;
+
+    [SerializeField] private TextAsset shortSubtitlesJsonFile;
+    ShortSubtitles shortSubtitles;
 
     [SerializeField] private AudioClip phonePickup;
     [SerializeField] private AudioClip phoneHangup;
@@ -63,6 +70,8 @@ public class Narration : MonoBehaviour
 
 
         timedSubtitles = JsonUtility.FromJson<TimedSubtitles>(jsonFile.text);
+        shortSubtitles = JsonUtility.FromJson<ShortSubtitles>(shortSubtitlesJsonFile.text);
+
 
 
         if (gm.GetDay() == 1)
@@ -106,30 +115,36 @@ public class Narration : MonoBehaviour
     }
     public void Say(string text)
     {
+        float duration = 0;
         switch (text)
         {
             case "notLeaving":
                 audioSource.clip = notLeavingVoice;
-                subtitleText.text = notLeavingText;
+                subtitleText.text = shortSubtitles.notLeaving.text;
+                duration = shortSubtitles.notLeaving.duration;
                 break;
             case "positiveFeedback":
                 audioSource.clip = positiveFeedbackVoice;
-                subtitleText.text = positiveFeedbackText;
+                subtitleText.text = shortSubtitles.positiveFeedback.text;
+                duration = shortSubtitles.positiveFeedback.duration;
                 break;
             case "negativeFeedback":
                 audioSource.clip = negativeFeedbackVoice;
-                subtitleText.text = negativeFeedbackText;
+                subtitleText.text = shortSubtitles.negativeFeedback.text;
+                duration = shortSubtitles.negativeFeedback.duration;
                 break;
             case "deletePost":
                 audioSource.clip = deletePostVoice;
-                subtitleText.text = deletePostText;
+                subtitleText.text = shortSubtitles.deletePost.text;
+                duration = shortSubtitles.deletePost.duration;
                 break;
             case "suspectFound":
                 audioSource.clip = suspectFoundVoice;
-                subtitleText.text = suspectFoundText;
+                subtitleText.text = shortSubtitles.suspectFound.text;
+                duration = shortSubtitles.suspectFound.duration;
                 break;
         }
-        StartCoroutine(DisableSubtitle(audioSource.clip.length + 1));
+        StartCoroutine(DisableSubtitle(duration));
         audioSource.Play();
     }
 
@@ -169,5 +184,12 @@ public class Narration : MonoBehaviour
         blackScreen.SetActive(false);
         if (gm.GetDay() != 1)
             gm.NextDaySequence();
+    }
+
+    private void LoadShortSubtitles()
+    {
+        // ShortSubtitles shortSubtitles = JsonUtility.FromJson<ShortSubtitles>(shortSubtitlesJsonFile.text);
+        //notLeavingText = shortSubtitles.notLeaving.text;
+        //positiveFeedbackText = shortSubtitles.positiveFeedback.text;
     }
 }
