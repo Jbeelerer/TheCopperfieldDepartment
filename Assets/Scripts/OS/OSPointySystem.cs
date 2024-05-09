@@ -152,12 +152,12 @@ public class OSPointySystem : MonoBehaviour
         if (step.pointAtPointy)
         {
             pointyFinger.gameObject.SetActive(true);
-            pointyButton.GetComponent<Button>().enabled = false;
+            //pointyButton.GetComponent<Button>().enabled = false;
         }
         else
         {
             pointyFinger.gameObject.SetActive(false);
-            pointyButton.GetComponent<Button>().enabled = true;
+            //pointyButton.GetComponent<Button>().enabled = true;
         }
 
         currentStep++;
