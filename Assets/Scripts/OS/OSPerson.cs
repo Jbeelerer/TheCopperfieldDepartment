@@ -73,7 +73,7 @@ public class OSPerson : MonoBehaviour
 
     public void AccusePerson()
     {
-        computerControls.OpenWindow(OSAppType.WARNING, "You are about to accuse this person. Any post flagged for deletion will be undone.", AccusePersonSuccess);
+        computerControls.OpenWindow(OSAppType.WARNING, "You are about to accuse this person.<br><b>This can still be changed later.</b><br><br>Do you want to proceed?", AccusePersonSuccess);
     }
 
     public void AccusePersonSuccess()
