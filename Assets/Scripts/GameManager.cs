@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using SaveSystem;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -26,26 +27,17 @@ public class GameManager : MonoBehaviour, ISavable
 {
     public static GameManager instance;
     private GameState gameState = GameState.Playing;
-    /*
-        private float time = 0;
-        private float dayLength = 50;
-        private int interval = 10;
-        */
-
     [SerializeField] private int day = 1;
     private int furthestDay = 1;
     private int daySegment = 0;
     private int totalDaySegments = 0;
-
     private List<CompetingEmployee> competingEmployees = new List<CompetingEmployee>();
     private CompetingEmployee playerOnEmployeeList;
-
     // what happens if the person is found and the post deleted?
     public investigationStates investigationState = investigationStates.SuspectNotFound; //investigationStates.SuspectNotFound;
     public UnityEvent OnNewDay;
     public UnityEvent OnNewSegment;
     private Case currentCase;
-
     private Connections[] connections;
     [SerializeField] private SocialMediaPost[] posts;
     private SocialMediaUser[] users;
@@ -65,6 +57,9 @@ public class GameManager : MonoBehaviour, ISavable
     private int saveFile;
 
     private SaveManager saveManager;
+
+    private AudioManager am;
+    [SerializeField] private AudioClip door;
 
     private bool devMode = true;
 
@@ -149,7 +144,6 @@ public class GameManager : MonoBehaviour, ISavable
     }
     public void LoadData(SaveData data)
     {
-        print("load furthest day: " + data.currentDay);
         furthestDay = data.currentDay;
         results = data.result;
         firstTryResults = data.firstTryResult;
@@ -245,6 +239,7 @@ public class GameManager : MonoBehaviour, ISavable
     void Start()
     {
         saveManager = SaveManager.instance;
+        am = AudioManager.instance;
 
         if (Utility.CheckSaveFileExists(instance.saveFile.ToString()))
         {
@@ -284,14 +279,13 @@ public class GameManager : MonoBehaviour, ISavable
             day = 1;
         }
         if (customCase == null)
-            currentCase = Resources.LoadAll<Case>("Case" + day)[0];// Random.Range(1, 2))[0];//); 
+            currentCase = Resources.LoadAll<Case>("Case" + day)[0];
         else
             currentCase = (Case)customCase;
 
         // load all connections
         connections = Resources.LoadAll<Connections>("Case" + currentCase.id + "/Connections");
         posts = Resources.LoadAll<SocialMediaPost>("Case" + currentCase.id + "/Posts");
-
         //using lists to add new values dynamicly, afterwards convert to array, because it won't change and will be more performant
         List<Person> tempPeople = new List<Person>();
         List<SocialMediaUser> tempUsers = new List<SocialMediaUser>();
@@ -304,7 +298,6 @@ public class GameManager : MonoBehaviour, ISavable
             if (!tempUsers.Contains(p.author))
             {
                 tempUsers.Add(p.author);
-                //  tempPeople.Add(p.author.realPerson);
             }
         }
         people = tempPeople.ToArray();
@@ -326,6 +319,11 @@ public class GameManager : MonoBehaviour, ISavable
         g.GetComponent<Animator>().Play("TimeTravel");
 
     }
+    public void NextDaySequence()
+    {
+        // am.PlayAudio(door);   
+        Instantiate(newDayPrefab);
+    }
 
     public void setNewDay(bool firstDay = false)
     {
@@ -333,7 +331,6 @@ public class GameManager : MonoBehaviour, ISavable
         answerCommited = false;
         if (!firstDay)
         {
-            Instantiate(newDayPrefab);
             playerOnEmployeeList.addNewPoints(pointsThisDay, day - 1);
             foreach (CompetingEmployee e in competingEmployees)
             {
@@ -341,6 +338,14 @@ public class GameManager : MonoBehaviour, ISavable
                     e.addNewPointsRandomly(day - 1);
             }
             day++;
+            if (day == 2)
+            {
+                narration.PlaySequence(investigationState == investigationStates.SuspectFound ? "firstDayFeedbackPositive" : "firstDayFeedbackNegative");
+            }
+            else
+            {
+                NextDaySequence();
+            }
             if (day > furthestDay)
             {
                 furthestDay = day;
@@ -350,14 +355,14 @@ public class GameManager : MonoBehaviour, ISavable
             {
                 results.Add(investigationState);
                 firstTryResults.Add(investigationState);
-                // pointsPerDay.Add(pointsThisDay);
             }
             else
             {
                 results[day - 2] = investigationState;
-                // pointsPerDay[day - 2] = pointsThisDay;
             }
-            SaveManager.instance.SaveGame();
+            // don't save in dev mode, if you want to, just add comment syntax to the if statement
+            if (!devMode)
+                SaveManager.instance.SaveGame();
         }
         LoadNewDay(day);
     }

@@ -48,9 +48,6 @@ public class FPSController : MonoBehaviour
     // in detailmode the additional info board is shown
     private bool detailMode = false;
     private ComputerControls computerControls;
-
-    //audio
-    private AudioSource audioSource;
     [SerializeField] private AudioClip threadCuttingSound;
     [SerializeField] private AudioClip pickupSound;
     [SerializeField] private AudioClip deleteSound;
@@ -68,16 +65,20 @@ public class FPSController : MonoBehaviour
 
     private GameManager gm;
 
+    private AudioManager am;
+
     private bool onHoldDown = false;
 
     public DeletionEvent OnPinDeletion;
 
     private Vector3 originalPosition;
 
+    private MeshRenderer playerMesh;
+
     void Start()
     {
         gm = GameManager.instance;
-        audioSource = GetComponent<AudioSource>();
+        am = AudioManager.instance;
         characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -86,6 +87,7 @@ public class FPSController : MonoBehaviour
         computerControls = GameObject.Find("DesktopInterface").GetComponent<ComputerControls>();
         gm.SetStartTransform(transform);
         narration = GetComponentInChildren<Narration>();
+        playerMesh = GetComponent<MeshRenderer>();
     }
     private void FixedUpdate()
     {
@@ -109,12 +111,12 @@ public class FPSController : MonoBehaviour
                 {
                     OnPinDeletion?.Invoke(pe.GetContent());
                     pe.DeleteElement();
-                    audioSource.PlayOneShot(deleteSound);
+                    am.PlayAudio(deleteSound);
                 }
                 else
                 {
                     pe.transform.position = originalPosition;
-                    PlayReverseAudio(pickupSound);
+                    am.PlayReverseAudio(pickupSound);
                     pe.GetComponentInParent<Animator>().SetBool("pinNormal", true);
                     pe.gameObject.layer = 0;
                 }
@@ -130,6 +132,7 @@ public class FPSController : MonoBehaviour
         // on e key pressed ExitPC is "E"
         if (Input.GetButtonDown("ExitPC") && gm.isFrozen())
         {
+            playerMesh.enabled = true;
             if (gm.GetGameState() == GameState.OnPC)
             {
                 computerControls.LeaveComputer();
@@ -206,7 +209,7 @@ public class FPSController : MonoBehaviour
                                 {
                                     inputOverlay.SetIcon("trash", true);
                                     // the typical animation makes no sense here TODO: Maybe add a new animation
-                                    audioSource.PlayOneShot(pickupSound);
+                                    am.PlayAudio(pickupSound);
                                     removingTime = 1f;
                                     inputOverlay.startHold(removingTime);
                                 }
@@ -280,7 +283,7 @@ public class FPSController : MonoBehaviour
                         selectedPinboardElement.gameObject.layer = 0;
                         selectedPinboardElement.GetComponentInParent<Animator>().SetBool("pinNormal", true);
                         selectedPinboardElement.GetComponent<PinboardElement>().setIsMoving(false);
-                        PlayReverseAudio(pickupSound);
+                        am.PlayReverseAudio(pickupSound);
                         selectedPinboardElement = null;
                         inputOverlay.SetIcon("defaultIcon");
                     }
@@ -321,7 +324,7 @@ public class FPSController : MonoBehaviour
                     selectedPinboardElement.gameObject.layer = 0;
                     selectedPinboardElement.GetComponentInParent<Animator>().SetBool("pinNormal", true);
                     selectedPinboardElement.GetComponent<PinboardElement>().setIsMoving(false);
-                    PlayReverseAudio(pickupSound);
+                    am.PlayReverseAudio(pickupSound);
                     selectedPinboardElement = null;
                 }
                 else
@@ -345,7 +348,7 @@ public class FPSController : MonoBehaviour
                                 currentSelectedObject.GetComponentInParent<Animator>().SetBool("pinNormal", false);
                                 selectedPinboardElement = currentSelectedObject;
                                 selectedPinboardElement.GetComponent<PinboardElement>().setIsMoving(true);
-                                audioSource.PlayOneShot(pickupSound);
+                                am.PlayAudio(pickupSound);
                                 // change to ignore raycast layer so it won't overflow the pinboard
                                 selectedPinboardElement.gameObject.layer = 2;
                             }
@@ -356,13 +359,13 @@ public class FPSController : MonoBehaviour
                             computerControls.ToggleCursor();
                             break;
                         case "threadCollider":
-                            audioSource.PlayOneShot(threadCuttingSound);
+                            am.PlayAudio(threadCuttingSound);
                             Destroy(hit.collider.transform.parent.gameObject);
                             break;
                         case "pin":
                             onHoldDown = true;
                             currentSelectedObject.GetComponentInParent<Animator>().SetTrigger("remove");
-                            audioSource.PlayOneShot(pickupSound);
+                            am.PlayAudio(pickupSound);
                             removingTime = 0.5f;
                             inputOverlay.startHold(removingTime);
                             break;
@@ -374,12 +377,15 @@ public class FPSController : MonoBehaviour
                             break;
                         case "Calendar":
                             inputOverlay.SetIcon("");
+                            playerMesh.enabled = false;
                             gm.SetGameState(GameState.OnCalendar);
                             break;
                         case "Door":
                             if (gm.GetAnswerCommited())
                             {
+                                inputOverlay.SetIcon("");
                                 gm.setNewDay();
+                                // Reset player position
                                 transform.position = gm.GetStartPosition();
                                 transform.rotation = gm.GetStartRotation();
                             }
@@ -463,22 +469,6 @@ public class FPSController : MonoBehaviour
                 }
             }
         }
-    }
-
-    // TODO: Maybe create an audio manager for all these things
-    public void PlayReverseAudio(AudioClip audioClip)
-    {
-        audioSource.clip = audioClip;
-        audioSource.pitch = -1;
-        audioSource.time = audioSource.clip.length - 0.01f;
-        audioSource.Play();
-        StartCoroutine(ResetAudio(audioSource.clip.length));
-    }
-    public IEnumerator ResetAudio(float length)
-    {
-        yield return new WaitForSeconds(length);
-        audioSource.pitch = 1;
-        audioSource.time = 0;
     }
 
     private void DeselectPen()

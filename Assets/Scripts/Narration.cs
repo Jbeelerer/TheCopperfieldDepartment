@@ -13,6 +13,8 @@ public class TimedSubtitle
 public class TimedSubtitles
 {
     public TimedSubtitle[] intro;
+    public TimedSubtitle[] firstDayFeedbackPositive;
+    public TimedSubtitle[] firstDayFeedbackNegative;
 }
 
 public class Narration : MonoBehaviour
@@ -29,7 +31,8 @@ public class Narration : MonoBehaviour
     [SerializeField] private string deletePostText;
     [SerializeField] private string suspectFoundText;
     [SerializeField] private AudioClip introClip;
-    // private Dictionary<string, float> intro = new Dictionary<string, float>() { { "Good Morning!", 1f }, { "Happy to have you as part of our team!!", 2.1f }, { "I would like to remind you of the secrecy clause in your contract!", 4.2f }, { "The existence of The Copperfield Department is highly confidential.", 4.2f }, { "Any breach of contract will waive your claim to physical integrity.", 5f }, { "Mister Tery Waldberg will be in touch with you regarding your first assignment.", 4.6f }, { "Have a productive day!", 1.5f } };
+    [SerializeField] private AudioClip firstDayFeedbackPositiveClip;
+    [SerializeField] private AudioClip firstDayFeedbackNegativeClip;
 
     private TimedSubtitles timedSubtitles;
     private TextMeshProUGUI subtitleText;
@@ -38,13 +41,19 @@ public class Narration : MonoBehaviour
 
     private GameManager gm;
 
+    private AudioManager am;
+
     private GameObject blackScreen;
     [SerializeField] private TextAsset jsonFile;
+
+    [SerializeField] private AudioClip phonePickup;
+    [SerializeField] private AudioClip phoneHangup;
 
     // Start is called before the first frame update
     void Start()
     {
         gm = GameManager.instance;
+        am = AudioManager.instance;
         gm.SetNarration(this);
         audioSource = GetComponent<AudioSource>();
         subtitleText = GameObject.Find("Subtitle").GetComponent<TextMeshProUGUI>();
@@ -58,15 +67,24 @@ public class Narration : MonoBehaviour
 
         if (gm.GetDay() == 1)
         {
-            StartIntro();
+            PlaySequence("intro");
         }
     }
-    private void StartIntro()
+
+    public void PlaySequence(string sequence)
     {
-        gm.SetGameState(GameState.Frozen);
-        audioSource.clip = introClip;
-        audioSource.Play();
-        StartCoroutine(PlaySequence(timedSubtitles.intro));
+        switch (sequence)
+        {
+            case "firstDayFeedbackPositive":
+                StartCoroutine(PlaySequence(timedSubtitles.firstDayFeedbackPositive, firstDayFeedbackPositiveClip));
+                break;
+            case "firstDayFeedbackNegative":
+                StartCoroutine(PlaySequence(timedSubtitles.firstDayFeedbackNegative, firstDayFeedbackNegativeClip));
+                break;
+            case "intro":
+                StartCoroutine(PlaySequence(timedSubtitles.intro, introClip));
+                break;
+        }
     }
 
     // Update is called once per frame
@@ -129,21 +147,27 @@ public class Narration : MonoBehaviour
         subtitleText.text = "";
     }
 
-    private IEnumerator PlaySequence(TimedSubtitle[] content)
+    public IEnumerator PlaySequence(TimedSubtitle[] content, AudioClip clip)
     {
-        print("Playing sequence");
+        gm.SetGameState(GameState.Frozen);
         blackScreen.SetActive(true);
-        subtitleText.fontSize += 10;
+        subtitleText.text = "";
+        am.PlayAudio(phonePickup);
+        yield return new WaitForSeconds(phonePickup.length);
+        audioSource.clip = clip;
+        audioSource.Play();
         foreach (TimedSubtitle entry in content)
         {
             subtitleText.text = entry.text;
             yield return new WaitForSeconds(entry.duration);
 
         }
-
+        am.PlayAudio(phoneHangup);
+        yield return new WaitForSeconds(phonePickup.length);
         gm.SetGameState(GameState.Playing);
         subtitleText.text = "";
-        subtitleText.fontSize -= 10;
         blackScreen.SetActive(false);
+        if (gm.GetDay() != 1)
+            gm.NextDaySequence();
     }
 }

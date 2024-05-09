@@ -1369,7 +1369,6 @@ GameObject:
   - component: {fileID: 35237541375755575}
   - component: {fileID: 131418289299692469}
   - component: {fileID: 802925308287557758}
-  - component: {fileID: 4882849718014187788}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1526,102 +1525,6 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
---- !u!82 &4882849718014187788
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7743729992180123591}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 001f4ddfb032342939db8bfae9d9b8fc, type: 3}
-  m_PlayOnAwake: 0
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!1 &8485067078353525086
 GameObject:
   m_ObjectHideFlags: 0
@@ -1678,9 +1581,15 @@ MonoBehaviour:
   positiveFeedbackText: I might be on to something
   negativeFeedbackText: I'm not so sure about this one
   deletePostText: I hope this is the right thing
-  suspectFoundText: Found you, you bastard!
+  suspectFoundText: Finally caught you, you bastard!
   introClip: {fileID: 8300000, guid: fe5080932e5084d9a94b47ad4eeb9b39, type: 3}
+  firstDayFeedbackPositiveClip: {fileID: 8300000, guid: ee7497139970a4c199b30cb9655130b4,
+    type: 3}
+  firstDayFeedbackNegativeClip: {fileID: 8300000, guid: c45523c74bc244d14827c96e8d30f09a,
+    type: 3}
   jsonFile: {fileID: 4900000, guid: f1f0f4d9689774c90b8366c1185a526a, type: 3}
+  phonePickup: {fileID: 8300000, guid: 5955a4c157fcc466d8830f0b3c98be94, type: 3}
+  phoneHangup: {fileID: 8300000, guid: dae85acc3878845fa89f3335564f9eb4, type: 3}
 --- !u!82 &3238816876298933322
 AudioSource:
   m_ObjectHideFlags: 0
