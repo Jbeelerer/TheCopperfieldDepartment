@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Linq;
 using SaveSystem;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+
 
 public enum investigationStates
 {
@@ -70,6 +71,7 @@ public class GameManager : MonoBehaviour, ISavable
     private GameObject calendarCam;
 
     private GameObject mainCam;
+
     public bool GetIfDevMode()
     {
         return devMode;
@@ -321,8 +323,7 @@ public class GameManager : MonoBehaviour, ISavable
     }
     public void NextDaySequence()
     {
-        // am.PlayAudio(door);   
-        Instantiate(newDayPrefab);
+        GameObject g = Instantiate(newDayPrefab);
     }
 
     public void setNewDay(bool firstDay = false)
