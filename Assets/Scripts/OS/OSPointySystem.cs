@@ -24,6 +24,7 @@ public class OSPointySystem : MonoBehaviour
     [SerializeField] private GameObject pointySpeechBubbleBottom;
     [SerializeField] private GameObject screenBlockadePointy;
     [SerializeField] private GameObject pointyFinger;
+    [SerializeField] private AudioClip pointyPopupSound;
 
     public GameObject pointyButton;
     public GameObject spotlight;
@@ -34,6 +35,7 @@ public class OSPointySystem : MonoBehaviour
     [SerializeField] private List<PointyTutorialStep> stepsPeopleList = new List<PointyTutorialStep>();
     [SerializeField] private List<PointyTutorialStep> stepsSocialMedia = new List<PointyTutorialStep>();
 
+    private ComputerControls computerControls;
     private GameObject nextTargetObject;
     private List<PointyTutorialStep> currentTutorial;
     private int currentStep;
@@ -42,6 +44,8 @@ public class OSPointySystem : MonoBehaviour
 
     private void Start()
     {
+        computerControls = GetComponentInParent<ComputerControls>();
+
         spotlight.GetComponent<Image>().alphaHitTestMinimumThreshold = 1f;
         originalSpotlightSize = spotlight.GetComponent<RectTransform>().sizeDelta;
     }
@@ -62,6 +66,9 @@ public class OSPointySystem : MonoBehaviour
         {
             return;
         }
+
+        // Play popup sound
+        computerControls.audioManager.PlayAudio(pointyPopupSound);
 
         switch (name)
         {
