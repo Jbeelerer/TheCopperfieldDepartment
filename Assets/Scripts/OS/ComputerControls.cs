@@ -269,6 +269,11 @@ public class ComputerControls : MonoBehaviour, ISavable
         return gm.GetPeople();
     }
 
+    public Mail[] GetMails()
+    {
+        return gm.GetMails();
+    }
+
     public void LeaveComputer()
     {
         gm.SetGameState(GameState.Playing);
@@ -451,13 +456,13 @@ public class ComputerControls : MonoBehaviour, ISavable
                 else if (window.buttonLong && Object.ReferenceEquals(hitObject, window.buttonLong.gameObject))
                 {
                     // Make window long, position on left or right
-                    if (!leftWindow)
-                    {
-                        ResizeWindowLongLeft(window);
-                    }
-                    else if (window != leftWindow)
+                    if (!rightWindow)
                     {
                         ResizeWindowLongRight(window);
+                    }
+                    else if (window != rightWindow)
+                    {
+                        ResizeWindowLongLeft(window);
                     }
                     return;
                 }
