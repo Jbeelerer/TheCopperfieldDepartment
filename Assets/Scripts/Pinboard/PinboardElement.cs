@@ -312,7 +312,10 @@ public class PinboardElement : MonoBehaviour
         }
         if (content is Person || content is SocialMediaPost || content is SocialMediaUser)
         {
-            int res = Screen.height;
+            float resFloat = Screen.height;
+            transform.GetChild(2).GetComponent<RectTransform>().rect.Set(0, 20, resFloat, resFloat);
+
+            int res = (int)resFloat;
             // Res must be min the size of the screen, otherwise it will crash... because readpixles uses the screen size
             // to handle previous mentioned problem
             if (res > Screen.width || res > Screen.height)
@@ -329,7 +332,7 @@ public class PinboardElement : MonoBehaviour
             Material material = new Material(postItMesh.GetComponent<Renderer>().material);
             material.name = "PostItMaterial" + transform.position.x + transform.position.y;
             material.SetTexture("_SecondTexture", canvasTexture);
-            material.SetColor("_MultiplicationColor", content is Person ? new Color(1, 1, 1, 1) : content is SocialMediaPost ? new Color(1, 0.8f, 1, 1) : new Color(1, 1, 0.8f, 1));
+            material.SetColor("_MultiplicationColor", content is Person ? new Color(1, 1, 1, 1) : content is SocialMediaPost ? new Color(1, 0.9f, 1, 1) : new Color(1, 1, 0.9f, 1));
             postItMesh.GetComponent<Renderer>().material = material;
             //delete camera and canvas after rendering and saving the texture 
             DestroyCameraAndCanvas();

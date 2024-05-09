@@ -43,6 +43,22 @@ public class AdditionalInfoBoard : MonoBehaviour
     {
         anim.SetBool("showInfo", b);
     }
+    public void ShowInfo(bool b, ScriptableObject o)
+    {
+        if (o != content)
+            SetContent(o);
+        ShowInfo(b);
+    }
+    public void StartPreview(ScriptableObject o)
+    {
+        SetContent(o);
+        anim.SetTrigger("previewTrigger");
+    }
+    public void CancelPreview()
+    {
+        anim.SetBool("showInfo", false);
+        anim.SetTrigger("cancelPreview");
+    }
 
     public void SetContent(ScriptableObject o)
     {

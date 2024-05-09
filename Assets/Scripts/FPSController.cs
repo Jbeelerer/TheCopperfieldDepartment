@@ -23,6 +23,8 @@ public class FPSController : MonoBehaviour
     public float lookXLimit = 50f;
     public float interactionReach = 3f;
 
+    public float hoverDuration = 1f;
+
     Vector3 moveDirection = Vector3.zero;
     float rotationX = 0;
 
@@ -53,6 +55,8 @@ public class FPSController : MonoBehaviour
     [SerializeField] private AudioClip deleteSound;
 
     private Narration narration;
+
+    private AdditionalInfoBoard additionalInfoBoard;
 
 
     // TODO: Remove pinboard when OS is ready
@@ -88,6 +92,7 @@ public class FPSController : MonoBehaviour
         gm.SetStartTransform(transform);
         narration = GetComponentInChildren<Narration>();
         playerMesh = GetComponent<MeshRenderer>();
+        additionalInfoBoard = transform.GetChild(0).Find("MoreInfo").GetComponent<AdditionalInfoBoard>();
     }
     private void FixedUpdate()
     {
@@ -95,7 +100,7 @@ public class FPSController : MonoBehaviour
         {
             hoverStart += Time.deltaTime;
         }
-        if (hoverStart > 1f)
+        if (hoverStart > hoverDuration + 0.5f)
         {
             hoverStart = -1f;
         }
@@ -226,15 +231,21 @@ public class FPSController : MonoBehaviour
                                 {
                                     inputOverlay.SetIcon("pen");
                                 }
-                                else if (!detailMode && hoverStart > 0.5f && pe.GetIfHasInfo())
+                                else if (pe.GetIfHasInfo())
                                 {
-                                    AdditionalInfoBoard aib = transform.GetChild(0).Find("MoreInfo").GetComponent<AdditionalInfoBoard>();
-                                    aib.ShowInfo(true);
-                                    aib.SetContent(pe.GetContent());
+                                    additionalInfoBoard.ShowInfo(true, pe.GetContent());
+                                }
+                                /*
+                                else if (!detailMode && hoverStart > hoverDuration && pe.GetIfHasInfo())
+                                {
+                                    additionalInfoBoard.ShowInfo(true, pe.GetContent());
                                     detailMode = true;
                                 }
-                                else if (!detailMode && hoverStart == -1f)
+                                else if (!detailMode && hoverStart == -1f && pe.GetIfHasInfo())
+                                {
                                     hoverStart = 0;
+                                    additionalInfoBoard.StartPreview(pe.GetContent());
+                                }*/
                                 break;
                             case "CurvedScreen":
                             case "Calendar":
@@ -259,14 +270,15 @@ public class FPSController : MonoBehaviour
                     if (hit.collider.gameObject.name != "pinboardElement(Clone)")
                     {
                         // undoes highlight and scaling of the pinboardElement
-                        if (currentSelectedObject != null && selectedPinboardElement == null && currentSelectedObject.name == "pinboardElement(Clone)")
+                        if (currentSelectedObject != null && currentSelectedObject.name == "pinboardElement(Clone)")
                         {
-                            currentSelectedObject.transform.localScale = new Vector3(1, 1, 1);
-                            currentSelectedObject.GetComponent<PinboardElement>().HighlightElement(false);
+                            if (selectedPinboardElement == null)
+                            {
+                                currentSelectedObject.transform.localScale = new Vector3(1, 1, 1);
+                                currentSelectedObject.GetComponent<PinboardElement>().HighlightElement(false);
+                            }
+                            additionalInfoBoard.CancelPreview();
                         }
-                        hoverStart = -1;
-                        detailMode = false;
-                        transform.GetChild(0).Find("MoreInfo").GetComponent<AdditionalInfoBoard>().ShowInfo(false);
                     }
                     // dont reset the currentSelectedObject if the player is removing a pinboardElement
                     if (nameOfThingLookedAt != "DeadZone")
