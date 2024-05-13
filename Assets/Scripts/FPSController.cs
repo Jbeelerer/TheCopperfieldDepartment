@@ -80,6 +80,8 @@ public class FPSController : MonoBehaviour
 
     private List<GameObject> foundConnections = new List<GameObject>();
 
+    private float rotationOffset = 0;
+
     public void ResetFoundConnections()
     {
         foreach (GameObject go in foundConnections)
@@ -149,6 +151,11 @@ public class FPSController : MonoBehaviour
             }
         }
     }
+
+    public void ResetCameraRotation()
+    {
+        transform.rotation = Quaternion.Euler(0, -70, 0);
+    }
     void Update()
     {
         // on e key pressed ExitPC is "E"
@@ -185,7 +192,7 @@ public class FPSController : MonoBehaviour
             // TODO: Add a freeze when in the deadzone, but only towards the direction currently moving, so you can cancel by going back
             if (canMove)
             {
-                rotationX += -Input.GetAxis("Mouse Y") * lookSpeed;
+                rotationX += (-Input.GetAxis("Mouse Y")) * lookSpeed;
                 rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
                 cameraObject.localRotation = Quaternion.Euler(rotationX, 0, 0);
                 transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);

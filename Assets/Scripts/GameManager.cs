@@ -84,7 +84,6 @@ public class GameManager : MonoBehaviour, ISavable
     public void SetGameState(GameState state)
     {
         reload();
-        gameState = state;
         computerCam.SetActive(state == GameState.OnPC);
         if (calendarCam)
             calendarCam.SetActive(state == GameState.OnCalendar);
@@ -96,6 +95,13 @@ public class GameManager : MonoBehaviour, ISavable
 
         Cursor.visible = state == GameState.OnCalendar;
         Cursor.lockState = state == GameState.OnPC || state == GameState.OnCalendar ? CursorLockMode.Confined : CursorLockMode.Locked;
+
+        // handle startPos of mainCam
+        if (state == GameState.Playing && gameState == GameState.OnPC)
+        {
+            GameObject.Find("Player").GetComponent<FPSController>().ResetCameraRotation();
+        }
+        gameState = state;
     }
 
     public bool isFrozen()
