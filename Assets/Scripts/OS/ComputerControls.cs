@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Device;
 using UnityEngine.Events;
@@ -78,8 +79,8 @@ public class ComputerControls : MonoBehaviour, ISavable
         cursor.gameObject.SetActive(cursorActive);
 
         screen = GetComponent<RectTransform>();
-        windows.Add(testWindow);
-        testWindow.associatedTab = testTab;
+        //windows.Add(testWindow);
+        //testWindow.associatedTab = testTab;
         cursorTooltip = cursor.transform.Find("Tooltip").gameObject;
         fpsController = GameObject.Find("Player").GetComponent<FPSController>();
 
@@ -487,7 +488,7 @@ public class ComputerControls : MonoBehaviour, ISavable
 
     private void CloseWindow(OSWindow window)
     {
-        RemoveLeftRightWindow(window);
+        ResizeWindowSmall(window);
         currentFocusedWindow = null;
         window.associatedTab.gameObject.SetActive(false);
         window.gameObject.SetActive(false);
@@ -517,7 +518,7 @@ public class ComputerControls : MonoBehaviour, ISavable
                 if (!window.gameObject.activeInHierarchy)
                 {
                     window.gameObject.SetActive(true);
-                    window.rectTrans.position = screen.position;
+                    SetWindowOpenPosition(window);
                     window.associatedTab.gameObject.SetActive(true);
                     BringWindowToFront(window);
                 }
@@ -543,12 +544,39 @@ public class ComputerControls : MonoBehaviour, ISavable
         // Open Pointy Tutorial if it exists for the window
         if (newWindow.GetComponent<OSWindow>().appType != OSAppType.WARNING && newWindow.GetComponent<OSWindow>().appType != OSAppType.START_SETTINGS)
             TogglePointy(true);
+        // Set window position
+        SetWindowOpenPosition(newWindow.GetComponent<OSWindow>());
+    }
 
-        // If a window is already positioned perfectly in the middle, move it slightly left and down
-        /*if (newWindow.GetComponent<OSWindow>().rectTrans.position == screen.position)
+    private void SetWindowOpenPosition(OSWindow window)
+    {
+        if (window.appType == OSAppType.WARNING)
         {
-            newWindow.GetComponent<OSWindow>().rectTrans.position = new Vector2(screen.position.x - 50, screen.position.y - 50);
-        }*/
+            window.rectTrans.position = screen.position;
+            return;
+        }
+
+        // If a window is already positioned perfectly in the middle, move the new one slightly left and down, repeat until a free spot is found
+        Vector3 currentPos = screen.position;
+        bool windowPlaced = false;
+        while (!windowPlaced)
+        {
+            bool progressCurrentPos = false;
+            foreach (OSWindow w in windows)
+            {
+                if (w.gameObject.activeInHierarchy && Mathf.Approximately(w.rectTrans.position.x, currentPos.x) && Mathf.Approximately(w.rectTrans.position.y, currentPos.y))
+                {
+                    currentPos += new Vector3(0.1f, -0.1f);
+                    progressCurrentPos = true;
+                    break;
+                }
+            }
+            if (!progressCurrentPos)
+            {
+                window.GetComponent<OSWindow>().rectTrans.position = currentPos;
+                windowPlaced = true;
+            }
+        }
     }
 
     private void BringWindowToFront(OSWindow window)
