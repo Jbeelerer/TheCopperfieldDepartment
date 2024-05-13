@@ -83,10 +83,7 @@ public class GameManager : MonoBehaviour, ISavable
     }
     public void SetGameState(GameState state)
     {
-        if (computerCam == null || calendarCam == null || mainCam == null)
-        {
-            reload();
-        }
+        reload();
         gameState = state;
         computerCam.SetActive(state == GameState.OnPC);
         if (calendarCam)
@@ -242,9 +239,12 @@ public class GameManager : MonoBehaviour, ISavable
     }
     public void reload()
     {
-        mainCam = GameObject.Find("Virtual Camera");
-        computerCam = GameObject.Find("ComputerCam");
-        calendarCam = GameObject.Find("CalendarCam");
+        if (mainCam == null)
+            mainCam = GameObject.Find("Virtual Camera");
+        if (computerCam == null)
+            computerCam = GameObject.Find("ComputerCam");
+        if (calendarCam == null)
+            calendarCam = GameObject.Find("CalendarCam");
     }
     void Start()
     {

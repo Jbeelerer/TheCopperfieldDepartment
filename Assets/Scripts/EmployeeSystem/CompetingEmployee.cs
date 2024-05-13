@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using SaveSystem;
 using UnityEngine;
 
-public class CompetingEmployee : MonoBehaviour, ISavable
+public class CompetingEmployee : ISavable
 {
     private string employeeName;
     private int basePoints;
