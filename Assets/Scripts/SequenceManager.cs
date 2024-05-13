@@ -6,21 +6,21 @@ using UnityEngine.UI;
 public class SequenceManager : MonoBehaviour
 {
     private Animator animator;
+    [SerializeField] private Animator stickerAnimator;
     private GameManager gm;
 
     [SerializeField] private Image sticker;
 
-
-    [SerializeField] private Sprite suspectFoundSticker;
-    [SerializeField] private Sprite suspectNotFoundSticker;
-    [SerializeField] private Sprite suspectSavedSticker;
     // Start is called before the first frame update
     void Start()
     {
         animator = GetComponent<Animator>();
         gm = GameManager.instance;
-        sticker.sprite = gm.investigationState == investigationStates.SuspectFound ? suspectFoundSticker : gm.investigationState == investigationStates.SuspectSaved ? suspectSavedSticker : suspectNotFoundSticker;
-        sticker.transform.GetComponentInChildren<Image>().sprite = sticker.sprite;
+        if (gm.investigationState != investigationStates.SuspectFound)
+        {
+            // change the sticker inside the animator of the sticker
+            stickerAnimator.SetBool(gm.investigationState == investigationStates.SuspectSaved ? "saved" : "notFound", true);
+        }
     }
 
     public void PlaySequence(string sequenceName)

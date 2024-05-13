@@ -169,12 +169,13 @@ public class Narration : MonoBehaviour
         yield return new WaitForSeconds(phonePickup.length);
         audioSource.clip = clip;
         audioSource.Play();
+
         foreach (TimedSubtitle entry in content)
         {
             subtitleText.text = entry.text;
             yield return new WaitForSeconds(entry.duration);
-
         }
+
         am.PlayAudio(phoneHangup);
         yield return new WaitForSeconds(phonePickup.length);
         gm.SetGameState(GameState.Playing);
