@@ -1,9 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -183,7 +179,8 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
         foreach (Transform option in postOptions.transform)
         {
             // TODO: DeletePost option will only be disabled temporarily for FaBa, remove if statement again
-            if (option.name != "DeletePost") {
+            if (option.name != "DeletePost")
+            {
                 option.gameObject.SetActive(true);
             }
         }

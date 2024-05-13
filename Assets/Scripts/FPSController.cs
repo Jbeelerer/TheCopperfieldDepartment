@@ -6,6 +6,7 @@ using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.Events;
+using System;
 
 
 [System.Serializable]
@@ -79,6 +80,17 @@ public class FPSController : MonoBehaviour
 
     private MeshRenderer playerMesh;
 
+    private List<GameObject> foundConnections = new List<GameObject>();
+
+    public void ResetFoundConnections()
+    {
+        foreach (GameObject go in foundConnections)
+        {
+            Destroy(go);
+        }
+        foundConnections.Clear();
+    }
+
     void Start()
     {
         gm = GameManager.instance;
@@ -93,6 +105,8 @@ public class FPSController : MonoBehaviour
         narration = GetComponentInChildren<Narration>();
         playerMesh = GetComponent<MeshRenderer>();
         additionalInfoBoard = transform.GetChild(0).Find("MoreInfo").GetComponent<AdditionalInfoBoard>();
+        gm.OnNewDay.AddListener(ResetFoundConnections);
+        gm.OnNewDay.AddListener(ResetPlayer);
     }
     private void FixedUpdate()
     {
@@ -110,6 +124,11 @@ public class FPSController : MonoBehaviour
             removingTime -= Time.deltaTime;
             if (removingTime <= 0)
             {
+                if (currentSelectedObject.transform.parent.name == "Connection")
+                {
+                    Destroy(currentSelectedObject.transform.parent.gameObject);
+                    return;
+                }
                 PinboardElement pe = currentSelectedObject.name == "pin" ? currentSelectedObject.transform.parent.GetComponent<PinboardElement>() : selectedPinboardElement.GetComponent<PinboardElement>();
 
                 if (pe.GetIfDeletable())
@@ -312,15 +331,7 @@ public class FPSController : MonoBehaviour
                 {
                     if (currentSelectedObject.name == "pinboardElement(Clone)")
                     {
-                        currentSelectedObject.GetComponent<PinboardElement>().AddEndingThreads(currentThread);
-                        currentSelectedObject.GetComponent<PinboardElement>().setIsMoving(false);
-                        string connectionText = gm.checkForConnectionText(currentSelectedObject.GetComponent<PinboardElement>().GetContent(), lastSelectedObject.GetComponent<PinboardElement>().GetContent());
-                        if (connectionText != "")
-                        {
-                            GameObject connectionO = Instantiate(connectionPrefab, currentThread.transform);
-                            connectionO.transform.position = currentThread.transform.GetChild(0).position - new Vector3(0, 0.05f, 0);
-                            connectionO.GetComponentInChildren<TextMeshProUGUI>().text = connectionText;
-                        }
+                        HandleThread();
                     }
                     else
                     {
@@ -398,8 +409,7 @@ public class FPSController : MonoBehaviour
                                 inputOverlay.SetIcon("");
                                 gm.setNewDay();
                                 // Reset player position
-                                transform.position = gm.GetStartPosition();
-                                transform.rotation = gm.GetStartRotation();
+                                ResetPlayer();
                             }
                             else
                             {
@@ -429,15 +439,25 @@ public class FPSController : MonoBehaviour
                 }
                 else
                 {
-                    currentThread = Instantiate(thread, currentSelectedObject.transform.parent.transform).GetComponent<LineRenderer>();
-                    // TODO: The reason for 4 positions, is so it won't clip through the pinboardElement, not completely implemented yet
-                    currentThread.positionCount = 4;
-                    currentThread.SetPosition(0, currentSelectedObject.transform.GetChild(0).position);
-                    currentThread.SetPosition(1, currentSelectedObject.transform.GetChild(0).position);
-                    currentThread.transform.GetChild(0).gameObject.SetActive(false);
-                    currentSelectedObject.GetComponent<PinboardElement>().AddStartingThread(currentThread);
-                    lastSelectedObject = currentSelectedObject;
-                    inputOverlay.SetIcon("handThread");
+                    if (currentThread != null)
+                    {
+                        if (currentSelectedObject.name == "pinboardElement(Clone)")
+                        {
+                            HandleThread();
+                        }
+                    }
+                    else
+                    {
+                        currentThread = Instantiate(thread, currentSelectedObject.transform.parent.transform).GetComponent<LineRenderer>();
+                        // TODO: The reason for 4 positions, is so it won't clip through the pinboardElement, not completely implemented yet
+                        currentThread.positionCount = 4;
+                        currentThread.SetPosition(0, currentSelectedObject.transform.GetChild(0).position);
+                        currentThread.SetPosition(1, currentSelectedObject.transform.GetChild(0).position);
+                        currentThread.transform.GetChild(0).gameObject.SetActive(false);
+                        currentSelectedObject.GetComponent<PinboardElement>().AddStartingThread(currentThread);
+                        lastSelectedObject = currentSelectedObject;
+                        inputOverlay.SetIcon("handThread");
+                    }
                 }
             }
             #endregion
@@ -483,6 +503,12 @@ public class FPSController : MonoBehaviour
         }
     }
 
+    private void ResetPlayer()
+    {
+        transform.position = gm.GetStartPosition();
+        transform.rotation = gm.GetStartRotation();
+    }
+
     private void DeselectPen()
     {
         if (selectedPenAnim == null)
@@ -493,6 +519,19 @@ public class FPSController : MonoBehaviour
         selectedPenAnim = null;
     }
 
+    public void HandleThread()
+    {
+        currentSelectedObject.GetComponent<PinboardElement>().AddEndingThreads(currentThread);
+        currentSelectedObject.GetComponent<PinboardElement>().setIsMoving(false);
+        string connectionText = gm.checkForConnectionText(currentSelectedObject.GetComponent<PinboardElement>().GetContent(), lastSelectedObject.GetComponent<PinboardElement>().GetContent());
+        if (connectionText != "")
+        {
+            GameObject connectionO = Instantiate(connectionPrefab, currentThread.transform);
+            connectionO.transform.position = currentThread.transform.GetChild(0).position - new Vector3(0, 0.05f, 0);
+            connectionO.GetComponentInChildren<TextMeshProUGUI>().text = connectionText;
+            foundConnections.Add(connectionO);
+        }
+    }
     public IEnumerator PlayPenAnimation(string animName)
     {
         if (!gm.isFrozen())

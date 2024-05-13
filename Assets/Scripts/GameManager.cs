@@ -83,6 +83,10 @@ public class GameManager : MonoBehaviour, ISavable
     }
     public void SetGameState(GameState state)
     {
+        if (computerCam == null || calendarCam == null || mainCam == null)
+        {
+            reload();
+        }
         gameState = state;
         computerCam.SetActive(state == GameState.OnPC);
         if (calendarCam)
@@ -225,10 +229,7 @@ public class GameManager : MonoBehaviour, ISavable
             DontDestroyOnLoad(gameObject);
             instance = this;
         }
-
-        mainCam = GameObject.Find("Virtual Camera");
-        computerCam = GameObject.Find("ComputerCam");
-        calendarCam = GameObject.Find("CalendarCam");
+        reload();
 
         // initiate competing employees
         for (int i = 0; i < 10; i++)
@@ -238,6 +239,12 @@ public class GameManager : MonoBehaviour, ISavable
         playerOnEmployeeList = new CompetingEmployee("Player", 50, 0);
         competingEmployees.Add(playerOnEmployeeList);
 
+    }
+    public void reload()
+    {
+        mainCam = GameObject.Find("Virtual Camera");
+        computerCam = GameObject.Find("ComputerCam");
+        calendarCam = GameObject.Find("CalendarCam");
     }
     void Start()
     {
@@ -429,7 +436,15 @@ public class GameManager : MonoBehaviour, ISavable
     // Update is called once per frame
     void Update()
     {
-
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            //LoadNewDay(1); 
+        }
+        if (Input.GetKeyDown(KeyCode.P) && Input.GetKeyDown(KeyCode.O))
+        {
+            Application.Quit();
+        }
     }
 
 

@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -104,7 +103,7 @@ public class Narration : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.X))
             {
                 StopAllCoroutines();
-
+                audioSource.Stop();
                 gm.SetGameState(GameState.Playing);
                 subtitleText.text = "";
                 blackScreen.SetActive(false);

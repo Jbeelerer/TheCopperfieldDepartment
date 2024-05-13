@@ -301,7 +301,7 @@ public class Pinboard : MonoBehaviour
         if (firstLoad)
         {
             firstLoad = false;
-            return;
+            // return later when a save system is implemented
         }
         List<PinboardElement> toDelete = new List<PinboardElement>();
         foreach (PinboardElement p in pinsOnPinboard.Values)
