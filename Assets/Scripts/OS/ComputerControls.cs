@@ -78,8 +78,8 @@ public class ComputerControls : MonoBehaviour, ISavable
         cursor.gameObject.SetActive(cursorActive);
 
         screen = GetComponent<RectTransform>();
-        //windows.Add(testWindow);
-        //testWindow.associatedTab = testTab;
+        windows.Add(testWindow);
+        testWindow.associatedTab = testTab;
         cursorTooltip = cursor.transform.Find("Tooltip").gameObject;
         fpsController = GameObject.Find("Player").GetComponent<FPSController>();
 

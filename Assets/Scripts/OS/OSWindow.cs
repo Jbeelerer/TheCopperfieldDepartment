@@ -31,6 +31,7 @@ public class OSWindow : MonoBehaviour
 
     [SerializeField] private GameObject socialMediaContent;
     [SerializeField] private GameObject govAppContent;
+    [SerializeField] private GameObject settingsContent;
     [SerializeField] private GameObject peopleListContent;
     [SerializeField] private GameObject warningContent;
     [SerializeField] private GameObject startSettingsContent;
@@ -50,20 +51,22 @@ public class OSWindow : MonoBehaviour
         buttonLong = transform.Find("TopBar").Find("Buttons").Find("ButtonLong").GetComponent<RectTransform>();
         buttonBig = transform.Find("TopBar").Find("Buttons").Find("ButtonBig").GetComponent<RectTransform>();
         buttonClose = transform.Find("TopBar").Find("Buttons").Find("ButtonClose").GetComponent<RectTransform>();
-        
-        transform.Find("TopBar").Find("Text").GetComponent<TextMeshProUGUI>().text = appType.ToString();
 
-        // deactivate buttonBig for every window, not sure if even needed anymore
+        TextMeshProUGUI topBarTextMesh = transform.Find("TopBar").Find("Text").GetComponent<TextMeshProUGUI>();//.text = appType.ToString();
+
+        // Deactivate buttonBig for every window, not sure if even needed anymore
         buttonBig.gameObject.SetActive(false);
 
         if (appType == OSAppType.TEST)
         {
             buttonSmall.gameObject.SetActive(false);
+            topBarTextMesh.text = "Test Window";
         }
         else if (appType == OSAppType.SOCIAL)
         {
             Instantiate(socialMediaContent, transform.Find("Content"));
             buttonSmall.gameObject.SetActive(false);
+            topBarTextMesh.text = "Social Media";
         }
         else if (appType == OSAppType.GOV)
         {
@@ -71,11 +74,19 @@ public class OSWindow : MonoBehaviour
             buttonBig.gameObject.SetActive(false);
             buttonLong.gameObject.SetActive(false);
             buttonSmall.gameObject.SetActive(false);
+            topBarTextMesh.text = "Inbox";
+        }
+        else if (appType == OSAppType.SETTINGS)
+        {
+            Instantiate(settingsContent, transform.Find("Content"));
+            buttonSmall.gameObject.SetActive(false);
+            topBarTextMesh.text = "Computer Settings";
         }
         else if (appType == OSAppType.PEOPLE_LIST)
         {
             Instantiate(peopleListContent, transform.Find("Content"));
             buttonSmall.gameObject.SetActive(false);
+            topBarTextMesh.text = "List of Suspects";
         }
         else if (appType == OSAppType.WARNING)
         {
@@ -87,6 +98,7 @@ public class OSWindow : MonoBehaviour
             buttonLong.gameObject.SetActive(false);
             buttonSmall.gameObject.SetActive(false);
             canBeMoved = false;
+            topBarTextMesh.text = "Warning";
         }
         else if (appType == OSAppType.START_SETTINGS)
         {
@@ -96,6 +108,7 @@ public class OSWindow : MonoBehaviour
             buttonLong.gameObject.SetActive(false);
             buttonSmall.gameObject.SetActive(false);
             canBeMoved = false;
+            topBarTextMesh.text = "Start Settings";
         }
     }
 

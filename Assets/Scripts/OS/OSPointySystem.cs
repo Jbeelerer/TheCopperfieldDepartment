@@ -83,6 +83,11 @@ public class OSPointySystem : MonoBehaviour
                 break;
             case "Default":
             default:
+                // Dont show default message if toggled automatically
+                if (toggledAutomatically)
+                {
+                    return;
+                }
                 currentTutorial = stepsDefault;
                 break;
         }
