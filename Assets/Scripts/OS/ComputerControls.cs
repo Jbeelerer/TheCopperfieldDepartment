@@ -520,8 +520,8 @@ public class ComputerControls : MonoBehaviour, ISavable
                     window.gameObject.SetActive(true);
                     SetWindowOpenPosition(window);
                     window.associatedTab.gameObject.SetActive(true);
-                    BringWindowToFront(window);
                 }
+                BringWindowToFront(window);
                 return;
             }
         }
