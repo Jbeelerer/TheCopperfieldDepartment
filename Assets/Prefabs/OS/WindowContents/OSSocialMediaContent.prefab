@@ -507,7 +507,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.00061035156}
+  m_AnchoredPosition: {x: 0, y: 0.000045776367}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &328413140502194852
@@ -1762,7 +1762,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 579312907080682216}
   m_HandleRect: {fileID: 3605685897631851720}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -1960,7 +1960,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '<color=grey>HOME
+  m_text: 'HOME
 
 '
   m_isRightToLeft: 0
@@ -2038,7 +2038,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3950486297962163068}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
@@ -2078,6 +2078,18 @@ MonoBehaviour:
       - m_Target: {fileID: 1467024908834029701}
         m_TargetAssemblyTypeName: OSSocialMediaContent, Assembly-CSharp
         m_MethodName: ResetHomeFeed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1467024908834029701}
+        m_TargetAssemblyTypeName: OSSocialMediaContent, Assembly-CSharp
+        m_MethodName: CloseUserProfile
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

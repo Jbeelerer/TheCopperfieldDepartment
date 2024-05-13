@@ -543,6 +543,12 @@ public class ComputerControls : MonoBehaviour, ISavable
         // Open Pointy Tutorial if it exists for the window
         if (newWindow.GetComponent<OSWindow>().appType != OSAppType.WARNING && newWindow.GetComponent<OSWindow>().appType != OSAppType.START_SETTINGS)
             TogglePointy(true);
+
+        // If a window is already positioned perfectly in the middle, move it slightly left and down
+        /*if (newWindow.GetComponent<OSWindow>().rectTrans.position == screen.position)
+        {
+            newWindow.GetComponent<OSWindow>().rectTrans.position = new Vector2(screen.position.x - 50, screen.position.y - 50);
+        }*/
     }
 
     private void BringWindowToFront(OSWindow window)

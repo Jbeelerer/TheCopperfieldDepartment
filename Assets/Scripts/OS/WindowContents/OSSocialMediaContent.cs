@@ -157,6 +157,9 @@ public class OSSocialMediaContent : MonoBehaviour
     {
         currentUser = user;
         profilePage.SetActive(true);
+
+        profilePage.GetComponent<ScrollRect>().verticalNormalizedPosition = 1;
+
         profilePageheader.Find("Banner").GetComponent<Image>().sprite = user.profileBanner;
         profilePageheader.Find("ImageMask").Find("Image").GetComponent<Image>().sprite = user.image;
         profilePageheader.Find("Name").GetComponent<TextMeshProUGUI>().text = user.username;
@@ -209,10 +212,17 @@ public class OSSocialMediaContent : MonoBehaviour
 
     public void PinUser()
     {
-        OnPinned?.Invoke(currentUser);
+        if (!pinnedUsers.Contains(currentUser))
+        {
+            OnPinned?.Invoke(currentUser);
+        }
+        else
+        {
+            computerControls.OnUnpinned?.Invoke(currentUser);
+        }
     }
 
-    private void RemovePinnedUser(ScriptableObject so)
+    public void RemovePinnedUser(ScriptableObject so)
     {
         if (so is not SocialMediaUser)
             return;
