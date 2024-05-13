@@ -387,16 +387,16 @@ public class GameManager : MonoBehaviour, ISavable
         LoadNewDay(day);
     }
 
-    public string checkForConnectionText(ScriptableObject from, ScriptableObject to)
+    public Connections checkForConnectionText(ScriptableObject from, ScriptableObject to)
     {
         foreach (Connections c in connections)
         {
             if ((c.from.Contains(from) && c.to.Contains(to)) || (c.from.Contains(to) && c.to.Contains(from)))
             {
-                return c.text;
+                return c;
             }
         }
-        return "";
+        return null;
     }
     public void checkSuspect(Person p)
     {
