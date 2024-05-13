@@ -40,7 +40,8 @@ public class Pinboard : MonoBehaviour
     {
         gm = GameManager.instance;
         pinboardModel = transform.GetChild(0);
-        //instantiate a pin for the suspect      
+        pinboardModel.localScale = new Vector3(pinboardModel.localScale.x * gm.GetCurrentCase().pinboardSize, pinboardModel.localScale.y * gm.GetCurrentCase().pinboardSize, pinboardModel.localScale.z);
+        //instantiate a pin for the suspect  
         AddPin(mysteriousPersonMaterial, new Vector3(0, 0, -pinboardModel.localScale.z / 2));
         AddPin(rightPenClickInfo, new Vector3(0.5f - (pinboardModel.localScale.x / 2), 0.5f - (pinboardModel.localScale.y / 2), -pinboardModel.localScale.z / 2));
         AddPin(leftPenClickInfo, new Vector3(0.5f + minSpaceBetweenPins - (pinboardModel.localScale.x / 2), 0.5f - (pinboardModel.localScale.y / 2), -pinboardModel.localScale.z / 2));
