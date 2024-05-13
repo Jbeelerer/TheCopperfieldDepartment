@@ -63,8 +63,8 @@ public class Pinboard : MonoBehaviour
         if (keyOfValueToRemove != null)
         {
             pinsOnPinboard.Remove(keyOfValueToRemove);
-
-            if (keyOfValueToRemove is Person)
+            // if the social media user has no posts, clear the subPins list completely 
+            if (keyOfValueToRemove is Person || (keyOfValueToRemove is SocialMediaUser && subPins[keyOfValueToRemove].Count <= 1))
             {
                 subPins.Remove(keyOfValueToRemove);
             }
