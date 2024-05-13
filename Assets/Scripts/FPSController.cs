@@ -76,9 +76,9 @@ public class FPSController : MonoBehaviour
 
     private Vector3 originalPosition;
 
-    private MeshRenderer playerMesh;
-
     private List<GameObject> foundConnections = new List<GameObject>();
+
+    private float rotationOffset = 0;
 
     public void ResetFoundConnections()
     {
@@ -101,7 +101,6 @@ public class FPSController : MonoBehaviour
         computerControls = GameObject.Find("DesktopInterface").GetComponent<ComputerControls>();
         gm.SetStartTransform(transform);
         narration = GetComponentInChildren<Narration>();
-        playerMesh = GetComponent<MeshRenderer>();
         additionalInfoBoard = transform.GetChild(0).Find("MoreInfo").GetComponent<AdditionalInfoBoard>();
         gm.OnNewDay.AddListener(ResetFoundConnections);
         gm.OnNewDay.AddListener(ResetPlayer);
@@ -149,12 +148,16 @@ public class FPSController : MonoBehaviour
             }
         }
     }
+
+    public void ResetCameraRotation()
+    {
+        transform.rotation = Quaternion.Euler(0, -70, 0);
+    }
     void Update()
     {
         // on e key pressed ExitPC is "E"
         if (Input.GetButtonDown("ExitPC") && gm.isFrozen())
         {
-            playerMesh.enabled = true;
             if (gm.GetGameState() == GameState.OnPC)
             {
                 computerControls.LeaveComputer();
@@ -185,7 +188,7 @@ public class FPSController : MonoBehaviour
             // TODO: Add a freeze when in the deadzone, but only towards the direction currently moving, so you can cancel by going back
             if (canMove)
             {
-                rotationX += -Input.GetAxis("Mouse Y") * lookSpeed;
+                rotationX += (-Input.GetAxis("Mouse Y")) * lookSpeed;
                 rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
                 cameraObject.localRotation = Quaternion.Euler(rotationX, 0, 0);
                 transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
@@ -380,7 +383,6 @@ public class FPSController : MonoBehaviour
                             break;
                         case "Calendar":
                             inputOverlay.SetIcon("");
-                            playerMesh.enabled = false;
                             gm.SetGameState(GameState.OnCalendar);
                             break;
                         case "Door":
@@ -525,15 +527,20 @@ public class FPSController : MonoBehaviour
     {
         currentSelectedObject.GetComponent<PinboardElement>().AddEndingThreads(currentThread);
         currentSelectedObject.GetComponent<PinboardElement>().setIsMoving(false);
-        string connectionText = gm.checkForConnectionText(currentSelectedObject.GetComponent<PinboardElement>().GetContent(), lastSelectedObject.GetComponent<PinboardElement>().GetContent());
-        if (connectionText != "")
+        Connections connectionText = gm.checkForConnectionText(currentSelectedObject.GetComponent<PinboardElement>().GetContent(), lastSelectedObject.GetComponent<PinboardElement>().GetContent());
+        if (connectionText != null)
         {
             GameObject connectionO = Instantiate(connectionPrefab, currentThread.transform);
+            Color color;
+            // handle contradiction color 
+            UnityEngine.ColorUtility.TryParseHtmlString(connectionText.isContradiction ? "#F5867C" : "#F5DB7C", out color);
+            connectionO.transform.Find("PostIt").GetComponent<MeshRenderer>().material.color = color;
             connectionO.transform.position = currentThread.transform.GetChild(0).position - new Vector3(0, 0.05f, 0);
-            connectionO.GetComponentInChildren<TextMeshProUGUI>().text = connectionText;
+            connectionO.GetComponentInChildren<TextMeshProUGUI>().text = connectionText.text;
             foundConnections.Add(connectionO);
         }
     }
+
     public IEnumerator PlayPenAnimation(string animName)
     {
         if (!gm.isFrozen())
