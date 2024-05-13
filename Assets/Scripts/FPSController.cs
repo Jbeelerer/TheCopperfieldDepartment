@@ -48,8 +48,6 @@ public class FPSController : MonoBehaviour
     private LineRenderer currentThread;
 
     private float hoverStart = -1f;
-    // in detailmode the additional info board is shown
-    private bool detailMode = false;
     private ComputerControls computerControls;
     [SerializeField] private AudioClip threadCuttingSound;
     [SerializeField] private AudioClip pickupSound;
@@ -253,17 +251,6 @@ public class FPSController : MonoBehaviour
                                 {
                                     additionalInfoBoard.ShowInfo(true, pe.GetContent());
                                 }
-                                /*
-                                else if (!detailMode && hoverStart > hoverDuration && pe.GetIfHasInfo())
-                                {
-                                    additionalInfoBoard.ShowInfo(true, pe.GetContent());
-                                    detailMode = true;
-                                }
-                                else if (!detailMode && hoverStart == -1f && pe.GetIfHasInfo())
-                                {
-                                    hoverStart = 0;
-                                    additionalInfoBoard.StartPreview(pe.GetContent());
-                                }*/
                                 break;
                             case "CurvedScreen":
                             case "Calendar":

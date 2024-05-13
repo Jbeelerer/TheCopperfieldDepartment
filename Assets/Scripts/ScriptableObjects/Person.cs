@@ -17,4 +17,18 @@ public class Person : ScriptableObject, IPinnable
     public bool notSuspicious;
     bool IPinnable.suspicious { get => suspicious; }
     bool IPinnable.notSuspicious { get => notSuspicious; }
+
+    public Person()
+    {
+        id = -1;
+        personName = "name";
+        image = null;
+        socialMediaUser = null;
+        description = "Description";
+        additionalInfos = new List<string>();
+        hiddenInfos = new List<string>();
+        connectionDescription = new Dictionary<ScriptableObject, string>();
+        suspicious = false;
+        notSuspicious = false;
+    }
 }

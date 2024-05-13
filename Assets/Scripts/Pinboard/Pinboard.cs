@@ -102,7 +102,7 @@ public class Pinboard : MonoBehaviour
             pinboardElement.MakeUndeletable();
         }
         pinboardElement.transform.localPosition = position;
-        ScriptableObject o = new ScriptableObject();
+        ScriptableObject o = ScriptableObject.CreateInstance("Person");
         pinsOnPinboard[o] = pinboardElement;
         pinboardElement.SetContent(image);
 
@@ -190,7 +190,7 @@ public class Pinboard : MonoBehaviour
                 ScriptableObject so = ConversionUtility.Convert<SocialMediaPost>(o).author;
                 Vector3 centerOfZone = pinsOnPinboard[so].transform.localPosition;
                 float ySection = 0.2f;  //pinboardModel.localScale.y / 6;
-                float xSection = 1f;//pinboardModel.localScale.x / 3/2;  
+                //float xSection = 1f;//pinboardModel.localScale.x / 3/2;  
                 centerOfZone.x += zoneSizeX * (centerOfZone.x / pinboardModel.localScale.x);
                 //centerOfZone.x += centerOfZone.x > xSection ? +zoneSizeX / 2 : centerOfZone.x < -xSection ? -zoneSizeX / 2 : 0;
                 // go down by half of the zone size to get center of zone, since the user post is allways on top of a zone  
