@@ -430,10 +430,12 @@ public class PinboardElement : MonoBehaviour
     {
         if (b)
         {
+            transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
             postItMesh.GetComponent<Renderer>().material.SetFloat("_Contrast", 1.6f);
         }
         else
         {
+            transform.localScale = new Vector3(1f, 1f, 1f);
             postItMesh.GetComponent<Renderer>().material.SetFloat("_Contrast", 1f);
         }
     }

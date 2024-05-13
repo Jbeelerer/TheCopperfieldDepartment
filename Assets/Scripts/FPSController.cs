@@ -244,7 +244,6 @@ public class FPSController : MonoBehaviour
                                 PinboardElement pe = hit.collider.gameObject.GetComponent<PinboardElement>();
                                 inputOverlay.SetIcon("handOpen");
                                 // highlight and scale the pinboardElement
-                                pe.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
                                 pe.HighlightElement(true);
                                 if (selectedPenAnim != null)
                                 {
@@ -293,11 +292,15 @@ public class FPSController : MonoBehaviour
                         {
                             if (selectedPinboardElement == null)
                             {
-                                currentSelectedObject.transform.localScale = new Vector3(1, 1, 1);
                                 currentSelectedObject.GetComponent<PinboardElement>().HighlightElement(false);
                             }
                             additionalInfoBoard.CancelPreview();
                         }
+                    }
+                    // highlight when hovering with a thread over a pinboardElement
+                    else if (lastSelectedObject != null && hit.collider.gameObject.name == "pinboardElement(Clone)")
+                    {
+                        hit.collider.gameObject.GetComponent<PinboardElement>().HighlightElement(true);
                     }
                     // dont reset the currentSelectedObject if the player is removing a pinboardElement
                     if (nameOfThingLookedAt != "DeadZone")
@@ -329,17 +332,7 @@ public class FPSController : MonoBehaviour
                 //Connect threat to pinboardElement
                 if (currentThread != null)
                 {
-                    if (currentSelectedObject.name == "pinboardElement(Clone)")
-                    {
-                        HandleThread();
-                    }
-                    else
-                    {
-                        // Reset threat
-                        Destroy(currentThread);
-                    }
-                    lastSelectedObject = null;
-                    currentThread = null;
+                    TryToPlaceThread(currentSelectedObject.name);
                 }
                 // places the pinboardElement back to the pinboard
                 else if (selectedPinboardElement != null)
@@ -460,6 +453,14 @@ public class FPSController : MonoBehaviour
                     }
                 }
             }
+            // place the thread after stopping to drag
+            if (Input.GetMouseButtonUp(1) && currentThread != null)
+            {
+                if (lastSelectedObject.transform != hit.collider.transform)
+                {
+                    TryToPlaceThread(nameOfThingLookedAt);
+                }
+            }
             #endregion
             #region handle selected element movement
             // handle moving pinboardElement position 
@@ -519,6 +520,20 @@ public class FPSController : MonoBehaviour
         selectedPenAnim = null;
     }
 
+    public void TryToPlaceThread(string underground)
+    {
+        if (underground == "pinboardElement(Clone)")
+        {
+            HandleThread();
+        }
+        else
+        {
+            // Reset threat
+            Destroy(currentThread);
+        }
+        lastSelectedObject = null;
+        currentThread = null;
+    }
     public void HandleThread()
     {
         currentSelectedObject.GetComponent<PinboardElement>().AddEndingThreads(currentThread);
