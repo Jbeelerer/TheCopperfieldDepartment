@@ -29,6 +29,8 @@ public class InputOverlay : MonoBehaviour
 
     private Vector3 defaultPosition;
 
+    private string currentIcon;
+
     public bool GetIsHolding()
     {
         return isHolding;
@@ -53,6 +55,7 @@ public class InputOverlay : MonoBehaviour
     }
     public void SetIcon(string imageName, bool forceIcon = false)
     {
+        currentIcon = imageName;
         image.enabled = true;
         // don't allow any icon changes while moving pins
         if (!forceIcon && image.sprite == handClosed && imageName != "handOpen")
@@ -94,6 +97,14 @@ public class InputOverlay : MonoBehaviour
             default:
                 image.enabled = false;
                 break;
+        }
+    }
+
+    public void ChangeIconIfDifferent(string imageName)
+    {
+        if (currentIcon != imageName)
+        {
+            SetIcon(imageName);
         }
     }
 

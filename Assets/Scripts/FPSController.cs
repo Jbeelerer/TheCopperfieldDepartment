@@ -301,7 +301,7 @@ public class FPSController : MonoBehaviour
                 else if (currentSelectedObject != null && removingTime == -1)
                 {
                     DeselectPen();
-                    inputOverlay.SetIcon("");
+                    inputOverlay.ChangeIconIfDifferent("");
                     if (selectedPinboardElement != null)
                     {
                         selectedPinboardElement.gameObject.layer = 0;
@@ -309,9 +309,16 @@ public class FPSController : MonoBehaviour
                         selectedPinboardElement.GetComponent<PinboardElement>().setIsMoving(false);
                         am.PlayReverseAudio(pickupSound);
                         selectedPinboardElement = null;
-                        inputOverlay.SetIcon("defaultIcon");
                     }
                     currentSelectedObject = null;
+                    if (currentThread != null)
+                    {
+                        TryToPlaceThread("");
+                    }
+                }
+                else
+                {
+                    inputOverlay.ChangeIconIfDifferent("");
                 }
             }
 
