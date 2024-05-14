@@ -1,6 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 [System.Serializable]
 public class TimedSubtitle
@@ -12,6 +13,7 @@ public class TimedSubtitle
 public class TimedSubtitles
 {
     public TimedSubtitle[] intro;
+    public TimedSubtitle[] phoneCallIntro;
     public TimedSubtitle[] firstDayFeedbackPositive;
     public TimedSubtitle[] firstDayFeedbackNegative;
 }
@@ -37,6 +39,8 @@ public class Narration : MonoBehaviour
     [SerializeField] private AudioClip firstDayFeedbackPositiveClip;
     [SerializeField] private AudioClip firstDayFeedbackNegativeClip;
 
+    [SerializeField] private AudioClip phoneCallIntroClip;
+
     private TimedSubtitles timedSubtitles;
     private TextMeshProUGUI subtitleText;
 
@@ -54,6 +58,8 @@ public class Narration : MonoBehaviour
 
     [SerializeField] private AudioClip phonePickup;
     [SerializeField] private AudioClip phoneHangup;
+
+    Quaternion[] rotations;
 
     // Start is called before the first frame update
     void Start()
@@ -79,8 +85,10 @@ public class Narration : MonoBehaviour
         }
     }
 
-    public void PlaySequence(string sequence)
+    public void PlaySequence(string sequence, Quaternion[] rotation = null)
     {
+        rotations = rotation;
+        blackScreen.GetComponent<Image>().color = rotation != null ? new Color(0, 0, 0, 0f) : new Color(0, 0, 0, 1f);
         switch (sequence)
         {
             case "firstDayFeedbackPositive":
@@ -91,6 +99,9 @@ public class Narration : MonoBehaviour
                 break;
             case "intro":
                 StartCoroutine(PlaySequence(timedSubtitles.intro, introClip));
+                break;
+            case "phoneCallIntro":
+                StartCoroutine(PlaySequence(timedSubtitles.phoneCallIntro, phoneCallIntroClip));
                 break;
         }
     }
@@ -162,6 +173,8 @@ public class Narration : MonoBehaviour
 
     public IEnumerator PlaySequence(TimedSubtitle[] content, AudioClip clip)
     {
+        FPSController player = GameObject.Find("Player").GetComponent<FPSController>();
+        Quaternion startRotation = player.transform.rotation;
         gm.SetGameState(GameState.Frozen);
         blackScreen.SetActive(true);
         subtitleText.text = "";
@@ -170,11 +183,20 @@ public class Narration : MonoBehaviour
         audioSource.clip = clip;
         audioSource.Play();
 
+        int i = 0;
         foreach (TimedSubtitle entry in content)
         {
+            if (rotations != null)
+            {
+                //Camera.main.transform.rotation = rotations[i];  
+                player.ResetCameraRotation(rotations[i]);
+                i++;
+            }
             subtitleText.text = entry.text;
             yield return new WaitForSeconds(entry.duration);
+
         }
+        player.ResetCameraRotation(startRotation);
 
         am.PlayAudio(phoneHangup);
         yield return new WaitForSeconds(phonePickup.length);

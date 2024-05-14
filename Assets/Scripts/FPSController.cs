@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.Events;
 using System;
+using Cinemachine;
 
 
 [System.Serializable]
@@ -149,9 +150,19 @@ public class FPSController : MonoBehaviour
         }
     }
 
-    public void ResetCameraRotation()
+    public void ResetCameraRotation(Quaternion rotation, bool instant = false)
     {
-        transform.rotation = Quaternion.Euler(0, -70, 0);
+        if (instant)
+            transform.rotation = rotation;
+        else
+        {
+            if (rotation != Quaternion.identity)
+            {
+                // transform.rotation = rotation;
+                StartCoroutine(LerpToRotation(rotation));
+            }
+        }
+        //GetComponentInChildren<CinemachineVirtualCamera>().GetCinemachineComponent<CinemachinePOV>().m_HorizontalAxis.Value = rotation.eulerAngles.y;
     }
     void Update()
     {
@@ -271,6 +282,9 @@ public class FPSController : MonoBehaviour
                                 break;
                             case "Pen":
                                 inputOverlay.SetIcon("handOpen");
+                                break;
+                            case "Phone":
+                                inputOverlay.SetIcon("inspect");
                                 break;
                             default:
                                 break;
@@ -394,6 +408,10 @@ public class FPSController : MonoBehaviour
                         case "Calendar":
                             inputOverlay.SetIcon("");
                             gm.SetGameState(GameState.OnCalendar);
+                            break;
+                        case "Phone":
+                            inputOverlay.SetIcon("");
+                            hit.collider.transform.GetComponent<Phone>().StartCall();
                             break;
                         case "Door":
                             if (gm.GetAnswerCommited())
@@ -579,6 +597,19 @@ public class FPSController : MonoBehaviour
             }
             //pe.SetAnnotationType(animName == "circle" ? AnnotationType.Circle : animName == "cross" ? AnnotationType.StrikeThrough : AnnotationType.StrikeThrough);
             gm.SetGameState(GameState.Playing);
+        }
+    }
+
+    public IEnumerator LerpToRotation(Quaternion targetRotation)
+    {
+        float time = 0;
+        Quaternion startRotation = transform.rotation;
+        while (time < 1)
+        {
+            time += Time.deltaTime;
+            transform.rotation = Quaternion.Lerp(startRotation, targetRotation, time);
+            //transform.rotation = Quaternion.Euler(Mathf.Lerp(startRotationx, targetRotation.eulerAngles.x, time), Mathf.Lerp(startRotationy, targetRotation.eulerAngles.y, time), 0);
+            yield return null;
         }
     }
 

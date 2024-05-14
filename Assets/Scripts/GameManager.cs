@@ -37,6 +37,7 @@ public class GameManager : MonoBehaviour, ISavable
     // what happens if the person is found and the post deleted?
     public investigationStates investigationState = investigationStates.SuspectNotFound; //investigationStates.SuspectNotFound;
     public UnityEvent OnNewDay;
+    public UnityEvent StateChanged;
     public UnityEvent OnNewSegment;
     private Case currentCase;
     private Mail[] mails;
@@ -99,9 +100,10 @@ public class GameManager : MonoBehaviour, ISavable
         // handle startPos of mainCam
         if (state == GameState.Playing && gameState == GameState.OnPC)
         {
-            GameObject.Find("Player").GetComponent<FPSController>().ResetCameraRotation();
+            GameObject.Find("Player").GetComponent<FPSController>().ResetCameraRotation(Quaternion.Euler(0, -70, 0), true);
         }
         gameState = state;
+        StateChanged?.Invoke();
     }
 
     public bool isFrozen()
