@@ -68,6 +68,13 @@ public class OSPopupManager : MonoBehaviour
         computerControls.audioManager.PlayAudio(notificationSound);
     }
 
+    public void DisplayPersonUnaccusedMessage()
+    {
+        messageText.text = "Removed accusation";
+        anim.Play("popupMessageSpawn", -1, 0);
+        computerControls.audioManager.PlayAudio(notificationSound);
+    }
+
     public void DisplayPostDeleteMessage()
     {
         messageText.text = "Post flagged for deletion!";

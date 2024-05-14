@@ -12,6 +12,7 @@ public class OSPerson : MonoBehaviour
     private OSPeopleListContent peopleListContent;
     private ComputerControls computerControls;
     private bool personPinned = false;
+    private bool personAccused = false;
 
     // Start is called before the first frame update
     void Start()
@@ -70,7 +71,15 @@ public class OSPerson : MonoBehaviour
 
     public void AccusePerson()
     {
-        computerControls.OpenWindow(OSAppType.WARNING, "You are about to accuse this person.<br><b>This can still be changed later.</b><br><br>Do you want to proceed?", AccusePersonSuccess);
+        if (!personAccused)
+        {
+            computerControls.OpenWindow(OSAppType.WARNING, "You are about to accuse this person.<br><b>This can still be changed later.</b><br><br>Do you want to proceed?", AccusePersonSuccess);
+        }
+        else
+        {
+            ClearAccused();
+            popupManager.DisplayPersonUnaccusedMessage();
+        }
     }
 
     public void AccusePersonSuccess()
@@ -84,10 +93,12 @@ public class OSPerson : MonoBehaviour
         gm.checkSuspect(person);
         popupManager.DisplayPersonAccusedMessage();
         transform.Find("AccusePerson").GetComponent<Image>().color = Color.red;
+        personAccused = true;
     }
 
     private void ClearAccused()
     {
+        // TODO: also clear accusation in gamemanager
         transform.Find("AccusePerson").GetComponent<Image>().color = Color.white;
     }
 }

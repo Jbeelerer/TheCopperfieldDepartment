@@ -47,6 +47,7 @@ public class ComputerControls : MonoBehaviour, ISavable
     public TextMeshProUGUI computerTime;
     public TextMeshProUGUI computerDate;
     public OSPointySystem pointySystem;
+    public Sprite[] appIcons;
 
     private RectTransform screen;
     private float mouseSpeedX;
@@ -58,7 +59,6 @@ public class ComputerControls : MonoBehaviour, ISavable
     private bool cursorStopped = false;
     private float timeCursorStopped = 0;
     private float tooltipDelay = 0.3f;
-    private FPSController fpsController;
     private GameManager gm;
     private bool cursorActive = false;
     private OSWindow currentFocusedWindow;
@@ -82,7 +82,6 @@ public class ComputerControls : MonoBehaviour, ISavable
         //windows.Add(testWindow);
         //testWindow.associatedTab = testTab;
         cursorTooltip = cursor.transform.Find("Tooltip").gameObject;
-        fpsController = GameObject.Find("Player").GetComponent<FPSController>();
 
         cursor.anchoredPosition = new Vector2(-1000, -1000);
 
@@ -587,8 +586,12 @@ public class ComputerControls : MonoBehaviour, ISavable
         foreach (OSWindow w in windows)
         {
             w.topBar.GetComponent<Image>().color = new Color(w.topBar.GetComponent<Image>().color.r, w.topBar.GetComponent<Image>().color.g, w.topBar.GetComponent<Image>().color.b, 0.6f);
+            if (w.associatedTab)
+                w.associatedTab.GetComponent<Image>().color = new Color(w.associatedTab.GetComponent<Image>().color.r, w.associatedTab.GetComponent<Image>().color.g, w.associatedTab.GetComponent<Image>().color.b, 0.6f);
         }
         window.topBar.GetComponent<Image>().color = new Color(window.topBar.GetComponent<Image>().color.r, window.topBar.GetComponent<Image>().color.g, window.topBar.GetComponent<Image>().color.b, 1f);
+        if (window.associatedTab)
+            window.associatedTab.GetComponent<Image>().color = new Color(window.associatedTab.GetComponent<Image>().color.r, window.associatedTab.GetComponent<Image>().color.g, window.associatedTab.GetComponent<Image>().color.b, 1f);
 
         // Set as current right/left window if in long mode
         if (window.currWindowSize == WindowSize.LONG_LEFT)

@@ -52,9 +52,5 @@ public class OSPeopleListContent : MonoBehaviour
     public void ClearAccusedPeople()
     {
         OnAccusedPersonClear?.Invoke();
-        /*foreach (OSPerson p in peopleList)
-        {
-            p.gameObject.transform.Find("AccusePerson").GetComponent<Image>().color = Color.black;
-        }*/
     }
 }
