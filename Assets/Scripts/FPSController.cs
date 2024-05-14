@@ -22,7 +22,7 @@ public class FPSController : MonoBehaviour
 
     public float lookSpeed = 4f;
     public float lookXLimit = 50f;
-    public float interactionReach = 3f;
+    public float interactionReach = 4f;
 
     public float hoverDuration = 1f;
 
@@ -215,6 +215,7 @@ public class FPSController : MonoBehaviour
                         switch (nameOfThingLookedAt)
                         {
                             case "PinboardModel":
+                                // interactionReach = 10f;
                                 if (selectedPinboardElement == null && currentThread == null)//TODO: add Pen exxption
                                 {
                                     inputOverlay.SetIcon("defaultIcon");
@@ -315,9 +316,11 @@ public class FPSController : MonoBehaviour
                     {
                         TryToPlaceThread("");
                     }
+                    //interactionReach = 3f;
                 }
                 else
                 {
+                    //interactionReach = 3f;
                     inputOverlay.ChangeIconIfDifferent("");
                 }
             }
