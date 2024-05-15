@@ -438,14 +438,14 @@ public class GameManager : MonoBehaviour, ISavable
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.O))
+        if (Input.GetKeyDown(KeyCode.O) && devMode)
         {
             furthestDay = 1;
             LoadNewDay(1);
             SaveManager.instance.SaveGame();
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
-        if (Input.GetKeyDown(KeyCode.P) && Input.GetKeyDown(KeyCode.O))
+        if (Input.GetKeyDown(KeyCode.P) && Input.GetKeyDown(KeyCode.O) && devMode)
         {
             Application.Quit();
         }
