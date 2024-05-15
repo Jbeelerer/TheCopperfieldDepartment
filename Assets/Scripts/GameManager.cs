@@ -394,6 +394,14 @@ public class GameManager : MonoBehaviour, ISavable
         }
         return null;
     }
+    public void checkSuspicionRemoved(Person p)
+    {
+        if (p == currentCase.guiltyPerson && investigationState == investigationStates.SuspectFound)
+        {
+            investigationState = investigationStates.SuspectNotFound;
+            answerCommited = false;
+        }
+    }
     public void checkSuspect(Person p)
     {
         answerCommited = true;

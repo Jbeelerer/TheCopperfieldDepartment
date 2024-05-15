@@ -13,7 +13,8 @@ public enum AnnotationType
 {
     None,
     Circle,
-    StrikeThrough
+    StrikeThrough,
+    CaughtSuspect
 }
 public class PinboardElement : MonoBehaviour
 {
@@ -45,10 +46,13 @@ public class PinboardElement : MonoBehaviour
     public Texture2D transparent;
     public Texture2D circle;
     public Texture2D strikeThrough;
+    public Texture2D suspectFound;
     public Camera canvasCamera;
 
     private bool noStartThreadClipping = true;
     private bool noEndThreadClipping = true;
+
+    private GameObject flag;
 
     public void MakeUndeletable()
     {
@@ -69,8 +73,28 @@ public class PinboardElement : MonoBehaviour
 
     public void SetAnnotationType(AnnotationType annotationType)
     {
+        // check if this was the culprit
+        if (annotationType == AnnotationType.None && this.annotationType == AnnotationType.CaughtSuspect)
+        {
+            GameManager.instance.checkSuspicionRemoved(content as Person);
+            flag.SetActive(false);
+        }
         this.annotationType = annotationType;
-        postItMesh.GetComponent<Renderer>().material.SetTexture("_AnnotationSprite", annotationType == AnnotationType.Circle ? circle : annotationType == AnnotationType.StrikeThrough ? strikeThrough : transparent);
+        Texture2D texture = transparent;
+        switch (annotationType)
+        {
+            case AnnotationType.Circle:
+                texture = circle;
+                break;
+            case AnnotationType.StrikeThrough:
+                texture = strikeThrough;
+                break;
+            case AnnotationType.CaughtSuspect:
+                texture = suspectFound;
+                flag.SetActive(true);
+                break;
+        }
+        postItMesh.GetComponent<Renderer>().material.SetTexture("_AnnotationSprite", texture);
     }
 
     public ScriptableObject GetContent()
@@ -237,7 +261,8 @@ public class PinboardElement : MonoBehaviour
 
     void Start()
     {
-
+        flag = transform.Find("Flag").gameObject;
+        flag.SetActive(false);
         RenderPipelineManager.endCameraRendering += this.OnEndCameraRendering;
     }
     void OnEndCameraRendering(ScriptableRenderContext context, Camera camera)

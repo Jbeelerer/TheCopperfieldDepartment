@@ -64,6 +64,8 @@ public class Narration : MonoBehaviour
 
     private bool sequencePlaying = false;
     private bool skip = false;
+
+    private Animator textAnimator;
     // Start is called before the first frame update
     void Start()
     {
@@ -72,9 +74,11 @@ public class Narration : MonoBehaviour
         gm.SetNarration(this);
         audioSource = GetComponent<AudioSource>();
         subtitleText = GameObject.Find("Subtitle").GetComponent<TextMeshProUGUI>();
+        textAnimator = subtitleText.GetComponent<Animator>();
 
         blackScreen = GameObject.Find("BlackScreen");
         blackScreen.SetActive(false);
+
 
 
         timedSubtitles = JsonUtility.FromJson<TimedSubtitles>(jsonFile.text);
@@ -220,9 +224,7 @@ public class Narration : MonoBehaviour
                         audioSource.time = totalTime + entry.duration;
                         audioSource.Play();
                     }
-                    //   yield return new WaitForSeconds(0.1f);
-                    // time += 0.1f;
-                    print("skipping");
+                    textAnimator.Play("skip");
                     skip = false;
                     break;
                 }

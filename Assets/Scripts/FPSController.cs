@@ -81,6 +81,9 @@ public class FPSController : MonoBehaviour
 
     private float rotationOffset = 0;
 
+    private GameObject flaggedPE;
+    private GameObject flaggedThread;
+
     public void ResetFoundConnections()
     {
         foreach (GameObject go in foundConnections)
@@ -390,6 +393,12 @@ public class FPSController : MonoBehaviour
                             break;
                         case "threadCollider":
                             am.PlayAudio(threadCuttingSound);
+                            if (hit.collider.transform.parent.gameObject == flaggedThread)
+                            {
+                                flaggedPE.GetComponent<PinboardElement>().SetAnnotationType(AnnotationType.None);
+                                flaggedPE = null;
+                                flaggedThread = null;
+                            }
                             Destroy(hit.collider.transform.parent.gameObject);
                             break;
                         case "pin":
@@ -553,18 +562,53 @@ public class FPSController : MonoBehaviour
     }
     public void HandleThread()
     {
-        currentSelectedObject.GetComponent<PinboardElement>().AddEndingThreads(currentThread);
-        currentSelectedObject.GetComponent<PinboardElement>().setIsMoving(false);
-        Connections connectionText = gm.checkForConnectionText(currentSelectedObject.GetComponent<PinboardElement>().GetContent(), lastSelectedObject.GetComponent<PinboardElement>().GetContent());
-        if (connectionText != null)
+        PinboardElement currentPE = currentSelectedObject.GetComponent<PinboardElement>();
+        PinboardElement lastPE = lastSelectedObject.GetComponent<PinboardElement>();
+
+        additionalInfoBoard.ShowInfo(false);
+        currentPE.AddEndingThreads(currentThread);
+        currentPE.setIsMoving(false);
+        Connections connection = gm.checkForConnectionText(currentPE.GetContent(), lastPE.GetContent());
+
+        // the suspicios person post it was connected 
+        if (!currentPE.GetIfDeletable() || !lastPE.GetIfDeletable())
+        {
+            if (currentPE.GetContent() is Person || lastPE.GetContent() is Person)
+            {
+                if (flaggedPE != null)
+                {
+                    flaggedPE.GetComponent<PinboardElement>().SetAnnotationType(AnnotationType.None);
+                }
+                if (flaggedThread != null)
+                {
+                    Destroy(flaggedThread);
+                }
+                flaggedThread = currentThread.gameObject;
+            }
+
+            if (currentPE.GetContent() is Person)
+            {
+                gm.checkSuspect(currentPE.GetContent() as Person);
+                currentPE.SetAnnotationType(AnnotationType.CaughtSuspect);
+                flaggedPE = currentSelectedObject;
+            }
+            else if (lastPE.GetContent() is Person)
+            {
+                gm.checkSuspect(lastPE.GetContent() as Person);
+                lastPE.SetAnnotationType(AnnotationType.CaughtSuspect);
+                flaggedPE = lastSelectedObject;
+            }
+        }
+
+        if (connection != null)
         {
             GameObject connectionO = Instantiate(connectionPrefab, currentThread.transform);
             Color color;
             // handle contradiction color 
-            UnityEngine.ColorUtility.TryParseHtmlString(connectionText.isContradiction ? "#F5867C" : "#F5DB7C", out color);
+            UnityEngine.ColorUtility.TryParseHtmlString(connection.isContradiction ? "#F5867C" : "#F5DB7C", out color);
             connectionO.transform.Find("PostIt").GetComponent<MeshRenderer>().material.color = color;
             connectionO.transform.position = currentThread.transform.GetChild(0).position - new Vector3(0, 0.05f, 0);
-            connectionO.GetComponentInChildren<TextMeshProUGUI>().text = connectionText.text;
+            connectionO.GetComponentInChildren<TextMeshProUGUI>().text = connection.text;
             foundConnections.Add(connectionO);
         }
     }
