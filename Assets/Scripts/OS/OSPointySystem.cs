@@ -49,6 +49,7 @@ public class OSPointySystem : MonoBehaviour
 
     public void StartTutorial(string name, bool toggledAutomatically)
     {
+        // Bool used to deactivate pointy in inspector
         if (deactivatePointy)
         {
             return;
@@ -66,6 +67,9 @@ public class OSPointySystem : MonoBehaviour
 
         // Play popup sound
         computerControls.audioManager.PlayAudio(pointyPopupSound);
+
+        // Change button appearance
+        pointyButton.GetComponent<Animator>().Play("buttonPointyClose");
 
         switch (name)
         {
@@ -167,6 +171,9 @@ public class OSPointySystem : MonoBehaviour
 
     public void HidePointy()
     {
+        // Change button appearance
+        pointyButton.GetComponent<Animator>().Play("buttonPointyQuestion");
+
         nextTargetObject = null;
         currentTutorial = null;
         pointy.SetActive(false);
