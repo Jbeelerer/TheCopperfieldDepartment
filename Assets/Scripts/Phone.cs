@@ -60,8 +60,6 @@ public class Phone : MonoBehaviour
             return;
 
         audioSource.Stop();
-        /* audioSource.clip = phonePickup;
-         audioSource.Play();*/
         Quaternion[] rotations = new Quaternion[3];
         rotations[0] = Quaternion.identity;
         rotations[1] = Quaternion.Euler(-20, -100, 0);

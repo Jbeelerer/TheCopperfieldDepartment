@@ -48,15 +48,10 @@ public class GameManager : MonoBehaviour, ISavable
 
     private Vector3 startPosition;
     private Quaternion startRotation;
-
-    [SerializeField] private ScriptableObject customCase;
-
     [SerializeField] private GameObject newDayPrefab;
 
     private bool answerCommited = false;
     public Narration narration;
-
-
     private int saveFile;
 
     private SaveManager saveManager;
@@ -271,11 +266,13 @@ public class GameManager : MonoBehaviour, ISavable
             else
             {
                 StartCoroutine(DelayFirstDay());
+                //LoadNewDay(day);
             }
         }
         else
         {
             StartCoroutine(DelayFirstDay());
+            //LoadNewDay(day); 
         }
     }
 
@@ -300,10 +297,7 @@ public class GameManager : MonoBehaviour, ISavable
             // todo: Only temp solution...
             day = 1;
         }
-        if (customCase == null)
-            currentCase = Resources.LoadAll<Case>("Case" + day)[0];
-        else
-            currentCase = (Case)customCase;
+        currentCase = Resources.LoadAll<Case>("Case" + day)[0];
 
         // load all connections
         connections = Resources.LoadAll<Connections>("Case" + currentCase.id + "/Connections");
@@ -383,8 +377,8 @@ public class GameManager : MonoBehaviour, ISavable
                 results[day - 2] = investigationState;
             }
             // don't save in dev mode, if you want to, just add comment syntax to the if statement
-            if (!devMode)
-                SaveManager.instance.SaveGame();
+            // if (!devMode) 
+            SaveManager.instance.SaveGame();
         }
         LoadNewDay(day);
     }
@@ -446,8 +440,10 @@ public class GameManager : MonoBehaviour, ISavable
     {
         if (Input.GetKeyDown(KeyCode.O))
         {
+            furthestDay = 1;
+            LoadNewDay(1);
+            SaveManager.instance.SaveGame();
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-            //LoadNewDay(1); 
         }
         if (Input.GetKeyDown(KeyCode.P) && Input.GetKeyDown(KeyCode.O))
         {
