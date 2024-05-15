@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -61,6 +62,8 @@ public class Narration : MonoBehaviour
 
     Quaternion[] rotations;
 
+    private bool sequencePlaying = false;
+    private bool skip = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -76,8 +79,6 @@ public class Narration : MonoBehaviour
 
         timedSubtitles = JsonUtility.FromJson<TimedSubtitles>(jsonFile.text);
         shortSubtitles = JsonUtility.FromJson<ShortSubtitles>(shortSubtitlesJsonFile.text);
-
-
 
         if (gm.GetDay() == 1)
         {
@@ -121,6 +122,10 @@ public class Narration : MonoBehaviour
             }
         }
 
+        if (Input.GetMouseButtonDown(0) && sequencePlaying && !skip)
+        {
+            skip = true;
+        }
     }
     public void Say(string text)
     {
@@ -173,31 +178,61 @@ public class Narration : MonoBehaviour
 
     public IEnumerator PlaySequence(TimedSubtitle[] content, AudioClip clip)
     {
+
         FPSController player = GameObject.Find("Player").GetComponent<FPSController>();
         Quaternion startRotation = player.transform.rotation;
         gm.SetGameState(GameState.Frozen);
         blackScreen.SetActive(true);
+
         subtitleText.text = "";
+
         am.PlayAudio(phonePickup);
         yield return new WaitForSeconds(phonePickup.length);
+
+        audioSource.time = 0;
+        int talkIndex = 0;
+        float totalTime = 0;
+        sequencePlaying = true;
+
         audioSource.clip = clip;
         audioSource.Play();
 
-        int i = 0;
         foreach (TimedSubtitle entry in content)
         {
             if (rotations != null)
             {
                 //Camera.main.transform.rotation = rotations[i];  
-                player.ResetCameraRotation(rotations[i]);
-                i++;
+                player.ResetCameraRotation(rotations[talkIndex]);
+                talkIndex++;
             }
             subtitleText.text = entry.text;
-            yield return new WaitForSeconds(entry.duration);
-
+            float time = 0;
+            while (entry.duration >= time)
+            {
+                yield return new WaitForSeconds(0.1f);
+                time += 0.1f;
+                if (skip)
+                {
+                    if (entry.duration + totalTime < audioSource.clip.length)
+                    {
+                        print(totalTime + entry.duration);
+                        audioSource.Stop();
+                        audioSource.time = totalTime + entry.duration;
+                        audioSource.Play();
+                    }
+                    //   yield return new WaitForSeconds(0.1f);
+                    // time += 0.1f;
+                    print("skipping");
+                    skip = false;
+                    break;
+                }
+            }
+            totalTime += entry.duration;
         }
         player.ResetCameraRotation(startRotation);
 
+
+        sequencePlaying = false;
         am.PlayAudio(phoneHangup);
         yield return new WaitForSeconds(phonePickup.length);
         gm.SetGameState(GameState.Playing);

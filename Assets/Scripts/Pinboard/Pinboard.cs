@@ -105,7 +105,6 @@ public class Pinboard : MonoBehaviour
         ScriptableObject o = ScriptableObject.CreateInstance("Person");
         pinsOnPinboard[o] = pinboardElement;
         pinboardElement.SetContent(image);
-
     }
     public void AddPin(ScriptableObject o)
     {

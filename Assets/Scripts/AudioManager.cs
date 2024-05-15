@@ -44,4 +44,15 @@ public class AudioManager : MonoBehaviour
         audioSource.Play();
         StartCoroutine(ResetAudio(audioSource.clip.length));
     }
+
+    public void SkipAmount(float amount)
+    {
+        if (audioSource.time + amount < audioSource.clip.length)
+        {
+            audioSource.Stop();
+            audioSource.time += amount;
+            audioSource.Play();
+        }
+
+    }
 }
