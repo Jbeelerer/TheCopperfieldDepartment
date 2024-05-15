@@ -66,6 +66,8 @@ public class Narration : MonoBehaviour
     private bool skip = false;
 
     private Animator textAnimator;
+
+    Quaternion startRotation;
     // Start is called before the first frame update
     void Start()
     {
@@ -116,13 +118,15 @@ public class Narration : MonoBehaviour
     {
         if (gm.GetIfDevMode())
         {
-            if (Input.GetKeyDown(KeyCode.X))
+            if (Input.GetKeyDown(KeyCode.X) && sequencePlaying)
             {
                 StopAllCoroutines();
                 audioSource.Stop();
                 gm.SetGameState(GameState.Playing);
                 subtitleText.text = "";
                 blackScreen.SetActive(false);
+                GameObject.Find("Player").GetComponent<FPSController>().ResetCameraRotation(startRotation);
+
             }
         }
 
@@ -184,7 +188,7 @@ public class Narration : MonoBehaviour
     {
 
         FPSController player = GameObject.Find("Player").GetComponent<FPSController>();
-        Quaternion startRotation = player.transform.rotation;
+        startRotation = player.transform.rotation;
         gm.SetGameState(GameState.Frozen);
         blackScreen.SetActive(true);
 
