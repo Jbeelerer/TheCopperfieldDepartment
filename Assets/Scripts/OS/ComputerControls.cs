@@ -238,6 +238,9 @@ public class ComputerControls : MonoBehaviour, ISavable
             return;
         }
 
+        ResizeWindowSmall(currentFocusedWindow);
+        currentFocusedWindow.rectTrans.position = screen.position;
+
         switch (currentFocusedWindow.appType)
         {
             case OSAppType.SOCIAL:
@@ -540,11 +543,11 @@ public class ComputerControls : MonoBehaviour, ISavable
         GameObject newTab = Instantiate(tabPrefab, transform.position, transform.rotation, tabContainer.transform);
         newTab.GetComponent<OSTab>().appType = type;
         newWindow.GetComponent<OSWindow>().associatedTab = newTab.GetComponent<OSTab>();
+        // Set window position
+        SetWindowOpenPosition(newWindow.GetComponent<OSWindow>());
         // Open Pointy Tutorial if it exists for the window
         if (newWindow.GetComponent<OSWindow>().appType != OSAppType.WARNING && newWindow.GetComponent<OSWindow>().appType != OSAppType.START_SETTINGS)
             TogglePointy(true);
-        // Set window position
-        SetWindowOpenPosition(newWindow.GetComponent<OSWindow>());
     }
 
     private void SetWindowOpenPosition(OSWindow window)

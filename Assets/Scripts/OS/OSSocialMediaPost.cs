@@ -178,7 +178,21 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
         if (linkIndex != -1)
         {
             TMP_LinkInfo linkInfo = textMesh.textInfo.linkInfo[linkIndex];
-            socialMediaContent.FilterHomefeed(linkInfo.GetLinkText());
+            if (linkInfo.GetLinkText().StartsWith("@"))
+            {
+                foreach (SocialMediaUser user in gm.GetUsers())
+                {
+                    if (user.username == linkInfo.GetLinkText().Substring(1))
+                    {
+                        socialMediaContent.ShowUserProfile(user);
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                socialMediaContent.FilterHomefeed(linkInfo.GetLinkText());
+            }
         }
     }
 
