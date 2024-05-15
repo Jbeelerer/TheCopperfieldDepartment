@@ -63,6 +63,8 @@ public class ComputerControls : MonoBehaviour, ISavable
     private bool cursorActive = false;
     private OSWindow currentFocusedWindow;
 
+    [SerializeField] private RectTransform halfScreenBlockadeLeft;
+    [SerializeField] private RectTransform halfScreenBlockadeRight;
     [SerializeField] private AudioClip windowOpenSound;
     [SerializeField] private AudioClip clickDownSound;
     [SerializeField] private AudioClip clickUpSound;
@@ -142,6 +144,19 @@ public class ComputerControls : MonoBehaviour, ISavable
                 if (window.isMoving && PointInsideRect(cursor.position, taskBar))
                 {
                     windowToBeDeleted = window;
+                }
+
+                // Put window into halfscreen mode if dragged to border of screen
+                if (window.isMoving)
+                {
+                    if (PointInsideRect(cursor.position, halfScreenBlockadeLeft))
+                    {
+                        ResizeWindowLongLeft(window);
+                    }
+                    else if (PointInsideRect(cursor.position, halfScreenBlockadeRight))
+                    {
+                        ResizeWindowLongRight(window);
+                    }
                 }
 
                 window.isMoving = false;

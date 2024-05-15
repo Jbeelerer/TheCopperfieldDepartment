@@ -226,6 +226,7 @@ GameObject:
   - component: {fileID: 1621311410099089403}
   - component: {fileID: 5016594617103793906}
   - component: {fileID: 3493752161087761751}
+  - component: {fileID: 1659811784917767101}
   m_Layer: 5
   m_Name: ButtonPointy
   m_TagString: Untagged
@@ -280,7 +281,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -621431407, guid: 0099304b8998ab14e9d9da6bab2f25f5, type: 3}
+  m_Sprite: {fileID: -147654192, guid: 34c078af9cf68f745a9db0ea17670146, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -346,6 +347,27 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!95 &1659811784917767101
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1132907075910932206}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 48e04ecb8da397f409b3f833949e0184, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1561082558638717806
 GameObject:
   m_ObjectHideFlags: 0
@@ -1306,6 +1328,50 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &3475707295391274446
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4369771373810647855}
+  - component: {fileID: 4954212498315862775}
+  m_Layer: 5
+  m_Name: HalfScreenZoneRight
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &4369771373810647855
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3475707295391274446}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8485901351292374624}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -9.25, y: 0}
+  m_SizeDelta: {x: 18.5, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &4954212498315862775
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3475707295391274446}
+  m_CullTransparentMesh: 1
 --- !u!1 &3641407542462741224
 GameObject:
   m_ObjectHideFlags: 0
@@ -1954,6 +2020,8 @@ MonoBehaviour:
   - {fileID: 457395561, guid: 4983b1acdfaccb54189886d761ecaf75, type: 3}
   - {fileID: 449647731, guid: 4983b1acdfaccb54189886d761ecaf75, type: 3}
   - {fileID: -1588247406, guid: 4983b1acdfaccb54189886d761ecaf75, type: 3}
+  halfScreenBlockadeLeft: {fileID: 7722367643903085763}
+  halfScreenBlockadeRight: {fileID: 4369771373810647855}
   windowOpenSound: {fileID: 8300000, guid: 28584e9804daf3e4b8b3f5e540100de0, type: 3}
   clickDownSound: {fileID: 8300000, guid: 50a44943292c8284e814d4b7b32688af, type: 3}
   clickUpSound: {fileID: 8300000, guid: 65366d45c16768d46a92dddc1c25d848, type: 3}
@@ -2213,9 +2281,9 @@ MonoBehaviour:
       again when you need help.<br><br>Click the screen to continue.
     pointAtPointy: 1
     spotlightSizeModifier: {x: 0, y: 0}
-  - targetObjectName: ScreenBlockadePointy
+  - targetObjectName: App1
     message: That's all for now.<br><br>Why don't you try opening one of your apps
-      next?<br><br><b>Click the screen to close this tutorial.
+      next?<br><br><b>Try clicking the inbox icon!
     pointAtPointy: 0
     spotlightSizeModifier: {x: 0, y: 0}
   stepsGovApp:
@@ -2667,6 +2735,8 @@ RectTransform:
   - {fileID: 2724509696976273729}
   - {fileID: 1384774324003976077}
   - {fileID: 2247469051311829566}
+  - {fileID: 7722367643903085763}
+  - {fileID: 4369771373810647855}
   m_Father: {fileID: 1484284951673446103}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -3458,6 +3528,50 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &7827622670136980479
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7722367643903085763}
+  - component: {fileID: 7601244856480243191}
+  m_Layer: 5
+  m_Name: HalfScreenZoneLeft
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &7722367643903085763
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7827622670136980479}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8485901351292374624}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 9.249908, y: 0}
+  m_SizeDelta: {x: 18.5, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &7601244856480243191
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7827622670136980479}
+  m_CullTransparentMesh: 1
 --- !u!1 &7888584562089628632
 GameObject:
   m_ObjectHideFlags: 0
