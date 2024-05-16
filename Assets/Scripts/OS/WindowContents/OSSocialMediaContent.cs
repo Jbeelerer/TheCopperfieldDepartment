@@ -75,8 +75,28 @@ public class OSSocialMediaContent : MonoBehaviour
         {
             newPost.transform.Find("ImageContainer").gameObject.SetActive(false);
         }
+        newPost.transform.Find("ForbiddenOptions").Find("Comments").GetComponentInChildren<TextMeshProUGUI>().text = GetRandomEngagementNumber(post.author.popularityLevel);
+        newPost.transform.Find("ForbiddenOptions").Find("Shares").GetComponentInChildren<TextMeshProUGUI>().text = GetRandomEngagementNumber(post.author.popularityLevel);
+        newPost.transform.Find("ForbiddenOptions").Find("Likes").GetComponentInChildren<TextMeshProUGUI>().text = GetRandomEngagementNumber(post.author.popularityLevel);
         Instantiate(newPost, profilePageContent.transform);
         postList.Add(newPost.GetComponent<OSSocialMediaPost>());
+    }
+
+    private string GetRandomEngagementNumber(PopularityLevel popularityLevel)
+    {
+        switch (popularityLevel)
+        {
+            case PopularityLevel.LOW:
+                return Random.Range(1, 25).ToString();
+            case PopularityLevel.MEDIUM:
+                return Random.Range(50, 200).ToString();
+            case PopularityLevel.HIGH:
+                return Random.Range(1, 25).ToString() + "K";
+            case PopularityLevel.VERY_HIGH:
+                return Random.Range(25, 50).ToString() + "K";
+            default:
+                return "0";
+        }
     }
 
     public void PinPost(string type, SocialMediaPost post)
