@@ -63,9 +63,18 @@ public class OSSocialMediaContent : MonoBehaviour
         newPost.GetComponent<OSSocialMediaPost>().instanctiatePost(post);
         newPost.name = "Post" + postNumber;
         postNumber++;
-        newPost.transform.Find("imageMask").GetChild(0).GetComponent<Image>().sprite = post.author.image;
-        newPost.transform.Find("name").GetComponent<TextMeshProUGUI>().text = post.author.username;
+        newPost.transform.Find("TopRow").Find("imageMask").GetChild(0).GetComponent<Image>().sprite = post.author.image;
+        newPost.transform.Find("TopRow").Find("name").GetComponent<TextMeshProUGUI>().text = post.author.username;
         newPost.transform.Find("content").GetComponent<TextMeshProUGUI>().text = post.content;
+        if (post.image)
+        {
+            newPost.transform.Find("ImageContainer").Find("AttachedImage").GetComponent<Image>().preserveAspect = true;
+            newPost.transform.Find("ImageContainer").Find("AttachedImage").GetComponent<Image>().sprite = post.image;
+        }
+        else
+        {
+            newPost.transform.Find("ImageContainer").gameObject.SetActive(false);
+        }
         Instantiate(newPost, profilePageContent.transform);
         postList.Add(newPost.GetComponent<OSSocialMediaPost>());
     }
