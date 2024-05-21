@@ -64,7 +64,6 @@ public class Narration : MonoBehaviour
 
     private bool sequencePlaying = false;
     private bool skip = false;
-
     private Animator textAnimator;
 
     Quaternion startRotation;
@@ -80,8 +79,6 @@ public class Narration : MonoBehaviour
 
         blackScreen = GameObject.Find("BlackScreen");
         blackScreen.SetActive(false);
-
-
 
         timedSubtitles = JsonUtility.FromJson<TimedSubtitles>(jsonFile.text);
         shortSubtitles = JsonUtility.FromJson<ShortSubtitles>(shortSubtitlesJsonFile.text);

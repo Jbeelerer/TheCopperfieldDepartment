@@ -229,10 +229,6 @@ public class FPSController : MonoBehaviour
                     {
                         nameOfThingLookedAt = hit.collider.gameObject.name;
                         inputOverlay.SetIcon("handOpen");
-                        if (Input.GetMouseButtonDown(0))
-                        {
-                            hit.collider.gameObject.GetComponent<Grabbable>().Grab(grabPos);
-                        }
                     }
                     else if (hit.collider.gameObject.tag == "Interactable")
                     {
@@ -362,11 +358,18 @@ public class FPSController : MonoBehaviour
             #region Handle left click
             if (Input.GetMouseButtonDown(0))
             {
-                if (grabbedObject != null)
+
+                if (hit.collider.gameObject.tag == "Grabbable")
+                {
+                    grabbedObject = hit.collider.gameObject.GetComponent<Grabbable>();
+                    grabbedObject.Grab(grabPos);
+                }
+                else if (grabbedObject != null)
                 {
                     grabbedObject.Grab(grabPos);
                     grabbedObject = null;
                 }
+
                 else if (currentSelectedObject != null)
                 {
                     //Connect threat to pinboardElement

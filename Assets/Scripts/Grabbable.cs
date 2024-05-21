@@ -12,7 +12,6 @@ public class Grabbable : MonoBehaviour
     {
         if (isGrabbed)
         {
-            transform.SetParent(null);
             shoot(Vector3.forward);
         }
         else
@@ -35,11 +34,11 @@ public class Grabbable : MonoBehaviour
         {
             return;
         }
+        isGrabbed = false;
         transform.SetParent(null);
-        rb.isKinematic = false;
+        rb.isKinematic = true;
         rb.freezeRotation = false;
         rb.AddForce(direction * 1000);
-        isGrabbed = false;
     }
     // Start is called before the first frame update
     void Start()
