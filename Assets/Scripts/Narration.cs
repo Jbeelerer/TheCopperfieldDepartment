@@ -105,10 +105,10 @@ public class Narration : MonoBehaviour
                 StartCoroutine(PlaySequence(timedSubtitles.firstDayFeedbackNegative, firstDayFeedbackNegativeClip));
                 break;
             case "intro":
-                StartCoroutine(PlaySequence(timedSubtitles.intro, introClip));
+                StartCoroutine(PlaySequence(timedSubtitles.intro, introClip, false));
                 break;
             case "phoneCallIntro":
-                StartCoroutine(PlaySequence(timedSubtitles.phoneCallIntro, phoneCallIntroClip));
+                StartCoroutine(PlaySequence(timedSubtitles.phoneCallIntro, phoneCallIntroClip, false));
                 break;
         }
     }
@@ -126,7 +126,6 @@ public class Narration : MonoBehaviour
                 subtitleText.text = "";
                 blackScreen.SetActive(false);
                 GameObject.Find("Player").GetComponent<FPSController>().ResetCameraRotation(startRotation);
-
             }
         }
 
@@ -184,7 +183,7 @@ public class Narration : MonoBehaviour
         subtitleText.text = "";
     }
 
-    public IEnumerator PlaySequence(TimedSubtitle[] content, AudioClip clip)
+    public IEnumerator PlaySequence(TimedSubtitle[] content, AudioClip clip, bool playNextDayAnimation = true)
     {
 
         FPSController player = GameObject.Find("Player").GetComponent<FPSController>();
@@ -244,7 +243,7 @@ public class Narration : MonoBehaviour
         gm.SetGameState(GameState.Playing);
         subtitleText.text = "";
         blackScreen.SetActive(false);
-        if (gm.GetDay() != 1)
+        if (playNextDayAnimation)
             gm.NextDaySequence();
     }
 
