@@ -26,7 +26,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
         pinboard = GameObject.Find("Pinboard").GetComponent<Pinboard>();
         popupManager = GameObject.Find("PopupMessage").GetComponent<OSPopupManager>();
         gm = GameManager.instance;
-        postOptions = transform.Find("PostOptions").gameObject;
+        postOptions = transform.Find("TopRow").Find("PostOptions").gameObject;
         fpsController = GameObject.Find("Player").GetComponent<FPSController>();
         socialMediaContent = transform.GetComponentInParent<OSSocialMediaContent>();
         computerControls = transform.GetComponentInParent<ComputerControls>();
