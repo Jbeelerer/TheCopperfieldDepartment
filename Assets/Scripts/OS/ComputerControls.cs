@@ -72,6 +72,8 @@ public class ComputerControls : MonoBehaviour, ISavable
     [HideInInspector] public AudioManager audioManager;
 
     public PinEvent OnUnpinned;
+    public PinEvent OnAccused;
+    public PinEvent OnUnaccused;
 
     // Start is called before the first frame update
     void Start()

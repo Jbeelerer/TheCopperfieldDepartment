@@ -94,11 +94,12 @@ public class OSPerson : MonoBehaviour
         popupManager.DisplayPersonAccusedMessage();
         transform.Find("AccusePerson").GetComponent<Image>().color = Color.red;
         personAccused = true;
+        computerControls.OnAccused?.Invoke(person);
     }
 
     private void ClearAccused()
     {
-        // TODO: also clear accusation in gamemanager
         transform.Find("AccusePerson").GetComponent<Image>().color = Color.white;
+        computerControls.OnUnaccused?.Invoke(person);
     }
 }

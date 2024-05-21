@@ -47,6 +47,12 @@ public class OSPointySystem : MonoBehaviour
         originalSpotlightSize = spotlight.GetComponent<RectTransform>().sizeDelta;
     }
 
+    public void StartNotification()
+    {
+        // Change button appearance
+        pointyButton.GetComponent<Animator>().Play("buttonPointyNotif");
+    }
+
     public void StartTutorial(string name, bool toggledAutomatically)
     {
         // Bool used to deactivate pointy in inspector
