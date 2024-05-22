@@ -71,6 +71,21 @@ public class PinboardElement : MonoBehaviour
         return annotationType;
     }
 
+    public void UpdateSuspicion()
+    {
+        if (content is Person)
+        {
+            if (GameManager.instance.checkIfPersonAccused(content as Person))
+            {
+                SetAnnotationType(AnnotationType.CaughtSuspect);
+            }
+            else if (annotationType != AnnotationType.None)
+            {
+                SetAnnotationType(AnnotationType.None);
+            }
+        }
+    }
+
     public void SetAnnotationType(AnnotationType annotationType)
     {
         // check if this was the culprit
@@ -261,6 +276,7 @@ public class PinboardElement : MonoBehaviour
 
     void Start()
     {
+        GameManager.instance.InvestigationStateChanged.AddListener(UpdateSuspicion);
         flag = transform.Find("Flag").gameObject;
         flag.SetActive(false);
         RenderPipelineManager.endCameraRendering += this.OnEndCameraRendering;

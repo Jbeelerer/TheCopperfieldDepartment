@@ -38,6 +38,7 @@ public class GameManager : MonoBehaviour, ISavable
     public investigationStates investigationState = investigationStates.SuspectNotFound; //investigationStates.SuspectNotFound;
     public UnityEvent OnNewDay;
     public UnityEvent StateChanged;
+    public UnityEvent InvestigationStateChanged;
     public UnityEvent OnNewSegment;
     private Case currentCase;
     private Mail[] mails;
@@ -68,6 +69,8 @@ public class GameManager : MonoBehaviour, ISavable
     private GameObject calendarCam;
 
     private GameObject mainCam;
+
+    private Person currentlyAccused;
 
     public bool GetIfDevMode()
     {
@@ -394,16 +397,23 @@ public class GameManager : MonoBehaviour, ISavable
         }
         return null;
     }
+    public bool checkIfPersonAccused(Person p)
+    {
+        return p == currentlyAccused;
+    }
     public void checkSuspicionRemoved(Person p)
     {
+        currentlyAccused = null;
         if (p == currentCase.guiltyPerson && investigationState == investigationStates.SuspectFound)
         {
             investigationState = investigationStates.SuspectNotFound;
             answerCommited = false;
         }
+        InvestigationStateChanged?.Invoke();
     }
     public void checkSuspect(Person p)
     {
+        currentlyAccused = p;
         answerCommited = true;
         narration.Say("suspectFound");
         if (p == currentCase.guiltyPerson)
@@ -414,6 +424,7 @@ public class GameManager : MonoBehaviour, ISavable
         {
             investigationState = investigationStates.SuspectNotFound;
         }
+        InvestigationStateChanged?.Invoke();
     }
     public void checkDeletedPost(SocialMediaPost p)
     {
@@ -427,6 +438,7 @@ public class GameManager : MonoBehaviour, ISavable
         {
             investigationState = investigationStates.SuspectNotFound;
         }
+        InvestigationStateChanged?.Invoke();
     }
     private void initiateNewDay(int segments)
     {
