@@ -22,7 +22,7 @@ public class FPSController : MonoBehaviour
     public float walkSpeed = 6f;
 
     public float lookSpeed = 4f;
-    public float lookXLimit = 50f;
+    public float lookXLimit = 90f;
     public float interactionReach = 4f;
 
     public float hoverDuration = 1f;
@@ -88,6 +88,8 @@ public class FPSController : MonoBehaviour
 
     private Grabbable grabbedObject;
 
+    [SerializeField] private GameObject trashedPostItPrefab;
+
     public void ResetFoundConnections()
     {
         foreach (GameObject go in foundConnections)
@@ -140,6 +142,12 @@ public class FPSController : MonoBehaviour
                 {
                     OnPinDeletion?.Invoke(pe.GetContent());
                     pe.DeleteElement();
+                    //instantiate TrashedPostIT
+                    if (trashedPostItPrefab != null)
+                    {
+                        GameObject g = Instantiate(trashedPostItPrefab, pe.transform.position, pe.transform.rotation);
+                        g.GetComponent<TrashedPostIt>().SetContent(pe.GetContent());
+                    }
                     am.PlayAudio(deleteSound);
                 }
                 else
@@ -234,7 +242,14 @@ public class FPSController : MonoBehaviour
                     {
                         nameOfThingLookedAt = hit.collider.gameObject.name;
                         // if lastSelectedObject the player is grabing a thread and shouldn't be able see anything else
-                        if (lastSelectedObject == null)
+                        if (grabbedObject != null)
+                        {
+                            if (nameOfThingLookedAt == "PinboardModel" && grabbedObject.GetComponent<TrashedPostIt>() != null)
+                            {
+                                inputOverlay.SetIcon("pin");
+                            }
+                        }
+                        else if (lastSelectedObject == null)
                         {
                             // handle interaction, while just looking
                             switch (nameOfThingLookedAt)
@@ -366,8 +381,17 @@ public class FPSController : MonoBehaviour
                 }
                 else if (grabbedObject != null)
                 {
-                    grabbedObject.Grab(grabPos);
-                    grabbedObject = null;
+                    if (hit.collider.gameObject.name == "PinboardModel" && grabbedObject.GetComponent<TrashedPostIt>() != null)
+                    {
+                        grabbedObject.GetComponent<TrashedPostIt>().ReAddPostIt();
+                        Destroy(grabbedObject.gameObject);
+                        grabbedObject = null;
+                    }
+                    else
+                    {
+                        grabbedObject.shoot(grabPos.position - cameraObject.position);//Vector3.forward);
+                        grabbedObject = null;
+                    }
                 }
 
                 else if (currentSelectedObject != null)

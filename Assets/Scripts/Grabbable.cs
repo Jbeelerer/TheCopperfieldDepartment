@@ -10,23 +10,12 @@ public class Grabbable : MonoBehaviour
     private Rigidbody rb;
     public void Grab(Transform pos)
     {
-        if (isGrabbed)
-        {
-            shoot(Vector3.forward);
-        }
-        else
-        {
-            transform.localPosition = Vector3.zero;
-            position = pos;
-            transform.SetParent(pos);
-        }
-        ToggleGrab();
-    }
-    private void ToggleGrab()
-    {
-        rb.isKinematic = !isGrabbed;
-        rb.freezeRotation = !isGrabbed;
-        isGrabbed = !isGrabbed;
+        transform.localPosition = Vector3.zero;
+        position = pos;
+        transform.SetParent(pos);
+        rb.freezeRotation = true;
+        isGrabbed = true;
+
     }
     public void shoot(Vector3 direction)
     {
@@ -36,9 +25,9 @@ public class Grabbable : MonoBehaviour
         }
         isGrabbed = false;
         transform.SetParent(null);
-        rb.isKinematic = true;
+        transform.rotation = Quaternion.identity;
         rb.freezeRotation = false;
-        rb.AddForce(direction * 1000);
+        //rb.AddForce(Vector3.up * 10);  //direction.normalized * 100);//direction.normalized  
     }
     // Start is called before the first frame update
     void Start()
