@@ -27,7 +27,6 @@ public class Grabbable : MonoBehaviour
         transform.SetParent(null);
         transform.rotation = Quaternion.identity;
         rb.freezeRotation = false;
-        //rb.AddForce(Vector3.up * 10);  //direction.normalized * 100);//direction.normalized  
     }
     // Start is called before the first frame update
     void Start()
