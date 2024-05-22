@@ -707,5 +707,4 @@ public class FPSController : MonoBehaviour
             yield return null;
         }
     }
-
 }
