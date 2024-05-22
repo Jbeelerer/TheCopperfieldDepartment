@@ -37,7 +37,7 @@ public class OSStartSettingsContent : MonoBehaviour
     {
         computerControls.mouseSensitivity = sensitivitySlider.value;
 
-        computerControls.TogglePointy(true);
+        computerControls.TogglePointy(true/*false*/);
 
         screenBlockadeBG.GetComponent<Image>().enabled = false;
         screenBlockadeTaskBar.GetComponent<Image>().enabled = false;

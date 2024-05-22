@@ -17,6 +17,7 @@ public class InputOverlay : MonoBehaviour
     [SerializeField] private Sprite exit;
     [SerializeField] private Sprite pen;
     [SerializeField] private Sprite draw;
+    [SerializeField] private Sprite pin;
 
 
     private Slider onHoldDisplay;
@@ -93,6 +94,9 @@ public class InputOverlay : MonoBehaviour
                 break;
             case "draw":
                 image.sprite = draw;
+                break;
+            case "pin":
+                image.sprite = pin;
                 break;
             default:
                 image.enabled = false;
