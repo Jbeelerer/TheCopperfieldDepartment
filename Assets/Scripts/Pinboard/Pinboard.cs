@@ -331,6 +331,11 @@ public class Pinboard : MonoBehaviour
         }
         pinsOnPinboard.Clear();
         subPins.Clear();
+        foreach (GameObject go in trashedPinboardElements.Values)
+        {
+            Destroy(go);
+        }
+        trashedPinboardElements.Clear();
         AddPin(mysteriousPersonMaterial, new Vector3(0, 0, -pinboardModel.localScale.z / 2));
     }
 }
