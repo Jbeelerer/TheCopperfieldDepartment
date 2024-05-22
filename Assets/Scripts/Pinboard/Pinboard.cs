@@ -35,6 +35,12 @@ public class Pinboard : MonoBehaviour
 
     private GameManager gm;
 
+    private Dictionary<ScriptableObject, GameObject> trashedPinboardElements = new Dictionary<ScriptableObject, GameObject>();
+
+    public void AddTrashedPin(ScriptableObject o, GameObject go)
+    {
+        trashedPinboardElements[o] = go;
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -110,6 +116,13 @@ public class Pinboard : MonoBehaviour
     {
         if (pinsOnPinboard.ContainsKey(o))
             return;
+
+        if (trashedPinboardElements.ContainsKey(o))
+        {
+            Destroy(trashedPinboardElements[o]);
+            trashedPinboardElements.Remove(o);
+        }
+
         List<Transform> takenPositions = new List<Transform>();
 
         PinboardElement pinboardElement = Instantiate(pinPrefab, transform).GetComponent<PinboardElement>();
@@ -146,7 +159,7 @@ public class Pinboard : MonoBehaviour
                     }
                 }
                 // If subPins contains the key, it has existed in the past and should be placed near its children and be connected with them
-                if (subPins.ContainsKey(o))
+                if (subPins.ContainsKey(o) && subPins[o].Count > 0)
                 {
                     // place user or person on pinboard, when children are already on the pinboard
                     float xPos = subPins[o].Average(x => x.localPosition.x);
@@ -187,6 +200,10 @@ public class Pinboard : MonoBehaviour
             if (o is SocialMediaPost)
             {
                 ScriptableObject so = ConversionUtility.Convert<SocialMediaPost>(o).author;
+                if (!pinsOnPinboard.ContainsKey(so))
+                {
+                    AddPin(so);
+                }
                 Vector3 centerOfZone = pinsOnPinboard[so].transform.localPosition;
                 float ySection = 0.2f;  //pinboardModel.localScale.y / 6;
                 //float xSection = 1f;//pinboardModel.localScale.x / 3/2;  
@@ -314,6 +331,19 @@ public class Pinboard : MonoBehaviour
         }
         pinsOnPinboard.Clear();
         subPins.Clear();
+        foreach (GameObject go in trashedPinboardElements.Values)
+        {
+            Destroy(go);
+        }
+        trashedPinboardElements.Clear();
+        // find all threads(Clone) and destroy them
+        foreach (Transform child in transform)
+        {
+            if (child.name == "thread(Clone)")
+            {
+                Destroy(child.gameObject);
+            }
+        }
         AddPin(mysteriousPersonMaterial, new Vector3(0, 0, -pinboardModel.localScale.z / 2));
     }
 }

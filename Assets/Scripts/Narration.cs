@@ -64,6 +64,9 @@ public class Narration : MonoBehaviour
 
     private bool sequencePlaying = false;
     private bool skip = false;
+    private Animator textAnimator;
+
+    Quaternion startRotation;
     // Start is called before the first frame update
     void Start()
     {
@@ -72,10 +75,10 @@ public class Narration : MonoBehaviour
         gm.SetNarration(this);
         audioSource = GetComponent<AudioSource>();
         subtitleText = GameObject.Find("Subtitle").GetComponent<TextMeshProUGUI>();
+        textAnimator = subtitleText.GetComponent<Animator>();
 
         blackScreen = GameObject.Find("BlackScreen");
         blackScreen.SetActive(false);
-
 
         timedSubtitles = JsonUtility.FromJson<TimedSubtitles>(jsonFile.text);
         shortSubtitles = JsonUtility.FromJson<ShortSubtitles>(shortSubtitlesJsonFile.text);
@@ -99,10 +102,10 @@ public class Narration : MonoBehaviour
                 StartCoroutine(PlaySequence(timedSubtitles.firstDayFeedbackNegative, firstDayFeedbackNegativeClip));
                 break;
             case "intro":
-                StartCoroutine(PlaySequence(timedSubtitles.intro, introClip));
+                StartCoroutine(PlaySequence(timedSubtitles.intro, introClip, false));
                 break;
             case "phoneCallIntro":
-                StartCoroutine(PlaySequence(timedSubtitles.phoneCallIntro, phoneCallIntroClip));
+                StartCoroutine(PlaySequence(timedSubtitles.phoneCallIntro, phoneCallIntroClip, false));
                 break;
         }
     }
@@ -112,13 +115,14 @@ public class Narration : MonoBehaviour
     {
         if (gm.GetIfDevMode())
         {
-            if (Input.GetKeyDown(KeyCode.X))
+            if (Input.GetKeyDown(KeyCode.X) && sequencePlaying)
             {
                 StopAllCoroutines();
                 audioSource.Stop();
                 gm.SetGameState(GameState.Playing);
                 subtitleText.text = "";
                 blackScreen.SetActive(false);
+                GameObject.Find("Player").GetComponent<FPSController>().ResetCameraRotation(startRotation);
             }
         }
 
@@ -176,11 +180,11 @@ public class Narration : MonoBehaviour
         subtitleText.text = "";
     }
 
-    public IEnumerator PlaySequence(TimedSubtitle[] content, AudioClip clip)
+    public IEnumerator PlaySequence(TimedSubtitle[] content, AudioClip clip, bool playNextDayAnimation = true)
     {
 
         FPSController player = GameObject.Find("Player").GetComponent<FPSController>();
-        Quaternion startRotation = player.transform.rotation;
+        startRotation = player.transform.rotation;
         gm.SetGameState(GameState.Frozen);
         blackScreen.SetActive(true);
 
@@ -220,9 +224,7 @@ public class Narration : MonoBehaviour
                         audioSource.time = totalTime + entry.duration;
                         audioSource.Play();
                     }
-                    //   yield return new WaitForSeconds(0.1f);
-                    // time += 0.1f;
-                    print("skipping");
+                    textAnimator.Play("skip");
                     skip = false;
                     break;
                 }
@@ -238,7 +240,7 @@ public class Narration : MonoBehaviour
         gm.SetGameState(GameState.Playing);
         subtitleText.text = "";
         blackScreen.SetActive(false);
-        if (gm.GetDay() != 1)
+        if (playNextDayAnimation)
             gm.NextDaySequence();
     }
 

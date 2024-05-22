@@ -28,6 +28,7 @@ public class OSPointySystem : MonoBehaviour
 
     [SerializeField] private List<PointyTutorialStep> stepsDefault = new List<PointyTutorialStep>();
     [SerializeField] private List<PointyTutorialStep> stepsDesktop = new List<PointyTutorialStep>();
+    [SerializeField] private List<PointyTutorialStep> stepsStartSettings = new List<PointyTutorialStep>();
     [SerializeField] private List<PointyTutorialStep> stepsGovApp = new List<PointyTutorialStep>();
     [SerializeField] private List<PointyTutorialStep> stepsPeopleList = new List<PointyTutorialStep>();
     [SerializeField] private List<PointyTutorialStep> stepsSocialMedia = new List<PointyTutorialStep>();
@@ -47,7 +48,19 @@ public class OSPointySystem : MonoBehaviour
         originalSpotlightSize = spotlight.GetComponent<RectTransform>().sizeDelta;
     }
 
-    public void StartTutorial(string name, bool toggledAutomatically)
+    public void ShowButtonNotif(string name)
+    {
+        if (!completedTutorials.Contains(name) && name != "Default")
+        {
+            pointyButton.GetComponent<Animator>().Play("buttonPointyNotif");
+        }
+        else
+        {
+            pointyButton.GetComponent<Animator>().Play("buttonPointyQuestion");
+        }
+    }
+
+    public void StartTutorial(string name/*, bool toggledAutomatically*/)
     {
         // Bool used to deactivate pointy in inspector
         if (deactivatePointy)
@@ -55,14 +68,21 @@ public class OSPointySystem : MonoBehaviour
             return;
         }
 
-        // Add tutorial to completed list if loaded for the first time. A once completed tutorial will only show up if toggled manually
-        if (toggledAutomatically && !completedTutorials.Contains(name))
+        // Add tutorial to completed list if loaded for the first time. Automatic toggle will just show the pointyButton notifivation
+        /*if (toggledAutomatically && !completedTutorials.Contains(name) && name != "Default")
         {
             completedTutorials.Add(name);
+            return;
         }
         else if (toggledAutomatically)
         {
             return;
+        }*/
+
+        // Add to completed list if not already there
+        if (!completedTutorials.Contains(name))
+        {
+            completedTutorials.Add(name);
         }
 
         // Play popup sound
@@ -76,6 +96,9 @@ public class OSPointySystem : MonoBehaviour
             case "Desktop":
                 currentTutorial = stepsDesktop;
                 break;
+            case "StartSettings":
+                currentTutorial = stepsStartSettings;
+                break;
             case "GovApp":
                 currentTutorial = stepsGovApp;
                 break;
@@ -88,10 +111,10 @@ public class OSPointySystem : MonoBehaviour
             case "Default":
             default:
                 // Dont show default message if toggled automatically
-                if (toggledAutomatically)
+                /*if (toggledAutomatically)
                 {
                     return;
-                }
+                }*/
                 currentTutorial = stepsDefault;
                 break;
         }

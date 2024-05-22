@@ -22,7 +22,7 @@ public class FPSController : MonoBehaviour
     public float walkSpeed = 6f;
 
     public float lookSpeed = 4f;
-    public float lookXLimit = 50f;
+    public float lookXLimit = 90f;
     public float interactionReach = 4f;
 
     public float hoverDuration = 1f;
@@ -81,6 +81,15 @@ public class FPSController : MonoBehaviour
 
     private float rotationOffset = 0;
 
+    private GameObject flaggedPE;
+    private GameObject flaggedThread;
+
+    [SerializeField] private Transform grabPos;
+
+    private Grabbable grabbedObject;
+
+    [SerializeField] private GameObject trashedPostItPrefab;
+
     public void ResetFoundConnections()
     {
         foreach (GameObject go in foundConnections)
@@ -133,6 +142,12 @@ public class FPSController : MonoBehaviour
                 {
                     OnPinDeletion?.Invoke(pe.GetContent());
                     pe.DeleteElement();
+                    //instantiate TrashedPostIT
+                    if (trashedPostItPrefab != null)
+                    {
+                        GameObject g = Instantiate(trashedPostItPrefab, pe.transform.position, pe.transform.rotation);
+                        g.GetComponent<TrashedPostIt>().SetContent(pe.GetContent());
+                    }
                     am.PlayAudio(deleteSound);
                 }
                 else
@@ -216,101 +231,116 @@ public class FPSController : MonoBehaviour
             #region Look at things
             if (Physics.Raycast(ray, out hit) && !onHoldDown)
             {
-                if (Vector3.Distance(hit.collider.gameObject.transform.position, transform.position) <= interactionReach && hit.collider.gameObject.tag == "Interactable")
+                if (Vector3.Distance(hit.collider.gameObject.transform.position, transform.position) <= interactionReach)
                 {
-                    nameOfThingLookedAt = hit.collider.gameObject.name;
-                    // if lastSelectedObject the player is grabing a thread and shouldn't be able see anything else
-                    if (lastSelectedObject == null)
+                    if (hit.collider.gameObject.tag == "Grabbable")
                     {
-                        // handle interaction, while just looking
-                        switch (nameOfThingLookedAt)
-                        {
-                            case "PinboardModel":
-                                // interactionReach = 10f;
-                                if (selectedPinboardElement == null && currentThread == null)//TODO: add Pen exxption
-                                {
-                                    inputOverlay.SetIcon("defaultIcon");
-                                }
-                                if (selectedPinboardElement != null)
-                                {
-                                    if (removingTime != -1)
-                                    {
-                                        removingTime = -1f;
-                                        inputOverlay.stopHold();
-                                        inputOverlay.SetIcon("handClosed");
-                                    }
-                                }
-                                break;
-                            case "DeadZone":
-                                if (selectedPinboardElement != null && removingTime == -1)
-                                {
-                                    inputOverlay.SetIcon("trash", true);
-                                    // the typical animation makes no sense here TODO: Maybe add a new animation
-                                    am.PlayAudio(pickupSound);
-                                    removingTime = 1f;
-                                    inputOverlay.startHold(removingTime);
-                                }
-                                break;
-                            case "Button":
-                                break;
-                            case "pinboardElement(Clone)":
-                                PinboardElement pe = hit.collider.gameObject.GetComponent<PinboardElement>();
-                                inputOverlay.SetIcon("handOpen");
-                                // highlight and scale the pinboardElement
-                                pe.HighlightElement(true);
-                                if (selectedPenAnim != null)
-                                {
-                                    inputOverlay.SetIcon("pen");
-                                }
-                                else if (pe.GetIfHasInfo())
-                                {
-                                    additionalInfoBoard.ShowInfo(true, pe.GetContent());
-                                }
-                                break;
-                            case "CurvedScreen":
-                            case "Calendar":
-                                inputOverlay.SetIcon("inspect");
-                                break;
-                            case "pin":
-                                inputOverlay.SetIcon("trash");
-                                break;
-                            case "threadCollider":
-                                inputOverlay.SetIcon("scissors");
-                                break;
-                            case "Door":
-                                inputOverlay.SetIcon("exit");
-                                break;
-                            case "Pen":
-                                inputOverlay.SetIcon("handOpen");
-                                break;
-                            case "Phone":
-                                inputOverlay.SetIcon("inspect");
-                                break;
-                            default:
-                                break;
-                        }
+                        nameOfThingLookedAt = hit.collider.gameObject.name;
+                        inputOverlay.SetIcon("handOpen");
                     }
-                    if (hit.collider.gameObject.name != "pinboardElement(Clone)")
+                    else if (hit.collider.gameObject.tag == "Interactable")
                     {
-                        // undoes highlight and scaling of the pinboardElement
-                        if (currentSelectedObject != null && currentSelectedObject.name == "pinboardElement(Clone)")
+                        nameOfThingLookedAt = hit.collider.gameObject.name;
+                        // if lastSelectedObject the player is grabing a thread and shouldn't be able see anything else
+                        if (grabbedObject != null)
                         {
-                            if (selectedPinboardElement == null)
+                            if (nameOfThingLookedAt == "PinboardModel" && grabbedObject.GetComponent<TrashedPostIt>() != null)
                             {
-                                currentSelectedObject.GetComponent<PinboardElement>().HighlightElement(false);
+                                inputOverlay.SetIcon("pin");
                             }
-                            additionalInfoBoard.CancelPreview();
                         }
-                    }
-                    // highlight when hovering with a thread over a pinboardElement
-                    else if (lastSelectedObject != null && hit.collider.gameObject.name == "pinboardElement(Clone)")
-                    {
-                        hit.collider.gameObject.GetComponent<PinboardElement>().HighlightElement(true);
-                    }
-                    // dont reset the currentSelectedObject if the player is removing a pinboardElement
-                    if (nameOfThingLookedAt != "DeadZone")
-                    {
-                        currentSelectedObject = hit.collider.gameObject;
+                        else if (lastSelectedObject == null)
+                        {
+                            // handle interaction, while just looking
+                            switch (nameOfThingLookedAt)
+                            {
+                                case "PinboardModel":
+                                    // interactionReach = 10f;
+                                    if (selectedPinboardElement == null && currentThread == null)//TODO: add Pen exxption
+                                    {
+                                        inputOverlay.SetIcon("defaultIcon");
+                                    }
+                                    if (selectedPinboardElement != null)
+                                    {
+                                        if (removingTime != -1)
+                                        {
+                                            removingTime = -1f;
+                                            inputOverlay.stopHold();
+                                            inputOverlay.SetIcon("handClosed");
+                                        }
+                                    }
+                                    break;
+                                case "DeadZone":
+                                    if (selectedPinboardElement != null && removingTime == -1)
+                                    {
+                                        inputOverlay.SetIcon("trash", true);
+                                        // the typical animation makes no sense here TODO: Maybe add a new animation
+                                        am.PlayAudio(pickupSound);
+                                        removingTime = 1f;
+                                        inputOverlay.startHold(removingTime);
+                                    }
+                                    break;
+                                case "Button":
+                                    break;
+                                case "pinboardElement(Clone)":
+                                    PinboardElement pe = hit.collider.gameObject.GetComponent<PinboardElement>();
+                                    inputOverlay.SetIcon("handOpen");
+                                    // highlight and scale the pinboardElement
+                                    pe.HighlightElement(true);
+                                    if (selectedPenAnim != null)
+                                    {
+                                        inputOverlay.SetIcon("pen");
+                                    }
+                                    else if (pe.GetIfHasInfo())
+                                    {
+                                        additionalInfoBoard.ShowInfo(true, pe.GetContent());
+                                    }
+                                    break;
+                                case "CurvedScreen":
+                                case "Calendar":
+                                    inputOverlay.SetIcon("inspect");
+                                    break;
+                                case "pin":
+                                    inputOverlay.SetIcon("trash");
+                                    break;
+                                case "threadCollider":
+                                    inputOverlay.SetIcon("scissors");
+                                    break;
+                                case "Door":
+                                    inputOverlay.SetIcon("exit");
+                                    break;
+                                case "Pen":
+                                    inputOverlay.SetIcon("handOpen");
+                                    break;
+                                case "Phone":
+                                    inputOverlay.SetIcon("inspect");
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        if (hit.collider.gameObject.name != "pinboardElement(Clone)")
+                        {
+                            // undoes highlight and scaling of the pinboardElement
+                            if (currentSelectedObject != null && currentSelectedObject.name == "pinboardElement(Clone)")
+                            {
+                                if (selectedPinboardElement == null)
+                                {
+                                    currentSelectedObject.GetComponent<PinboardElement>().HighlightElement(false);
+                                }
+                                additionalInfoBoard.CancelPreview();
+                            }
+                        }
+                        // highlight when hovering with a thread over a pinboardElement
+                        else if (lastSelectedObject != null && hit.collider.gameObject.name == "pinboardElement(Clone)")
+                        {
+                            hit.collider.gameObject.GetComponent<PinboardElement>().HighlightElement(true);
+                        }
+                        // dont reset the currentSelectedObject if the player is removing a pinboardElement
+                        if (nameOfThingLookedAt != "DeadZone")
+                        {
+                            currentSelectedObject = hit.collider.gameObject;
+                        }
                     }
                 }
                 else if (currentSelectedObject != null && removingTime == -1)
@@ -341,95 +371,125 @@ public class FPSController : MonoBehaviour
 
             #endregion
             #region Handle left click
-            if (Input.GetMouseButtonDown(0) && currentSelectedObject != null)
+            if (Input.GetMouseButtonDown(0))
             {
-                //Connect threat to pinboardElement
-                if (currentThread != null)
+
+                if (hit.collider.gameObject.tag == "Grabbable")
                 {
-                    TryToPlaceThread(currentSelectedObject.name);
+                    grabbedObject = hit.collider.gameObject.GetComponent<Grabbable>();
+                    grabbedObject.Grab(grabPos);
                 }
-                // places the pinboardElement back to the pinboard
-                else if (selectedPinboardElement != null)
-                {  // change back to default layer so it can be selected again
-                    selectedPinboardElement.gameObject.layer = 0;
-                    selectedPinboardElement.GetComponentInParent<Animator>().SetBool("pinNormal", true);
-                    selectedPinboardElement.GetComponent<PinboardElement>().setIsMoving(false);
-                    am.PlayReverseAudio(pickupSound);
-                    selectedPinboardElement = null;
-                }
-                else
+                else if (grabbedObject != null)
                 {
-                    // Deselect pen if clicking somewhere, where you can't draw
-                    if (selectedPenAnim != null && !(currentSelectedObject.name == "pin" || currentSelectedObject.name == "Pen" || currentSelectedObject.name == "pinboardElement(Clone)"))
+                    if (hit.collider.gameObject.name == "PinboardModel" && grabbedObject.GetComponent<TrashedPostIt>() != null)
                     {
-                        DeselectPen();
+                        grabbedObject.GetComponent<TrashedPostIt>().ReAddPostIt();
+                        Destroy(grabbedObject.gameObject);
+                        grabbedObject = null;
                     }
-                    switch (currentSelectedObject.name)
+                    else
                     {
-                        case "pinboardElement(Clone)":
-                            if (selectedPenAnim != null)
-                            {
-                                StartCoroutine(PlayPenAnimation("circle"));
-                            }
-                            else
-                            {
-                                originalPosition = currentSelectedObject.transform.position;
-                                inputOverlay.SetIcon("handClosed");
-                                currentSelectedObject.GetComponentInParent<Animator>().SetBool("pinNormal", false);
-                                selectedPinboardElement = currentSelectedObject;
-                                selectedPinboardElement.GetComponent<PinboardElement>().setIsMoving(true);
-                                am.PlayAudio(pickupSound);
-                                // change to ignore raycast layer so it won't overflow the pinboard
-                                selectedPinboardElement.gameObject.layer = 2;
-                            }
-                            break;
-                        case "CurvedScreen":
-                            gm.SetGameState(GameState.OnPC);
-                            inputOverlay.SetIcon("");
-                            computerControls.ToggleCursor();
-                            break;
-                        case "threadCollider":
-                            am.PlayAudio(threadCuttingSound);
-                            Destroy(hit.collider.transform.parent.gameObject);
-                            break;
-                        case "pin":
-                            onHoldDown = true;
-                            currentSelectedObject.GetComponentInParent<Animator>().SetTrigger("remove");
-                            am.PlayAudio(pickupSound);
-                            removingTime = 0.5f;
-                            inputOverlay.startHold(removingTime);
-                            break;
-                        case "Pen":
-                            penPos = currentSelectedObject.transform.position;
-                            selectedPenAnim = currentSelectedObject.GetComponentInChildren<Animator>();
-                            selectedPenAnim.transform.parent.gameObject.layer = 2;
-                            selectedPenAnim.SetBool("pickedup", true);
-                            break;
-                        case "Calendar":
-                            inputOverlay.SetIcon("");
-                            gm.SetGameState(GameState.OnCalendar);
-                            break;
-                        case "Phone":
-                            inputOverlay.SetIcon("");
-                            hit.collider.transform.GetComponent<Phone>().StartCall();
-                            break;
-                        case "Door":
-                            if (gm.GetAnswerCommited())
-                            {
+                        grabbedObject.shoot(grabPos.position - cameraObject.position);//Vector3.forward);
+                        grabbedObject = null;
+                    }
+                }
+
+                else if (currentSelectedObject != null)
+                {
+                    //Connect threat to pinboardElement
+                    if (currentThread != null)
+                    {
+                        TryToPlaceThread(currentSelectedObject.name);
+                    }
+                    // places the pinboardElement back to the pinboard
+                    else if (selectedPinboardElement != null)
+                    {  // change back to default layer so it can be selected again
+                        selectedPinboardElement.gameObject.layer = 0;
+                        selectedPinboardElement.GetComponentInParent<Animator>().SetBool("pinNormal", true);
+                        selectedPinboardElement.GetComponent<PinboardElement>().setIsMoving(false);
+                        am.PlayReverseAudio(pickupSound);
+                        selectedPinboardElement = null;
+                    }
+                    else
+                    {
+                        // Deselect pen if clicking somewhere, where you can't draw
+                        if (selectedPenAnim != null && !(currentSelectedObject.name == "pin" || currentSelectedObject.name == "Pen" || currentSelectedObject.name == "pinboardElement(Clone)"))
+                        {
+                            DeselectPen();
+                        }
+                        switch (currentSelectedObject.name)
+                        {
+                            case "pinboardElement(Clone)":
+                                if (selectedPenAnim != null)
+                                {
+                                    StartCoroutine(PlayPenAnimation("circle"));
+                                }
+                                else
+                                {
+                                    originalPosition = currentSelectedObject.transform.position;
+                                    inputOverlay.SetIcon("handClosed");
+                                    currentSelectedObject.GetComponentInParent<Animator>().SetBool("pinNormal", false);
+                                    selectedPinboardElement = currentSelectedObject;
+                                    selectedPinboardElement.GetComponent<PinboardElement>().setIsMoving(true);
+                                    am.PlayAudio(pickupSound);
+                                    // change to ignore raycast layer so it won't overflow the pinboard
+                                    selectedPinboardElement.gameObject.layer = 2;
+                                }
+                                break;
+                            case "CurvedScreen":
+                                gm.SetGameState(GameState.OnPC);
                                 inputOverlay.SetIcon("");
-                                gm.setNewDay();
-                                // Reset player position
-                                ResetPlayer();
-                            }
-                            else
-                            {
-                                // Todo: implement player feedback
-                                print("Answer not commited");
-                                narration.Say("notLeaving");
-                            }
-                            break;
-                        default:
-                            break;
+                                computerControls.ToggleCursor();
+                                break;
+                            case "threadCollider":
+                                am.PlayAudio(threadCuttingSound);
+                                if (hit.collider.transform.parent.gameObject == flaggedThread)
+                                {
+                                    flaggedPE.GetComponent<PinboardElement>().SetAnnotationType(AnnotationType.None);
+                                    flaggedPE = null;
+                                    flaggedThread = null;
+                                }
+                                Destroy(hit.collider.transform.parent.gameObject);
+                                break;
+                            case "pin":
+                                onHoldDown = true;
+                                currentSelectedObject.GetComponentInParent<Animator>().SetTrigger("remove");
+                                am.PlayAudio(pickupSound);
+                                removingTime = 0.5f;
+                                inputOverlay.startHold(removingTime);
+                                break;
+                            case "Pen":
+                                penPos = currentSelectedObject.transform.position;
+                                selectedPenAnim = currentSelectedObject.GetComponentInChildren<Animator>();
+                                selectedPenAnim.transform.parent.gameObject.layer = 2;
+                                selectedPenAnim.SetBool("pickedup", true);
+                                break;
+                            case "Calendar":
+                                inputOverlay.SetIcon("");
+                                gm.SetGameState(GameState.OnCalendar);
+                                break;
+                            case "Phone":
+                                inputOverlay.SetIcon("");
+                                hit.collider.transform.GetComponent<Phone>().StartCall();
+                                break;
+                            case "Door":
+                                if (gm.GetAnswerCommited())
+                                {
+                                    inputOverlay.SetIcon("");
+                                    gm.setNewDay();
+                                    // Reset player position
+                                    ResetPlayer();
+                                }
+                                else
+                                {
+                                    // Todo: implement player feedback
+                                    print("Answer not commited");
+                                    narration.Say("notLeaving");
+                                }
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
             }
@@ -553,18 +613,53 @@ public class FPSController : MonoBehaviour
     }
     public void HandleThread()
     {
-        currentSelectedObject.GetComponent<PinboardElement>().AddEndingThreads(currentThread);
-        currentSelectedObject.GetComponent<PinboardElement>().setIsMoving(false);
-        Connections connectionText = gm.checkForConnectionText(currentSelectedObject.GetComponent<PinboardElement>().GetContent(), lastSelectedObject.GetComponent<PinboardElement>().GetContent());
-        if (connectionText != null)
+        PinboardElement currentPE = currentSelectedObject.GetComponent<PinboardElement>();
+        PinboardElement lastPE = lastSelectedObject.GetComponent<PinboardElement>();
+
+        additionalInfoBoard.ShowInfo(false);
+        currentPE.AddEndingThreads(currentThread);
+        currentPE.setIsMoving(false);
+        Connections connection = gm.checkForConnectionText(currentPE.GetContent(), lastPE.GetContent());
+
+        // the suspicios person post it was connected 
+        if (!currentPE.GetIfDeletable() || !lastPE.GetIfDeletable())
+        {
+            if (currentPE.GetContent() is Person || lastPE.GetContent() is Person)
+            {
+                if (flaggedPE != null)
+                {
+                    flaggedPE.GetComponent<PinboardElement>().SetAnnotationType(AnnotationType.None);
+                }
+                if (flaggedThread != null)
+                {
+                    Destroy(flaggedThread);
+                }
+                flaggedThread = currentThread.gameObject;
+            }
+
+            if (currentPE.GetContent() is Person)
+            {
+                gm.checkSuspect(currentPE.GetContent() as Person);
+                currentPE.SetAnnotationType(AnnotationType.CaughtSuspect);
+                flaggedPE = currentSelectedObject;
+            }
+            else if (lastPE.GetContent() is Person)
+            {
+                gm.checkSuspect(lastPE.GetContent() as Person);
+                lastPE.SetAnnotationType(AnnotationType.CaughtSuspect);
+                flaggedPE = lastSelectedObject;
+            }
+        }
+
+        if (connection != null)
         {
             GameObject connectionO = Instantiate(connectionPrefab, currentThread.transform);
             Color color;
             // handle contradiction color 
-            UnityEngine.ColorUtility.TryParseHtmlString(connectionText.isContradiction ? "#F5867C" : "#F5DB7C", out color);
+            UnityEngine.ColorUtility.TryParseHtmlString(connection.isContradiction ? "#F5867C" : "#F5DB7C", out color);
             connectionO.transform.Find("PostIt").GetComponent<MeshRenderer>().material.color = color;
             connectionO.transform.position = currentThread.transform.GetChild(0).position - new Vector3(0, 0.05f, 0);
-            connectionO.GetComponentInChildren<TextMeshProUGUI>().text = connectionText.text;
+            connectionO.GetComponentInChildren<TextMeshProUGUI>().text = connection.text;
             foundConnections.Add(connectionO);
         }
     }
@@ -612,5 +707,4 @@ public class FPSController : MonoBehaviour
             yield return null;
         }
     }
-
 }
