@@ -77,21 +77,24 @@ public class PinboardElement : MonoBehaviour
         {
             if (GameManager.instance.checkIfPersonAccused(content as Person))
             {
-                SetAnnotationType(AnnotationType.CaughtSuspect);
+                SetAnnotationType(AnnotationType.CaughtSuspect, true);
             }
             else if (annotationType != AnnotationType.None)
             {
-                SetAnnotationType(AnnotationType.None);
+                SetAnnotationType(AnnotationType.None, true);
             }
         }
     }
-
-    public void SetAnnotationType(AnnotationType annotationType)
+    // the update boolean stop endless loops by stopping the update event from beeing fired again
+    public void SetAnnotationType(AnnotationType annotationType, bool isUpdate = false)
     {
         // check if this was the culprit
         if (annotationType == AnnotationType.None && this.annotationType == AnnotationType.CaughtSuspect)
         {
-            GameManager.instance.checkSuspicionRemoved(content as Person);
+            if (!isUpdate)
+            {
+                GameManager.instance.checkSuspicionRemoved(content as Person);
+            }
             flag.SetActive(false);
         }
         this.annotationType = annotationType;
