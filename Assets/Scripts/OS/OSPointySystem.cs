@@ -48,7 +48,7 @@ public class OSPointySystem : MonoBehaviour
         originalSpotlightSize = spotlight.GetComponent<RectTransform>().sizeDelta;
     }
 
-    public void ShowButtonNotif(string name)
+    public void ToggleButtonNotif(string name)
     {
         if (!completedTutorials.Contains(name) && name != "Default")
         {
@@ -60,24 +60,13 @@ public class OSPointySystem : MonoBehaviour
         }
     }
 
-    public void StartTutorial(string name/*, bool toggledAutomatically*/)
+    public void StartTutorial(string name)
     {
         // Bool used to deactivate pointy in inspector
         if (deactivatePointy)
         {
             return;
         }
-
-        // Add tutorial to completed list if loaded for the first time. Automatic toggle will just show the pointyButton notifivation
-        /*if (toggledAutomatically && !completedTutorials.Contains(name) && name != "Default")
-        {
-            completedTutorials.Add(name);
-            return;
-        }
-        else if (toggledAutomatically)
-        {
-            return;
-        }*/
 
         // Add to completed list if not already there
         if (!completedTutorials.Contains(name))
@@ -110,11 +99,6 @@ public class OSPointySystem : MonoBehaviour
                 break;
             case "Default":
             default:
-                // Dont show default message if toggled automatically
-                /*if (toggledAutomatically)
-                {
-                    return;
-                }*/
                 currentTutorial = stepsDefault;
                 break;
         }

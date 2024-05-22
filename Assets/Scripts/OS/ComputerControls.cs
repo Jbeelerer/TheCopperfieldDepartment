@@ -231,14 +231,8 @@ public class ComputerControls : MonoBehaviour, ISavable
         }
     }
 
-    public void TogglePointy(bool isFirstTutorial = false/*, bool toggledAutomatically*/)
+    public void TogglePointy(bool isFirstTutorial = false)
     {
-        // Only allow automatic toggle on day 1
-        /*if (toggledAutomatically && gm.GetDay() != 1)
-        {
-            return;
-        }*/
-
         // Close pointy if currently active
         if (pointySystem.GetNextTargetObject())
         {
@@ -249,7 +243,7 @@ public class ComputerControls : MonoBehaviour, ISavable
         if (!currentFocusedWindow || isFirstTutorial)
         {
             // Start desktop tutorial because no specific window is focused
-            pointySystem.StartTutorial("Desktop"/*, toggledAutomatically*/);
+            pointySystem.StartTutorial("Desktop");
             return;
         }
 
@@ -259,19 +253,19 @@ public class ComputerControls : MonoBehaviour, ISavable
         switch (currentFocusedWindow.appType)
         {
             case OSAppType.SOCIAL:
-                pointySystem.StartTutorial("SocialMedia"/*, toggledAutomatically*/);
+                pointySystem.StartTutorial("SocialMedia");
                 break;
             case OSAppType.GOV:
-                pointySystem.StartTutorial("GovApp"/*, toggledAutomatically*/);
+                pointySystem.StartTutorial("GovApp");
                 break;
             case OSAppType.PEOPLE_LIST:
-                pointySystem.StartTutorial("PeopleList"/*, toggledAutomatically*/);
+                pointySystem.StartTutorial("PeopleList");
                 break;
             case OSAppType.START_SETTINGS:
-                pointySystem.StartTutorial("StartSettings"/*, toggledAutomatically*/);
+                pointySystem.StartTutorial("StartSettings");
                 break;
             default:
-                pointySystem.StartTutorial("Default"/*, toggledAutomatically*/);
+                pointySystem.StartTutorial("Default");
                 break;
         }
     }
@@ -506,6 +500,7 @@ public class ComputerControls : MonoBehaviour, ISavable
     {
         ResizeWindowSmall(window);
         currentFocusedWindow = null;
+        pointySystem.ToggleButtonNotif("Default");
         window.associatedTab.gameObject.SetActive(false);
         window.gameObject.SetActive(false);
     }
@@ -626,16 +621,16 @@ public class ComputerControls : MonoBehaviour, ISavable
             switch (currentFocusedWindow.appType)
             {
                 case OSAppType.SOCIAL:
-                    pointySystem.ShowButtonNotif("SocialMedia");
+                    pointySystem.ToggleButtonNotif("SocialMedia");
                     break;
                 case OSAppType.GOV:
-                    pointySystem.ShowButtonNotif("GovApp");
+                    pointySystem.ToggleButtonNotif("GovApp");
                     break;
                 case OSAppType.PEOPLE_LIST:
-                    pointySystem.ShowButtonNotif("PeopleList");
+                    pointySystem.ToggleButtonNotif("PeopleList");
                     break;
                 default:
-                    pointySystem.ShowButtonNotif("Default");
+                    pointySystem.ToggleButtonNotif("Default");
                     break;
             }
         }
