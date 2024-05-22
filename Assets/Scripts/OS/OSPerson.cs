@@ -12,7 +12,14 @@ public class OSPerson : MonoBehaviour
     private OSPeopleListContent peopleListContent;
     private ComputerControls computerControls;
     private bool personPinned = false;
-    private bool personAccused = false;
+
+    private void OnEnable()
+    {
+        if (person)
+        {
+            UpdateAccusation();
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -25,7 +32,8 @@ public class OSPerson : MonoBehaviour
         computerControls = transform.GetComponentInParent<ComputerControls>();
 
         fpsController.OnPinDeletion.AddListener(RemovePinned);
-        peopleListContent.OnAccusedPersonClear.AddListener(ClearAccused);
+        //peopleListContent.OnAccusedPersonClear.AddListener(ClearAccused);
+        gm.InvestigationStateChanged.AddListener(UpdateAccusation);
     }
 
     public void InstantiatePerson(Person person)
@@ -71,35 +79,43 @@ public class OSPerson : MonoBehaviour
 
     public void AccusePerson()
     {
-        if (!personAccused)
+        if (!gm.checkIfPersonAccused(person))
         {
             computerControls.OpenWindow(OSAppType.WARNING, "You are about to accuse this person.<br><b>This can still be changed later.</b><br><br>Do you want to proceed?", AccusePersonSuccess);
         }
         else
         {
-            ClearAccused();
+            ClearAccusation();
             popupManager.DisplayPersonUnaccusedMessage();
         }
     }
 
     public void AccusePersonSuccess()
     {
-        peopleListContent.ClearAccusedPeople();
-        computerControls.investigationState = OSInvestigationState.PERSON_ACCUSED;
-        if (computerControls.GetComponentInChildren<OSSocialMediaContent>())
-        {
-            computerControls.GetComponentInChildren<OSSocialMediaContent>().ClearDeletedPost();
-        }
         gm.checkSuspect(person);
-        popupManager.DisplayPersonAccusedMessage();
-        transform.Find("AccusePerson").GetComponent<Image>().color = Color.red;
-        personAccused = true;
-        computerControls.OnAccused?.Invoke(person);
     }
 
-    private void ClearAccused()
+    public void UpdateAccusation()
     {
-        transform.Find("AccusePerson").GetComponent<Image>().color = Color.white;
-        computerControls.OnUnaccused?.Invoke(person);
+        if (gm.checkIfPersonAccused(person))
+        {
+            //peopleListContent.ClearAccusedPeople();
+            computerControls.investigationState = OSInvestigationState.PERSON_ACCUSED;
+            if (computerControls.GetComponentInChildren<OSSocialMediaContent>())
+            {
+                computerControls.GetComponentInChildren<OSSocialMediaContent>().ClearDeletedPost();
+            }
+            popupManager.DisplayPersonAccusedMessage();
+            transform.Find("AccusePerson").GetComponent<Image>().color = Color.red;
+        }
+        else
+        {
+            transform.Find("AccusePerson").GetComponent<Image>().color = Color.white;
+        }
+    }
+
+    public void ClearAccusation()
+    {
+        gm.checkSuspicionRemoved(person);
     }
 }

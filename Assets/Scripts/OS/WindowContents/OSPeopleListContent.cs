@@ -13,7 +13,7 @@ public class OSPeopleListContent : MonoBehaviour
     private List<OSPerson> peopleList = new List<OSPerson>();
     private ComputerControls computerControls;
 
-    public UnityEvent OnAccusedPersonClear;
+    //public UnityEvent OnAccusedPersonClear;
 
     private void Awake()
     {
@@ -29,13 +29,13 @@ public class OSPeopleListContent : MonoBehaviour
         }
     }
 
-    private void OnEnable()
+    /*private void OnEnable()
     {
         if (computerControls.investigationState == OSInvestigationState.POST_DELETED)
         {
             ClearAccusedPeople();
         }
-    }
+    }*/
 
     public void InstanciatePerson(Person person)
     {
@@ -49,8 +49,11 @@ public class OSPeopleListContent : MonoBehaviour
         peopleList.Add(newProfile.GetComponent<OSPerson>());
     }
 
-    public void ClearAccusedPeople()
+    /*public void ClearAccusedPeople()
     {
-        OnAccusedPersonClear?.Invoke();
-    }
+        foreach (OSPerson person in peopleList)
+        {
+            person.ClearAccusation();
+        }
+    }*/
 }
