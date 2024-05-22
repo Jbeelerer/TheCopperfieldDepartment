@@ -233,13 +233,13 @@ public class ComputerControls : MonoBehaviour, ISavable
         }
     }
 
-    public void TogglePointy(bool toggledAutomatically)
+    public void TogglePointy(bool isFirstTutorial = false/*, bool toggledAutomatically*/)
     {
         // Only allow automatic toggle on day 1
-        if (toggledAutomatically && gm.GetDay() != 1)
+        /*if (toggledAutomatically && gm.GetDay() != 1)
         {
             return;
-        }
+        }*/
 
         // Close pointy if currently active
         if (pointySystem.GetNextTargetObject())
@@ -248,10 +248,10 @@ public class ComputerControls : MonoBehaviour, ISavable
             return;
         }
 
-        if (!currentFocusedWindow)
+        if (!currentFocusedWindow || isFirstTutorial)
         {
             // Start desktop tutorial because no specific window is focused
-            pointySystem.StartTutorial("Desktop", toggledAutomatically);
+            pointySystem.StartTutorial("Desktop"/*, toggledAutomatically*/);
             return;
         }
 
@@ -261,20 +261,19 @@ public class ComputerControls : MonoBehaviour, ISavable
         switch (currentFocusedWindow.appType)
         {
             case OSAppType.SOCIAL:
-                pointySystem.StartTutorial("SocialMedia", toggledAutomatically);
+                pointySystem.StartTutorial("SocialMedia"/*, toggledAutomatically*/);
                 break;
             case OSAppType.GOV:
-                pointySystem.StartTutorial("GovApp", toggledAutomatically);
+                pointySystem.StartTutorial("GovApp"/*, toggledAutomatically*/);
                 break;
             case OSAppType.PEOPLE_LIST:
-                pointySystem.StartTutorial("PeopleList", toggledAutomatically);
+                pointySystem.StartTutorial("PeopleList"/*, toggledAutomatically*/);
                 break;
             case OSAppType.START_SETTINGS:
-                // Start the desktop tutorial for this one
-                pointySystem.StartTutorial("Desktop", toggledAutomatically);
+                pointySystem.StartTutorial("StartSettings"/*, toggledAutomatically*/);
                 break;
             default:
-                pointySystem.StartTutorial("Default", toggledAutomatically);
+                pointySystem.StartTutorial("Default"/*, toggledAutomatically*/);
                 break;
         }
     }
@@ -563,8 +562,8 @@ public class ComputerControls : MonoBehaviour, ISavable
         // Set window position
         SetWindowOpenPosition(newWindow.GetComponent<OSWindow>());
         // Open Pointy Tutorial if it exists for the window
-        if (newWindow.GetComponent<OSWindow>().appType != OSAppType.WARNING && newWindow.GetComponent<OSWindow>().appType != OSAppType.START_SETTINGS)
-            TogglePointy(true);
+        /*if (newWindow.GetComponent<OSWindow>().appType != OSAppType.WARNING && newWindow.GetComponent<OSWindow>().appType != OSAppType.START_SETTINGS)
+            TogglePointy(true);*/
     }
 
     private void SetWindowOpenPosition(OSWindow window)
@@ -621,6 +620,26 @@ public class ComputerControls : MonoBehaviour, ISavable
         else if (window.currWindowSize == WindowSize.LONG_RIGHT)
         {
             rightWindow = window;
+        }
+
+        // Activate pointy notif if window tutorial hasnt been seen yet
+        if (gm.GetDay() == 1)
+        {
+            switch (currentFocusedWindow.appType)
+            {
+                case OSAppType.SOCIAL:
+                    pointySystem.ShowButtonNotif("SocialMedia");
+                    break;
+                case OSAppType.GOV:
+                    pointySystem.ShowButtonNotif("GovApp");
+                    break;
+                case OSAppType.PEOPLE_LIST:
+                    pointySystem.ShowButtonNotif("PeopleList");
+                    break;
+                default:
+                    pointySystem.ShowButtonNotif("Default");
+                    break;
+            }
         }
     }
 
