@@ -60,7 +60,7 @@ public class Narration : MonoBehaviour
     [SerializeField] private AudioClip phonePickup;
     [SerializeField] private AudioClip phoneHangup;
 
-    Quaternion[] rotations;
+    private Quaternion[] rotations;
 
     private bool sequencePlaying = false;
     private bool skip = false;
@@ -122,7 +122,10 @@ public class Narration : MonoBehaviour
                 gm.SetGameState(GameState.Playing);
                 subtitleText.text = "";
                 blackScreen.SetActive(false);
-                GameObject.Find("Player").GetComponent<FPSController>().ResetCameraRotation(startRotation);
+                if (rotations != null)
+                {
+                    GameObject.Find("Player").GetComponent<FPSController>().ResetCameraRotation(startRotation);
+                }
             }
         }
 

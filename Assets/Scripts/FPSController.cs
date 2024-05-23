@@ -173,11 +173,9 @@ public class FPSController : MonoBehaviour
         {
             if (rotation != Quaternion.identity)
             {
-                // transform.rotation = rotation;
                 StartCoroutine(LerpToRotation(rotation));
             }
         }
-        //GetComponentInChildren<CinemachineVirtualCamera>().GetCinemachineComponent<CinemachinePOV>().m_HorizontalAxis.Value = rotation.eulerAngles.y;
     }
     void Update()
     {
@@ -326,6 +324,7 @@ public class FPSController : MonoBehaviour
                             {
                                 if (selectedPinboardElement == null)
                                 {
+                                    // This is so hovering on the pin won't cancel the AdditionalInfoBoard
                                     PinboardElement tempPe = currentSelectedObject.GetComponent<PinboardElement>();
                                     if (currentSelectedObject.name == "pin")
                                     {
