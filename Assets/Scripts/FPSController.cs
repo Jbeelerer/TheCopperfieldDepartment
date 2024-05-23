@@ -319,14 +319,19 @@ public class FPSController : MonoBehaviour
                                     break;
                             }
                         }
-                        if (hit.collider.gameObject.name != "pinboardElement(Clone)")
+                        if (nameOfThingLookedAt != "pinboardElement(Clone)" && nameOfThingLookedAt != "pin")// currentSelectedObject.name != "pinboardElement(Clone)" && currentSelectedObject.name != "pin"
                         {
-                            // undoes highlight and scaling of the pinboardElement
-                            if (currentSelectedObject != null && currentSelectedObject.name == "pinboardElement(Clone)")
+                            // undoes highlight and scaling of the pinboardElement  
+                            if (currentSelectedObject != null && (currentSelectedObject.name == "pinboardElement(Clone)" || currentSelectedObject.name == "pin"))
                             {
                                 if (selectedPinboardElement == null)
                                 {
-                                    currentSelectedObject.GetComponent<PinboardElement>().HighlightElement(false);
+                                    PinboardElement tempPe = currentSelectedObject.GetComponent<PinboardElement>();
+                                    if (currentSelectedObject.name == "pin")
+                                    {
+                                        tempPe = currentSelectedObject.GetComponentInParent<PinboardElement>();
+                                    }
+                                    tempPe.HighlightElement(false);
                                 }
                                 additionalInfoBoard.CancelPreview();
                             }
