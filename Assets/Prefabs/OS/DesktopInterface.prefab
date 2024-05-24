@@ -2029,12 +2029,6 @@ MonoBehaviour:
   OnUnpinned:
     m_PersistentCalls:
       m_Calls: []
-  OnAccused:
-    m_PersistentCalls:
-      m_Calls: []
-  OnUnaccused:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &6416479693276624021
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2291,7 +2285,7 @@ MonoBehaviour:
     message: That's all for now.<br><br>Why don't you try opening one of your apps
       next?<br><br><b>Try clicking the inbox icon!
     pointAtPointy: 0
-    spotlightSizeModifier: {x: 0, y: 0}
+    spotlightSizeModifier: {x: 1.8, y: 1.8}
   stepsStartSettings:
   - targetObjectName: ScreenBlockadePointy
     message: Please choose a mouse sensitivity setting that feels good for you..<br><br><b>Click
@@ -2307,7 +2301,7 @@ MonoBehaviour:
   - targetObjectName: OSMail(Clone)
     message: It seems like you got your first email!<br><br><b>Try opening it.
     pointAtPointy: 0
-    spotlightSizeModifier: {x: 4, y: 1}
+    spotlightSizeModifier: {x: 8, y: 1}
   - targetObjectName: ScreenBlockadePointy
     message: Some mails contain attached files.<br>They can be opened by clicking
       on them.<br><br><b>Click the screen to finish this tutorial.
@@ -2327,7 +2321,7 @@ MonoBehaviour:
     message: Here, you can look at every citizen's information.<br><br><b>Pin someone
       to your pinboard by clicking this pin button!
     pointAtPointy: 0
-    spotlightSizeModifier: {x: 0, y: 0}
+    spotlightSizeModifier: {x: 0.8, y: 0.8}
   - targetObjectName: ScreenBlockadePointy
     message: The person has now been pinned to your <b>real office pinboard.</b><br><br>You
       can leave the computer <b>by pressing Escape</b> to check it out!
@@ -2337,7 +2331,7 @@ MonoBehaviour:
     message: You can also <b>accuse a person</b>  if you think you've found today's
       culprit.<br><br><b>Try clicking this button!
     pointAtPointy: 0
-    spotlightSizeModifier: {x: 0, y: 0}
+    spotlightSizeModifier: {x: 0.8, y: 0.8}
   - targetObjectName: ScreenBlockadePointy
     message: Here you can confirm your suspicion if you are really sure.<br><br><b>Click
       the screen to continue.
@@ -4006,62 +4000,62 @@ PrefabInstance:
     - target: {fileID: 1649386794918274165, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1649386794918274165, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1649386794918274165, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 350.00037
       objectReference: {fileID: 0}
     - target: {fileID: 1649386794918274165, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -14
       objectReference: {fileID: 0}
     - target: {fileID: 4063364042874013388, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4063364042874013388, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4063364042874013388, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 332.00037
       objectReference: {fileID: 0}
     - target: {fileID: 4063364042874013388, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -14
       objectReference: {fileID: 0}
     - target: {fileID: 4602181743040084170, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4602181743040084170, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4602181743040084170, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 368.00037
       objectReference: {fileID: 0}
     - target: {fileID: 4602181743040084170, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -14
       objectReference: {fileID: 0}
     - target: {fileID: 7284315981950702729, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
@@ -4176,22 +4170,22 @@ PrefabInstance:
     - target: {fileID: 8337292939638123737, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8337292939638123737, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8337292939638123737, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 386.00037
       objectReference: {fileID: 0}
     - target: {fileID: 8337292939638123737, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -14
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
