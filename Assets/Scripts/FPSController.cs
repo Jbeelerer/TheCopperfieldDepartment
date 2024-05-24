@@ -330,7 +330,8 @@ public class FPSController : MonoBehaviour
                                     {
                                         tempPe = currentSelectedObject.GetComponentInParent<PinboardElement>();
                                     }
-                                    tempPe.HighlightElement(false);
+                                    if (tempPe != null)
+                                        tempPe.HighlightElement(false);
                                 }
                                 additionalInfoBoard.CancelPreview();
                             }
