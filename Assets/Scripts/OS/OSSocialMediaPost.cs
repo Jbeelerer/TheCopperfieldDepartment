@@ -26,7 +26,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
         pinboard = GameObject.Find("Pinboard").GetComponent<Pinboard>();
         popupManager = GameObject.Find("PopupMessage").GetComponent<OSPopupManager>();
         gm = GameManager.instance;
-        postOptions = transform.Find("TopRow").Find("PostOptions").gameObject;
+        postOptions = transform.Find("PostOptions").gameObject;
         fpsController = GameObject.Find("Player").GetComponent<FPSController>();
         socialMediaContent = transform.GetComponentInParent<OSSocialMediaContent>();
         computerControls = transform.GetComponentInParent<ComputerControls>();
@@ -148,10 +148,10 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
     {
         socialMediaContent.ClearDeletedPost();
         computerControls.investigationState = OSInvestigationState.POST_DELETED;
-        if (computerControls.GetComponentInChildren<OSPeopleListContent>())
+        /*if (computerControls.GetComponentInChildren<OSPeopleListContent>())
         {
             computerControls.GetComponentInChildren<OSPeopleListContent>().ClearAccusedPeople();
-        }
+        }*/
         popupManager.DisplayPostDeleteMessage();
         postOptions.transform.Find("DeletePost").GetComponent<Image>().color = Color.red;
         postOptions.transform.Find("DeletePost").gameObject.SetActive(true);

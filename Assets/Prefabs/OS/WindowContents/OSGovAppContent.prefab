@@ -509,7 +509,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.00015258789}
+  m_AnchoredPosition: {x: 0, y: -0.000028339487}
   m_SizeDelta: {x: -19.71, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &328413140502194852
@@ -1739,7 +1739,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 191, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 382, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5262395847130243413
@@ -2094,7 +2094,7 @@ GameObject:
   - component: {fileID: 8017589646866630834}
   - component: {fileID: 5063481948503537932}
   - component: {fileID: 9058817365084546361}
-  - component: {fileID: 3853596159613978992}
+  - component: {fileID: 5571134823021305577}
   m_Layer: 5
   m_Name: TextScrollArea
   m_TagString: Untagged
@@ -2121,7 +2121,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -13.968002}
+  m_AnchoredPosition: {x: 0, y: -13.968018}
   m_SizeDelta: {x: 0, y: -27.963}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5063481948503537932
@@ -2162,7 +2162,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &3853596159613978992
+--- !u!114 &5571134823021305577
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2171,13 +2171,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 6031355316274341033}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1aa08ab6e0800fa44ae55d278d1423e3, type: 3}
+  m_Script: {fileID: 11500000, guid: c0bd497c245297a4b8064000dc8451c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Content: {fileID: 4660763943425053596}
   m_Horizontal: 0
   m_Vertical: 1
-  m_MovementType: 1
+  m_MovementType: 2
   m_Elasticity: 0.1
   m_Inertia: 1
   m_DecelerationRate: 0.135
@@ -2187,8 +2187,8 @@ MonoBehaviour:
   m_VerticalScrollbar: {fileID: 8195813706195274094}
   m_HorizontalScrollbarVisibility: 0
   m_VerticalScrollbarVisibility: 0
-  m_HorizontalScrollbarSpacing: -3
-  m_VerticalScrollbarSpacing: -3
+  m_HorizontalScrollbarSpacing: 0
+  m_VerticalScrollbarSpacing: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -2785,7 +2785,7 @@ MonoBehaviour:
   mailContainer: {fileID: 1899385127536276754}
   mailPrefab: {fileID: 4545354725491229084, guid: 00997f821457c7346bb619e47ad6e14e,
     type: 3}
-  textScrollArea: {fileID: 3853596159613978992}
+  textScrollArea: {fileID: 5571134823021305577}
 --- !u!1 &7650883981672556419
 GameObject:
   m_ObjectHideFlags: 0
@@ -3031,7 +3031,7 @@ RectTransform:
   m_Father: {fileID: 136525134932331899}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -3662,7 +3662,7 @@ GameObject:
   - component: {fileID: 1684275535117776064}
   - component: {fileID: 510524218972594751}
   - component: {fileID: 7768726329290150817}
-  - component: {fileID: 3807655283474044785}
+  - component: {fileID: 5644182064573893882}
   m_Layer: 5
   m_Name: MailList
   m_TagString: Untagged
@@ -3730,7 +3730,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &3807655283474044785
+--- !u!114 &5644182064573893882
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3739,13 +3739,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 8854764858801888921}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1aa08ab6e0800fa44ae55d278d1423e3, type: 3}
+  m_Script: {fileID: 11500000, guid: c0bd497c245297a4b8064000dc8451c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Content: {fileID: 9172137306504893645}
   m_Horizontal: 0
   m_Vertical: 1
-  m_MovementType: 1
+  m_MovementType: 2
   m_Elasticity: 0.1
   m_Inertia: 1
   m_DecelerationRate: 0.135
@@ -3755,8 +3755,8 @@ MonoBehaviour:
   m_VerticalScrollbar: {fileID: 4549233694127708314}
   m_HorizontalScrollbarVisibility: 0
   m_VerticalScrollbarVisibility: 0
-  m_HorizontalScrollbarSpacing: -3
-  m_VerticalScrollbarSpacing: -3
+  m_HorizontalScrollbarSpacing: 0
+  m_VerticalScrollbarSpacing: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []

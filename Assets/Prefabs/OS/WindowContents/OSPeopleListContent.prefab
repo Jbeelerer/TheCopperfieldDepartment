@@ -338,7 +338,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -0.00016784668, y: -0.000030517578}
+  m_AnchoredPosition: {x: -0.00016784668, y: 0}
   m_SizeDelta: {x: 17, y: 17}
   m_Pivot: {x: 1, y: 0}
 --- !u!222 &2990919929991539563
@@ -706,7 +706,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 3, y: 34}
+  m_AnchoredPosition: {x: -0.00039672852, y: 0}
   m_SizeDelta: {x: -20, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &328413140502194852
@@ -1370,8 +1370,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2744743207568805337}
   m_HandleRect: {fileID: 2241817832874469885}
   m_Direction: 0
-  m_Value: 0.84998846
-  m_Size: 0
+  m_Value: 1
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1725,9 +1725,6 @@ MonoBehaviour:
   profileContainer: {fileID: 1899385127536276754}
   personProfilePrefab: {fileID: 4867684084370597421, guid: fe5dc1901c3ff9a4c8e5b46300bfe4de,
     type: 3}
-  OnAccusedPersonClear:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &7536749173515341286
 GameObject:
   m_ObjectHideFlags: 0
@@ -1797,7 +1794,7 @@ RectTransform:
   m_Father: {fileID: 136525134932331899}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -1928,7 +1925,7 @@ GameObject:
   - component: {fileID: 1684275535117776064}
   - component: {fileID: 510524218972594751}
   - component: {fileID: 7768726329290150817}
-  - component: {fileID: 3807655283474044785}
+  - component: {fileID: 3254982557803985182}
   m_Layer: 5
   m_Name: Scroll View
   m_TagString: Untagged
@@ -1996,7 +1993,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &3807655283474044785
+--- !u!114 &3254982557803985182
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2005,13 +2002,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 8854764858801888921}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1aa08ab6e0800fa44ae55d278d1423e3, type: 3}
+  m_Script: {fileID: 11500000, guid: c0bd497c245297a4b8064000dc8451c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Content: {fileID: 9172137306504893645}
   m_Horizontal: 0
   m_Vertical: 1
-  m_MovementType: 1
+  m_MovementType: 2
   m_Elasticity: 0.1
   m_Inertia: 1
   m_DecelerationRate: 0.135
@@ -2021,8 +2018,8 @@ MonoBehaviour:
   m_VerticalScrollbar: {fileID: 2958825614499922953}
   m_HorizontalScrollbarVisibility: 0
   m_VerticalScrollbarVisibility: 0
-  m_HorizontalScrollbarSpacing: -3
-  m_VerticalScrollbarSpacing: -3
+  m_HorizontalScrollbarSpacing: 0
+  m_VerticalScrollbarSpacing: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []

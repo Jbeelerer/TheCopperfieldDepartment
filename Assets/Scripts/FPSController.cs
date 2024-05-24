@@ -173,11 +173,9 @@ public class FPSController : MonoBehaviour
         {
             if (rotation != Quaternion.identity)
             {
-                // transform.rotation = rotation;
                 StartCoroutine(LerpToRotation(rotation));
             }
         }
-        //GetComponentInChildren<CinemachineVirtualCamera>().GetCinemachineComponent<CinemachinePOV>().m_HorizontalAxis.Value = rotation.eulerAngles.y;
     }
     void Update()
     {
@@ -319,14 +317,21 @@ public class FPSController : MonoBehaviour
                                     break;
                             }
                         }
-                        if (hit.collider.gameObject.name != "pinboardElement(Clone)")
+                        if (nameOfThingLookedAt != "pinboardElement(Clone)" && nameOfThingLookedAt != "pin")// currentSelectedObject.name != "pinboardElement(Clone)" && currentSelectedObject.name != "pin"
                         {
-                            // undoes highlight and scaling of the pinboardElement
-                            if (currentSelectedObject != null && currentSelectedObject.name == "pinboardElement(Clone)")
+                            // undoes highlight and scaling of the pinboardElement  
+                            if (currentSelectedObject != null && (currentSelectedObject.name == "pinboardElement(Clone)" || currentSelectedObject.name == "pin"))
                             {
                                 if (selectedPinboardElement == null)
                                 {
-                                    currentSelectedObject.GetComponent<PinboardElement>().HighlightElement(false);
+                                    // This is so hovering on the pin won't cancel the AdditionalInfoBoard
+                                    PinboardElement tempPe = currentSelectedObject.GetComponent<PinboardElement>();
+                                    if (currentSelectedObject.name == "pin")
+                                    {
+                                        tempPe = currentSelectedObject.GetComponentInParent<PinboardElement>();
+                                    }
+                                    if (tempPe != null)
+                                        tempPe.HighlightElement(false);
                                 }
                                 additionalInfoBoard.CancelPreview();
                             }
@@ -707,5 +712,4 @@ public class FPSController : MonoBehaviour
             yield return null;
         }
     }
-
 }
