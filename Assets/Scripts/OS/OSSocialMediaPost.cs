@@ -45,7 +45,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
             case SocialMediaPost:
                 if (so == post)
                 {
-                    postOptions.transform.Find("PinPost").GetComponent<Image>().color = Color.black;
+                    postOptions.transform.Find("PinPost").GetComponent<Image>().color = Color.white;
                     postOptions.transform.Find("PinPost").gameObject.SetActive(false);
                     postPinned = false;
 
@@ -55,7 +55,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
             case SocialMediaUser:
                 if (so == post.author)
                 {
-                    postOptions.transform.Find("PinUser").GetComponent<Image>().color = Color.black;
+                    postOptions.transform.Find("PinUser").GetComponent<Image>().color = Color.white;
                     postOptions.transform.Find("PinUser").gameObject.SetActive(false);
                     userPinned = false;
                     socialMediaContent.RemovePinnedUser(post.author);
@@ -161,7 +161,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     private void ClearDeleted()
     {
-        postOptions.transform.Find("DeletePost").GetComponent<Image>().color = Color.black;
+        postOptions.transform.Find("DeletePost").GetComponent<Image>().color = Color.white;
         postOptions.transform.Find("DeletePost").gameObject.SetActive(false);
         postDeleted = false;
     }

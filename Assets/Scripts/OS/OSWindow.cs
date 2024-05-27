@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum WindowSize
 {
@@ -28,6 +29,9 @@ public class OSWindow : MonoBehaviour
     [HideInInspector] public OSTab associatedTab;
     [HideInInspector] public string warningMessage = "";
     [HideInInspector] public System.Action warningSuccessFunc = null;
+
+    [SerializeField] private Sprite customSocialMediaWindow;
+    [SerializeField] private Sprite customSocialMediaTopBar;
 
     [SerializeField] private GameObject socialMediaContent;
     [SerializeField] private GameObject govAppContent;
@@ -67,6 +71,8 @@ public class OSWindow : MonoBehaviour
             Instantiate(socialMediaContent, transform.Find("Content"));
             buttonSmall.gameObject.SetActive(false);
             topBarTextMesh.text = "Social Media";
+            GetComponent<Image>().sprite = customSocialMediaWindow;
+            topBar.GetComponent<Image>().sprite = customSocialMediaTopBar;
         }
         else if (appType == OSAppType.GOV)
         {
