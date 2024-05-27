@@ -93,7 +93,7 @@ public class GameManager : MonoBehaviour, ISavable
             calendarCam.transform.parent.parent.GetComponent<Collider>().enabled = state != GameState.OnCalendar;
 
         Cursor.visible = state == GameState.OnCalendar;
-        Cursor.lockState = state == GameState.OnPC || state == GameState.OnCalendar ? CursorLockMode.Confined : CursorLockMode.Locked;
+        Cursor.lockState = state == GameState.OnPC || state == GameState.OnCalendar ? CursorLockMode.Locked : CursorLockMode.Locked;
 
         // handle startPos of mainCam
         if (state == GameState.Playing && gameState == GameState.OnPC)

@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public class OSTab : MonoBehaviour
 {
     public OSAppType appType;
+    public Sprite clickedImage;
+    public Sprite unclickedImage;
 
     [HideInInspector] public RectTransform recTrans;
 

@@ -455,5 +455,50 @@ namespace UnityEngine.EventSystems
 
             return m_MouseState;
         }
+
+        protected override void ProcessMove(PointerEventData pointerEvent)
+        {
+            var targetGO = pointerEvent.pointerCurrentRaycast.gameObject;
+            HandlePointerExitAndEnter(pointerEvent, targetGO);
+        }
+
+        private static bool ShouldStartDrag(Vector2 pressPos, Vector2 currentPos, float threshold, bool useDragThreshold)
+        {
+            if (!useDragThreshold)
+                return true;
+
+            return (pressPos - currentPos).sqrMagnitude >= threshold * threshold;
+        }
+
+        protected override void ProcessDrag(PointerEventData pointerEvent)
+        {
+            if (!pointerEvent.IsPointerMoving() ||
+                /*Cursor.lockState == CursorLockMode.Locked ||*/
+                pointerEvent.pointerDrag == null)
+                return;
+
+            if (!pointerEvent.dragging
+                && ShouldStartDrag(pointerEvent.pressPosition, pointerEvent.position, eventSystem.pixelDragThreshold, pointerEvent.useDragThreshold))
+            {
+                ExecuteEvents.Execute(pointerEvent.pointerDrag, pointerEvent, ExecuteEvents.beginDragHandler);
+                pointerEvent.dragging = true;
+            }
+
+            // Drag notification
+            if (pointerEvent.dragging)
+            {
+                // Before doing drag we should cancel any pointer down state
+                // And clear selection!
+                if (pointerEvent.pointerPress != pointerEvent.pointerDrag)
+                {
+                    ExecuteEvents.Execute(pointerEvent.pointerPress, pointerEvent, ExecuteEvents.pointerUpHandler);
+
+                    pointerEvent.eligibleForClick = false;
+                    pointerEvent.pointerPress = null;
+                    pointerEvent.rawPointerPress = null;
+                }
+                ExecuteEvents.Execute(pointerEvent.pointerDrag, pointerEvent, ExecuteEvents.dragHandler);
+            }
+        }
     }
 }

@@ -345,6 +345,12 @@ public class ComputerControls : MonoBehaviour, ISavable
 
             if (Object.ReferenceEquals(hitObject, app.gameObject))
             {
+                // Remove Notif icon if present
+                if (app.transform.Find("Notif"))
+                {
+                    app.transform.Find("Notif").gameObject.SetActive(false);
+                }
+
                 OpenWindow(app.appType);
                 return;
             }
@@ -599,11 +605,11 @@ public class ComputerControls : MonoBehaviour, ISavable
         {
             w.topBar.GetComponent<Image>().color = new Color(w.topBar.GetComponent<Image>().color.r, w.topBar.GetComponent<Image>().color.g, w.topBar.GetComponent<Image>().color.b, 0.6f);
             if (w.associatedTab)
-                w.associatedTab.GetComponent<Image>().color = new Color(w.associatedTab.GetComponent<Image>().color.r, w.associatedTab.GetComponent<Image>().color.g, w.associatedTab.GetComponent<Image>().color.b, 0.6f);
+                w.associatedTab.GetComponent<Image>().sprite = w.associatedTab.unclickedImage;
         }
         window.topBar.GetComponent<Image>().color = new Color(window.topBar.GetComponent<Image>().color.r, window.topBar.GetComponent<Image>().color.g, window.topBar.GetComponent<Image>().color.b, 1f);
         if (window.associatedTab)
-            window.associatedTab.GetComponent<Image>().color = new Color(window.associatedTab.GetComponent<Image>().color.r, window.associatedTab.GetComponent<Image>().color.g, window.associatedTab.GetComponent<Image>().color.b, 1f);
+            window.associatedTab.GetComponent<Image>().sprite = window.associatedTab.clickedImage;
 
         // Set as current right/left window if in long mode
         if (window.currWindowSize == WindowSize.LONG_LEFT)
