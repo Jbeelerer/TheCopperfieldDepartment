@@ -6,7 +6,7 @@ public class SocialMediaPost : ScriptableObject, IPinnable
 {
     public int id;
     public string contentShort;
-    public string content;
+    [TextArea] public string content;
     public SocialMediaUser author;
     public string date;
     public Sprite image;
