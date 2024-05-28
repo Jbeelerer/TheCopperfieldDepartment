@@ -38,6 +38,11 @@ public class PinboardElement : MonoBehaviour
     private GameObject image;
 
     [SerializeField] private GameObject[] postItMeshes;
+    [SerializeField] private GameObject personPinboardElement;
+    [SerializeField] private GameObject socialMediaPostPinboardElement;
+    [SerializeField] private GameObject socialMediaPostPinboardElementWithImage;
+    [SerializeField] private GameObject socialMediaUserPinboardElement;
+
     private GameObject postItMesh;
 
     private Coroutine waitingForContentToBeSet;
