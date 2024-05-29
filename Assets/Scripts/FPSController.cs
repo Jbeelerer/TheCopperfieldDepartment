@@ -369,7 +369,8 @@ public class FPSController : MonoBehaviour
                     {
                         TryToPlaceThread("");
                     }
-                    //interactionReach = 3f;
+                    additionalInfoBoard.CancelPreview();
+                    //interactionReach = 3f; 
                 }
                 else
                 {
