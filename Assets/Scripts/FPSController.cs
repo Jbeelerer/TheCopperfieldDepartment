@@ -478,8 +478,11 @@ public class FPSController : MonoBehaviour
                                 gm.SetGameState(GameState.OnCalendar);
                                 break;
                             case "Phone":
-                                inputOverlay.SetIcon("");
-                                hit.collider.transform.GetComponent<Phone>().StartCall();
+                                if (hit.collider.transform.GetComponent<Phone>() != null)
+                                {
+                                    inputOverlay.SetIcon("");
+                                    hit.collider.transform.GetComponent<Phone>().StartCall();
+                                }
                                 break;
                             case "Door":
                                 if (gm.GetAnswerCommited())

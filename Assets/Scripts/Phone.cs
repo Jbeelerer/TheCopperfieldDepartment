@@ -57,7 +57,10 @@ public class Phone : MonoBehaviour
     public void StartCall()
     {
         if (!isRinging)
+        {
+            narration.Say("phoneNotWorking");
             return;
+        }
 
         audioSource.Stop();
         Quaternion[] rotations = new Quaternion[3];

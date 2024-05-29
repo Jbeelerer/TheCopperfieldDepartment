@@ -26,6 +26,7 @@ public class ShortSubtitles
     public TimedSubtitle negativeFeedback;
     public TimedSubtitle deletePost;
     public TimedSubtitle suspectFound;
+    public TimedSubtitle phoneNotWorking;
 }
 
 public class Narration : MonoBehaviour
@@ -41,6 +42,7 @@ public class Narration : MonoBehaviour
     [SerializeField] private AudioClip firstDayFeedbackNegativeClip;
 
     [SerializeField] private AudioClip phoneCallIntroClip;
+    [SerializeField] private AudioClip phoneNotWorkingClip;
 
     private TimedSubtitles timedSubtitles;
     private TextMeshProUGUI subtitleText;
@@ -163,6 +165,11 @@ public class Narration : MonoBehaviour
                 audioSource.clip = suspectFoundVoice;
                 subtitleText.text = shortSubtitles.suspectFound.text;
                 duration = shortSubtitles.suspectFound.duration;
+                break;
+            case "phoneNotWorking":
+                audioSource.clip = phoneNotWorkingClip;
+                subtitleText.text = shortSubtitles.phoneNotWorking.text;
+                duration = shortSubtitles.phoneNotWorking.duration;
                 break;
         }
         StartCoroutine(DisableSubtitle(duration));
