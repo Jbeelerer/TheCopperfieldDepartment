@@ -243,10 +243,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e81e1dd168454c59b6d5a1230a4b816, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  elementType: 6
   mysteriousPersonMaterial: {fileID: 2800000, guid: 1da09b44fcf8b4eaf8a0b13163484f8a,
     type: 3}
   postItMeshes:
   - {fileID: 2418341948497215124, guid: 8178eaa68d27c4f83a372ca6d88214b4, type: 3}
+  personPinboardElement: {fileID: 4174605802395961108, guid: 8bd157363468d4fb3bdc44b7a74d1a43,
+    type: 3}
+  socialMediaPostPinboardElement: {fileID: 9026278646083170460, guid: 4a37833a2f1e24b7bb32e2c01bcfe956,
+    type: 3}
+  socialMediaPostPinboardElementWithImage: {fileID: 1915878195077494403, guid: 341a0118ea6a745c2ad59eca94d019a5,
+    type: 3}
+  socialMediaUserPinboardElement: {fileID: 1031868690203453111, guid: 175055c8d905d4d5392a5f60cb7d480f,
+    type: 3}
+  whiteBackground: {fileID: 2800000, guid: 63e15f80cf0314de1a4ff7d545f83839, type: 3}
   canvasTexture: {fileID: 0}
   transparent: {fileID: 2800000, guid: 81df670c17b62496ba60e318e810b09f, type: 3}
   circle: {fileID: 2800000, guid: 51fb3d2cc8c014f9ea10a055cec92322, type: 3}
@@ -445,8 +455,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Ich bin Jonathan
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: e33f8e37a9f594e4ab56ccae7ceb0e59, type: 2}
-  m_sharedMaterial: {fileID: -2120931988573629386, guid: e33f8e37a9f594e4ab56ccae7ceb0e59,
+  m_fontAsset: {fileID: 11400000, guid: 342c2aa8d2b884066a04f8cb5ee367b2, type: 2}
+  m_sharedMaterial: {fileID: 2194227521960280988, guid: 342c2aa8d2b884066a04f8cb5ee367b2,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -471,8 +481,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 120
-  m_fontSizeBase: 120
+  m_fontSize: 160
+  m_fontSizeBase: 160
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 25
@@ -483,7 +493,7 @@ MonoBehaviour:
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: 0
+  m_lineSpacing: -20
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
