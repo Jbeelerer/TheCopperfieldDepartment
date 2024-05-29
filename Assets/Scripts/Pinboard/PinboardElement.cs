@@ -9,6 +9,17 @@ using UnityEditor;
 using System.Diagnostics.CodeAnalysis;
 using System;
 
+public enum PinboardElementType
+{
+    Person,
+    SocialMediaPost,
+    SocialMediaPostWithImage,
+    SocialMediaUser,
+    Info,
+    MainSuspect,
+    NotSetYet,
+}
+
 public enum AnnotationType
 {
     None,
@@ -18,6 +29,7 @@ public enum AnnotationType
 }
 public class PinboardElement : MonoBehaviour
 {
+    [SerializeField] private PinboardElementType elementType = PinboardElementType.NotSetYet;
     private bool isDeletable = true;
     private bool hasInfo = true;
     [SerializeField] private Texture mysteriousPersonMaterial;
@@ -36,27 +48,24 @@ public class PinboardElement : MonoBehaviour
     private AnnotationType annotationType = AnnotationType.None;
 
     private GameObject image;
+    private GameObject elementBase;
 
     [SerializeField] private GameObject[] postItMeshes;
     [SerializeField] private GameObject personPinboardElement;
     [SerializeField] private GameObject socialMediaPostPinboardElement;
     [SerializeField] private GameObject socialMediaPostPinboardElementWithImage;
     [SerializeField] private GameObject socialMediaUserPinboardElement;
-
+    [SerializeField] private Texture whiteBackground;
     private GameObject postItMesh;
-
     private Coroutine waitingForContentToBeSet;
-
     public Texture2D canvasTexture;
     public Texture2D transparent;
     public Texture2D circle;
     public Texture2D strikeThrough;
     public Texture2D suspectFound;
     public Camera canvasCamera;
-
     private bool noStartThreadClipping = true;
     private bool noEndThreadClipping = true;
-
     private GameObject flag;
 
     public void MakeUndeletable()
@@ -117,7 +126,14 @@ public class PinboardElement : MonoBehaviour
                 flag.SetActive(true);
                 break;
         }
-        postItMesh.GetComponent<Renderer>().material.SetTexture("_AnnotationSprite", texture);
+        if (elementType == PinboardElementType.Person || elementType == PinboardElementType.SocialMediaUser || elementType == PinboardElementType.SocialMediaPostWithImage)
+        {
+            image.GetComponent<Renderer>().material.SetTexture("_AnnotationSprite", texture);
+        }
+        else
+        {
+            postItMesh.GetComponent<Renderer>().material.SetTexture("_AnnotationSprite", texture);
+        }
     }
 
     public ScriptableObject GetContent()
@@ -273,13 +289,6 @@ public class PinboardElement : MonoBehaviour
     }
     void Awake()
     {
-        postItMesh = Instantiate(postItMeshes[UnityEngine.Random.Range(0, postItMeshes.Length - 1)], transform);
-        image = postItMesh.transform.GetChild(0).gameObject;
-        postItMesh = postItMesh.transform.GetChild(1).gameObject;
-        postItMesh.transform.Rotate(new Vector3(UnityEngine.Random.Range(-10, 10), 0, 0));
-        postItMesh.transform.SetAsLastSibling();
-        animationTime = GetComponent<Animator>().GetAnimatorTransitionInfo(0).duration;
-
     }
 
     void Start()
@@ -299,6 +308,10 @@ public class PinboardElement : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (elementType == PinboardElementType.NotSetYet)
+        {
+            return;
+        }
         if (isMoving || animationTimer <= animationTime)
         {
             if (!isMoving)
@@ -380,8 +393,12 @@ public class PinboardElement : MonoBehaviour
             canvasTexture.Apply();
             Material material = new Material(postItMesh.GetComponent<Renderer>().material);
             material.name = "PostItMaterial" + transform.position.x + transform.position.y;
+            if (elementType == PinboardElementType.Person || elementType == PinboardElementType.SocialMediaUser)
+            {
+                material.SetTexture("_Base", whiteBackground);
+            }
             material.SetTexture("_SecondTexture", canvasTexture);
-            material.SetColor("_MultiplicationColor", content is Person ? new Color(1, 1, 1, 1) : content is SocialMediaPost ? new Color(1, 0.9f, 1, 1) : new Color(1, 1, 0.9f, 1));
+            // material.SetColor("_MultiplicationColor", content is Person ? new Color(1, 1, 1, 1) : content is SocialMediaPost ? new Color(1, 0.9f, 1, 1) : new Color(1, 1, 0.9f, 1));
             postItMesh.GetComponent<Renderer>().material = material;
             //delete camera and canvas after rendering and saving the texture 
             DestroyCameraAndCanvas();
@@ -400,11 +417,61 @@ public class PinboardElement : MonoBehaviour
         Destroy(canvasCamera.gameObject);
         Destroy(transform.GetChild(2).gameObject);
     }
+
+    public void InitialiseElement()
+    {
+        print(elementType);
+        switch (elementType)
+        {
+            case PinboardElementType.Person:
+                postItMesh = Instantiate(personPinboardElement, transform);
+                image = postItMesh.transform.GetChild(0).gameObject;
+                postItMesh = postItMesh.transform.GetChild(1).gameObject;
+                break;
+            case PinboardElementType.SocialMediaUser:
+                postItMesh = Instantiate(socialMediaUserPinboardElement, transform);
+                image = postItMesh.transform.GetChild(0).gameObject;
+                postItMesh = postItMesh.transform.GetChild(1).gameObject;
+                break;
+            case PinboardElementType.SocialMediaPost:
+                postItMesh = Instantiate(socialMediaPostPinboardElement, transform);
+                postItMesh = postItMesh.transform.GetChild(1).gameObject;
+                break;
+            case PinboardElementType.SocialMediaPostWithImage:
+                postItMesh = Instantiate(socialMediaPostPinboardElementWithImage, transform);
+                image = postItMesh.transform.GetChild(1).gameObject;
+                image.transform.Rotate(new Vector3(0, 0, UnityEngine.Random.Range(-5, 5)));
+                postItMesh = postItMesh.transform.GetChild(0).gameObject;
+                break;
+            default:
+                postItMesh = Instantiate(postItMeshes[UnityEngine.Random.Range(0, postItMeshes.Length)], transform).transform.GetChild(0).gameObject;
+                break;
+        }
+        if (elementType == PinboardElementType.MainSuspect || elementType == PinboardElementType.NotSetYet || elementType == PinboardElementType.Info)
+        {
+            postItMesh.transform.parent.Rotate(new Vector3(0, 0, UnityEngine.Random.Range(-10, 10)));
+        }
+        else
+        {
+            postItMesh.transform.parent.Rotate(new Vector3(UnityEngine.Random.Range(-10, 10), 0, 0));
+        }
+        postItMesh.transform.SetAsLastSibling();
+        animationTime = GetComponent<Animator>().GetAnimatorTransitionInfo(0).duration;
+    }
     // set Image as content
     public void SetContent(Texture t)
     {
-        postItMesh.GetComponent<Renderer>().material.SetTexture("_SecondTexture", t);
-        image.SetActive(false);
+        InitialiseElement();
+        if (t != null)
+        {
+            postItMesh.GetComponent<Renderer>().material.SetTexture("_SecondTexture", t);
+            elementType = PinboardElementType.Info;
+        }
+        else
+        {
+            elementType = PinboardElementType.MainSuspect;
+            isDeletable = false;
+        }
         content = null;
         hasInfo = false;
     }
@@ -416,29 +483,43 @@ public class PinboardElement : MonoBehaviour
         switch (o)
         {
             case Person:
+                elementType = PinboardElementType.Person;
+                InitialiseElement();
                 Person person = ConversionUtility.Convert<Person>(o);
+                textElement.transform.Rotate(new Vector3(0, 0, UnityEngine.Random.Range(1, 5)));
                 textElement.text = person.personName;
                 textElement.verticalAlignment = VerticalAlignmentOptions.Bottom;
-                image.GetComponent<Renderer>().material.mainTexture = person.image.texture;
+                image.GetComponent<Renderer>().material.SetTexture("_Base", person.image.texture);
                 break;
             case SocialMediaPost:
                 // connect to user
-                image.SetActive(false);
                 SocialMediaPost post = ConversionUtility.Convert<SocialMediaPost>(o);
+                print(post.image);
+                print(post.contentShort);
+                elementType = post.image == null ? PinboardElementType.SocialMediaPost : PinboardElementType.SocialMediaPostWithImage;
+                InitialiseElement();
                 textElement.text = post.contentShort;
+                if (elementType == PinboardElementType.SocialMediaPostWithImage)
+                {
+                    print(post.image.texture);
+                    image.GetComponent<Renderer>().material.SetTexture("_Base", post.image.texture);
+                }
                 break;
             case SocialMediaUser:
-
+                elementType = PinboardElementType.SocialMediaUser;
+                InitialiseElement();
                 SocialMediaUser user = ConversionUtility.Convert<SocialMediaUser>(o);
                 textElement.text = user.username;
                 textElement.verticalAlignment = VerticalAlignmentOptions.Bottom;
-                image.GetComponent<Renderer>().material.mainTexture = user.image.texture;
+                textElement.transform.Rotate(new Vector3(0, 0, UnityEngine.Random.Range(1, 5)));
+                image.GetComponent<Renderer>().material.SetTexture("_Base", user.image.texture);
                 break;
             default:
                 break;
         }
         content = o;
     }
+
     public void DeleteElement()
     {
         foreach (PinboardElement p in connectedElements)

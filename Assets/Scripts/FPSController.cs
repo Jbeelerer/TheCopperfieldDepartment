@@ -140,15 +140,19 @@ public class FPSController : MonoBehaviour
 
                 if (pe.GetIfDeletable())
                 {
-                    OnPinDeletion?.Invoke(pe.GetContent());
                     pe.DeleteElement();
-                    //instantiate TrashedPostIT
-                    if (trashedPostItPrefab != null)
-                    {
-                        GameObject g = Instantiate(trashedPostItPrefab, pe.transform.position, pe.transform.rotation);
-                        g.GetComponent<TrashedPostIt>().SetContent(pe.GetContent());
-                    }
                     am.PlayAudio(deleteSound);
+                    //TODO: for now don't spawn any trashed post it if there is no content
+                    if (pe.GetContent() != null)
+                    {
+                        OnPinDeletion?.Invoke(pe.GetContent());
+                        //instantiate TrashedPostIT
+                        if (trashedPostItPrefab != null)
+                        {
+                            GameObject g = Instantiate(trashedPostItPrefab, pe.transform.position, pe.transform.rotation);
+                            g.GetComponent<TrashedPostIt>().SetContent(pe.GetContent());
+                        }
+                    }
                 }
                 else
                 {
@@ -365,7 +369,8 @@ public class FPSController : MonoBehaviour
                     {
                         TryToPlaceThread("");
                     }
-                    //interactionReach = 3f;
+                    additionalInfoBoard.CancelPreview();
+                    //interactionReach = 3f; 
                 }
                 else
                 {
@@ -474,8 +479,11 @@ public class FPSController : MonoBehaviour
                                 gm.SetGameState(GameState.OnCalendar);
                                 break;
                             case "Phone":
-                                inputOverlay.SetIcon("");
-                                hit.collider.transform.GetComponent<Phone>().StartCall();
+                                if (hit.collider.transform.GetComponent<Phone>() != null)
+                                {
+                                    inputOverlay.SetIcon("");
+                                    hit.collider.transform.GetComponent<Phone>().StartCall();
+                                }
                                 break;
                             case "Door":
                                 if (gm.GetAnswerCommited())

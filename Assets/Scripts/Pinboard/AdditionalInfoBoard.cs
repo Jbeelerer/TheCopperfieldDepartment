@@ -10,7 +10,7 @@ public class AdditionalInfoBoard : MonoBehaviour
     private ScriptableObject content;
     private Animator anim;
 
-    private UnityEngine.UI.Image image;
+    [SerializeField] private Renderer pbMaterial;
     private TextMeshProUGUI title;
     private TextMeshProUGUI additionalInfos;
 
@@ -28,7 +28,7 @@ public class AdditionalInfoBoard : MonoBehaviour
         contentParent = transform.Find("Content");
         personParent = transform.Find("Person");
 
-        image = personParent.Find("PB").GetComponent<UnityEngine.UI.Image>();
+        // image = personParent.Find("PB").GetComponent<UnityEngine.UI.Image>();
         title = personParent.Find("Titel").GetComponent<TextMeshProUGUI>();
         additionalInfos = personParent.Find("AdditionalInfos/AdditionalInfosText").GetComponent<TextMeshProUGUI>();
 
@@ -71,7 +71,7 @@ public class AdditionalInfoBoard : MonoBehaviour
             case Person:
                 Person p = (Person)o;
                 title.text = p.personName;
-                image.sprite = p.image;
+                pbMaterial.material.SetTexture("_Base", p.image.texture);
                 foreach (string info in p.additionalInfos)
                 {
                     additionalInfos.text += "- " + info + "<br>";
@@ -79,7 +79,7 @@ public class AdditionalInfoBoard : MonoBehaviour
                 break;
             case SocialMediaUser:
                 SocialMediaUser smu = (SocialMediaUser)o;
-                image.sprite = smu.image;
+                pbMaterial.material.SetTexture("_Base", smu.image.texture);
                 title.text = smu.username;
                 foreach (string info in smu.additionalInfos)
                 {
@@ -88,6 +88,8 @@ public class AdditionalInfoBoard : MonoBehaviour
                 break;
             case SocialMediaPost:
                 SocialMediaPost smp = (SocialMediaPost)o;
+                if (smp.image != null)
+                    pbMaterial.material.SetTexture("_Base", smp.image.texture);
                 contentText.text = smp.content;
                 break;
         }
