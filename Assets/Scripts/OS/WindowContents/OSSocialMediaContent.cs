@@ -189,8 +189,8 @@ public class OSSocialMediaContent : MonoBehaviour
 
         profilePage.GetComponent<ScrollRect>().verticalNormalizedPosition = 1;
 
-        profilePageheader.Find("Banner").GetComponent<Image>().sprite = user.profileBanner;
-        profilePageheader.Find("ImageMask").Find("Image").GetComponent<Image>().sprite = user.image;
+        profilePageheader.Find("Banner").Find("BannerMask").Find("Image").GetComponent<Image>().sprite = user.profileBanner;
+        profilePageheader.Find("ProfilePic").Find("ImageMask").Find("Image").GetComponent<Image>().sprite = user.image;
         profilePageheader.Find("Name").GetComponent<TextMeshProUGUI>().text = user.username;
         profilePageheader.Find("Description").GetComponent<TextMeshProUGUI>().text = user.bioText;
         if (pinnedUsers.Contains(user))
@@ -199,7 +199,7 @@ public class OSSocialMediaContent : MonoBehaviour
         }
         else
         {
-            profilePageheader.Find("PinUser").GetComponent<Image>().color = Color.black;
+            profilePageheader.Find("PinUser").GetComponent<Image>().color = Color.white;
         }
 
         // Show only posts from current user profile
@@ -262,7 +262,7 @@ public class OSSocialMediaContent : MonoBehaviour
         }
         if (so == currentUser)
         {
-            profilePageheader.Find("PinUser").GetComponent<Image>().color = Color.black;
+            profilePageheader.Find("PinUser").GetComponent<Image>().color = Color.white;
         }
     }
 
