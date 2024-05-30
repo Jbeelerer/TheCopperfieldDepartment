@@ -145,11 +145,12 @@ public class FPSController : MonoBehaviour
                     //TODO: for now don't spawn any trashed post it if there is no content
                     if (pe.GetContent() != null)
                     {
+                        additionalInfoBoard.CancelPreview();
                         OnPinDeletion?.Invoke(pe.GetContent());
                         //instantiate TrashedPostIT
                         if (trashedPostItPrefab != null)
                         {
-                            GameObject g = Instantiate(trashedPostItPrefab, pe.transform.position, pe.transform.rotation);
+                            GameObject g = Instantiate(trashedPostItPrefab, pe.transform.position + new Vector3(0.1f, 0, 0), pe.transform.rotation);
                             g.GetComponent<TrashedPostIt>().SetContent(pe.GetContent());
                         }
                     }
@@ -399,7 +400,7 @@ public class FPSController : MonoBehaviour
                     }
                     else
                     {
-                        grabbedObject.shoot(grabPos.position - cameraObject.position);//Vector3.forward);
+                        grabbedObject.shoot(cameraObject.transform.forward);//Vector3.forward);  
                         grabbedObject = null;
                     }
                 }

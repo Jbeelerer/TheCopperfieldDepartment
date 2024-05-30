@@ -10,9 +10,11 @@ public class Grabbable : MonoBehaviour
     private Rigidbody rb;
     public void Grab(Transform pos)
     {
+        gameObject.layer = 2;
         transform.localPosition = Vector3.zero;
         position = pos;
         transform.SetParent(pos);
+        rb.isKinematic = true;
         rb.freezeRotation = true;
         isGrabbed = true;
 
@@ -23,10 +25,14 @@ public class Grabbable : MonoBehaviour
         {
             return;
         }
-        isGrabbed = false;
         transform.SetParent(null);
         transform.rotation = Quaternion.identity;
         rb.freezeRotation = false;
+        gameObject.layer = 0;
+        isGrabbed = false;
+        rb.isKinematic = false;
+        rb.velocity = Vector3.zero;
+        rb.AddForce(direction * 1000);
     }
     // Start is called before the first frame update
     void Start()
@@ -35,7 +41,7 @@ public class Grabbable : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (isGrabbed)
         {
