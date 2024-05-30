@@ -65,6 +65,7 @@ public class AdditionalInfoBoard : MonoBehaviour
         contentParent.gameObject.SetActive(!(o is Person || o is SocialMediaUser));
         personParent.gameObject.SetActive(o is Person || o is SocialMediaUser);
         additionalInfos.text = "";
+        transform.Find("Image").gameObject.SetActive(true);
         // check if scribtable object is type person  
         switch (o)
         {
@@ -89,7 +90,13 @@ public class AdditionalInfoBoard : MonoBehaviour
             case SocialMediaPost:
                 SocialMediaPost smp = (SocialMediaPost)o;
                 if (smp.image != null)
+                {
                     pbMaterial.material.SetTexture("_Base", smp.image.texture);
+                }
+                else
+                {
+                    transform.Find("Image").gameObject.SetActive(false);
+                }
                 contentText.text = smp.content;
                 break;
         }
