@@ -515,8 +515,13 @@ public class FPSController : MonoBehaviour
             }
             #endregion
             #region Handle right click
-            if (Input.GetMouseButtonDown(1) && currentSelectedObject != null && currentSelectedObject.name == "pinboardElement(Clone)")
+            if (Input.GetMouseButtonDown(1) && currentSelectedObject != null && (currentSelectedObject.name == "pinboardElement(Clone)" || currentSelectedObject.name == "pin"))
             {
+                // this allows, the thread to be created while looking at pin
+                if (currentSelectedObject.name == "pin")
+                {
+                    currentSelectedObject = currentSelectedObject.transform.parent.gameObject;
+                }
                 if (selectedPenAnim != null)
                 {
                     StartCoroutine(PlayPenAnimation("cross"));
@@ -547,7 +552,7 @@ public class FPSController : MonoBehaviour
             // place the thread after stopping to drag
             if (Input.GetMouseButtonUp(1) && currentThread != null)
             {
-                if (lastSelectedObject.transform != hit.collider.transform)
+                if (lastSelectedObject.transform != hit.collider.transform && !(lastSelectedObject.transform == hit.collider.transform.parent && hit.collider.gameObject.name == "pin"))
                 {
                     TryToPlaceThread(nameOfThingLookedAt);
                 }
