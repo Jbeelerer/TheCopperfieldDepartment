@@ -79,7 +79,6 @@ public class AudioManager : MonoBehaviour
         {
             if (source.clip == audioClip)
             {
-                print("removing repeating source");
                 repeatingAudioSources.Remove(source);
                 StartCoroutine(FadeOut(source, fadeDuration));
                 return;
@@ -92,7 +91,7 @@ public class AudioManager : MonoBehaviour
         source.Play();
 
         float timeElapsed = 0;
-        while (source.volume < 1)
+        while (source && source.volume < 1)
         {
             source.volume = Mathf.Lerp(0, 1, timeElapsed / fadeDuration);
             timeElapsed += Time.deltaTime;
