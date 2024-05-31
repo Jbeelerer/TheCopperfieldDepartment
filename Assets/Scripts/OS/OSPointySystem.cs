@@ -35,7 +35,6 @@ public class OSPointySystem : MonoBehaviour
     [SerializeField] private List<PointyTutorialStep> stepsSocialMedia = new List<PointyTutorialStep>();
 
     private ComputerControls computerControls;
-    private OSSocialMediaContent socialMediaContent;
     private GameObject nextTargetObject;
     private List<PointyTutorialStep> currentTutorial;
     private int currentStep;
@@ -141,8 +140,7 @@ public class OSPointySystem : MonoBehaviour
         // Reset social media to home feed at start of its tutorial
         if (currentTutorial == stepsSocialMedia && currentStep == 1)
         {
-            //print(GameObject.Find("OSSocialMediaContent(Clone)"));
-            socialMediaContent = Object.FindObjectOfType<OSSocialMediaContent>();
+            OSSocialMediaContent socialMediaContent = Object.FindObjectOfType<OSSocialMediaContent>();
             socialMediaContent.ResetHomeFeed();
             socialMediaContent.CloseUserProfile();
             socialMediaContent.EnableFirstPostOptions();
