@@ -1,3 +1,4 @@
+using SaveSystem;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -34,6 +35,7 @@ public class OSPointySystem : MonoBehaviour
     [SerializeField] private List<PointyTutorialStep> stepsSocialMedia = new List<PointyTutorialStep>();
 
     private ComputerControls computerControls;
+    private OSSocialMediaContent socialMediaContent;
     private GameObject nextTargetObject;
     private List<PointyTutorialStep> currentTutorial;
     private int currentStep;
@@ -43,12 +45,13 @@ public class OSPointySystem : MonoBehaviour
     private void Start()
     {
         computerControls = GetComponentInParent<ComputerControls>();
+        
 
         spotlight.GetComponent<Image>().alphaHitTestMinimumThreshold = 1f;
         originalSpotlightSize = spotlight.GetComponent<RectTransform>().sizeDelta;
     }
 
-    public void ToggleButtonNotif(string name)
+    /*public void ToggleButtonNotif(string name)
     {
         if (!completedTutorials.Contains(name) && name != "Default")
         {
@@ -58,12 +61,17 @@ public class OSPointySystem : MonoBehaviour
         {
             pointyButton.GetComponent<Animator>().Play("buttonPointyQuestion");
         }
-    }
+    }*/
 
-    public void StartTutorial(string name)
+    public void StartTutorial(string name, bool toggledAutomatically = false)
     {
         // Bool used to deactivate pointy in inspector
         if (deactivatePointy)
+        {
+            return;
+        }
+
+        if (name == "Default" && toggledAutomatically)
         {
             return;
         }
@@ -72,6 +80,10 @@ public class OSPointySystem : MonoBehaviour
         if (!completedTutorials.Contains(name))
         {
             completedTutorials.Add(name);
+        }
+        else if (toggledAutomatically)
+        {
+            return;
         }
 
         // Play popup sound
@@ -86,7 +98,14 @@ public class OSPointySystem : MonoBehaviour
                 currentTutorial = stepsDesktop;
                 break;
             case "StartSettings":
-                currentTutorial = stepsStartSettings;
+                if (toggledAutomatically)
+                {
+                    currentTutorial = stepsDesktop;
+                }
+                else
+                {
+                    currentTutorial = stepsStartSettings;
+                }
                 break;
             case "GovApp":
                 currentTutorial = stepsGovApp;
@@ -117,6 +136,18 @@ public class OSPointySystem : MonoBehaviour
             return;
         }
 
+        pointyButton.GetComponent<Animator>().Play("buttonPointyClose");
+
+        // Reset social media to home feed at start of its tutorial
+        if (currentTutorial == stepsSocialMedia && currentStep == 1)
+        {
+            //print(GameObject.Find("OSSocialMediaContent(Clone)"));
+            socialMediaContent = Object.FindObjectOfType<OSSocialMediaContent>();
+            socialMediaContent.ResetHomeFeed();
+            socialMediaContent.CloseUserProfile();
+            socialMediaContent.EnableFirstPostOptions();
+        }
+
         screenBlockadePointy.SetActive(true);
         spotlight.SetActive(true);
 
@@ -132,7 +163,7 @@ public class OSPointySystem : MonoBehaviour
 
         if (!nextTargetObject)
         {
-            Debug.LogError("Could not find target object: " + step.targetObjectName + " Does it not exist in the current window or is it deactivated?");
+            Debug.LogError("Could not find pointy target object: " + step.targetObjectName + ". Does it not exist in the current window or is it deactivated?");
         }
 
         if (nextTargetObject == screenBlockadePointy)
@@ -192,5 +223,15 @@ public class OSPointySystem : MonoBehaviour
     public GameObject GetNextTargetObject()
     {
         return nextTargetObject;
+    }
+
+    public void LoadData(SaveData data)
+    {
+        completedTutorials = data.completedTutorials;
+    }
+
+    public void SaveData(SaveData data)
+    {
+        data.completedTutorials = completedTutorials;
     }
 }

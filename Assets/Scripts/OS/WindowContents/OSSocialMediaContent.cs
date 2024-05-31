@@ -99,6 +99,11 @@ public class OSSocialMediaContent : MonoBehaviour
         }
     }
 
+    public void EnableFirstPostOptions()
+    {
+        postList[0].OnPointerEnter(null);
+    }
+
     public void PinPost(string type, SocialMediaPost post)
     {
         switch (type)
@@ -180,6 +185,8 @@ public class OSSocialMediaContent : MonoBehaviour
                 post.gameObject.SetActive(false);
             }
         }
+
+        socialMediaPostContainer.GetComponentInParent<ScrollRect>().verticalNormalizedPosition = 1;
     }
 
     public void ShowUserProfile(SocialMediaUser user)

@@ -148,10 +148,6 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
     {
         socialMediaContent.ClearDeletedPost();
         computerControls.investigationState = OSInvestigationState.POST_DELETED;
-        /*if (computerControls.GetComponentInChildren<OSPeopleListContent>())
-        {
-            computerControls.GetComponentInChildren<OSPeopleListContent>().ClearAccusedPeople();
-        }*/
         popupManager.DisplayPostDeleteMessage();
         postOptions.transform.Find("DeletePost").GetComponent<Image>().color = Color.red;
         postOptions.transform.Find("DeletePost").gameObject.SetActive(true);
