@@ -99,6 +99,11 @@ public class OSSocialMediaContent : MonoBehaviour
         }
     }
 
+    public void EnableFirstPostOptions()
+    {
+        postList[0].OnPointerEnter(null);
+    }
+
     public void PinPost(string type, SocialMediaPost post)
     {
         switch (type)
@@ -134,8 +139,9 @@ public class OSSocialMediaContent : MonoBehaviour
     {
         CloseUserProfile();
 
-        searchBar.Find("SearchText").GetComponent<TextMeshProUGUI>().text = "Searching for: <b>" + filterTerm + "</b>";
-        searchBar.gameObject.SetActive(true);
+        searchBar.Find("SearchText").GetComponent<TextMeshProUGUI>().text = "Searching: <b>" + filterTerm + "</b>";
+        searchBar.Find("BackButton").gameObject.SetActive(true);
+        searchBar.Find("Image").gameObject.SetActive(true);
 
         foreach (Transform post in socialMediaPostContainer.transform)
         {
@@ -166,7 +172,9 @@ public class OSSocialMediaContent : MonoBehaviour
 
     public void ResetHomeFeed()
     {
-        searchBar.gameObject.SetActive(false);
+        searchBar.Find("SearchText").GetComponent<TextMeshProUGUI>().text = "Home";
+        searchBar.Find("BackButton").gameObject.SetActive(false);
+        searchBar.Find("Image").gameObject.SetActive(false);
 
         // Display all posts that aren't flagged to be hidden in the home feed
         foreach (Transform post in socialMediaPostContainer.transform)
@@ -180,10 +188,16 @@ public class OSSocialMediaContent : MonoBehaviour
                 post.gameObject.SetActive(false);
             }
         }
+
+        socialMediaPostContainer.GetComponentInParent<ScrollRect>().verticalNormalizedPosition = 1;
     }
 
     public void ShowUserProfile(SocialMediaUser user)
     {
+        searchBar.Find("SearchText").GetComponent<TextMeshProUGUI>().text = "Profile View";
+        searchBar.Find("BackButton").gameObject.SetActive(true);
+        searchBar.Find("Image").gameObject.SetActive(false);
+
         currentUser = user;
         profilePage.SetActive(true);
 
@@ -235,6 +249,10 @@ public class OSSocialMediaContent : MonoBehaviour
 
     public void CloseUserProfile()
     {
+        searchBar.Find("SearchText").GetComponent<TextMeshProUGUI>().text = "Home";
+        searchBar.Find("BackButton").gameObject.SetActive(false);
+        searchBar.Find("Image").gameObject.SetActive(false);
+
         currentUser = null;
         profilePage.SetActive(false);
     }

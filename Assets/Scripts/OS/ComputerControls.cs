@@ -231,7 +231,7 @@ public class ComputerControls : MonoBehaviour, ISavable
         }
     }
 
-    public void TogglePointy(bool isFirstTutorial = false)
+    public void TogglePointy(bool toggledAutomatically = false)
     {
         // Close pointy if currently active
         if (pointySystem.GetNextTargetObject())
@@ -240,10 +240,10 @@ public class ComputerControls : MonoBehaviour, ISavable
             return;
         }
 
-        if (!currentFocusedWindow || isFirstTutorial)
+        if (!currentFocusedWindow)
         {
             // Start desktop tutorial because no specific window is focused
-            pointySystem.StartTutorial("Desktop");
+            pointySystem.StartTutorial("Desktop", toggledAutomatically);
             return;
         }
 
@@ -253,19 +253,19 @@ public class ComputerControls : MonoBehaviour, ISavable
         switch (currentFocusedWindow.appType)
         {
             case OSAppType.SOCIAL:
-                pointySystem.StartTutorial("SocialMedia");
+                pointySystem.StartTutorial("SocialMedia", toggledAutomatically);
                 break;
             case OSAppType.GOV:
-                pointySystem.StartTutorial("GovApp");
+                pointySystem.StartTutorial("GovApp", toggledAutomatically);
                 break;
             case OSAppType.PEOPLE_LIST:
-                pointySystem.StartTutorial("PeopleList");
+                pointySystem.StartTutorial("PeopleList", toggledAutomatically);
                 break;
             case OSAppType.START_SETTINGS:
-                pointySystem.StartTutorial("StartSettings");
+                pointySystem.StartTutorial("StartSettings", toggledAutomatically);
                 break;
             default:
-                pointySystem.StartTutorial("Default");
+                pointySystem.StartTutorial("Default", toggledAutomatically);
                 break;
         }
     }
@@ -506,7 +506,7 @@ public class ComputerControls : MonoBehaviour, ISavable
     {
         ResizeWindowSmall(window);
         currentFocusedWindow = null;
-        pointySystem.ToggleButtonNotif("Default");
+        //pointySystem.ToggleButtonNotif("Default");
         window.associatedTab.gameObject.SetActive(false);
         window.gameObject.SetActive(false);
     }
@@ -561,8 +561,8 @@ public class ComputerControls : MonoBehaviour, ISavable
         // Set window position
         SetWindowOpenPosition(newWindow.GetComponent<OSWindow>());
         // Open Pointy Tutorial if it exists for the window
-        /*if (newWindow.GetComponent<OSWindow>().appType != OSAppType.WARNING && newWindow.GetComponent<OSWindow>().appType != OSAppType.START_SETTINGS)
-            TogglePointy(true);*/
+        if (/*gm.GetDay() == 1 && */newWindow.GetComponent<OSWindow>().appType != OSAppType.WARNING && newWindow.GetComponent<OSWindow>().appType != OSAppType.START_SETTINGS)
+            TogglePointy(true);
     }
 
     private void SetWindowOpenPosition(OSWindow window)
@@ -622,7 +622,7 @@ public class ComputerControls : MonoBehaviour, ISavable
         }
 
         // Activate pointy notif if window tutorial hasnt been seen yet
-        if (gm.GetDay() == 1)
+        /*if (gm.GetDay() == 1)
         {
             switch (currentFocusedWindow.appType)
             {
@@ -639,7 +639,7 @@ public class ComputerControls : MonoBehaviour, ISavable
                     pointySystem.ToggleButtonNotif("Default");
                     break;
             }
-        }
+        }*/
     }
 
     private void RemoveLeftRightWindow(OSWindow window)

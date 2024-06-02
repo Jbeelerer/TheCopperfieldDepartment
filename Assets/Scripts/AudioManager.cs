@@ -6,6 +6,9 @@ public class AudioManager : MonoBehaviour
 {
     public static AudioManager instance;
     public AudioSource audioSource;
+
+    private List<AudioSource> repeatingAudioSources = new List<AudioSource>();
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -20,15 +23,12 @@ public class AudioManager : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
     public void PlayAudio(AudioClip audioClip)
     {
-        audioSource.clip = audioClip;
-        audioSource.Play();
+        AudioSource newSource = gameObject.AddComponent<AudioSource>();
+        newSource.clip = audioClip;
+        newSource.Play();
+        StartCoroutine(DeleteAudioSource(newSource, newSource.clip.length));
     }
     public IEnumerator ResetAudio(float length)
     {
@@ -54,5 +54,86 @@ public class AudioManager : MonoBehaviour
             audioSource.Play();
         }
 
+    }
+    public void PlayAudioRepeating(AudioClip audioClip, float fadeDuration = 0f)
+    {
+        foreach (AudioSource source in repeatingAudioSources)
+        {
+            if (source.clip == audioClip)
+            {
+                return;
+            }
+        }
+
+        AudioSource newSource = gameObject.AddComponent<AudioSource>();
+        newSource.loop = true;
+        newSource.clip = audioClip;
+        newSource.volume = 0.9f;
+        repeatingAudioSources.Add(newSource);
+        StartCoroutine(FadeIn(newSource, fadeDuration));
+    }
+
+    public void StopAudioRepeating(AudioClip audioClip, float fadeDuration = 0f)
+    {
+        foreach (AudioSource source in repeatingAudioSources)
+        {
+            if (source.clip == audioClip)
+            {
+                repeatingAudioSources.Remove(source);
+                StartCoroutine(FadeOut(source, fadeDuration));
+                return;
+            }
+        }
+    }
+
+    private IEnumerator FadeIn(AudioSource source, float fadeDuration)
+    {
+        source.Play();
+
+        float timeElapsed = 0;
+        while (source && source.volume < 1)
+        {
+            source.volume = Mathf.Lerp(0, 1, timeElapsed / fadeDuration);
+            timeElapsed += Time.deltaTime;
+            yield return true;
+        }
+    }
+
+    private IEnumerator FadeOut(AudioSource source, float fadeDuration)
+    {
+        float timeElapsed = 0;
+        while (source && source.volume > 0)
+        {
+            source.volume = Mathf.Lerp(1, 0, timeElapsed / fadeDuration);
+            timeElapsed += Time.deltaTime;
+            yield return true;
+        }
+
+        if (!source)
+            yield break;
+
+        StartCoroutine(DeleteAudioSource(source));
+    }
+
+    private IEnumerator DeleteAudioSource(AudioSource source, float delay = 0)
+    {
+        yield return new WaitForSeconds(delay);
+
+        source.Stop();
+        //repeatingAudioSources.Remove(source);
+        Destroy(source);
+    }
+
+    public bool IsPlaying(AudioClip audioClip)
+    {
+        foreach (AudioSource source in repeatingAudioSources)
+        {
+            if (source.clip == audioClip)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -53,6 +53,7 @@ public class FPSController : MonoBehaviour
     [SerializeField] private AudioClip threadCuttingSound;
     [SerializeField] private AudioClip pickupSound;
     [SerializeField] private AudioClip deleteSound;
+    [SerializeField] private AudioClip chairRollSound;
 
     private Narration narration;
 
@@ -204,6 +205,16 @@ public class FPSController : MonoBehaviour
             float curSpeedX = canMove ? walkSpeed * Input.GetAxis("Vertical") : 0;
             float curSpeedY = canMove ? walkSpeed * Input.GetAxis("Horizontal") : 0;
             moveDirection = (forward * curSpeedX) + (right * curSpeedY);
+
+            // Play chair rolling sound when moving
+            if (curSpeedX != 0 || curSpeedY != 0)
+            {
+                am.PlayAudioRepeating(chairRollSound, 0.5f);
+            }
+            else
+            {
+                am.StopAudioRepeating(chairRollSound, 0.3f);
+            }
 
             #endregion
 
@@ -732,6 +743,9 @@ public class FPSController : MonoBehaviour
                     hit.collider.gameObject.GetComponent<UnityEngine.UI.Button>().onClick.Invoke();
                 }
             }
+
+            if (am.IsPlaying(chairRollSound))
+                am.StopAudioRepeating(chairRollSound, 0.3f);
         }
     }
 
