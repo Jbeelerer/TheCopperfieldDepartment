@@ -67,7 +67,16 @@ public class PinboardElement : MonoBehaviour
     private bool noStartThreadClipping = true;
     private bool noEndThreadClipping = true;
     private GameObject flag;
+    private Dictionary<LineRenderer, Transform> connections = new Dictionary<LineRenderer, Transform>();
 
+    public void AddConnection(LineRenderer thread, Transform instance)
+    {
+        connections.Add(thread, instance);
+    }
+    public void RemoveConnection(LineRenderer thread)
+    {
+        connections.Remove(thread);
+    }
     public void MakeUndeletable()
     {
         isDeletable = false;
@@ -289,13 +298,13 @@ public class PinboardElement : MonoBehaviour
     }
     void Awake()
     {
+        flag = transform.Find("Flag").gameObject;
+        flag.SetActive(false);
     }
 
     void Start()
     {
         GameManager.instance.InvestigationStateChanged.AddListener(UpdateSuspicion);
-        flag = transform.Find("Flag").gameObject;
-        flag.SetActive(false);
         RenderPipelineManager.endCameraRendering += this.OnEndCameraRendering;
     }
     void OnEndCameraRendering(ScriptableRenderContext context, Camera camera)
@@ -316,7 +325,7 @@ public class PinboardElement : MonoBehaviour
         {
             if (!isMoving)
                 animationTime += Time.deltaTime;
-            // TODO move threads
+
             List<LineRenderer> tempThreads = new List<LineRenderer>();
             foreach (LineRenderer l in startingThreads)
             {
@@ -479,7 +488,6 @@ public class PinboardElement : MonoBehaviour
     public void SetContent(ScriptableObject o)
     {
         TextMeshProUGUI textElement = gameObject.GetComponentInChildren<TextMeshProUGUI>();
-
         switch (o)
         {
             case Person:
@@ -490,6 +498,10 @@ public class PinboardElement : MonoBehaviour
                 textElement.text = person.personName;
                 textElement.verticalAlignment = VerticalAlignmentOptions.Bottom;
                 image.GetComponent<Renderer>().material.SetTexture("_Base", person.image.texture);
+                if (GameManager.instance.checkIfPersonAccused(person))
+                {
+                    SetAnnotationType(AnnotationType.CaughtSuspect, true);
+                }
                 break;
             case SocialMediaPost:
                 // connect to user
@@ -522,6 +534,11 @@ public class PinboardElement : MonoBehaviour
 
     public void DeleteElement()
     {
+        foreach (Transform c in connections.Values)
+        {
+            Destroy(c.gameObject);
+        }
+        // TODO Multiple CONECTIONS??????
         foreach (PinboardElement p in connectedElements)
         {  // remove threads
             foreach (LineRenderer l in startingThreads)
@@ -541,6 +558,7 @@ public class PinboardElement : MonoBehaviour
         {
             Destroy(l);
         }
+
         GetComponentInParent<Pinboard>().RemoveThingOnPinboardByElement(this);
         Destroy(gameObject);
     }

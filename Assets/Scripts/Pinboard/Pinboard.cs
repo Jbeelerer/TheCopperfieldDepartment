@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
@@ -14,6 +15,7 @@ public class Pinboard : MonoBehaviour
     [SerializeField] private GameObject pinPrefab;
 
     [SerializeField] private GameObject thread;
+    [SerializeField] private GameObject connectionPrefab;
 
     //  parentsOnPinboard contains the content and element of the parent element of the pinboard element. These are users and people. The children are posts, the transform of these are stored in subPins. The subPins are stored near their parent inside the defined zone.
     private Dictionary<ScriptableObject, PinboardElement> pinsOnPinboard = new Dictionary<ScriptableObject, PinboardElement>();
@@ -30,6 +32,7 @@ public class Pinboard : MonoBehaviour
     [SerializeField] private Texture mysteriousPersonMaterial;
     [SerializeField] private Texture rightPenClickInfo;
     [SerializeField] private Texture leftPenClickInfo;
+    [SerializeField] private Texture threadInfo;
 
     private bool firstLoad = true;
 
@@ -37,9 +40,40 @@ public class Pinboard : MonoBehaviour
 
     private Dictionary<ScriptableObject, GameObject> trashedPinboardElements = new Dictionary<ScriptableObject, GameObject>();
 
+    [SerializeField] private ScriptableObject[] tutorialRelevantObjects;
+
     public void AddTrashedPin(ScriptableObject o, GameObject go)
     {
         trashedPinboardElements[o] = go;
+    }
+
+    public void AddTutorialRelevantObjects()
+    {
+        foreach (ScriptableObject o in tutorialRelevantObjects)
+        {
+            if (subPins.ContainsKey(o) || pinsOnPinboard.ContainsKey(o))
+            {
+                continue;
+            }
+            AddPin(o);
+        }
+    }
+    public void AddConnectionIfExist(ScriptableObject from, ScriptableObject to, Transform thread)
+    {
+        Connections connection = gm.checkForConnectionText(from, to);
+        if (connection != null)
+        {
+            GameObject instance = Instantiate(connectionPrefab, thread);
+            // handle contradiction color 
+            Color color;
+            UnityEngine.ColorUtility.TryParseHtmlString(connection.isContradiction ? "#F5867C" : "#F5DB7C", out color);
+            instance.transform.Find("PostIt").GetComponent<MeshRenderer>().material.color = color;
+            instance.transform.position = thread.transform.GetChild(0).position - new Vector3(0, 0.05f, 0);
+            instance.GetComponentInChildren<TextMeshProUGUI>().text = connection.text;
+            LineRenderer lr = thread.GetComponent<LineRenderer>();
+            pinsOnPinboard[to].AddConnection(lr, instance.transform);
+            pinsOnPinboard[from].AddConnection(lr, instance.transform);
+        }
     }
     // Start is called before the first frame update
     void Start()
@@ -49,6 +83,7 @@ public class Pinboard : MonoBehaviour
         //pinboardModel.localScale = new Vector3(pinboardModel.localScale.x * gm.GetCurrentCase().pinboardSize, pinboardModel.localScale.y * gm.GetCurrentCase().pinboardSize, pinboardModel.localScale.z);
         //instantiate a pin for the suspect   
         AddPin(null, new Vector3(0, 0, -pinboardModel.localScale.z / 2));
+        AddPin(threadInfo, new Vector3(0.5f - (pinboardModel.localScale.x / 2), 0, -pinboardModel.localScale.z / 2));
         AddPin(rightPenClickInfo, new Vector3(0.5f - (pinboardModel.localScale.x / 2), 0.5f - (pinboardModel.localScale.y / 2), -pinboardModel.localScale.z / 2));
         AddPin(leftPenClickInfo, new Vector3(0.5f + minSpaceBetweenPins - (pinboardModel.localScale.x / 2), 0.5f - (pinboardModel.localScale.y / 2), -pinboardModel.localScale.z / 2));
         narration = FindObjectOfType<Narration>();
@@ -60,6 +95,7 @@ public class Pinboard : MonoBehaviour
     {
         if (pinsOnPinboard.ContainsKey(o))
         {
+            print("RemoveByScriptableObject");
             pinsOnPinboard[o].DeleteElement();
         }
     }
@@ -206,7 +242,7 @@ public class Pinboard : MonoBehaviour
                 }
                 Vector3 centerOfZone = pinsOnPinboard[so].transform.localPosition;
                 float ySection = 0.2f;  //pinboardModel.localScale.y / 6;
-                //float xSection = 1f;//pinboardModel.localScale.x / 3/2;  
+                                        //float xSection = 1f;//pinboardModel.localScale.x / 3/2;  
                 centerOfZone.x += zoneSizeX * (centerOfZone.x / pinboardModel.localScale.x);
                 //centerOfZone.x += centerOfZone.x > xSection ? +zoneSizeX / 2 : centerOfZone.x < -xSection ? -zoneSizeX / 2 : 0;
                 // go down by half of the zone size to get center of zone, since the user post is allways on top of a zone  
@@ -315,10 +351,11 @@ public class Pinboard : MonoBehaviour
 
     public void ResetPinboard()
     {
+        print("ResetPinboard");
         if (firstLoad)
         {
             firstLoad = false;
-            // return later when a save system is implemented
+            return;
         }
         List<PinboardElement> toDelete = new List<PinboardElement>();
         foreach (PinboardElement p in pinsOnPinboard.Values)

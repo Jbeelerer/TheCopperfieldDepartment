@@ -61,12 +61,18 @@ public class Phone : MonoBehaviour
             narration.Say("phoneNotWorking");
             return;
         }
-
         audioSource.Stop();
-        Quaternion[] rotations = new Quaternion[3];
-        rotations[0] = Quaternion.identity;
-        rotations[1] = Quaternion.Euler(-20, -100, 0);
-        rotations[2] = Quaternion.Euler(-20, -70, 0);
+        Quaternion[] rotations = new Quaternion[0];
+        if ("phoneCallIntro" == callName)
+        {
+            rotations = new Quaternion[2];
+            rotations[0] = Quaternion.identity;
+            rotations[1] = Quaternion.Euler(-20, -100, 0);
+            // Find object with component pinboard 
+            FindObjectOfType<Pinboard>().AddTutorialRelevantObjects();
+        }
+
+        //rotations[2] = Quaternion.Euler(-20, -70, 0);
 
         narration.PlaySequence(callName, rotations);
         isRinging = false;

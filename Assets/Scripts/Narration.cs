@@ -4,11 +4,28 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum Requirement
+{
+    None,
+    WalkToBoard,
+    LookAtPostIt,
+    MovePostIt,
+    DeletePostIt,
+    FindSuspect,
+    ConnectPostIT,
+    ConnectPostITContradiction,
+    CutThread,
+    Pen,
+    AnnotateCircle,
+    AnnotateCross,
+}
+
 [System.Serializable]
 public class TimedSubtitle
 {
     public float duration;
     public string text;
+    public Requirement requirement = Requirement.None;
 }
 [System.Serializable]
 public class TimedSubtitles
@@ -62,6 +79,9 @@ public class Narration : MonoBehaviour
     [SerializeField] private AudioClip phonePickup;
     [SerializeField] private AudioClip phoneHangup;
 
+    private Requirement requirementToBeMet = Requirement.None;
+    private bool requirementMet = false;
+
     private Quaternion[] rotations;
 
     private bool sequencePlaying = false;
@@ -69,6 +89,8 @@ public class Narration : MonoBehaviour
     private Animator textAnimator;
 
     Quaternion startRotation;
+
+    private bool sequenceHadRequirement = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -95,6 +117,7 @@ public class Narration : MonoBehaviour
     {
         rotations = rotation;
         blackScreen.GetComponent<Image>().color = rotation != null ? new Color(0, 0, 0, 0f) : new Color(0, 0, 0, 1f);
+        StopAllCoroutines();
         switch (sequence)
         {
             case "firstDayFeedbackPositive":
@@ -112,26 +135,45 @@ public class Narration : MonoBehaviour
         }
     }
 
+    public bool HasRequirement()
+    {
+        return requirementToBeMet != Requirement.None;
+    }
+    public bool CheckIfRequirementMet(Requirement requirement, bool lastStep = true)
+    {
+        if (requirementToBeMet == requirement)
+        {
+            if (lastStep)
+            {
+                requirementMet = true;
+                requirementToBeMet = Requirement.None;
+            }
+            return true;
+        }
+        return false;
+    }
+
     // Update is called once per frame
     void Update()
     {
         if (gm.GetIfDevMode())
         {
-            if (Input.GetKeyDown(KeyCode.X) && sequencePlaying)
-            {
-                StopAllCoroutines();
-                audioSource.Stop();
-                gm.SetGameState(GameState.Playing);
-                subtitleText.text = "";
-                blackScreen.SetActive(false);
-                if (rotations != null)
-                {
-                    GameObject.Find("Player").GetComponent<FPSController>().ResetCameraRotation(startRotation);
-                }
-            }
+            // remove completly skipping for now
+            /*  if (Input.GetKeyDown(KeyCode.X) && sequencePlaying)
+              {
+                  StopAllCoroutines();
+                  audioSource.Stop();
+                  gm.SetGameState(GameState.Playing);
+                  subtitleText.text = "";
+                  blackScreen.SetActive(false);
+                  if (rotations != null)
+                  {
+                      GameObject.Find("Player").GetComponent<FPSController>().ResetCameraRotation(startRotation);
+                  }
+              }*/
         }
 
-        if (Input.GetMouseButtonDown(0) && sequencePlaying && !skip)
+        if (Input.GetMouseButtonDown(0) && sequencePlaying && !skip && !sequenceHadRequirement)
         {
             skip = true;
         }
@@ -201,49 +243,94 @@ public class Narration : MonoBehaviour
         subtitleText.text = "";
 
         am.PlayAudio(phonePickup);
-        yield return new WaitForSeconds(phonePickup.length);
-
-        audioSource.time = 0;
+        yield return new WaitForSeconds(0.05f);
         int talkIndex = 0;
         float totalTime = 0;
         sequencePlaying = true;
 
+        audioSource.time = 0;
         audioSource.clip = clip;
         audioSource.Play();
 
         foreach (TimedSubtitle entry in content)
         {
-            if (rotations != null)
+            totalTime += entry.duration;
+            requirementMet = false;
+            print(entry.requirement);
+            do
             {
-                //Camera.main.transform.rotation = rotations[i];  
-                player.ResetCameraRotation(rotations[talkIndex]);
-                talkIndex++;
-            }
-            subtitleText.text = entry.text;
-            float time = 0;
-            while (entry.duration >= time)
-            {
-                yield return new WaitForSeconds(0.1f);
-                time += 0.1f;
-                if (skip)
+                if (rotations != null)
                 {
-                    if (entry.duration + totalTime < audioSource.clip.length)
+                    if (rotations.Length > talkIndex)
                     {
-                        print(totalTime + entry.duration);
-                        audioSource.Stop();
-                        audioSource.time = totalTime + entry.duration;
+                        //Camera.main.transform.rotation = rotations[i];  
+                        player.ResetCameraRotation(rotations[talkIndex]);
+                        talkIndex++;
+                    }
+                    else if (gm.GetGameState() == GameState.Frozen)
+                    {
+                        player.ResetCameraRotation(startRotation);
+                    }
+                }
+                subtitleText.text = entry.text;
+                float time = 0;
+                while (entry.duration >= time)
+                {
+                    yield return new WaitForSeconds(0.1f);
+                    time += 0.1f;
+                    if (skip)
+                    {
+                        skip = false;
+                        if (entry.requirement != Requirement.None)
+                        {
+                            continue;
+                        }
+                        if (entry.duration + totalTime < audioSource.clip.length)
+                        {
+                            audioSource.Stop();
+                            audioSource.time = totalTime;
+                            audioSource.Play();
+                        }
+                        textAnimator.Play("skip");
+                        break;
+                    }
+                }
+                if (entry.requirement != Requirement.None)
+                {
+                    sequenceHadRequirement = true;
+                    audioSource.Stop();
+                    requirementToBeMet = entry.requirement;
+                    if (gm.GetGameState() != GameState.Playing)
+                        gm.SetGameState(GameState.Playing);
+                    // TODO: Multithreading might be an option here
+                    for (int i = 0; i < 50; i++)
+                    {
+                        yield return new WaitForSeconds(0.1f);
+                        if (requirementMet)
+                        {
+                            break;
+                        }
+                    }
+                    if (!requirementMet && totalTime - entry.duration < audioSource.clip.length)
+                    {
+                        audioSource.time = totalTime - entry.duration;
                         audioSource.Play();
                     }
-                    textAnimator.Play("skip");
-                    skip = false;
-                    break;
                 }
+                // yield return new WaitForSeconds(0.1f);
+
+            } while (entry.requirement != Requirement.None && !requirementMet);
+            if (requirementMet && totalTime < audioSource.clip.length)
+            {
+                audioSource.time = totalTime;
+                audioSource.Play();
             }
-            totalTime += entry.duration;
         }
-        player.ResetCameraRotation(startRotation);
-
-
+        if (gm.GetGameState() == GameState.Frozen)
+        {
+            player.ResetCameraRotation(startRotation);
+        }
+        sequenceHadRequirement = false;
         sequencePlaying = false;
         am.PlayAudio(phoneHangup);
         yield return new WaitForSeconds(phonePickup.length);
