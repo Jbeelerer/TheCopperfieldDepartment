@@ -429,7 +429,6 @@ public class PinboardElement : MonoBehaviour
 
     public void InitialiseElement()
     {
-        print(elementType);
         switch (elementType)
         {
             case PinboardElementType.Person:
@@ -506,8 +505,6 @@ public class PinboardElement : MonoBehaviour
             case SocialMediaPost:
                 // connect to user
                 SocialMediaPost post = ConversionUtility.Convert<SocialMediaPost>(o);
-                print(post.image);
-                print(post.contentShort);
                 elementType = post.image == null ? PinboardElementType.SocialMediaPost : PinboardElementType.SocialMediaPostWithImage;
                 InitialiseElement();
                 textElement.text = post.contentShort;
@@ -536,8 +533,10 @@ public class PinboardElement : MonoBehaviour
     {
         foreach (Transform c in connections.Values)
         {
-            Destroy(c.gameObject);
+            if (c != null)
+                Destroy(c.gameObject);
         }
+        connections.Clear();
         // TODO Multiple CONECTIONS??????
         foreach (PinboardElement p in connectedElements)
         {  // remove threads

@@ -31,6 +31,9 @@ public class TimedSubtitle
 public class TimedSubtitles
 {
     public TimedSubtitle[] intro;
+    public TimedSubtitle[] phoneReminderPostNotAdded;
+    public TimedSubtitle[] phoneReminderPersonNotAdded;
+    public TimedSubtitle[] phoneReminderNothingAdded;
     public TimedSubtitle[] phoneCallIntro;
     public TimedSubtitle[] firstDayFeedbackPositive;
     public TimedSubtitle[] firstDayFeedbackNegative;
@@ -115,7 +118,6 @@ public class Narration : MonoBehaviour
 
     public void PlaySequence(string sequence, Quaternion[] rotation = null)
     {
-        rotations = rotation;
         blackScreen.GetComponent<Image>().color = rotation != null ? new Color(0, 0, 0, 0f) : new Color(0, 0, 0, 1f);
         StopAllCoroutines();
         switch (sequence)
@@ -131,6 +133,12 @@ public class Narration : MonoBehaviour
                 break;
             case "phoneCallIntro":
                 StartCoroutine(PlaySequence(timedSubtitles.phoneCallIntro, phoneCallIntroClip, false));
+                break;
+            case "phoneReminderPostNotAdded":
+                StartCoroutine(PlaySequence(timedSubtitles.phoneReminderPostNotAdded, phoneCallIntroClip, false));
+                break;
+            case "phoneReminderNothingAdded":
+                StartCoroutine(PlaySequence(timedSubtitles.phoneReminderNothingAdded, phoneCallIntroClip, false));
                 break;
         }
     }
@@ -257,6 +265,7 @@ public class Narration : MonoBehaviour
             totalTime += entry.duration;
             requirementMet = false;
             print(entry.requirement);
+            print(entry.text);
             do
             {
                 if (rotations != null)
@@ -336,6 +345,16 @@ public class Narration : MonoBehaviour
         yield return new WaitForSeconds(phonePickup.length);
         gm.SetGameState(GameState.Playing);
         subtitleText.text = "";
+
+        if (clip == introClip)
+        {
+            GameObject ow = GameObject.Find("OutsideWorld");
+            if (ow != null)
+            {
+                ow.GetComponent<Animator>().SetTrigger("NewDay");
+            }
+        }
+
         blackScreen.SetActive(false);
         if (playNextDayAnimation)
             gm.NextDaySequence();

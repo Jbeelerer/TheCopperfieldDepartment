@@ -39,10 +39,15 @@ public class Phone : MonoBehaviour
         {
             wasOnPc = true;
         }
-        if (gm.GetGameState() == GameState.Playing && wasOnPc)
+        if (gm.GetGameState() == GameState.Playing && wasOnPc && gm.GetDay() == 1 && !isRinging)
         {
-            Ring("phoneCallIntro");
-            gm.StateChanged.RemoveListener(Ring);
+            wasOnPc = false;
+            string callName = FindObjectOfType<Pinboard>().tutorialElementOnBoard();
+            Ring(callName);
+            if (callName == "phoneCallIntro")
+            {
+                gm.StateChanged.RemoveListener(Ring);
+            }
         }
     }
     public void Ring(string callName)
@@ -62,15 +67,11 @@ public class Phone : MonoBehaviour
             return;
         }
         audioSource.Stop();
-        Quaternion[] rotations = new Quaternion[0];
-        if ("phoneCallIntro" == callName)
-        {
-            rotations = new Quaternion[2];
-            rotations[0] = Quaternion.identity;
-            rotations[1] = Quaternion.Euler(-20, -100, 0);
-            // Find object with component pinboard 
-            FindObjectOfType<Pinboard>().AddTutorialRelevantObjects();
-        }
+        Quaternion[] rotations = new Quaternion[2];
+        rotations[0] = Quaternion.identity;
+        rotations[1] = "phoneCallIntro" == callName ? Quaternion.Euler(-20, -100, 0) : Quaternion.identity;
+        // Find object with component pinboard 
+        // FindObjectOfType<Pinboard>().AddTutorialRelevantObjects();
 
         //rotations[2] = Quaternion.Euler(-20, -70, 0);
 

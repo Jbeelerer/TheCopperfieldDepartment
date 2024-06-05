@@ -9,7 +9,6 @@ using UnityEngine.UI;
 public class OSStartSettingsContent : MonoBehaviour
 {
     [SerializeField] private Slider sensitivitySlider;
-
     private ComputerControls computerControls;
     private GameObject screenBlockadeBG;
     private GameObject screenBlockadeTaskBar;
@@ -26,17 +25,21 @@ public class OSStartSettingsContent : MonoBehaviour
         screenBlockadeTaskBar.GetComponent<Image>().enabled = true;
 
         transform.GetComponentInParent<OSWindow>().transform.SetAsLastSibling();
+
+        computerControls.SetMouseSensitivityModifier(Screen.height / 30);
+        computerControls.SetMouseSensitivity(sensitivitySlider.value);
+
+        //sensitivitySlider.value = mouseSensitivityRaw;
     }
 
     public void ChangeSensitivity()
     {
-        computerControls.mouseSensitivity = sensitivitySlider.value;
+        computerControls.SetMouseSensitivity(sensitivitySlider.value);
     }
 
     public void ConfirmSettings()
     {
-        computerControls.mouseSensitivity = sensitivitySlider.value;
-
+        computerControls.SetMouseSensitivity(sensitivitySlider.value); ;
         computerControls.TogglePointy(true);
 
         screenBlockadeBG.GetComponent<Image>().enabled = false;

@@ -104,6 +104,11 @@ public class GameManager : MonoBehaviour, ISavable
         StateChanged?.Invoke();
     }
 
+    public bool isOccupied()
+    {
+        return gameState == GameState.OnPC || gameState == GameState.OnCalendar;
+    }
+
     public bool isFrozen()
     {
         return gameState == GameState.OnPC || gameState == GameState.OnCalendar || gameState == GameState.Frozen;
@@ -291,6 +296,11 @@ public class GameManager : MonoBehaviour, ISavable
 
     public void LoadNewDay(int day)
     {
+        GameObject ow = GameObject.Find("OutsideWorld");
+        if (ow != null)
+        {
+            ow.GetComponent<Animator>().SetTrigger("NewDay");
+        }
         this.day = day;
         if (Resources.LoadAll<Case>("Case" + day).Count() == 0)
         {

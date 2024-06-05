@@ -18,17 +18,17 @@ public class OSSettingsContent : MonoBehaviour
         if (!computerControls)
             computerControls = transform.GetComponentInParent<ComputerControls>();
 
-        sensitivitySlider.value = computerControls.mouseSensitivity;
+        sensitivitySlider.value = computerControls.GetMouseSensitivity();
     }
 
     public void ChangeSensitivity()
     {
-        computerControls.mouseSensitivity = sensitivitySlider.value;
+        computerControls.SetMouseSensitivity(sensitivitySlider.value);
     }
 
     public void ConfirmSettings()
     {
-        // Save current settings
-        computerControls.mouseSensitivity = sensitivitySlider.value;
+        // Save current settings  
+        computerControls.SetMouseSensitivity(sensitivitySlider.value);
     }
 }

@@ -30,7 +30,8 @@ public enum OSInvestigationState
 
 public class ComputerControls : MonoBehaviour, ISavable
 {
-    public float mouseSensitivity = 1;
+    private float mouseSensitivity = 1;
+    private float mouseSensitivityModifier = 0;
     public RectTransform cursor;
     public RectTransform background;
     public RectTransform taskBar;
@@ -73,6 +74,19 @@ public class ComputerControls : MonoBehaviour, ISavable
 
     public PinEvent OnUnpinned;
 
+    public void SetMouseSensitivity(float sensitivity)
+    {
+        mouseSensitivity = sensitivity;
+    }
+    public float GetMouseSensitivity()
+    {
+        return mouseSensitivity;
+    }
+    public void SetMouseSensitivityModifier(float modifier)
+    {
+        mouseSensitivityModifier = modifier;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -105,8 +119,8 @@ public class ComputerControls : MonoBehaviour, ISavable
         if (!cursorActive)
             return;
 
-        mouseSpeedX = mouseSensitivity * Input.GetAxis("Mouse X");
-        mouseSpeedY = mouseSensitivity * Input.GetAxis("Mouse Y");
+        mouseSpeedX = (mouseSensitivity + mouseSensitivityModifier) * Input.GetAxis("Mouse X");
+        mouseSpeedY = (mouseSensitivity + mouseSensitivityModifier) * Input.GetAxis("Mouse Y");
 
         // Move cursor
         MoveMouse();

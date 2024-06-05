@@ -23,11 +23,12 @@ public class AudioManager : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
     }
 
-    public void PlayAudio(AudioClip audioClip)
+    public void PlayAudio(AudioClip audioClip, float volume = 1f)
     {
         AudioSource newSource = gameObject.AddComponent<AudioSource>();
         newSource.clip = audioClip;
         newSource.Play();
+        newSource.volume = volume;
         StartCoroutine(DeleteAudioSource(newSource, newSource.clip.length));
     }
     public IEnumerator ResetAudio(float length)

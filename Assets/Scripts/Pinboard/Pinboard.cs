@@ -58,6 +58,42 @@ public class Pinboard : MonoBehaviour
             AddPin(o);
         }
     }
+    public string tutorialElementOnBoard()
+    {
+        Pinboard pinboard = FindObjectOfType<Pinboard>();
+        int peopleOnBoard = 0;
+        int postsOnBoard = 0;
+        foreach (ScriptableObject so in tutorialRelevantObjects)
+        {
+            if (pinboard.pinsOnPinboard.ContainsKey(so))
+            {
+                if (so is SocialMediaPost)
+                {
+                    postsOnBoard++;
+                }
+                else if (so is Person)
+                {
+                    peopleOnBoard++;
+                }
+            }
+        }
+        if (peopleOnBoard == 0 && postsOnBoard == 0)
+        {
+            return "phoneReminderNothingAdded";
+        }
+        else if (peopleOnBoard == 0)
+        {
+            return "phoneReminderPersonNotAdded";
+        }
+        else if (postsOnBoard == 0)
+        {
+            return "phoneReminderPostNotAdded";
+        }
+        else
+        {
+            return "phoneCallIntro";
+        }
+    }
     public void AddConnectionIfExist(ScriptableObject from, ScriptableObject to, Transform thread)
     {
         Connections connection = gm.checkForConnectionText(from, to);
@@ -95,7 +131,6 @@ public class Pinboard : MonoBehaviour
     {
         if (pinsOnPinboard.ContainsKey(o))
         {
-            print("RemoveByScriptableObject");
             pinsOnPinboard[o].DeleteElement();
         }
     }
@@ -351,11 +386,10 @@ public class Pinboard : MonoBehaviour
 
     public void ResetPinboard()
     {
-        print("ResetPinboard");
         if (firstLoad)
         {
             firstLoad = false;
-            return;
+            //return;
         }
         List<PinboardElement> toDelete = new List<PinboardElement>();
         foreach (PinboardElement p in pinsOnPinboard.Values)

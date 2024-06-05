@@ -182,7 +182,7 @@ public class FPSController : MonoBehaviour
     void Update()
     {
         // on e key pressed ExitPC is "E"
-        if (Input.GetButtonDown("ExitPC") && gm.isFrozen())
+        if (Input.GetButtonDown("ExitPC") && gm.isOccupied())
         {
             if (gm.GetGameState() == GameState.OnPC)
             {
@@ -190,7 +190,6 @@ public class FPSController : MonoBehaviour
             }
             else
             {
-
                 gm.SetGameState(GameState.Playing);
             }
         }
@@ -325,6 +324,9 @@ public class FPSController : MonoBehaviour
                                 case "Phone":
                                     inputOverlay.SetIcon("inspect");
                                     break;
+                                case "Radio":
+                                    inputOverlay.SetIcon("handOpen");
+                                    break;
                                 default:
                                     break;
                             }
@@ -396,7 +398,14 @@ public class FPSController : MonoBehaviour
                 }
                 else if (nameOfThingLookedAt == "pinboardElement(Clone)")
                 {
-                    requirementMet = narration.CheckIfRequirementMet(Requirement.LookAtPostIt);
+                    if (currentSelectedObject != null && currentSelectedObject.GetComponent<PinboardElement>().GetIfHasInfo())
+                    {
+                        requirementMet = narration.CheckIfRequirementMet(Requirement.LookAtPostIt);
+                    }
+                    else
+                    {
+                        requirementMet = false;
+                    }
                 }
                 if (currentSelectedObject == null)
                 {
@@ -408,7 +417,6 @@ public class FPSController : MonoBehaviour
                     {
                         if (currentSelectedObject != null && (currentSelectedObject.name == "pinboardElement(Clone)" || currentSelectedObject.name == "pin") && currentThread != null && lastSelectedObject != currentSelectedObject)
                         {
-                            print("it worked!!!!");
                             GameObject postIt = currentSelectedObject;
                             if (currentSelectedObject.name == "pin")
                             {
@@ -468,7 +476,6 @@ public class FPSController : MonoBehaviour
                             Person person = postIt.GetComponent<PinboardElement>().GetContent() as Person;
                             if (person != null)
                             {
-                                print(person.name);
                                 if (person.name == "0Imar")
                                 {
                                     requirementMet = narration.CheckIfRequirementMet(Requirement.ConnectPostIT, false) || narration.CheckIfRequirementMet(Requirement.FindSuspect, false);
@@ -484,7 +491,6 @@ public class FPSController : MonoBehaviour
                                 SocialMediaUser user = postIt.GetComponent<PinboardElement>().GetContent() as SocialMediaUser;
                                 if (user != null)
                                 {
-                                    print(user.name);
                                     if (user.name == "0Imar")
                                     {
                                         requirementMet = narration.CheckIfRequirementMet(Requirement.ConnectPostITContradiction, false) || narration.CheckIfRequirementMet(Requirement.ConnectPostIT, false);
@@ -637,9 +643,14 @@ public class FPSController : MonoBehaviour
                                         else
                                         {
                                             // Todo: implement player feedback
-                                            print("Answer not commited");
                                             narration.Say("notLeaving");
                                         }
+                                    }
+                                    break;
+                                case "Radio":
+                                    if (requirementMet && hit.collider.transform != null && hit.collider.transform.GetComponent<Radio>() != null)
+                                    {
+                                        hit.collider.transform.GetComponent<Radio>().ChangeChanel();
                                     }
                                     break;
                                 default:
