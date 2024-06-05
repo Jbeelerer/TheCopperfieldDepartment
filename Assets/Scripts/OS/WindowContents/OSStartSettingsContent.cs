@@ -26,7 +26,6 @@ public class OSStartSettingsContent : MonoBehaviour
 
         transform.GetComponentInParent<OSWindow>().transform.SetAsLastSibling();
 
-        computerControls.SetMouseSensitivityModifier(Screen.height / 30);
         computerControls.SetMouseSensitivity(sensitivitySlider.value);
 
         //sensitivitySlider.value = mouseSensitivityRaw;

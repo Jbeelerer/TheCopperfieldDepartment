@@ -82,9 +82,10 @@ public class ComputerControls : MonoBehaviour, ISavable
     {
         return mouseSensitivity;
     }
-    public void SetMouseSensitivityModifier(float modifier)
+
+    void Awake()
     {
-        mouseSensitivityModifier = modifier;
+        mouseSensitivityModifier = UnityEngine.Screen.height / 40;
     }
 
     // Start is called before the first frame update

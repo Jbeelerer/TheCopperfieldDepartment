@@ -1505,7 +1505,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 80, y: 0}
+  m_AnchoredPosition: {x: 75, y: 0}
   m_SizeDelta: {x: 17, y: 17}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7565331932431169174
@@ -1784,6 +1784,7 @@ GameObject:
   - component: {fileID: 5220537535677362521}
   - component: {fileID: 596225476897799663}
   - component: {fileID: 6682714605046094321}
+  - component: {fileID: 8087412569821748382}
   m_Layer: 5
   m_Name: DeletePost
   m_TagString: Untagged
@@ -1805,10 +1806,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 2087993860134305706}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -18.099998, y: -0.107999325}
-  m_SizeDelta: {x: 19.419998, y: 19.425}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 95, y: 0}
+  m_SizeDelta: {x: 17, y: 17}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5220537535677362521
 CanvasRenderer:
@@ -1904,6 +1905,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &8087412569821748382
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6185322533448362559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b1c49704632a794483eed7869721e33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tooltipText: Flag for deletion
 --- !u!1 &6253018604848064672
 GameObject:
   m_ObjectHideFlags: 0

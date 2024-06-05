@@ -34,6 +34,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
         fpsController.OnPinDeletion.AddListener(RemovePinned);
         socialMediaContent.OnPinned.AddListener(MarkPinned);
+        socialMediaContent.OnDeletedRefresh.AddListener(MarkDeleted);
         computerControls.OnUnpinned.AddListener(RemovePinned);
         socialMediaContent.OnDeletedPostClear.AddListener(ClearDeleted);
     }
@@ -46,7 +47,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
                 if (so == post)
                 {
                     postOptions.transform.Find("PinPost").GetComponent<Image>().color = Color.white;
-                    postOptions.transform.Find("PinPost").gameObject.SetActive(false);
+                    //postOptions.transform.Find("PinPost").gameObject.SetActive(false);
                     postPinned = false;
 
                     popupManager.DisplayPostUnpinMessage();
@@ -56,7 +57,10 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
                 if (so == post.author)
                 {
                     postOptions.transform.Find("PinUser").GetComponent<Image>().color = Color.white;
-                    postOptions.transform.Find("PinUser").gameObject.SetActive(false);
+                    if (gameObject != socialMediaContent.currentFocusedPost)
+                    {
+                        postOptions.transform.Find("PinUser").gameObject.SetActive(false);
+                    }
                     userPinned = false;
                     socialMediaContent.RemovePinnedUser(post.author);
 
@@ -106,6 +110,16 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
         }
     }
 
+    private void MarkDeleted(ScriptableObject so)
+    {
+        if ((SocialMediaPost)so == post)
+        {
+            postOptions.transform.Find("DeletePost").GetComponent<Image>().color = Color.red;
+            postOptions.transform.Find("DeletePost").gameObject.SetActive(true);
+            postDeleted = true;
+        }
+    }
+
     public void instanctiatePost(SocialMediaPost post)
     {
         // Instantiate the post
@@ -141,7 +155,15 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     public void DeletePost()
     {
-        computerControls.OpenWindow(OSAppType.WARNING, "You are about to flag this post for deletion. Any currently accused person will be undone.", DeletePostSuccess);
+        if (!postDeleted)
+        {
+            computerControls.OpenWindow(OSAppType.WARNING, "You are about to flag this post for deletion.<br><br><b>This can still be changed later.</b>", DeletePostSuccess);
+        }
+        else
+        {
+            socialMediaContent.ClearDeletedPost();
+            popupManager.DisplayPostUndeleteMessage();
+        }
     }
 
     private void DeletePostSuccess()
@@ -149,16 +171,17 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
         socialMediaContent.ClearDeletedPost();
         computerControls.investigationState = OSInvestigationState.POST_DELETED;
         popupManager.DisplayPostDeleteMessage();
-        postOptions.transform.Find("DeletePost").GetComponent<Image>().color = Color.red;
-        postOptions.transform.Find("DeletePost").gameObject.SetActive(true);
-        postDeleted = true;
+        socialMediaContent.RefreshDeletedPost(post);
         gm.checkDeletedPost(post);
     }
 
     private void ClearDeleted()
     {
         postOptions.transform.Find("DeletePost").GetComponent<Image>().color = Color.white;
-        postOptions.transform.Find("DeletePost").gameObject.SetActive(false);
+        if (gameObject != socialMediaContent.currentFocusedPost)
+        {
+            postOptions.transform.Find("DeletePost").gameObject.SetActive(false);
+        }
         postDeleted = false;
     }
 
@@ -196,12 +219,14 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
     {
         foreach (Transform option in postOptions.transform)
         {
-            // TODO: DeletePost option will only be disabled temporarily for FaBa, remove if statement again
-            if (option.name != "DeletePost")
+            option.gameObject.SetActive(true);
+            // Disable post deletion option on first days
+            if (gm.GetDay() < 2 && option.gameObject.name == "DeletePost")
             {
-                option.gameObject.SetActive(true);
+                option.gameObject.SetActive(false);
             }
         }
+        socialMediaContent.currentFocusedPost = gameObject;
     }
 
     public void OnPointerMove(PointerEventData eventData)
@@ -221,11 +246,11 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
             if ((option.name == "PinPost" && postPinned)
                 || (option.name == "PinUser" && userPinned)
-                // TODO: DeletePost option will only be disabled temporarily for FaBa, remove if statement again
-                /*|| option.name == "DeletePost" && postDeleted*/)
+                || option.name == "DeletePost" && postDeleted)
             {
                 option.gameObject.SetActive(true);
             }
         }
+        socialMediaContent.currentFocusedPost = null;
     }
 }

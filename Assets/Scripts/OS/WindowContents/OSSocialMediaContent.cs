@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor.XR;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -27,7 +28,10 @@ public class OSSocialMediaContent : MonoBehaviour
     private List<SocialMediaUser> pinnedUsers = new List<SocialMediaUser>();
     private FPSController fpsController;
 
+    public GameObject currentFocusedPost = null;
+
     public PinEvent OnPinned;
+    public PinEvent OnDeletedRefresh;
     public UnityEvent OnDeletedPostClear;
 
     // Start is called before the first frame update
@@ -135,6 +139,11 @@ public class OSSocialMediaContent : MonoBehaviour
         OnDeletedPostClear?.Invoke();
     }
 
+    public void RefreshDeletedPost(SocialMediaPost post)
+    {
+        OnDeletedRefresh?.Invoke(post);
+    }
+
     public void FilterHomefeed(string filterTerm)
     {
         CloseUserProfile();
@@ -199,7 +208,8 @@ public class OSSocialMediaContent : MonoBehaviour
         searchBar.Find("Image").gameObject.SetActive(false);
 
         currentUser = user;
-        profilePage.SetActive(true);
+        //profilePage.SetActive(true);
+        profilePage.transform.SetAsLastSibling();
 
         profilePage.GetComponent<ScrollRect>().verticalNormalizedPosition = 1;
 
@@ -254,7 +264,8 @@ public class OSSocialMediaContent : MonoBehaviour
         searchBar.Find("Image").gameObject.SetActive(false);
 
         currentUser = null;
-        profilePage.SetActive(false);
+        //profilePage.SetActive(false);
+        profilePage.transform.SetAsFirstSibling();
     }
 
     public void PinUser()

@@ -81,4 +81,11 @@ public class OSPopupManager : MonoBehaviour
         anim.Play("popupMessageSpawn", -1, 0);
         computerControls.audioManager.PlayAudio(notificationSound);
     }
+
+    public void DisplayPostUndeleteMessage()
+    {
+        messageText.text = "Deletion reverted.";
+        anim.Play("popupMessageSpawn", -1, 0);
+        computerControls.audioManager.PlayAudio(notificationSound);
+    }
 }
