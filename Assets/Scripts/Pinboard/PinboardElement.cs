@@ -67,13 +67,30 @@ public class PinboardElement : MonoBehaviour
     private bool noStartThreadClipping = true;
     private bool noEndThreadClipping = true;
     private GameObject flag;
-    private Dictionary<LineRenderer, Transform> connections = new Dictionary<LineRenderer, Transform>();
+    private Dictionary<Connections, Transform> connections = new Dictionary<Connections, Transform>();
 
-    public void AddConnection(LineRenderer thread, Transform instance)
+    public void AddConnection(Connections thread, Transform instance)
     {
+        if (connections.ContainsKey(thread))
+        {
+            connections[thread] = instance;
+            return;
+        }
         connections.Add(thread, instance);
     }
-    public void RemoveConnection(LineRenderer thread)
+    public bool CheckIfConnected(Connections thread)
+    {
+        if (connections.ContainsKey(thread))
+        {
+            if (connections[thread] != null)
+            {
+                return true;
+            }
+            connections.Remove(thread);
+        }
+        return false;
+    }
+    public void RemoveConnection(Connections thread)
     {
         connections.Remove(thread);
     }
@@ -510,7 +527,6 @@ public class PinboardElement : MonoBehaviour
                 textElement.text = post.contentShort;
                 if (elementType == PinboardElementType.SocialMediaPostWithImage)
                 {
-                    print(post.image.texture);
                     image.GetComponent<Renderer>().material.SetTexture("_Base", post.image.texture);
                 }
                 break;

@@ -84,6 +84,8 @@ public class Narration : MonoBehaviour
 
     private Requirement requirementToBeMet = Requirement.None;
     private bool requirementMet = false;
+    private bool interactionAllowed = false;
+    private bool interactionCompleted = false;
 
     private Quaternion[] rotations;
 
@@ -91,6 +93,7 @@ public class Narration : MonoBehaviour
     private bool skip = false;
     private Animator textAnimator;
 
+    private bool isTalking = false;
     Quaternion startRotation;
 
     private bool sequenceHadRequirement = false;
@@ -145,9 +148,22 @@ public class Narration : MonoBehaviour
 
     public bool HasRequirement()
     {
-        return requirementToBeMet != Requirement.None;
+        return sequenceHadRequirement || requirementToBeMet != Requirement.None;
     }
-    public bool CheckIfRequirementMet(Requirement requirement, bool lastStep = true)
+    public bool GetIfRequirementMet()
+    {
+        return requirementMet;
+    }
+    public bool GetIfInteractionAllowed()
+    {
+        if (interactionAllowed && !isTalking)
+        {
+            interactionCompleted = true;
+            return interactionAllowed;
+        }
+        return false;
+    }
+    public void CheckIfRequirementMet(Requirement requirement, bool lastStep = true)
     {
         if (requirementToBeMet == requirement)
         {
@@ -156,9 +172,8 @@ public class Narration : MonoBehaviour
                 requirementMet = true;
                 requirementToBeMet = Requirement.None;
             }
-            return true;
+            interactionAllowed = true;
         }
-        return false;
     }
 
     // Update is called once per frame
@@ -244,6 +259,7 @@ public class Narration : MonoBehaviour
     {
 
         FPSController player = GameObject.Find("Player").GetComponent<FPSController>();
+        Radio radio = FindObjectOfType<Radio>();
         startRotation = player.transform.rotation;
         gm.SetGameState(GameState.Frozen);
         blackScreen.SetActive(true);
@@ -264,10 +280,12 @@ public class Narration : MonoBehaviour
         {
             totalTime += entry.duration;
             requirementMet = false;
-            print(entry.requirement);
-            print(entry.text);
+            interactionAllowed = false;
+            interactionCompleted = false;
+            skip = false;
             do
             {
+                radio.ChangeVolumeTemp(0.2f);
                 if (rotations != null)
                 {
                     if (rotations.Length > talkIndex)
@@ -281,8 +299,23 @@ public class Narration : MonoBehaviour
                         player.ResetCameraRotation(startRotation);
                     }
                 }
+                //set requirement if there is one
+                if (entry.requirement != Requirement.None)
+                {
+                    sequenceHadRequirement = true;
+                    requirementMet = false;
+                    interactionAllowed = false;
+                    requirementToBeMet = entry.requirement;
+                }
+                else if (sequenceHadRequirement)
+                {
+                    requirementToBeMet = Requirement.None;
+                    requirementMet = false;
+                    interactionAllowed = false;
+                }
                 subtitleText.text = entry.text;
                 float time = 0;
+                isTalking = true;
                 while (entry.duration >= time)
                 {
                     yield return new WaitForSeconds(0.1f);
@@ -304,11 +337,11 @@ public class Narration : MonoBehaviour
                         break;
                     }
                 }
+                isTalking = false;
                 if (entry.requirement != Requirement.None)
                 {
-                    sequenceHadRequirement = true;
+                    radio.ResetVolume();
                     audioSource.Stop();
-                    requirementToBeMet = entry.requirement;
                     if (gm.GetGameState() != GameState.Playing)
                         gm.SetGameState(GameState.Playing);
                     // TODO: Multithreading might be an option here
@@ -326,7 +359,6 @@ public class Narration : MonoBehaviour
                         audioSource.Play();
                     }
                 }
-                // yield return new WaitForSeconds(0.1f);
 
             } while (entry.requirement != Requirement.None && !requirementMet);
             if (requirementMet && totalTime < audioSource.clip.length)
@@ -354,10 +386,13 @@ public class Narration : MonoBehaviour
                 ow.GetComponent<Animator>().SetTrigger("NewDay");
             }
         }
-
+        FindAnyObjectByType<Phone>().ResetPhone();
         blackScreen.SetActive(false);
         if (playNextDayAnimation)
+        {
+            FindObjectOfType<Radio>().PauseRadio();
             gm.NextDaySequence();
+        }
     }
 
     private void LoadShortSubtitles()

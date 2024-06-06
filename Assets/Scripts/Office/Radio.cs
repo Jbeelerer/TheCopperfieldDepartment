@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Radio : MonoBehaviour
@@ -13,6 +14,7 @@ public class Radio : MonoBehaviour
 
     private int chanelAmount = 3;
     private int currentChanel = 1;
+    private float volume = 0.5f;
 
     private AudioManager audioManager;
 
@@ -35,7 +37,7 @@ public class Radio : MonoBehaviour
     }
     private void PlayChanel(bool fromStart = false)
     {
-        float volume = 0.5f;
+        volume = 0.5f;
         StopAllCoroutines();
         switch (currentChanel)
         {
@@ -88,5 +90,25 @@ public class Radio : MonoBehaviour
             yield return null;
         }
         yield break;
+    }
+    public void PauseRadio()
+    {
+        StartCoroutine(PauseRadio(3.5f));
+    }
+    public void ResetVolume()
+    {
+        audioSource.volume = volume;
+    }
+    public void ChangeVolumeTemp(float v)
+    {
+        audioSource.volume = v;
+    }
+
+    public IEnumerator PauseRadio(float time)
+    {
+        audioSource.Stop();
+        yield return new WaitForSeconds(time);
+        StartCoroutine(StartFade(audioSource, 1f, 0.5f));
+        audioSource.Play();
     }
 }

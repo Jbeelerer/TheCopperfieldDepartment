@@ -38,6 +38,7 @@ public class Phone : MonoBehaviour
         if (gm.GetGameState() == GameState.OnPC)
         {
             wasOnPc = true;
+            ResetPhone();
         }
         if (gm.GetGameState() == GameState.Playing && wasOnPc && gm.GetDay() == 1 && !isRinging)
         {
@@ -78,19 +79,19 @@ public class Phone : MonoBehaviour
         narration.PlaySequence(callName, rotations);
         isRinging = false;
         animator.Play("Pickup");
-        StartCoroutine(resetPhone());
+        //  StartCoroutine(resetPhone());
     }
 
-    private IEnumerator resetPhone()
+    public void ResetPhone()
     {
-        yield return new WaitForSeconds(10);
+        isRinging = false;
         animator.Play("Phone");
+        audioSource.Stop();
     }
 
 
     // Update is called once per frame
     void Update()
     {
-
     }
 }
