@@ -133,7 +133,7 @@ public class FPSController : MonoBehaviour
                     Destroy(currentSelectedObject.transform.parent.gameObject);
                     return;
                 }
-                PinboardElement pe = currentSelectedObject.name == "pin" ? currentSelectedObject.transform.parent.GetComponent<PinboardElement>() : selectedPinboardElement.GetComponent<PinboardElement>();
+                PinboardElement pe = currentSelectedObject != null && currentSelectedObject.name == "pin" ? currentSelectedObject.transform.parent.GetComponent<PinboardElement>() : selectedPinboardElement.GetComponent<PinboardElement>();
 
                 if (pe.GetIfDeletable())
                 {

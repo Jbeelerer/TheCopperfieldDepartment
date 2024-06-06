@@ -22,8 +22,8 @@ public class Pinboard : MonoBehaviour
     // Contains all sub pins of a user or person, this is important for programmaticly adding new pins, so they are near their parent. Use Transform instead of Vector3, so the position will be automaticly update when moved.
     private Dictionary<ScriptableObject, List<Transform>> subPins = new Dictionary<ScriptableObject, List<Transform>>();
 
-    private float zoneSizeX = 1.5f;
-    private float zoneSizeY = 1f;
+    private float zoneSizeX = 1.6f;
+    private float zoneSizeY = 1.1f;
 
     private float minSpaceBetweenPins = 0.5f;
 

@@ -80,7 +80,15 @@ public class PinboardElement : MonoBehaviour
     }
     public bool CheckIfConnected(Connections thread)
     {
-        return connections.ContainsKey(thread);
+        if (connections.ContainsKey(thread))
+        {
+            if (connections[thread] != null)
+            {
+                return true;
+            }
+            connections.Remove(thread);
+        }
+        return false;
     }
     public void RemoveConnection(Connections thread)
     {
