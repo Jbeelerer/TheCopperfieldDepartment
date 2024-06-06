@@ -304,11 +304,13 @@ public class PinboardElement : MonoBehaviour
     {
         foreach (LineRenderer l in startingThreads)
         {
-            Destroy(l.gameObject);
+            if (l != null)
+                Destroy(l.gameObject);
         }
         foreach (LineRenderer l in endingThreads)
         {
-            Destroy(l.gameObject);
+            if (l != null)
+                Destroy(l.gameObject);
         }
         endingThreads.Clear();
         startingThreads.Clear();

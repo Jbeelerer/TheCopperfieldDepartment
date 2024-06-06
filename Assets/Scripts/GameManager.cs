@@ -419,6 +419,10 @@ public class GameManager : MonoBehaviour, ISavable
     {
         return p == currentlyAccused;
     }
+    public Person GetCurrentlyAccused()
+    {
+        return currentlyAccused;
+    }
     public void checkSuspicionRemoved(Person p)
     {
         currentlyAccused = null;

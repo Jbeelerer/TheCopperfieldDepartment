@@ -102,9 +102,6 @@ public class Pinboard : MonoBehaviour
             LineRenderer lr = thread.GetComponent<LineRenderer>();
             PinboardElement fromElement = pinsOnPinboard[from];
             PinboardElement toElement = pinsOnPinboard[to];
-            print(fromElement + " " + toElement);
-            print(from + " " + to);
-            print(fromElement.CheckIfConnected(connection) + " " + toElement.CheckIfConnected(connection));
             // if the connection already exists, do nothing, if only on one element remove the connection
             if (toElement.CheckIfConnected(connection) && fromElement.CheckIfConnected(connection))
             {
@@ -136,6 +133,18 @@ public class Pinboard : MonoBehaviour
         narration = FindObjectOfType<Narration>();
         GameObject.FindObjectOfType<ComputerControls>().OnUnpinned.AddListener(RemoveByScriptableObject);
         gm.OnNewDay.AddListener(ResetPinboard);
+        gm.InvestigationStateChanged.AddListener(AddAccusation);
+    }
+    public void AddAccusation()
+    {
+        PinboardElement mp = pinsOnPinboard.FirstOrDefault(x => x.Value.GetContent() == null).Value;
+        Person p = gm.GetCurrentlyAccused();
+        if (!pinsOnPinboard.ContainsKey(p))
+        {
+            AddPin(p);
+        }
+        mp.removeThreads();
+        ConnectWithThread(pinsOnPinboard[p], mp);
     }
 
     private void RemoveByScriptableObject(ScriptableObject o)
