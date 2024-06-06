@@ -2138,6 +2138,8 @@ MonoBehaviour:
   clickDownSound: {fileID: 8300000, guid: 50a44943292c8284e814d4b7b32688af, type: 3}
   clickUpSound: {fileID: 8300000, guid: 65366d45c16768d46a92dddc1c25d848, type: 3}
   audioManager: {fileID: 0}
+  screen: {fileID: 0}
+  currentFocusedWindow: {fileID: 0}
   OnUnpinned:
     m_PersistentCalls:
       m_Calls: []
@@ -2479,6 +2481,54 @@ MonoBehaviour:
       of the page.<br><br><b>Click the screen to close this tutorial.
     pointAtPointy: 0
     spotlightSizeModifier: {x: 0, y: 0}
+  stepsEvilIntro:
+  - targetObjectName: ScreenBlockadePointy
+    message: Oh...
+    pointAtPointy: 0
+    spotlightSizeModifier: {x: 0, y: 0}
+  - targetObjectName: ScreenBlockadePointy
+    message: Hello there...
+    pointAtPointy: 0
+    spotlightSizeModifier: {x: 0, y: 0}
+  - targetObjectName: ScreenBlockadePointy
+    message: It seems like your computer got <b>corrupted through some kind of malware...</b>
+    pointAtPointy: 0
+    spotlightSizeModifier: {x: 0, y: 0}
+  - targetObjectName: ScreenBlockadePointy
+    message: At least our good hacker friend has provided you with some <b>new abilities.<br><br>Check
+      it out over at the social media app.
+    pointAtPointy: 0
+    spotlightSizeModifier: {x: 0, y: 0}
+  stepsEvilSocialMedia:
+  - targetObjectName: ScreenBlockadePointy
+    message: So, here we are...
+    pointAtPointy: 0
+    spotlightSizeModifier: {x: 0, y: 0}
+  - targetObjectName: ScreenBlockadePointy
+    message: It seems like you now have the option to <b>delete a post.</b>
+    pointAtPointy: 0
+    spotlightSizeModifier: {x: 0, y: 0}
+  - targetObjectName: ScreenBlockadePointy
+    message: If the post contains <b>crucial information about the culprit,</b> they
+      probably won't be able to catch them later.
+    pointAtPointy: 0
+    spotlightSizeModifier: {x: 0, y: 0}
+  - targetObjectName: ScreenBlockadePointy
+    message: Use this feature in case you feel like <b>standing up against this corrupted
+      system.
+    pointAtPointy: 0
+    spotlightSizeModifier: {x: 0, y: 0}
+  - targetObjectName: DeletePost
+    message: The deletion is possible over this new button right here. <b>Try clicking
+      it.</b>
+    pointAtPointy: 0
+    spotlightSizeModifier: {x: 0, y: 0}
+  - targetObjectName: ScreenBlockadePointy
+    message: When sparing a person, you <b>don't have to accuse someone</b> to end
+      the day.
+    pointAtPointy: 0
+    spotlightSizeModifier: {x: 0, y: 0}
+  evilIntroCompleted: 0
 --- !u!1 &5639562176710670930
 GameObject:
   m_ObjectHideFlags: 0
@@ -4711,62 +4761,62 @@ PrefabInstance:
     - target: {fileID: 203218489167296012, guid: 22decda82d59a3441baf90e5dd2b2c32,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 203218489167296012, guid: 22decda82d59a3441baf90e5dd2b2c32,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 203218489167296012, guid: 22decda82d59a3441baf90e5dd2b2c32,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 61
       objectReference: {fileID: 0}
     - target: {fileID: 203218489167296012, guid: 22decda82d59a3441baf90e5dd2b2c32,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -15
       objectReference: {fileID: 0}
     - target: {fileID: 822127880932967702, guid: 22decda82d59a3441baf90e5dd2b2c32,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 822127880932967702, guid: 22decda82d59a3441baf90e5dd2b2c32,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 822127880932967702, guid: 22decda82d59a3441baf90e5dd2b2c32,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 91
       objectReference: {fileID: 0}
     - target: {fileID: 822127880932967702, guid: 22decda82d59a3441baf90e5dd2b2c32,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -15
       objectReference: {fileID: 0}
     - target: {fileID: 3286990479175364838, guid: 22decda82d59a3441baf90e5dd2b2c32,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3286990479175364838, guid: 22decda82d59a3441baf90e5dd2b2c32,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3286990479175364838, guid: 22decda82d59a3441baf90e5dd2b2c32,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 31
       objectReference: {fileID: 0}
     - target: {fileID: 3286990479175364838, guid: 22decda82d59a3441baf90e5dd2b2c32,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -15
       objectReference: {fileID: 0}
     - target: {fileID: 3321161279718170733, guid: 22decda82d59a3441baf90e5dd2b2c32,
         type: 3}
@@ -4786,22 +4836,22 @@ PrefabInstance:
     - target: {fileID: 5794227505064514406, guid: 22decda82d59a3441baf90e5dd2b2c32,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5794227505064514406, guid: 22decda82d59a3441baf90e5dd2b2c32,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5794227505064514406, guid: 22decda82d59a3441baf90e5dd2b2c32,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 121
       objectReference: {fileID: 0}
     - target: {fileID: 5794227505064514406, guid: 22decda82d59a3441baf90e5dd2b2c32,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -15
       objectReference: {fileID: 0}
     - target: {fileID: 8205933268943255543, guid: 22decda82d59a3441baf90e5dd2b2c32,
         type: 3}

@@ -221,7 +221,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
         {
             option.gameObject.SetActive(true);
             // Disable post deletion option on first days
-            if (gm.GetDay() < 2 && option.gameObject.name == "DeletePost")
+            if (gm.GetDay() < 4 && option.gameObject.name == "DeletePost")
             {
                 option.gameObject.SetActive(false);
             }

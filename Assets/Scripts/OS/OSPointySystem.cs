@@ -33,6 +33,10 @@ public class OSPointySystem : MonoBehaviour
     [SerializeField] private List<PointyTutorialStep> stepsGovApp = new List<PointyTutorialStep>();
     [SerializeField] private List<PointyTutorialStep> stepsPeopleList = new List<PointyTutorialStep>();
     [SerializeField] private List<PointyTutorialStep> stepsSocialMedia = new List<PointyTutorialStep>();
+    [SerializeField] private List<PointyTutorialStep> stepsEvilIntro = new List<PointyTutorialStep>();
+    [SerializeField] private List<PointyTutorialStep> stepsEvilSocialMedia = new List<PointyTutorialStep>();
+
+    [HideInInspector] public bool evilIntroCompleted = false;
 
     private ComputerControls computerControls;
     private GameObject nextTargetObject;
@@ -40,11 +44,12 @@ public class OSPointySystem : MonoBehaviour
     private int currentStep;
     private List<string> completedTutorials = new List<string>();
     private Vector2 originalSpotlightSize;
+    private Animator pointyAnim;
 
     private void Start()
     {
         computerControls = GetComponentInParent<ComputerControls>();
-        
+        pointyAnim = pointy.GetComponent<Animator>();
 
         spotlight.GetComponent<Image>().alphaHitTestMinimumThreshold = 1f;
         originalSpotlightSize = spotlight.GetComponent<RectTransform>().sizeDelta;
@@ -91,6 +96,8 @@ public class OSPointySystem : MonoBehaviour
         // Change button appearance
         pointyButton.GetComponent<Animator>().Play("buttonPointyClose");
 
+        pointy.SetActive(true);
+
         switch (name)
         {
             case "Desktop":
@@ -115,13 +122,24 @@ public class OSPointySystem : MonoBehaviour
             case "PeopleList":
                 currentTutorial = stepsPeopleList;
                 break;
+            case "EvilIntro":
+                currentTutorial = stepsEvilIntro;
+                pointyAnim.Play("pointyEvilIdle");
+                break;
+            case "EvilSocialMedia":
+                currentTutorial = stepsEvilSocialMedia;
+                pointyAnim.Play("pointyEvilIdle");
+                break;
             case "Default":
             default:
                 currentTutorial = stepsDefault;
                 break;
         }
 
-        pointy.SetActive(true);
+        // Reset size and position of affected window
+        computerControls.ResizeWindowSmall(computerControls.currentFocusedWindow);
+        computerControls.currentFocusedWindow.rectTrans.position = computerControls.screen.position;
+
         currentStep = 0;
 
         ProgressPointy();
@@ -138,7 +156,8 @@ public class OSPointySystem : MonoBehaviour
         pointyButton.GetComponent<Animator>().Play("buttonPointyClose");
 
         // Reset social media to home feed at start of its tutorial
-        if (currentTutorial == stepsSocialMedia && currentStep == 1)
+        if (currentTutorial == stepsSocialMedia && currentStep == 1
+            || currentTutorial == stepsEvilSocialMedia && currentStep == 4)
         {
             OSSocialMediaContent socialMediaContent = Object.FindObjectOfType<OSSocialMediaContent>();
             socialMediaContent.ResetHomeFeed();
@@ -209,6 +228,7 @@ public class OSPointySystem : MonoBehaviour
     {
         // Change button appearance
         pointyButton.GetComponent<Animator>().Play("buttonPointyQuestion");
+        pointyAnim.Play("pinnyIdle");
 
         nextTargetObject = null;
         currentTutorial = null;
