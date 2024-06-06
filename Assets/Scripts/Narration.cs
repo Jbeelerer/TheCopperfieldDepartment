@@ -85,7 +85,6 @@ public class Narration : MonoBehaviour
     private Requirement requirementToBeMet = Requirement.None;
     private bool requirementMet = false;
     private bool interactionAllowed = false;
-    private bool interactionCompleted = false;
 
     private Quaternion[] rotations;
 
@@ -158,7 +157,6 @@ public class Narration : MonoBehaviour
     {
         if (interactionAllowed && !isTalking)
         {
-            interactionCompleted = true;
             return interactionAllowed;
         }
         return false;
@@ -281,7 +279,6 @@ public class Narration : MonoBehaviour
             totalTime += entry.duration;
             requirementMet = false;
             interactionAllowed = false;
-            interactionCompleted = false;
             skip = false;
             do
             {

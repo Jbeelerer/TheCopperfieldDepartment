@@ -18,7 +18,7 @@ public class SocialMediaUser : ScriptableObject, IPinnable
     public Sprite image;
     public List<string> additionalInfos = new List<string>();
     public List<string> hiddenInfos = new List<string>();
-    public string bioText;
+    [TextArea] public string bioText;
     public Sprite profileBanner;
     public bool suspicious;
     public bool notSuspicious;

@@ -41,6 +41,7 @@ public class GameManager : MonoBehaviour, ISavable
     public UnityEvent InvestigationStateChanged;
     public UnityEvent OnNewSegment;
     private Case currentCase;
+    [SerializeField] private int devCase;
     private Mail[] mails;
     private Connections[] connections;
     [SerializeField] private SocialMediaPost[] posts;
@@ -293,15 +294,13 @@ public class GameManager : MonoBehaviour, ISavable
     {
         return mails;
     }
-
-    public void LoadNewDay(int day)
+    private void LoadCase()
     {
-        GameObject ow = GameObject.Find("OutsideWorld");
-        if (ow != null)
+        //TODO: ONLY FOR TESTING REMOVE AFTERWARDS
+        if (devCase != 0)
         {
-            ow.GetComponent<Animator>().SetTrigger("NewDay");
+            day = devCase;
         }
-        this.day = day;
         if (Resources.LoadAll<Case>("Case" + day).Count() == 0)
         {
             // TODO: implement endgame   
@@ -311,11 +310,20 @@ public class GameManager : MonoBehaviour, ISavable
             day = 1;
         }
         currentCase = Resources.LoadAll<Case>("Case" + day)[0];
-
         // load all connections
         connections = Resources.LoadAll<Connections>("Case" + currentCase.id + "/Connections");
         mails = Resources.LoadAll<Mail>("Case" + currentCase.id + "/Mails");
         posts = Resources.LoadAll<SocialMediaPost>("Case" + currentCase.id + "/Posts");
+    }
+    public void LoadNewDay(int day)
+    {
+        GameObject ow = GameObject.Find("OutsideWorld");
+        if (ow != null)
+        {
+            ow.GetComponent<Animator>().SetTrigger("NewDay");
+        }
+        this.day = day;
+        LoadCase();
         //using lists to add new values dynamicly, afterwards convert to array, because it won't change and will be more performant
         List<Person> tempPeople = new List<Person>();
         List<SocialMediaUser> tempUsers = new List<SocialMediaUser>();
