@@ -99,6 +99,18 @@ public class Pinboard : MonoBehaviour
         Connections connection = gm.checkForConnectionText(from, to);
         if (connection != null)
         {
+            LineRenderer lr = thread.GetComponent<LineRenderer>();
+            PinboardElement fromElement = pinsOnPinboard[from];
+            PinboardElement toElement = pinsOnPinboard[to];
+            print(fromElement + " " + toElement);
+            print(from + " " + to);
+            print(fromElement.CheckIfConnected(connection) + " " + toElement.CheckIfConnected(connection));
+            // if the connection already exists, do nothing, if only on one element remove the connection
+            if (toElement.CheckIfConnected(connection) && fromElement.CheckIfConnected(connection))
+            {
+                return;
+            }
+
             GameObject instance = Instantiate(connectionPrefab, thread);
             // handle contradiction color 
             Color color;
@@ -106,9 +118,8 @@ public class Pinboard : MonoBehaviour
             instance.transform.Find("PostIt").GetComponent<MeshRenderer>().material.color = color;
             instance.transform.position = thread.transform.GetChild(0).position - new Vector3(0, 0.05f, 0);
             instance.GetComponentInChildren<TextMeshProUGUI>().text = connection.text;
-            LineRenderer lr = thread.GetComponent<LineRenderer>();
-            pinsOnPinboard[to].AddConnection(lr, instance.transform);
-            pinsOnPinboard[from].AddConnection(lr, instance.transform);
+            toElement.AddConnection(connection, instance.transform);
+            fromElement.AddConnection(connection, instance.transform);
         }
     }
     // Start is called before the first frame update

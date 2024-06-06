@@ -388,124 +388,118 @@ public class FPSController : MonoBehaviour
                     inputOverlay.ChangeIconIfDifferent("");
                 }
             }
-
             bool requirementMet = true;
             if (narration.HasRequirement())
             {
                 if (nameOfThingLookedAt == "PinboardModel")
                 {
-                    requirementMet = narration.CheckIfRequirementMet(Requirement.WalkToBoard);
+                    narration.CheckIfRequirementMet(Requirement.WalkToBoard);
                 }
                 else if (nameOfThingLookedAt == "pinboardElement(Clone)")
                 {
                     if (currentSelectedObject != null && currentSelectedObject.GetComponent<PinboardElement>().GetIfHasInfo())
                     {
-                        requirementMet = narration.CheckIfRequirementMet(Requirement.LookAtPostIt);
-                    }
-                    else
-                    {
-                        requirementMet = false;
+                        narration.CheckIfRequirementMet(Requirement.LookAtPostIt);
                     }
                 }
-                if (currentSelectedObject == null)
+                if (Input.GetMouseButtonDown(0))
                 {
-                    requirementMet = false;
-                }
-                else
-                {
-                    if (Input.GetMouseButtonDown(0))
+                    if (currentSelectedObject != null && (currentSelectedObject.name == "pinboardElement(Clone)" || currentSelectedObject.name == "pin") && currentThread != null && lastSelectedObject != currentSelectedObject)
                     {
-                        if (currentSelectedObject != null && (currentSelectedObject.name == "pinboardElement(Clone)" || currentSelectedObject.name == "pin") && currentThread != null && lastSelectedObject != currentSelectedObject)
+                        GameObject postIt = currentSelectedObject;
+                        if (currentSelectedObject.name == "pin")
                         {
-                            GameObject postIt = currentSelectedObject;
-                            if (currentSelectedObject.name == "pin")
+                            postIt = currentSelectedObject.transform.parent.gameObject;
+                        }
+                        Person person = postIt.GetComponent<PinboardElement>().GetContent() as Person;
+                        if (person == null)
+                        {
+                            SocialMediaUser user = postIt.GetComponent<PinboardElement>().GetContent() as SocialMediaUser;
+                            if (user != null && user.name == "0Imar")
                             {
-                                postIt = currentSelectedObject.transform.parent.gameObject;
+                                narration.CheckIfRequirementMet(Requirement.ConnectPostITContradiction);
+                                narration.CheckIfRequirementMet(Requirement.ConnectPostIT);
                             }
-                            Person person = postIt.GetComponent<PinboardElement>().GetContent() as Person;
-                            if (person == null)
+                            else if (!postIt.GetComponent<PinboardElement>().GetIfDeletable())
                             {
-                                SocialMediaUser user = postIt.GetComponent<PinboardElement>().GetContent() as SocialMediaUser;
-                                if (user != null && user.name == "0Imar")
-                                {
-                                    requirementMet = narration.CheckIfRequirementMet(Requirement.ConnectPostITContradiction) || narration.CheckIfRequirementMet(Requirement.ConnectPostIT);
-                                }
-                                else if (!postIt.GetComponent<PinboardElement>().GetIfDeletable())
-                                {
-                                    requirementMet = narration.CheckIfRequirementMet(Requirement.FindSuspect);
-                                }
-                            }
-                            else
-                            {
-                                if (person.name == "0Imar")
-                                {
-                                    requirementMet = narration.CheckIfRequirementMet(Requirement.ConnectPostIT) || narration.CheckIfRequirementMet(Requirement.FindSuspect);
-
-                                }
-                                else if (person.name == "0Olga")
-                                {
-                                    requirementMet = narration.CheckIfRequirementMet(Requirement.ConnectPostITContradiction) || narration.CheckIfRequirementMet(Requirement.FindSuspect);
-                                }
+                                narration.CheckIfRequirementMet(Requirement.FindSuspect);
                             }
                         }
                         else
                         {
-                            switch (currentSelectedObject.name)
+                            if (person.name == "0Imar")
                             {
-                                case "pinboardElement(Clone)":
-                                    requirementMet = narration.CheckIfRequirementMet(Requirement.MovePostIt);
-                                    break;
-                                case "pin":
-                                    requirementMet = narration.CheckIfRequirementMet(Requirement.DeletePostIt);
-                                    break;
-                                default:
-                                    break;
+                                narration.CheckIfRequirementMet(Requirement.ConnectPostIT);
+                                narration.CheckIfRequirementMet(Requirement.FindSuspect);
+                            }
+                            else if (person.name == "0Olga")
+                            {
+                                narration.CheckIfRequirementMet(Requirement.ConnectPostITContradiction);
+                                narration.CheckIfRequirementMet(Requirement.FindSuspect);
                             }
                         }
                     }
-                    if (Input.GetMouseButtonDown(1))
+                    else
                     {
-                        if (currentSelectedObject.name == "pinboardElement(Clone)" || currentSelectedObject.name == "pin")
+                        switch (currentSelectedObject.name)
                         {
-                            GameObject postIt = currentSelectedObject;
-                            if (currentSelectedObject.name == "pin")
-                            {
-                                postIt = currentSelectedObject.transform.parent.gameObject;
-                            }
-
-                            Person person = postIt.GetComponent<PinboardElement>().GetContent() as Person;
-                            if (person != null)
-                            {
-                                if (person.name == "0Imar")
-                                {
-                                    requirementMet = narration.CheckIfRequirementMet(Requirement.ConnectPostIT, false) || narration.CheckIfRequirementMet(Requirement.FindSuspect, false);
-
-                                }
-                                else if (person.name == "0Olga")
-                                {
-                                    requirementMet = narration.CheckIfRequirementMet(Requirement.ConnectPostITContradiction, false) || narration.CheckIfRequirementMet(Requirement.FindSuspect, false);
-                                }
-                            }
-                            else
-                            {
-                                SocialMediaUser user = postIt.GetComponent<PinboardElement>().GetContent() as SocialMediaUser;
-                                if (user != null)
-                                {
-                                    if (user.name == "0Imar")
-                                    {
-                                        requirementMet = narration.CheckIfRequirementMet(Requirement.ConnectPostITContradiction, false) || narration.CheckIfRequirementMet(Requirement.ConnectPostIT, false);
-                                    }
-                                    else if (!postIt.GetComponent<PinboardElement>().GetIfDeletable())
-                                    {
-                                        requirementMet = narration.CheckIfRequirementMet(Requirement.FindSuspect, false);
-                                    }
-                                }
-                            }
-
+                            case "pinboardElement(Clone)":
+                                narration.CheckIfRequirementMet(Requirement.MovePostIt);
+                                break;
+                            case "pin":
+                                narration.CheckIfRequirementMet(Requirement.DeletePostIt);
+                                break;
+                            default:
+                                break;
                         }
                     }
                 }
+                if (Input.GetMouseButtonDown(1))
+                {
+                    if (currentSelectedObject.name == "pinboardElement(Clone)" || currentSelectedObject.name == "pin")
+                    {
+                        GameObject postIt = currentSelectedObject;
+                        if (currentSelectedObject.name == "pin")
+                        {
+                            postIt = currentSelectedObject.transform.parent.gameObject;
+                        }
+
+                        Person person = postIt.GetComponent<PinboardElement>().GetContent() as Person;
+                        if (person != null)
+                        {
+                            if (person.name == "0Imar")
+                            {
+                                narration.CheckIfRequirementMet(Requirement.ConnectPostIT, false);
+                                narration.CheckIfRequirementMet(Requirement.FindSuspect, false);
+
+                            }
+                            else if (person.name == "0Olga")
+                            {
+                                narration.CheckIfRequirementMet(Requirement.ConnectPostITContradiction, false);
+                                narration.CheckIfRequirementMet(Requirement.FindSuspect, false);
+                            }
+                        }
+                        else
+                        {
+                            SocialMediaUser user = postIt.GetComponent<PinboardElement>().GetContent() as SocialMediaUser;
+                            if (user != null)
+                            {
+                                if (user.name == "0Imar")
+                                {
+                                    narration.CheckIfRequirementMet(Requirement.ConnectPostITContradiction, false);
+                                    narration.CheckIfRequirementMet(Requirement.ConnectPostIT, false);
+                                }
+                                else if (!postIt.GetComponent<PinboardElement>().GetIfDeletable())
+                                {
+                                    narration.CheckIfRequirementMet(Requirement.FindSuspect, false);
+                                }
+                            }
+                        }
+                    }
+                }
+                requirementMet = narration.GetIfInteractionAllowed();
             }
+
 
             // if (requirementMet)
             {
@@ -539,7 +533,7 @@ public class FPSController : MonoBehaviour
                         //Connect threat to pinboardElement
                         if (currentThread != null)
                         {
-                            TryToPlaceThread(currentSelectedObject.name);
+                            TryToPlaceThread(requirementMet ? currentSelectedObject.name : "false");
                         }
                         // places the pinboardElement back to the pinboard
                         else if (selectedPinboardElement != null)

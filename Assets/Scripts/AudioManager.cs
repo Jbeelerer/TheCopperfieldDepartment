@@ -27,7 +27,7 @@ public class AudioManager : MonoBehaviour
     {
         AudioSource newSource = gameObject.AddComponent<AudioSource>();
         newSource.clip = audioClip;
-        newSource.Play();
+        //newSource.Play();
         newSource.volume = volume;
         StartCoroutine(DeleteAudioSource(newSource, newSource.clip.length));
     }
