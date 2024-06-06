@@ -50,7 +50,6 @@ public class ComputerControls : MonoBehaviour, ISavable
     public OSPointySystem pointySystem;
     public Sprite[] appIcons;
 
-    private RectTransform screen;
     private float mouseSpeedX;
     private float mouseSpeedY;
     private List<OSWindow> windows = new List<OSWindow>();
@@ -62,7 +61,6 @@ public class ComputerControls : MonoBehaviour, ISavable
     private float tooltipDelay = 0.3f;
     private GameManager gm;
     private bool cursorActive = false;
-    private OSWindow currentFocusedWindow;
 
     [SerializeField] private RectTransform halfScreenBlockadeLeft;
     [SerializeField] private RectTransform halfScreenBlockadeRight;
@@ -71,6 +69,8 @@ public class ComputerControls : MonoBehaviour, ISavable
     [SerializeField] private AudioClip clickUpSound;
 
     [HideInInspector] public AudioManager audioManager;
+    [HideInInspector] public RectTransform screen;
+    [HideInInspector] public OSWindow currentFocusedWindow;
 
     public PinEvent OnUnpinned;
 
@@ -262,13 +262,17 @@ public class ComputerControls : MonoBehaviour, ISavable
             return;
         }
 
-        ResizeWindowSmall(currentFocusedWindow);
-        currentFocusedWindow.rectTrans.position = screen.position;
-
         switch (currentFocusedWindow.appType)
         {
             case OSAppType.SOCIAL:
-                pointySystem.StartTutorial("SocialMedia", toggledAutomatically);
+                if (pointySystem.evilIntroCompleted)
+                {
+                    pointySystem.StartTutorial("EvilSocialMedia", toggledAutomatically);
+                }
+                else
+                {
+                    pointySystem.StartTutorial("SocialMedia", toggledAutomatically);
+                }
                 break;
             case OSAppType.GOV:
                 pointySystem.StartTutorial("GovApp", toggledAutomatically);
@@ -537,7 +541,7 @@ public class ComputerControls : MonoBehaviour, ISavable
         windows.Clear();
     }
 
-    public void OpenWindow(OSAppType type, string warningMessage = "Warning message", System.Action successFunc = null)
+    public void OpenWindow(OSAppType type, string warningMessage = "Warning message", System.Action successFunc = null, bool hasCancelBtn = true)
     {
         // PLay opening sound
         audioManager.PlayAudio(windowOpenSound);
@@ -562,6 +566,7 @@ public class ComputerControls : MonoBehaviour, ISavable
         newWindow.GetComponent<OSWindow>().appType = type;
         newWindow.GetComponent<OSWindow>().warningMessage = warningMessage;
         newWindow.GetComponent<OSWindow>().warningSuccessFunc = successFunc;
+        newWindow.GetComponent<OSWindow>().hasCancelBtn = hasCancelBtn;
         BringWindowToFront(newWindow.GetComponent<OSWindow>());
         // Don't add to open windows list if its a temporary window like a warning
         if (newWindow.GetComponent<OSWindow>().appType != OSAppType.WARNING && newWindow.GetComponent<OSWindow>().appType != OSAppType.START_SETTINGS)
@@ -576,8 +581,8 @@ public class ComputerControls : MonoBehaviour, ISavable
         // Set window position
         SetWindowOpenPosition(newWindow.GetComponent<OSWindow>());
         // Open Pointy Tutorial if it exists for the window
-        if (/*gm.GetDay() == 1 && */newWindow.GetComponent<OSWindow>().appType != OSAppType.WARNING && newWindow.GetComponent<OSWindow>().appType != OSAppType.START_SETTINGS)
-            TogglePointy(true);
+        //if (/*gm.GetDay() == 1 && */newWindow.GetComponent<OSWindow>().appType != OSAppType.WARNING && newWindow.GetComponent<OSWindow>().appType != OSAppType.START_SETTINGS)
+        //    TogglePointy(true);
     }
 
     private void SetWindowOpenPosition(OSWindow window)
@@ -636,25 +641,9 @@ public class ComputerControls : MonoBehaviour, ISavable
             rightWindow = window;
         }
 
-        // Activate pointy notif if window tutorial hasnt been seen yet
-        /*if (gm.GetDay() == 1)
-        {
-            switch (currentFocusedWindow.appType)
-            {
-                case OSAppType.SOCIAL:
-                    pointySystem.ToggleButtonNotif("SocialMedia");
-                    break;
-                case OSAppType.GOV:
-                    pointySystem.ToggleButtonNotif("GovApp");
-                    break;
-                case OSAppType.PEOPLE_LIST:
-                    pointySystem.ToggleButtonNotif("PeopleList");
-                    break;
-                default:
-                    pointySystem.ToggleButtonNotif("Default");
-                    break;
-            }
-        }*/
+        // Open Pointy Tutorial if not already seen
+        if (window.GetComponent<OSWindow>().appType != OSAppType.WARNING && window.GetComponent<OSWindow>().appType != OSAppType.START_SETTINGS)
+            TogglePointy(true);
     }
 
     private void RemoveLeftRightWindow(OSWindow window)
@@ -669,7 +658,7 @@ public class ComputerControls : MonoBehaviour, ISavable
         }
     }
 
-    private void ResizeWindowSmall(OSWindow window)
+    public void ResizeWindowSmall(OSWindow window)
     {
         RemoveLeftRightWindow(window);
         window.rectTrans.anchorMin = new Vector2(0.5f, 0.5f);

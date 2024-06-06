@@ -29,6 +29,7 @@ public class OSWindow : MonoBehaviour
     [HideInInspector] public OSTab associatedTab;
     [HideInInspector] public string warningMessage = "";
     [HideInInspector] public System.Action warningSuccessFunc = null;
+    [HideInInspector] public bool hasCancelBtn = true;
 
     [SerializeField] private Sprite customSocialMediaWindow;
     [SerializeField] private Sprite customSocialMediaTopBar;
@@ -70,7 +71,7 @@ public class OSWindow : MonoBehaviour
         {
             Instantiate(socialMediaContent, transform.Find("Content"));
             buttonSmall.gameObject.SetActive(false);
-            topBarTextMesh.text = "Social Media";
+            topBarTextMesh.text = "QWAKR";
             GetComponent<Image>().sprite = customSocialMediaWindow;
             topBar.GetComponent<Image>().sprite = customSocialMediaTopBar;
         }
@@ -99,6 +100,7 @@ public class OSWindow : MonoBehaviour
             GameObject content = Instantiate(warningContent, transform.Find("Content"));
             content.GetComponent<OSWarningContent>().SetWarningMessage(warningMessage);
             content.GetComponent<OSWarningContent>().SetWarningSuccessFunc(warningSuccessFunc);
+            content.transform.Find("ButtonCancel").gameObject.SetActive(hasCancelBtn);
             buttonClose.gameObject.SetActive(false);
             buttonBig.gameObject.SetActive(false);
             buttonLong.gameObject.SetActive(false);
