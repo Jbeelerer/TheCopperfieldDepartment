@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -62,6 +63,13 @@ public class Narration : MonoBehaviour
     [SerializeField] private AudioClip firstDayFeedbackNegativeClip;
 
     [SerializeField] private AudioClip phoneCallIntroClip;
+
+    [SerializeField] private AudioClip phoneCallNothingAddedClip;
+
+    [SerializeField] private AudioClip phoneCallNoPostClip;
+
+    [SerializeField] private AudioClip phoneCallNoPersonClip;
+
     [SerializeField] private AudioClip phoneNotWorkingClip;
 
     private TimedSubtitles timedSubtitles;
@@ -138,10 +146,13 @@ public class Narration : MonoBehaviour
                 StartCoroutine(PlaySequence(timedSubtitles.phoneCallIntro, phoneCallIntroClip, false));
                 break;
             case "phoneReminderPostNotAdded":
-                StartCoroutine(PlaySequence(timedSubtitles.phoneReminderPostNotAdded, phoneCallIntroClip, false));
+                StartCoroutine(PlaySequence(timedSubtitles.phoneReminderPostNotAdded, phoneCallNoPostClip, false));
+                break;
+            case "phoneReminderPersonNotAdded":
+                StartCoroutine(PlaySequence(timedSubtitles.phoneReminderPersonNotAdded, phoneCallNoPersonClip, false));
                 break;
             case "phoneReminderNothingAdded":
-                StartCoroutine(PlaySequence(timedSubtitles.phoneReminderNothingAdded, phoneCallIntroClip, false));
+                StartCoroutine(PlaySequence(timedSubtitles.phoneReminderNothingAdded, phoneCallNothingAddedClip, false));
                 break;
         }
     }
@@ -256,7 +267,6 @@ public class Narration : MonoBehaviour
 
     public IEnumerator PlaySequence(TimedSubtitle[] content, AudioClip clip, bool playNextDayAnimation = true)
     {
-
         FPSController player = GameObject.Find("Player").GetComponent<FPSController>();
         Radio radio = FindObjectOfType<Radio>();
         startRotation = player.transform.rotation;
@@ -391,6 +401,30 @@ public class Narration : MonoBehaviour
             FindObjectOfType<Radio>().PauseRadio();
             gm.NextDaySequence();
         }
+    }
+
+    public bool CancelSequence()
+    {
+        if (sequencePlaying)
+        {
+            StopAllCoroutines();
+            audioSource.Stop();
+            gm.SetGameState(GameState.Playing);
+            subtitleText.text = "";
+            blackScreen.SetActive(false);
+            sequenceHadRequirement = false;
+            sequencePlaying = false;
+            requirementMet = false;
+            requirementToBeMet = Requirement.None;
+            FindAnyObjectByType<Phone>().ResetPhone();
+            am.PlayAudio(phoneHangup);
+            if (rotations != null)
+            {
+                GameObject.Find("Player").GetComponent<FPSController>().ResetCameraRotation(startRotation);
+            }
+            return true;
+        }
+        return false;
     }
 
     private void LoadShortSubtitles()

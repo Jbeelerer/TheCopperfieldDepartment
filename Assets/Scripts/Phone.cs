@@ -44,6 +44,7 @@ public class Phone : MonoBehaviour
         {
             wasOnPc = false;
             string callName = FindObjectOfType<Pinboard>().tutorialElementOnBoard();
+            print(callName);
             Ring(callName);
             if (callName == "phoneCallIntro")
             {
@@ -64,7 +65,11 @@ public class Phone : MonoBehaviour
     {
         if (!isRinging)
         {
-            narration.Say("phoneNotWorking");
+            if (!narration.CancelSequence())
+            {
+                gm.StateChanged.AddListener(Ring);
+                narration.Say("phoneNotWorking");
+            }
             return;
         }
         audioSource.Stop();
