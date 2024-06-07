@@ -77,11 +77,14 @@ public class Pinboard : MonoBehaviour
                 }
             }
         }
-        if (peopleOnBoard == 0 && postsOnBoard == 0)
+        print("tutorialElementOnBoard");
+        print(peopleOnBoard);
+        print(postsOnBoard);
+        if (peopleOnBoard < 2 && postsOnBoard == 0)
         {
             return "phoneReminderNothingAdded";
         }
-        else if (peopleOnBoard == 0)
+        else if (peopleOnBoard < 2)
         {
             return "phoneReminderPersonNotAdded";
         }

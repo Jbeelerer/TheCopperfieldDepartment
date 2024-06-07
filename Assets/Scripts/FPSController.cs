@@ -439,7 +439,7 @@ public class FPSController : MonoBehaviour
                             }
                         }
                     }
-                    else
+                    else if (currentSelectedObject != null)
                     {
                         switch (currentSelectedObject.name)
                         {
@@ -615,13 +615,10 @@ public class FPSController : MonoBehaviour
                                     }
                                     break;
                                 case "Phone":
-                                    if (requirementMet)
+                                    if (hit.collider.transform.GetComponent<Phone>() != null)
                                     {
-                                        if (hit.collider.transform.GetComponent<Phone>() != null)
-                                        {
-                                            inputOverlay.SetIcon("");
-                                            hit.collider.transform.GetComponent<Phone>().StartCall();
-                                        }
+                                        inputOverlay.SetIcon("");
+                                        hit.collider.transform.GetComponent<Phone>().StartCall();
                                     }
                                     break;
                                 case "Door":
