@@ -627,7 +627,7 @@ public class FPSController : MonoBehaviour
                                 case "Door":
                                     if (requirementMet)
                                     {
-                                        if (gm.GetAnswerCommited())
+                                        if (gm.GetAnswerCommited() && !FindObjectOfType<Phone>().GetIsRinging())
                                         {
                                             inputOverlay.SetIcon("");
                                             gm.setNewDay();

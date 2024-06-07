@@ -8,6 +8,7 @@ public class Person : ScriptableObject, IPinnable
     public string personName;
     public Sprite image;
     public SocialMediaUser socialMediaUser;
+    [TextArea] public string nextDayBriefing;
     public string description;
     // bool indicates
     public List<string> additionalInfos = new List<string>();
