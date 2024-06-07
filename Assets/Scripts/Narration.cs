@@ -120,6 +120,7 @@ public class Narration : MonoBehaviour
 
     public void PlaySequence(string sequence, Quaternion[] rotation = null)
     {
+        rotations = rotation;
         blackScreen.GetComponent<Image>().color = rotation != null ? new Color(0, 0, 0, 0f) : new Color(0, 0, 0, 1f);
         StopAllCoroutines();
         switch (sequence)
