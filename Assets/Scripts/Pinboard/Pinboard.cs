@@ -116,9 +116,9 @@ public class Pinboard : MonoBehaviour
 
             GameObject instance = Instantiate(connectionPrefab, thread);
             // handle contradiction color 
-            Color color;
-            UnityEngine.ColorUtility.TryParseHtmlString(connection.isContradiction ? "#F5867C" : "#F5DB7C", out color);
-            instance.transform.Find("PostIt").GetComponent<MeshRenderer>().material.color = color;
+            //Color color;
+            // UnityEngine.ColorUtility.TryParseHtmlString(connection.isContradiction ? "#F5867C" : "#F5DB7C", out color);
+            instance.transform.Find("PostitNew").GetComponent<MeshRenderer>().material.color = connection.isContradiction ? Color.red : Color.white;
             instance.transform.position = thread.transform.GetChild(0).position - new Vector3(0, 0.05f, 0);
             instance.GetComponentInChildren<TextMeshProUGUI>().text = connection.text;
             toElement.AddConnection(connection, instance.transform);

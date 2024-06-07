@@ -27,7 +27,7 @@ public class Radio : MonoBehaviour
 
     public void ChangeChanel()
     {
-        audioManager.PlayAudio(staticSound, 0.3f);
+        audioManager.PlayAudio(staticSound, 1f);
         currentChanel++;
         if (currentChanel > chanelAmount)
         {
