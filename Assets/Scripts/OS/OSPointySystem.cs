@@ -137,8 +137,10 @@ public class OSPointySystem : MonoBehaviour
         }
 
         // Reset size and position of affected window
-        computerControls.ResizeWindowSmall(computerControls.currentFocusedWindow);
-        computerControls.currentFocusedWindow.rectTrans.position = computerControls.screen.position;
+        if (computerControls.currentFocusedWindow) {
+            computerControls.ResizeWindowSmall(computerControls.currentFocusedWindow);
+            computerControls.currentFocusedWindow.rectTrans.position = computerControls.screen.position;
+        }
 
         currentStep = 0;
 
