@@ -272,9 +272,7 @@ public class Narration : MonoBehaviour
         startRotation = player.transform.rotation;
         gm.SetGameState(GameState.Frozen);
         blackScreen.SetActive(true);
-
         subtitleText.text = "";
-
         am.PlayAudio(phonePickup);
         yield return new WaitForSeconds(0.05f);
         int talkIndex = 0;
@@ -298,7 +296,6 @@ public class Narration : MonoBehaviour
                 {
                     if (rotations.Length > talkIndex)
                     {
-                        //Camera.main.transform.rotation = rotations[i];  
                         player.ResetCameraRotation(rotations[talkIndex]);
                         talkIndex++;
                     }
@@ -322,29 +319,28 @@ public class Narration : MonoBehaviour
                     interactionAllowed = false;
                 }
                 subtitleText.text = entry.text;
-                float time = 0;
                 isTalking = true;
-                while (entry.duration >= time)
+                float startTime = Time.time;
+                while (!skip && (Time.time - startTime < entry.duration))
                 {
-                    yield return new WaitForSeconds(0.1f);
-                    time += 0.1f;
-                    if (skip)
-                    {
-                        skip = false;
-                        if (entry.requirement != Requirement.None)
-                        {
-                            continue;
-                        }
-                        if (entry.duration + totalTime < audioSource.clip.length)
-                        {
-                            audioSource.Stop();
-                            audioSource.time = totalTime;
-                            audioSource.Play();
-                        }
-                        textAnimator.Play("skip");
-                        break;
-                    }
+                    yield return null;
                 }
+                if (skip)
+                {
+                    skip = false;
+                    if (entry.requirement != Requirement.None)
+                    {
+                        continue;
+                    }
+                    if (entry.duration + totalTime < audioSource.clip.length)
+                    {
+                        audioSource.Stop();
+                        audioSource.time = totalTime;
+                        audioSource.Play();
+                    }
+                    textAnimator.Play("skip");
+                }
+
                 isTalking = false;
                 if (entry.requirement != Requirement.None)
                 {
