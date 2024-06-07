@@ -618,6 +618,11 @@ public class ComputerControls : MonoBehaviour, ISavable
 
     private void BringWindowToFront(OSWindow window)
     {
+        if (currentFocusedWindow == window)
+        {
+            return;
+        }
+
         // Bring clicked window to front
         window.transform.SetAsLastSibling();
         currentFocusedWindow = window;
