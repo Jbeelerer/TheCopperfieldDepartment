@@ -145,6 +145,10 @@ public class Pinboard : MonoBehaviour
     {
         PinboardElement mp = pinsOnPinboard.FirstOrDefault(x => x.Value.GetContent() == null).Value;
         Person p = gm.GetCurrentlyAccused();
+        if (p == null)
+        {
+            return;
+        }
         if (!pinsOnPinboard.ContainsKey(p))
         {
             AddPin(p);

@@ -172,7 +172,7 @@ public class Narration : MonoBehaviour
     }
     public bool GetIfInteractionAllowed()
     {
-        if (interactionAllowed && !isTalking)
+        if (interactionAllowed)// && !isTalking)
         {
             return interactionAllowed;
         }

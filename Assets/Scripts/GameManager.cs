@@ -262,26 +262,28 @@ public class GameManager : MonoBehaviour, ISavable
     {
         saveManager = SaveManager.instance;
         am = AudioManager.instance;
-
-        if (Utility.CheckSaveFileExists(instance.saveFile.ToString()))
-        {
-            SaveManager.instance.SetupSaveFile(instance.saveFile.ToString());
-            if (Utility.CheckSaveFileExists(instance.saveFile.ToString()))
-            {
-                SaveManager.instance.LoadGame();
-            }
-            //Todo: can probably be removed... (Will do later <3)
-            else
-            {
-                StartCoroutine(DelayFirstDay());
-                //LoadNewDay(day);
-            }
-        }
-        else
-        {
-            StartCoroutine(DelayFirstDay());
-            //LoadNewDay(day); 
-        }
+        // TODO REMOVED SAVE SYSTEM FOR NOW
+        StartCoroutine(DelayFirstDay());
+        /*
+                if (Utility.CheckSaveFileExists(instance.saveFile.ToString()))
+                {
+                    SaveManager.instance.SetupSaveFile(instance.saveFile.ToString());
+                    if (Utility.CheckSaveFileExists(instance.saveFile.ToString()))
+                    {
+                        SaveManager.instance.LoadGame();
+                    }
+                    //Todo: can probably be removed... (Will do later <3)
+                    else
+                    {
+                        StartCoroutine(DelayFirstDay());
+                        //LoadNewDay(day);
+                    }
+                }
+                else
+                {
+                    StartCoroutine(DelayFirstDay());
+                    //LoadNewDay(day); 
+                }*/
     }
 
     public void SetNarration(Narration n)
