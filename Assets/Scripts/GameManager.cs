@@ -268,7 +268,6 @@ public class GameManager : MonoBehaviour, ISavable
             SaveManager.instance.SetupSaveFile(instance.saveFile.ToString());
             if (Utility.CheckSaveFileExists(instance.saveFile.ToString()))
             {
-                print("loading.........");
                 SaveManager.instance.LoadGame();
             }
             //Todo: can probably be removed... (Will do later <3)
@@ -398,8 +397,8 @@ public class GameManager : MonoBehaviour, ISavable
                 results[day - 2] = investigationState;
             }
             // don't save in dev mode, if you want to, just add comment syntax to the if statement
-            // if (!devMode) 
-            SaveManager.instance.SaveGame();
+            // TODO: Deactivate for current version
+            //  SaveManager.instance.SaveGame();
         }
         LoadNewDay(day);
     }

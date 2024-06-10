@@ -75,13 +75,12 @@ namespace SaveSystem
 
         public void SaveGame()
         {
+            //TODO: For the moment disable the save system
+            return;
             if (saveData == null)
                 saveData = new SaveData();
 
-            print(" SAAAAVE: " + instance.saveFile);
             savables = FindAllISavables();
-            // saveData.completedDays.Clear();
-            // saveData.firstTryResult.Clear();
             foreach (ISavable s in savables)
             {
                 s.SaveData(saveData);
@@ -100,6 +99,8 @@ namespace SaveSystem
 
         public void LoadGame()
         {
+            //TODO: For the moment disable the save system
+            return;
             print("loading");
             // Grab the save data file 
             saveData = saveFileHandler.Load();
@@ -110,8 +111,6 @@ namespace SaveSystem
             // Get all the iSavables (iSavables) 
             List<ISavable> iSavables = FindAllISavables();
 
-            // foreach(ISavable s in iSaveables) 
-            // s.LoadData(saveData)  
             foreach (ISavable s in iSavables)
             {
                 s.LoadData(saveData);

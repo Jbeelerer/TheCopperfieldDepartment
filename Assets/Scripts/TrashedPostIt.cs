@@ -22,7 +22,7 @@ public class TrashedPostIt : MonoBehaviour
     public void SetContent(ScriptableObject content)
     {
         pinboard = FindObjectOfType<Pinboard>();
-        this.content = content;
+        this.content = content; 
         pinboard.AddTrashedPin(content, gameObject);
     }
     public void ReAddPostIt()

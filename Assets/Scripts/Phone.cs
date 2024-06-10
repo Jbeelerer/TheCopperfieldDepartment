@@ -44,7 +44,6 @@ public class Phone : MonoBehaviour
         {
             wasOnPc = false;
             string callName = FindObjectOfType<Pinboard>().tutorialElementOnBoard();
-            print(callName);
             Ring(callName);
             if (callName == "phoneCallIntro")
             {

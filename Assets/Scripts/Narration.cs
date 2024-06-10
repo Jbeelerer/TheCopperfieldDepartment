@@ -38,6 +38,7 @@ public class TimedSubtitles
     public TimedSubtitle[] phoneCallIntro;
     public TimedSubtitle[] firstDayFeedbackPositive;
     public TimedSubtitle[] firstDayFeedbackNegative;
+    public TimedSubtitle[] exit;
 }
 [System.Serializable]
 public class ShortSubtitles
@@ -61,6 +62,7 @@ public class Narration : MonoBehaviour
     [SerializeField] private AudioClip introClip;
     [SerializeField] private AudioClip firstDayFeedbackPositiveClip;
     [SerializeField] private AudioClip firstDayFeedbackNegativeClip;
+    [SerializeField] private AudioClip exit;
 
     [SerializeField] private AudioClip phoneCallIntroClip;
 
@@ -138,6 +140,9 @@ public class Narration : MonoBehaviour
                 break;
             case "firstDayFeedbackNegative":
                 StartCoroutine(PlaySequence(timedSubtitles.firstDayFeedbackNegative, firstDayFeedbackNegativeClip));
+                break;
+            case "exit":
+                StartCoroutine(PlaySequence(timedSubtitles.exit, exit));
                 break;
             case "intro":
                 StartCoroutine(PlaySequence(timedSubtitles.intro, introClip, false));

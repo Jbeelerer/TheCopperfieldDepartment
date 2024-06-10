@@ -67,7 +67,8 @@ public class OSGovAppContent : MonoBehaviour, IPointerDownHandler, IPointerUpHan
         computerControls.pointySystem.StartTutorial("EvilIntro");
         computerControls.pointySystem.evilIntroCompleted = true;
 
-        if (mailContainer.transform.childCount == 1) {
+        if (mailContainer.transform.childCount == 1)
+        {
             GameObject newMail = Instantiate(mailPrefab, mailContainer.transform);
             newMail.GetComponent<OSMail>().mail = mails[1];
             newMail = Instantiate(mailPrefab, mailContainer.transform);

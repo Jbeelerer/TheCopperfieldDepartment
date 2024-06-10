@@ -19,8 +19,8 @@ public class TTS : MonoBehaviour
     {
         print("test anything");
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
-                SpeechSynthesizer synth = new SpeechSynthesizer();
-                synth.Speak(text);
+        SpeechSynthesizer synth = new SpeechSynthesizer();
+        synth.Speak(text);
 #elif UNITY_STANDALONE_OSX || UNITY_EDITOR_OSX
         print("testMac");
         Process process = new Process();

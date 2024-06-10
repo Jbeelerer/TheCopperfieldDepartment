@@ -75,7 +75,6 @@ public class Calendar : MonoBehaviour
 
     public void ResetSave()
     {
-        print("Resetting Save");
         sm.DeleteSave();
         sm.LoadGame();
         LoadCalendar();
