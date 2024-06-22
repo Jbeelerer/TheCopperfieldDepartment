@@ -81,6 +81,20 @@ public class GameManager : MonoBehaviour, ISavable
     {
         return day;
     }
+    public void ResetGame()
+    {
+        day = 1;
+        furthestDay = 1;
+        results.Clear();
+        firstTryResults.Clear();
+        competingEmployees.Clear();
+        for (int i = 0; i < 10; i++)
+        {
+            competingEmployees.Add(new CompetingEmployee());
+        }
+        playerOnEmployeeList = new CompetingEmployee("Player", 50, 0);
+        competingEmployees.Add(playerOnEmployeeList);
+    }
     public void SetGameState(GameState state)
     {
         reload();
@@ -295,7 +309,7 @@ public class GameManager : MonoBehaviour, ISavable
     {
         return mails;
     }
-    private void LoadCase()
+    private bool LoadCase()
     {
         //TODO: ONLY FOR TESTING REMOVE AFTERWARDS
         if (devCase != 0)
@@ -304,17 +318,18 @@ public class GameManager : MonoBehaviour, ISavable
         }
         if (Resources.LoadAll<Case>("Case" + day).Count() == 0)
         {
-            // TODO: implement endgame   
-            print("Game Over");
+            // TODO: implement endgame  
+            SceneManager.LoadScene("TheEnd");
+            return true;
             //  return; 
             // todo: Only temp solution...
-            day = 1;
         }
         currentCase = Resources.LoadAll<Case>("Case" + day)[0];
         // load all connections
         connections = Resources.LoadAll<Connections>("Case" + currentCase.id + "/Connections");
         mails = Resources.LoadAll<Mail>("Case" + currentCase.id + "/Mails");
         posts = Resources.LoadAll<SocialMediaPost>("Case" + currentCase.id + "/Posts");
+        return false;
     }
     public void LoadNewDay(int day)
     {
@@ -324,10 +339,16 @@ public class GameManager : MonoBehaviour, ISavable
             ow.GetComponent<Animator>().SetTrigger("NewDay");
         }
         this.day = day;
-        LoadCase();
+        bool over = LoadCase();
+        if (over)
+        {
+            return;
+        }
         //using lists to add new values dynamicly, afterwards convert to array, because it won't change and will be more performant
         List<Person> tempPeople = new List<Person>();
         List<SocialMediaUser> tempUsers = new List<SocialMediaUser>();
+        print("Day: " + day);
+        print("Case: " + currentCase);
         foreach (Person p in currentCase.people)
         {
             tempPeople.Add(p);

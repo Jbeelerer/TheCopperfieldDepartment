@@ -419,7 +419,7 @@ public class Pinboard : MonoBehaviour
         if (firstLoad)
         {
             firstLoad = false;
-            //return;
+            // return;
         }
         List<PinboardElement> toDelete = new List<PinboardElement>();
         foreach (PinboardElement p in pinsOnPinboard.Values)
