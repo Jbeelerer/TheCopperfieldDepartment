@@ -142,7 +142,7 @@ public class Narration : MonoBehaviour
                 StartCoroutine(PlaySequence(timedSubtitles.firstDayFeedbackNegative, firstDayFeedbackNegativeClip));
                 break;
             case "exit":
-                StartCoroutine(PlaySequence(timedSubtitles.exit, exit));
+                StartCoroutine(PlaySequence(timedSubtitles.exit, exit, false));
                 break;
             case "intro":
                 StartCoroutine(PlaySequence(timedSubtitles.intro, introClip, false));

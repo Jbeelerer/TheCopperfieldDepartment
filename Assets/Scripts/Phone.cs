@@ -31,6 +31,15 @@ public class Phone : MonoBehaviour
         animator = GetComponent<Animator>();
         gm = GameManager.instance;
         gm.StateChanged.AddListener(Ring);
+        gm.InvestigationStateChanged.AddListener(ExitTutorial);
+    }
+    public void ExitTutorial()
+    {
+        if (gm.GetAnswerCommited())
+        {
+            Ring("exit");
+            gm.InvestigationStateChanged.RemoveListener(ExitTutorial);
+        }
     }
 
     public void Ring()
