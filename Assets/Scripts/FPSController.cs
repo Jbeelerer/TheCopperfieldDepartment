@@ -86,6 +86,8 @@ public class FPSController : MonoBehaviour
 
     [SerializeField] private GameObject trashedPostItPrefab;
 
+    private float timeDragged = 0;
+
     public void ResetFoundConnections()
     {
         foreach (GameObject v in foundConnections.Values)
@@ -128,43 +130,49 @@ public class FPSController : MonoBehaviour
             removingTime -= Time.deltaTime;
             if (removingTime <= 0)
             {
-                if (currentSelectedObject.transform.parent.name == "Connection")
-                {
-                    Destroy(currentSelectedObject.transform.parent.gameObject);
-                    return;
-                }
-                PinboardElement pe = currentSelectedObject != null && currentSelectedObject.name == "pin" ? currentSelectedObject.transform.parent.GetComponent<PinboardElement>() : selectedPinboardElement.GetComponent<PinboardElement>();
-
-                if (pe.GetIfDeletable())
-                {
-                    pe.DeleteElement();
-                    am.PlayAudio(deleteSound);
-                    //TODO: for now don't spawn any trashed post it if there is no content
-                    if (pe.GetContent() != null)
-                    {
-                        additionalInfoBoard.CancelPreview();
-                        OnPinDeletion?.Invoke(pe.GetContent());
-                        //instantiate TrashedPostIT
-                        if (trashedPostItPrefab != null)
-                        {
-                            GameObject g = Instantiate(trashedPostItPrefab, pe.transform.position + new Vector3(0.1f, 0, 0), pe.transform.rotation);
-                            g.GetComponent<TrashedPostIt>().SetContent(pe.GetContent());
-                        }
-                    }
-                }
-                else
-                {
-                    pe.transform.position = originalPosition;
-                    am.PlayReverseAudio(pickupSound);
-                    pe.GetComponentInParent<Animator>().SetBool("pinNormal", true);
-                    pe.gameObject.layer = 0;
-                }
-
-                removingTime = -1;
-                inputOverlay.stopHold();
-                selectedPinboardElement = null;
+                DeleteElement();
             }
         }
+    }
+
+    private void DeleteElement()
+    {
+        if (currentSelectedObject != null && currentSelectedObject.transform.parent != null && currentSelectedObject.transform.parent.name == "Connection")
+        {
+            Destroy(currentSelectedObject.transform.parent.gameObject);
+            return;
+        }
+        PinboardElement pe = currentSelectedObject != null && currentSelectedObject.name == "pin" ? currentSelectedObject.transform.parent.GetComponent<PinboardElement>() : selectedPinboardElement.GetComponent<PinboardElement>();
+
+        if (pe.GetIfDeletable())
+        {
+            pe.DeleteElement();
+            am.PlayAudio(deleteSound);
+            //TODO: for now don't spawn any trashed post it if there is no content
+            if (pe.GetContent() != null)
+            {
+                additionalInfoBoard.CancelPreview();
+                OnPinDeletion?.Invoke(pe.GetContent());
+                //instantiate TrashedPostIT
+                if (trashedPostItPrefab != null)
+                {
+                    GameObject g = Instantiate(trashedPostItPrefab, pe.transform.position + new Vector3(0.1f, 0, 0), pe.transform.rotation);
+                    g.GetComponent<TrashedPostIt>().SetContent(pe.GetContent());
+                }
+            }
+        }
+        else
+        {
+            pe.transform.position = originalPosition;
+            am.PlayReverseAudio(pickupSound);
+            pe.GetComponentInParent<Animator>().SetBool("pinNormal", true);
+            pe.gameObject.layer = 0;
+            pe.transform.Find("pin").GetComponent<Collider>().enabled = true;
+        }
+
+        removingTime = -1;
+        inputOverlay.stopHold();
+        selectedPinboardElement = null;
     }
 
     public void ResetCameraRotation(Quaternion rotation, bool instant = false)
@@ -231,14 +239,15 @@ public class FPSController : MonoBehaviour
 
             #endregion
 
-            #region Handles Interaction
-
             RaycastHit hit;
             Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
+            bool hasHitSomething = Physics.Raycast(ray, out hit);
+
+            #region Handles Interaction
 
             // if removingTime is the default value it is active and the currentselectedObject shouldn't change
             #region Look at things
-            if (Physics.Raycast(ray, out hit) && !onHoldDown)
+            if (hasHitSomething && !onHoldDown)
             {
                 if (Vector3.Distance(hit.collider.gameObject.transform.position, transform.position) <= interactionReach)
                 {
@@ -365,10 +374,11 @@ public class FPSController : MonoBehaviour
                 else if (currentSelectedObject != null && removingTime == -1)
                 {
                     DeselectPen();
-                    inputOverlay.ChangeIconIfDifferent("");
                     if (selectedPinboardElement != null)
                     {
                         selectedPinboardElement.gameObject.layer = 0;
+                        selectedPinboardElement.transform.Find("pin").GetComponent<Collider>().enabled = true;
+                        selectedPinboardElement.transform.position = originalPosition;
                         selectedPinboardElement.GetComponentInParent<Animator>().SetBool("pinNormal", true);
                         selectedPinboardElement.GetComponent<PinboardElement>().setIsMoving(false);
                         am.PlayReverseAudio(pickupSound);
@@ -380,6 +390,7 @@ public class FPSController : MonoBehaviour
                         TryToPlaceThread("");
                     }
                     additionalInfoBoard.CancelPreview();
+                    inputOverlay.ChangeIconIfDifferent("");
                     //interactionReach = 3f; 
                 }
                 else
@@ -538,11 +549,7 @@ public class FPSController : MonoBehaviour
                         // places the pinboardElement back to the pinboard
                         else if (selectedPinboardElement != null)
                         {  // change back to default layer so it can be selected again
-                            selectedPinboardElement.gameObject.layer = 0;
-                            selectedPinboardElement.GetComponentInParent<Animator>().SetBool("pinNormal", true);
-                            selectedPinboardElement.GetComponent<PinboardElement>().setIsMoving(false);
-                            am.PlayReverseAudio(pickupSound);
-                            selectedPinboardElement = null;
+                            PlacePinboardElement(nameOfThingLookedAt);
                         }
                         else
                         {
@@ -560,6 +567,7 @@ public class FPSController : MonoBehaviour
                                     }
                                     else
                                     {
+                                        timeDragged = Time.time;
                                         originalPosition = currentSelectedObject.transform.position;
                                         inputOverlay.SetIcon("handClosed");
                                         currentSelectedObject.GetComponentInParent<Animator>().SetBool("pinNormal", false);
@@ -568,6 +576,7 @@ public class FPSController : MonoBehaviour
                                         am.PlayAudio(pickupSound);
                                         // change to ignore raycast layer so it won't overflow the pinboard
                                         selectedPinboardElement.gameObject.layer = 2;
+                                        selectedPinboardElement.transform.Find("pin").GetComponent<Collider>().enabled = false;
                                     }
                                     break;
                                 case "CurvedScreen":
@@ -650,11 +659,28 @@ public class FPSController : MonoBehaviour
                         }
                     }
                 }
-                else if (Input.GetMouseButtonUp(0) && onHoldDown)
+                if (Input.GetMouseButtonUp(0))
                 {
-                    onHoldDown = false;
-                    inputOverlay.stopHold();
-                    removingTime = -1f;
+                    if (onHoldDown)
+                    {
+                        onHoldDown = false;
+                        inputOverlay.stopHold();
+                        removingTime = -1f;
+                        inputOverlay.SetIcon("");
+                    }
+                    //Also allow for dragging the pinboardElement
+                    else if (selectedPinboardElement != null)
+                    {
+                        if (Time.time - timeDragged > 0.3f)
+                        {
+                            PlacePinboardElement(nameOfThingLookedAt);
+                            inputOverlay.SetIcon("");
+                        }
+                    }
+                    else
+                    {
+                        inputOverlay.SetIcon("");
+                    }
                 }
                 #endregion
 
@@ -707,10 +733,23 @@ public class FPSController : MonoBehaviour
                 #endregion
             }
             #region handle selected element movement
+
             // handle moving pinboardElement position 
-            if (selectedPinboardElement != null && currentSelectedObject != null && (nameOfThingLookedAt == "PinboardModel" || nameOfThingLookedAt == "DeadZone"))
+            if (selectedPinboardElement != null)
             {
-                selectedPinboardElement.transform.position = new Vector3(selectedPinboardElement.transform.position.x, hit.point.y, hit.point.z);
+                string targetName = hit.collider.gameObject.name;
+                if ((targetName == "PinboardModel" || targetName == "DeadZone") && currentSelectedObject != null && hit.collider.gameObject.tag == "Interactable")
+                {
+                    selectedPinboardElement.transform.position = new Vector3(selectedPinboardElement.transform.position.x, hit.point.y, hit.point.z);
+                }
+                /* else if (nameOfThingLookedAt != "pinboardElement(Clone)" && nameOfThingLookedAt != "pin")
+                 {
+                     onHoldDown = false; 
+                     inputOverlay.stopHold();
+                     removingTime = -1; // cancel the deletion if in progress
+                     selectedPinboardElement.transform.position = originalPosition;
+                     PlacePinboardElement();
+                 }*/
             }
             // handle moving thread position
             if (currentThread != null)
@@ -749,6 +788,28 @@ public class FPSController : MonoBehaviour
             if (am.IsPlaying(chairRollSound))
                 am.StopAudioRepeating(chairRollSound, 0.3f);
         }
+    }
+
+    private void PlacePinboardElement(string bgName = "")
+    {
+        if (selectedPinboardElement == null)
+        {
+            return;
+        }
+        if (bgName != "PinboardModel")
+        {
+            selectedPinboardElement.transform.position = originalPosition;
+            onHoldDown = false;
+            inputOverlay.stopHold();
+            removingTime = -1;
+        }
+        selectedPinboardElement.gameObject.layer = 0;
+        selectedPinboardElement.transform.Find("pin").GetComponent<Collider>().enabled = true;
+        selectedPinboardElement.GetComponentInParent<Animator>().SetBool("pinNormal", true);
+        selectedPinboardElement.GetComponent<PinboardElement>().setIsMoving(false);
+        am.PlayReverseAudio(pickupSound);
+        selectedPinboardElement = null;
+        inputOverlay.SetIcon("");
     }
 
     private void ResetPlayer()

@@ -58,8 +58,8 @@ public class InputOverlay : MonoBehaviour
     {
         currentIcon = imageName;
         image.enabled = true;
-        // don't allow any icon changes while moving pins
-        if (!forceIcon && image.sprite == handClosed && imageName != "handOpen")
+        // don't allow any icon changes while moving pins only empty
+        if (!forceIcon && image.sprite == handClosed && imageName != "handOpen" && imageName != "")
         {
             return;
         }
@@ -99,6 +99,7 @@ public class InputOverlay : MonoBehaviour
                 image.sprite = pin;
                 break;
             default:
+                image.sprite = defaultIcon;
                 image.enabled = false;
                 break;
         }

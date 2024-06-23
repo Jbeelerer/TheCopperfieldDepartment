@@ -174,7 +174,9 @@ public class Narration : MonoBehaviour
     {
         if (interactionAllowed)// && !isTalking)
         {
-            return interactionAllowed;
+            bool temp = interactionAllowed;
+            interactionAllowed = false;
+            return temp;
         }
         return false;
     }
