@@ -1,11 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class AudioManager : MonoBehaviour
 {
     public static AudioManager instance;
-    public AudioSource audioSource;
+    private AudioSource audioSource;
+
+    [SerializeField] private AudioMixerGroup sfxMixerGroup;
+    [SerializeField] private AudioMixerGroup musicMixerGroup;
+    [SerializeField] private AudioMixerGroup voiceMixerGroup;
 
     private List<AudioSource> repeatingAudioSources = new List<AudioSource>();
 
@@ -20,12 +25,12 @@ public class AudioManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        audioSource = GetComponent<AudioSource>();
+        audioSource = CreateNewSfxSource();
     }
 
     public void PlayAudio(AudioClip audioClip, float volume = 1f)
     {
-        AudioSource newSource = gameObject.AddComponent<AudioSource>();
+        AudioSource newSource = CreateNewSfxSource();
         newSource.clip = audioClip;
         newSource.Play();
         newSource.volume = volume;
@@ -66,7 +71,7 @@ public class AudioManager : MonoBehaviour
             }
         }
 
-        AudioSource newSource = gameObject.AddComponent<AudioSource>();
+        AudioSource newSource = CreateNewSfxSource();
         newSource.loop = true;
         newSource.clip = audioClip;
         newSource.volume = 0.9f;
@@ -136,5 +141,28 @@ public class AudioManager : MonoBehaviour
         }
 
         return false;
+    }
+
+    private AudioSource CreateNewSfxSource()
+    {
+        AudioSource newSource = gameObject.AddComponent<AudioSource>();
+        newSource.outputAudioMixerGroup = sfxMixerGroup;
+        return newSource;
+    }
+
+    public void UpdateMixerValue(string parameterName, float value)
+    {
+        switch (parameterName)
+        {
+            case "Music Volume":
+                musicMixerGroup.audioMixer.SetFloat(parameterName, Mathf.Log10(value) * 20);
+                break;
+            case "SFX Volume":
+                sfxMixerGroup.audioMixer.SetFloat(parameterName, Mathf.Log10(value) * 20);
+                break;
+            case "Voice Volume":
+                voiceMixerGroup.audioMixer.SetFloat(parameterName, Mathf.Log10(value) * 20);
+                break;
+        }
     }
 }

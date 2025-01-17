@@ -61,6 +61,7 @@ public class ComputerControls : MonoBehaviour, ISavable
     private float tooltipDelay = 0.3f;
     private GameManager gm;
     private bool cursorActive = false;
+    private GameObject eventSystem;
 
     [SerializeField] private RectTransform halfScreenBlockadeLeft;
     [SerializeField] private RectTransform halfScreenBlockadeRight;
@@ -96,6 +97,7 @@ public class ComputerControls : MonoBehaviour, ISavable
         cursor.gameObject.SetActive(cursorActive);
 
         screen = GetComponent<RectTransform>();
+        eventSystem = GameObject.Find("EventSystem");
         //windows.Add(testWindow);
         //testWindow.associatedTab = testTab;
         cursorTooltip = cursor.transform.Find("Tooltip").gameObject;
@@ -319,6 +321,8 @@ public class ComputerControls : MonoBehaviour, ISavable
     {
         cursorActive = !cursorActive;
         cursor.gameObject.SetActive(cursorActive);
+        eventSystem.GetComponent<StandaloneInputModule>().enabled = !cursorActive;
+        eventSystem.GetComponent<VirtualInputModule>().enabled = cursorActive;
         cursor.anchoredPosition = cursorActive ? new Vector2(0, 0) : new Vector2(-1000, -1000);
     }
 

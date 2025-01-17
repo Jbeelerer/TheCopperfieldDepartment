@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class Radio : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class Radio : MonoBehaviour
     [SerializeField] private AudioClip[] radioMusicChanel2;
     [SerializeField] private AudioClip[] radioTalkShow2;
     [SerializeField] private AudioClip staticSound;
+
+    [SerializeField] private AudioMixerGroup musicMixerGroup;
 
     private AudioSource audioSource;
 
@@ -21,6 +24,8 @@ public class Radio : MonoBehaviour
     private void Start()
     {
         audioSource = GetComponent<AudioSource>();
+        audioSource.outputAudioMixerGroup = musicMixerGroup;
+
         audioManager = FindObjectOfType<AudioManager>();
         PlayChanel(false);
     }

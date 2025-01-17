@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.UI;
 
 public enum Requirement
@@ -53,6 +54,7 @@ public class ShortSubtitles
 
 public class Narration : MonoBehaviour
 {
+    [SerializeField] private AudioMixerGroup voiceMixerGroup;
 
     [SerializeField] private AudioClip notLeavingVoice;
     [SerializeField] private AudioClip positiveFeedbackVoice;
@@ -113,6 +115,7 @@ public class Narration : MonoBehaviour
         am = AudioManager.instance;
         gm.SetNarration(this);
         audioSource = GetComponent<AudioSource>();
+        audioSource.outputAudioMixerGroup = voiceMixerGroup;
         subtitleText = GameObject.Find("Subtitle").GetComponent<TextMeshProUGUI>();
         textAnimator = subtitleText.GetComponent<Animator>();
 
