@@ -28,12 +28,12 @@ public class AudioManager : MonoBehaviour
         audioSource = CreateNewSfxSource();
     }
 
-    public void PlayAudio(AudioClip audioClip, float volume = 1f)
+    public void PlayAudio(AudioClip audioClip, float volume = 1f, GameObject parent = null)
     {
-        AudioSource newSource = CreateNewSfxSource();
+        AudioSource newSource = CreateNewSfxSource(parent);
         newSource.clip = audioClip;
-        newSource.Play();
         newSource.volume = volume;
+        newSource.Play();
         StartCoroutine(DeleteAudioSource(newSource, newSource.clip.length));
     }
     public IEnumerator ResetAudio(float length)
@@ -61,7 +61,7 @@ public class AudioManager : MonoBehaviour
         }
 
     }
-    public void PlayAudioRepeating(AudioClip audioClip, float fadeDuration = 0f)
+    public void PlayAudioRepeating(AudioClip audioClip, float fadeDuration = 0.01f, GameObject parent = null)
     {
         foreach (AudioSource source in repeatingAudioSources)
         {
@@ -71,7 +71,7 @@ public class AudioManager : MonoBehaviour
             }
         }
 
-        AudioSource newSource = CreateNewSfxSource();
+        AudioSource newSource = CreateNewSfxSource(parent);
         newSource.loop = true;
         newSource.clip = audioClip;
         newSource.volume = 0.9f;
@@ -126,7 +126,6 @@ public class AudioManager : MonoBehaviour
         yield return new WaitForSeconds(delay);
 
         source.Stop();
-        //repeatingAudioSources.Remove(source);
         Destroy(source);
     }
 
@@ -143,9 +142,17 @@ public class AudioManager : MonoBehaviour
         return false;
     }
 
-    private AudioSource CreateNewSfxSource()
+    private AudioSource CreateNewSfxSource(GameObject parent = null)
     {
-        AudioSource newSource = gameObject.AddComponent<AudioSource>();
+        AudioSource newSource;
+        if (parent)
+        {
+            newSource = parent.AddComponent<AudioSource>();
+        }
+        else
+        {
+            newSource = gameObject.AddComponent<AudioSource>();
+        }
         newSource.outputAudioMixerGroup = sfxMixerGroup;
         return newSource;
     }
