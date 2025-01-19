@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -14,8 +15,9 @@ public class PauseMenu : MonoBehaviour
 
     [SerializeField] private Toggle fullScreenToggle;
     [SerializeField] private Toggle vsyncToggle;
-    [SerializeField] private TextMeshProUGUI resolutionLabel;
-    [SerializeField] private List<ResItem> resolutions = new List<ResItem>();
+    //[SerializeField] private TextMeshProUGUI resolutionLabel;
+    [SerializeField] private TMP_Dropdown resolutionDropdown;
+    //[SerializeField] private List<ResItem> resolutions = new List<ResItem>();
 
     public static float sfxVolume { get; private set; }
     public static float musicVolume { get; private set; }
@@ -26,13 +28,18 @@ public class PauseMenu : MonoBehaviour
 
     private bool isPaused = false;
 
-    private int selectedResolution;
+    //private int selectedResolution;
 
     void Start()
     {
         fpsController = FindObjectOfType<FPSController>();
         gm = GameManager.instance;
         am = AudioManager.instance;
+
+        resolutionDropdown.options.Insert(0, new TMP_Dropdown.OptionData(Screen.currentResolution.width + " x " + Screen.currentResolution.height));
+        resolutionDropdown.value = 0;
+        resolutionDropdown.Select();
+        resolutionDropdown.RefreshShownValue();
 
         ResumeGame();
     }
@@ -87,7 +94,6 @@ public class PauseMenu : MonoBehaviour
     {
         overviewPage.SetActive(false);
         settingsPage.SetActive(true);
-        UpdateResLabel();
     }
 
     private void CloseAllMenus()
@@ -122,7 +128,7 @@ public class PauseMenu : MonoBehaviour
         Screen.fullScreen = !Screen.fullScreen;
     }
 
-    public void ResLeft()
+    /*public void ResLeft()
     {
         selectedResolution--;
         if (selectedResolution < 0)
@@ -140,18 +146,22 @@ public class PauseMenu : MonoBehaviour
             selectedResolution = resolutions.Count - 1;
         }
         UpdateResLabel();
-    }
+    }*/
 
-    private void UpdateResLabel()
+    /*public void UpdateResLabel()
     {
-        resolutionLabel.text = resolutions[selectedResolution].horizontal + " x " + resolutions[selectedResolution].vertical;
-    }
+        //resolutionLabel.text = resolutions[selectedResolution].horizontal + " x " + resolutions[selectedResolution].vertical;
+
+    }*/
 
     public void ApplyGraphics()
     {
         QualitySettings.vSyncCount = vsyncToggle.isOn ? 1 : 0;
 
-        Screen.SetResolution(resolutions[selectedResolution].horizontal, resolutions[selectedResolution].vertical, fullScreenToggle.isOn);
+        int horizontalRes = Int32.Parse(resolutionDropdown.options[resolutionDropdown.value].text.Split('x')[0].Trim());
+        int verticalRes = Int32.Parse(resolutionDropdown.options[resolutionDropdown.value].text.Split('x')[1].Trim());
+
+        Screen.SetResolution(horizontalRes, verticalRes, fullScreenToggle.isOn);
     }
 }
 
