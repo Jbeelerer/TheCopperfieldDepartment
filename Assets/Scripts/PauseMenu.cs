@@ -1,13 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour
 {
     [SerializeField] private GameObject overviewPage;
     [SerializeField] private GameObject settingsPage;
+
+    [SerializeField] private Toggle fullScreenToggle;
+    [SerializeField] private Toggle vsyncToggle;
+    [SerializeField] private TextMeshProUGUI resolutionLabel;
+    [SerializeField] private List<ResItem> resolutions = new List<ResItem>();
 
     public static float sfxVolume { get; private set; }
     public static float musicVolume { get; private set; }
@@ -17,6 +25,8 @@ public class PauseMenu : MonoBehaviour
     private AudioManager am;
 
     private bool isPaused = false;
+
+    private int selectedResolution;
 
     void Start()
     {
@@ -77,6 +87,7 @@ public class PauseMenu : MonoBehaviour
     {
         overviewPage.SetActive(false);
         settingsPage.SetActive(true);
+        UpdateResLabel();
     }
 
     private void CloseAllMenus()
@@ -105,4 +116,47 @@ public class PauseMenu : MonoBehaviour
     {
         am.UpdateMixerValue("Voice Volume", value);
     }
+
+    public void ToggleFullScreen()
+    {
+        Screen.fullScreen = !Screen.fullScreen;
+    }
+
+    public void ResLeft()
+    {
+        selectedResolution--;
+        if (selectedResolution < 0)
+        {
+            selectedResolution = 0;
+        }
+        UpdateResLabel();
+    }
+
+    public void ResRight()
+    {
+        selectedResolution++;
+        if (selectedResolution > resolutions.Count - 1)
+        {
+            selectedResolution = resolutions.Count - 1;
+        }
+        UpdateResLabel();
+    }
+
+    private void UpdateResLabel()
+    {
+        resolutionLabel.text = resolutions[selectedResolution].horizontal + " x " + resolutions[selectedResolution].vertical;
+    }
+
+    public void ApplyGraphics()
+    {
+        QualitySettings.vSyncCount = vsyncToggle.isOn ? 1 : 0;
+
+        Screen.SetResolution(resolutions[selectedResolution].horizontal, resolutions[selectedResolution].vertical, fullScreenToggle.isOn);
+    }
+}
+
+[System.Serializable]
+public class ResItem
+{
+    public int horizontal, vertical;
 }
