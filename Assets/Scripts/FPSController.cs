@@ -216,7 +216,7 @@ public class FPSController : MonoBehaviour
             // Play chair rolling sound when moving
             if (curSpeedX != 0 || curSpeedY != 0)
             {
-                am.PlayAudioRepeating(chairRollSound, 0.5f);
+                am.PlayAudioRepeating(chairRollSound, 0.5f, volume: 0.8f);
             }
             else
             {

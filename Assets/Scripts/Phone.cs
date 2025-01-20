@@ -65,7 +65,7 @@ public class Phone : MonoBehaviour
         animator.Play("Ringing");
         isRinging = true;
         this.callName = callName;
-        am.PlayAudioRepeating(phoneRing, parent: gameObject);
+        am.PlayAudioRepeating(phoneRing, volume: 0.5f, parent: gameObject);
     }
 
     public void StartCall()

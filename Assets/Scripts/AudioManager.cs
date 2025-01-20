@@ -61,7 +61,7 @@ public class AudioManager : MonoBehaviour
         }
 
     }
-    public void PlayAudioRepeating(AudioClip audioClip, float fadeDuration = 0.01f, GameObject parent = null)
+    public void PlayAudioRepeating(AudioClip audioClip, float fadeDuration = 0.01f, float volume = 1f, GameObject parent = null)
     {
         foreach (AudioSource source in repeatingAudioSources)
         {
@@ -74,43 +74,43 @@ public class AudioManager : MonoBehaviour
         AudioSource newSource = CreateNewSfxSource(parent);
         newSource.loop = true;
         newSource.clip = audioClip;
-        newSource.volume = 0.9f;
+        newSource.volume = volume;
         repeatingAudioSources.Add(newSource);
-        StartCoroutine(FadeIn(newSource, fadeDuration));
+        StartCoroutine(FadeIn(newSource, fadeDuration, volume));
     }
 
-    public void StopAudioRepeating(AudioClip audioClip, float fadeDuration = 0f)
+    public void StopAudioRepeating(AudioClip audioClip, float fadeDuration = 0.01f)
     {
         foreach (AudioSource source in repeatingAudioSources)
         {
             if (source.clip == audioClip)
             {
                 repeatingAudioSources.Remove(source);
-                StartCoroutine(FadeOut(source, fadeDuration));
+                StartCoroutine(FadeOut(source, fadeDuration, source.volume));
                 return;
             }
         }
     }
 
-    private IEnumerator FadeIn(AudioSource source, float fadeDuration)
+    private IEnumerator FadeIn(AudioSource source, float fadeDuration, float maxVolume)
     {
         source.Play();
 
         float timeElapsed = 0;
-        while (source && source.volume < 1)
+        while (source && source.volume < maxVolume)
         {
-            source.volume = Mathf.Lerp(0, 1, timeElapsed / fadeDuration);
+            source.volume = Mathf.Lerp(0, maxVolume, timeElapsed / fadeDuration);
             timeElapsed += Time.deltaTime;
             yield return true;
         }
     }
 
-    private IEnumerator FadeOut(AudioSource source, float fadeDuration)
+    private IEnumerator FadeOut(AudioSource source, float fadeDuration, float maxVolume)
     {
         float timeElapsed = 0;
         while (source && source.volume > 0)
         {
-            source.volume = Mathf.Lerp(1, 0, timeElapsed / fadeDuration);
+            source.volume = Mathf.Lerp(maxVolume, 0, timeElapsed / fadeDuration);
             timeElapsed += Time.deltaTime;
             yield return true;
         }
