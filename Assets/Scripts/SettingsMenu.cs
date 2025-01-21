@@ -123,11 +123,11 @@ public class SettingsMenu : MonoBehaviour
     public void ApplySoundSettings()
     {
         OnSfxSliderValueChange(sfxVolume);
-        PlayerPrefs.SetFloat("SFXVolume", sfxVolume);
+        PlayerPrefs.SetInt("SFXVolume", (int)(sfxVolume * 100));
         OnMusicSliderValueChange(musicVolume);
-        PlayerPrefs.SetFloat("MusicVolume", musicVolume);
+        PlayerPrefs.SetInt("MusicVolume", (int)(musicVolume * 100));
         OnVoiceSliderValueChange(voiceVolume);
-        PlayerPrefs.SetFloat("VoiceVolume", voiceVolume);
+        PlayerPrefs.SetInt("VoiceVolume", (int)(voiceVolume * 100));
     }
 
     public void ApplyDisplaySettings()
@@ -158,9 +158,9 @@ public class SettingsMenu : MonoBehaviour
         resolutionDropdown.RefreshShownValue();
 
         //Sound
-        sfxSlider.value = PlayerPrefs.GetFloat("SFXVolume", 1);
-        musicSlider.value = PlayerPrefs.GetFloat("MusicVolume", 1);
-        voiceSlider.value = PlayerPrefs.GetFloat("VoiceVolume", 1);
+        sfxSlider.value = (float)PlayerPrefs.GetInt("SFXVolume", 100) / 100;
+        musicSlider.value = (float)PlayerPrefs.GetInt("MusicVolume", 100) / 100;
+        voiceSlider.value = (float)PlayerPrefs.GetInt("VoiceVolume", 100) / 100;
 
         // Display
         fullScreenToggle.isOn = Screen.fullScreen;
