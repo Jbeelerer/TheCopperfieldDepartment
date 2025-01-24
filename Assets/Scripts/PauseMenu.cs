@@ -25,7 +25,7 @@ public class PauseMenu : MonoBehaviour
         fpsController = FindObjectOfType<FPSController>();
         gm = GameManager.instance;
         am = AudioManager.instance;
-        settings = GetComponentInChildren<SettingsMenu>();
+        settings = GetComponentInChildren<SettingsMenu>(true);
 
         settings.ApplyCurrentSettings();
 
