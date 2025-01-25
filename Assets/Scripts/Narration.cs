@@ -382,6 +382,10 @@ public class Narration : MonoBehaviour
                         audioSource.time = totalTime;
                         audioSource.Play();
                     }
+                    else
+                    {
+                        audioSource.Stop();
+                    }
                     textAnimator.Play("skip");
                 }
 

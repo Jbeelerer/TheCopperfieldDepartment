@@ -162,7 +162,6 @@ public class Pinboard : MonoBehaviour
         mp.removeThreads();
         FlaggedThread = ConnectWithThread(pinsOnPinboard[p], mp).gameObject;
         FlaggedPersonPin = pinsOnPinboard[p];
-
     }
 
     private void RemoveByScriptableObject(ScriptableObject o)
