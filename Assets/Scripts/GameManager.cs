@@ -72,6 +72,17 @@ public class GameManager : MonoBehaviour, ISavable
 
     private Person currentlyAccused;
 
+    private bool _pinboardBlocked = false;
+    public bool PinboardBlocked
+    {
+        get { return _pinboardBlocked; }
+        set
+        {
+            GameObject.Find("Pinboard").GetComponent<Pinboard>().pinboardInteractions(value);
+            _pinboardBlocked = value;
+        }
+    }
+
     public bool GetIfDevMode()
     {
         return devMode;

@@ -333,6 +333,9 @@ public class FPSController : MonoBehaviour
                                 case "Radio":
                                     inputOverlay.SetIcon("handOpen");
                                     break;
+                                case "Block":
+                                    inputOverlay.SetIcon("handOpen");
+                                    break;
                                 default:
                                     break;
                             }
@@ -650,6 +653,10 @@ public class FPSController : MonoBehaviour
                                         hit.collider.transform.GetComponent<Radio>().ChangeChanel();
                                     }
                                     break;
+                                case "Block":
+                                    narration.Say("blocked");
+                                    break;
+
                                 default:
                                     switch (hit.collider.gameObject.name)
                                     {

@@ -44,6 +44,10 @@ public class Pinboard : MonoBehaviour
 
     [SerializeField] private ScriptableObject[] tutorialRelevantObjects;
 
+    public void pinboardInteractions(bool t)
+    {
+        transform.Find("Block").gameObject.SetActive(t);
+    }
     public void AddTrashedPin(ScriptableObject o, GameObject go)
     {
         trashedPinboardElements[o] = go;
@@ -156,8 +160,9 @@ public class Pinboard : MonoBehaviour
             AddPin(p);
         }
         mp.removeThreads();
-        ConnectWithThread(pinsOnPinboard[p], mp);
+        FlaggedThread = ConnectWithThread(pinsOnPinboard[p], mp).gameObject;
         FlaggedPersonPin = pinsOnPinboard[p];
+
     }
 
     private void RemoveByScriptableObject(ScriptableObject o)
@@ -351,7 +356,7 @@ public class Pinboard : MonoBehaviour
             }
         }
     }
-    private void ConnectWithThread(PinboardElement element1, PinboardElement element2)
+    private LineRenderer ConnectWithThread(PinboardElement element1, PinboardElement element2)
     {
         // auto connect post to user by thread
         LineRenderer threadObject = Instantiate(thread, transform).GetComponent<LineRenderer>();
@@ -368,8 +373,7 @@ public class Pinboard : MonoBehaviour
         threadObject.SetPosition(3, pointB);
 
         MakeColliderMatchLineRenderer(threadObject, pointA, pointB);
-
-        FlaggedThread = threadObject.gameObject;
+        return threadObject;
     }
 
     // Gets the Point with the greatest distance to other points, to ensure a equal distribution of elements on the pinboard
