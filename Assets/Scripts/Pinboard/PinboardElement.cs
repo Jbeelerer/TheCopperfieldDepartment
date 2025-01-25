@@ -128,6 +128,7 @@ public class PinboardElement : MonoBehaviour
     // the update boolean stop endless loops by stopping the update event from beeing fired again
     public void SetAnnotationType(AnnotationType annotationType, bool isUpdate = false)
     {
+        print("set annooo");
         // check if this was the culprit
         if (annotationType == AnnotationType.None && this.annotationType == AnnotationType.CaughtSuspect)
         {
@@ -135,6 +136,7 @@ public class PinboardElement : MonoBehaviour
             {
                 GameManager.instance.checkSuspicionRemoved(content as Person);
             }
+            print("remoove");
             flag.SetActive(false);
         }
         this.annotationType = annotationType;

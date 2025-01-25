@@ -51,6 +51,7 @@ public class ShortSubtitles
     public TimedSubtitle deletePost;
     public TimedSubtitle suspectFound;
     public TimedSubtitle phoneNotWorking;
+    public TimedSubtitle blocked;
 }
 
 public class Narration : MonoBehaviour
@@ -130,6 +131,7 @@ public class Narration : MonoBehaviour
 
         if (gm.GetDay() == 1)
         {
+            gm.PinboardBlocked = true;
             PlaySequence("intro");
         }
     }
@@ -155,6 +157,7 @@ public class Narration : MonoBehaviour
                 currentCall = PlaySequence(timedSubtitles.intro, introClip, false);
                 break;
             case "phoneCallIntro":
+                gm.PinboardBlocked = false;
                 currentCall = PlaySequence(timedSubtitles.phoneCallIntro, phoneCallIntroClip, false);
                 break;
             case "phoneReminderPostNotAdded":
@@ -259,6 +262,11 @@ public class Narration : MonoBehaviour
             case "phoneNotWorking":
                 audioSource.clip = phoneNotWorkingClip;
                 subtitleText.text = shortSubtitles.phoneNotWorking.text;
+                duration = shortSubtitles.phoneNotWorking.duration;
+                break;
+            case "blocked":
+                audioSource.clip = null;
+                subtitleText.text = shortSubtitles.blocked.text;
                 duration = shortSubtitles.phoneNotWorking.duration;
                 break;
         }
@@ -373,6 +381,10 @@ public class Narration : MonoBehaviour
                         audioSource.Stop();
                         audioSource.time = totalTime;
                         audioSource.Play();
+                    }
+                    else
+                    {
+                        audioSource.Stop();
                     }
                     textAnimator.Play("skip");
                 }

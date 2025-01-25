@@ -77,9 +77,6 @@ public class FPSController : MonoBehaviour
 
     private float rotationOffset = 0;
 
-    private GameObject flaggedPE;
-    private GameObject flaggedThread;
-
     [SerializeField] private Transform grabPos;
 
     private Grabbable grabbedObject;
@@ -336,6 +333,9 @@ public class FPSController : MonoBehaviour
                                 case "Radio":
                                     inputOverlay.SetIcon("handOpen");
                                     break;
+                                case "Block":
+                                    inputOverlay.SetIcon("handOpen");
+                                    break;
                                 default:
                                     break;
                             }
@@ -518,7 +518,6 @@ public class FPSController : MonoBehaviour
                 #region Handle left click
                 if (Input.GetMouseButtonDown(0))
                 {
-
                     if (hit.collider.gameObject.tag == "Grabbable")
                     {
                         grabbedObject = hit.collider.gameObject.GetComponent<Grabbable>();
@@ -589,11 +588,11 @@ public class FPSController : MonoBehaviour
                                     break;
                                 case "threadCollider":
                                     am.PlayAudio(threadCuttingSound);
-                                    if (hit.collider.transform.parent.gameObject == flaggedThread)
+                                    if (hit.collider.transform.parent.gameObject == pinboard.FlaggedThread)
                                     {
-                                        flaggedPE.GetComponent<PinboardElement>().SetAnnotationType(AnnotationType.None);
-                                        flaggedPE = null;
-                                        flaggedThread = null;
+                                        pinboard.FlaggedPersonPin.SetAnnotationType(AnnotationType.None);
+                                        pinboard.FlaggedPersonPin = null;
+                                        pinboard.FlaggedThread = null;
                                     }
                                     Destroy(hit.collider.transform.parent.gameObject);
                                     break;
@@ -654,6 +653,10 @@ public class FPSController : MonoBehaviour
                                         hit.collider.transform.GetComponent<Radio>().ChangeChanel();
                                     }
                                     break;
+                                case "Block":
+                                    narration.Say("blocked");
+                                    break;
+
                                 default:
                                     switch (hit.collider.gameObject.name)
                                     {
@@ -737,6 +740,7 @@ public class FPSController : MonoBehaviour
                     if (lastSelectedObject.transform != hit.collider.transform && !(lastSelectedObject.transform == hit.collider.transform.parent && hit.collider.gameObject.name == "pin"))
                     {
                         TryToPlaceThread(nameOfThingLookedAt);
+                        print(pinboard.FlaggedThread);
                     }
                 }
                 #endregion
@@ -850,6 +854,7 @@ public class FPSController : MonoBehaviour
         }
         lastSelectedObject = null;
         currentThread = null;
+        print(pinboard.FlaggedThread);
     }
     public void HandleThread()
     {
@@ -866,30 +871,31 @@ public class FPSController : MonoBehaviour
         {
             if (currentPE.GetContent() is Person || lastPE.GetContent() is Person)
             {
-                if (flaggedPE != null)
+                if (pinboard.FlaggedPersonPin != null)
                 {
-                    flaggedPE.GetComponent<PinboardElement>().SetAnnotationType(AnnotationType.None);
+                    pinboard.FlaggedPersonPin.GetComponent<PinboardElement>().SetAnnotationType(AnnotationType.None);
                 }
-                if (flaggedThread != null)
+                if (pinboard.FlaggedThread != null)
                 {
-                    Destroy(flaggedThread);
+                    Destroy(pinboard.FlaggedThread);
                 }
-                flaggedThread = currentThread.gameObject;
+                pinboard.FlaggedThread = currentThread.gameObject;
             }
 
             if (currentPE.GetContent() is Person)
             {
                 gm.checkSuspect(currentPE.GetContent() as Person);
                 currentPE.SetAnnotationType(AnnotationType.CaughtSuspect);
-                flaggedPE = currentSelectedObject;
+                pinboard.FlaggedPersonPin = currentSelectedObject.GetComponent<PinboardElement>();
             }
             else if (lastPE.GetContent() is Person)
             {
                 gm.checkSuspect(lastPE.GetContent() as Person);
                 lastPE.SetAnnotationType(AnnotationType.CaughtSuspect);
-                flaggedPE = lastSelectedObject;
+                pinboard.FlaggedPersonPin = lastSelectedObject.GetComponent<PinboardElement>(); ;
             }
         }
+        print(pinboard.FlaggedThread);
     }
 
     public IEnumerator PlayPenAnimation(string animName)
