@@ -11,7 +11,7 @@ public class Phone : MonoBehaviour
     private AudioSource audioSource;
     private Narration narration;
 
-    private string callName;
+    [SerializeField] private string callName;
 
     [SerializeField] private bool isRinging = false;
 
@@ -38,6 +38,7 @@ public class Phone : MonoBehaviour
         if (gm.GetAnswerCommited())
         {
             Ring("exit");
+            print("exit!!!!!!");
             gm.InvestigationStateChanged.RemoveListener(ExitTutorial);
         }
     }

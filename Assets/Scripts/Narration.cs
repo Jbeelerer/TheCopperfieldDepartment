@@ -27,6 +27,7 @@ public class TimedSubtitle
     public float duration;
     public string text;
     public Requirement requirement = Requirement.None;
+    public string focus;
 }
 [System.Serializable]
 public class TimedSubtitles
@@ -103,9 +104,11 @@ public class Narration : MonoBehaviour
     private Animator textAnimator;
 
     private bool isTalking = false;
-    Quaternion startRotation;
+    private Quaternion startRotation;
 
     private bool sequenceHadRequirement = false;
+
+    private IEnumerator currentCall;
     // Start is called before the first frame update
     void Start()
     {
@@ -133,33 +136,35 @@ public class Narration : MonoBehaviour
         rotations = rotation;
         blackScreen.GetComponent<Image>().color = rotation != null ? new Color(0, 0, 0, 0f) : new Color(0, 0, 0, 1f);
         StopAllCoroutines();
+        // return if a coroutine is already running
         switch (sequence)
         {
             case "firstDayFeedbackPositive":
-                StartCoroutine(PlaySequence(timedSubtitles.firstDayFeedbackPositive, firstDayFeedbackPositiveClip));
+                currentCall = PlaySequence(timedSubtitles.firstDayFeedbackPositive, firstDayFeedbackPositiveClip);
                 break;
             case "firstDayFeedbackNegative":
-                StartCoroutine(PlaySequence(timedSubtitles.firstDayFeedbackNegative, firstDayFeedbackNegativeClip));
+                currentCall = PlaySequence(timedSubtitles.firstDayFeedbackNegative, firstDayFeedbackNegativeClip);
                 break;
             case "exit":
-                StartCoroutine(PlaySequence(timedSubtitles.exit, exit, false));
+                currentCall = PlaySequence(timedSubtitles.exit, exit, false);
                 break;
             case "intro":
-                StartCoroutine(PlaySequence(timedSubtitles.intro, introClip, false));
+                currentCall = PlaySequence(timedSubtitles.intro, introClip, false);
                 break;
             case "phoneCallIntro":
-                StartCoroutine(PlaySequence(timedSubtitles.phoneCallIntro, phoneCallIntroClip, false));
+                currentCall = PlaySequence(timedSubtitles.phoneCallIntro, phoneCallIntroClip, false);
                 break;
             case "phoneReminderPostNotAdded":
-                StartCoroutine(PlaySequence(timedSubtitles.phoneReminderPostNotAdded, phoneCallNoPostClip, false));
+                currentCall = PlaySequence(timedSubtitles.phoneReminderPostNotAdded, phoneCallNoPostClip, false);
                 break;
             case "phoneReminderPersonNotAdded":
-                StartCoroutine(PlaySequence(timedSubtitles.phoneReminderPersonNotAdded, phoneCallNoPersonClip, false));
+                currentCall = PlaySequence(timedSubtitles.phoneReminderPersonNotAdded, phoneCallNoPersonClip, false);
                 break;
             case "phoneReminderNothingAdded":
-                StartCoroutine(PlaySequence(timedSubtitles.phoneReminderNothingAdded, phoneCallNothingAddedClip, false));
+                currentCall = PlaySequence(timedSubtitles.phoneReminderNothingAdded, phoneCallNothingAddedClip, false);
                 break;
         }
+        StartCoroutine(currentCall);
     }
 
     public bool HasRequirement()
@@ -271,6 +276,14 @@ public class Narration : MonoBehaviour
         yield return new WaitForSeconds(time);
         subtitleText.text = "";
     }
+    public IEnumerator AddToSequenceQue(TimedSubtitle[] content, AudioClip clip, bool playNextDayAnimation = true)
+    {
+        if (currentCall != null)
+        {
+            yield return currentCall;
+        }
+        currentCall = PlaySequence(content, clip, playNextDayAnimation);
+    }
 
     public IEnumerator PlaySequence(TimedSubtitle[] content, AudioClip clip, bool playNextDayAnimation = true)
     {
@@ -289,6 +302,7 @@ public class Narration : MonoBehaviour
         audioSource.time = 0;
         audioSource.clip = clip;
         audioSource.Play();
+        bool lookedAway = false;
 
         foreach (TimedSubtitle entry in content)
         {
@@ -299,7 +313,7 @@ public class Narration : MonoBehaviour
             do
             {
                 radio.ChangeVolumeTemp(0.2f);
-                if (rotations != null)
+                /*if (rotations != null)
                 {
                     if (rotations.Length > talkIndex)
                     {
@@ -310,6 +324,18 @@ public class Narration : MonoBehaviour
                     {
                         player.ResetCameraRotation(startRotation);
                     }
+                }*/
+                if (entry.focus != null)
+                {
+                    lookedAway = true;
+                    Transform f = GameObject.Find(entry.focus).transform;
+                    Quaternion TempRo = Quaternion.LookRotation(f.position - player.transform.position);
+                    player.ResetCameraRotation(Quaternion.Euler(-20, TempRo.eulerAngles.y, 0));
+                }
+                else if (lookedAway)
+                {
+                    player.ResetCameraRotation(startRotation);
+                    lookedAway = false;
                 }
                 //set requirement if there is one
                 if (entry.requirement != Requirement.None)
@@ -397,13 +423,18 @@ public class Narration : MonoBehaviour
                 ow.GetComponent<Animator>().SetTrigger("NewDay");
             }
         }
-        FindAnyObjectByType<Phone>().ResetPhone();
+        Phone phone = FindObjectOfType<Phone>();
+        if (!phone.GetIsRinging())
+        {
+            phone.ResetPhone();
+        }
         blackScreen.SetActive(false);
         if (playNextDayAnimation)
         {
             FindObjectOfType<Radio>().PauseRadio();
             gm.NextDaySequence();
         }
+        currentCall = null;
     }
 
     public bool CancelSequence()
