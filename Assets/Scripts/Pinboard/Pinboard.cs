@@ -37,6 +37,8 @@ public class Pinboard : MonoBehaviour
     private bool firstLoad = true;
 
     private GameManager gm;
+    public GameObject FlaggedThread { get; set; }
+    public PinboardElement FlaggedPersonPin { get; set; }
 
     private Dictionary<ScriptableObject, GameObject> trashedPinboardElements = new Dictionary<ScriptableObject, GameObject>();
 
@@ -155,6 +157,7 @@ public class Pinboard : MonoBehaviour
         }
         mp.removeThreads();
         ConnectWithThread(pinsOnPinboard[p], mp);
+        FlaggedPersonPin = pinsOnPinboard[p];
     }
 
     private void RemoveByScriptableObject(ScriptableObject o)
@@ -365,6 +368,8 @@ public class Pinboard : MonoBehaviour
         threadObject.SetPosition(3, pointB);
 
         MakeColliderMatchLineRenderer(threadObject, pointA, pointB);
+
+        FlaggedThread = threadObject.gameObject;
     }
 
     // Gets the Point with the greatest distance to other points, to ensure a equal distribution of elements on the pinboard
