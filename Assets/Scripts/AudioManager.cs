@@ -1,11 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class AudioManager : MonoBehaviour
 {
     public static AudioManager instance;
-    public AudioSource audioSource;
+    private AudioSource audioSource;
+
+    [SerializeField] private AudioMixerGroup sfxMixerGroup;
+    [SerializeField] private AudioMixerGroup musicMixerGroup;
+    [SerializeField] private AudioMixerGroup voiceMixerGroup;
 
     private List<AudioSource> repeatingAudioSources = new List<AudioSource>();
 
@@ -20,15 +25,15 @@ public class AudioManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        audioSource = GetComponent<AudioSource>();
+        audioSource = CreateNewSfxSource();
     }
 
-    public void PlayAudio(AudioClip audioClip, float volume = 1f)
+    public void PlayAudio(AudioClip audioClip, float volume = 1f, GameObject parent = null)
     {
-        AudioSource newSource = gameObject.AddComponent<AudioSource>();
+        AudioSource newSource = CreateNewSfxSource(parent);
         newSource.clip = audioClip;
-        newSource.Play();
         newSource.volume = volume;
+        newSource.Play();
         StartCoroutine(DeleteAudioSource(newSource, newSource.clip.length));
     }
     public IEnumerator ResetAudio(float length)
@@ -56,7 +61,7 @@ public class AudioManager : MonoBehaviour
         }
 
     }
-    public void PlayAudioRepeating(AudioClip audioClip, float fadeDuration = 0f)
+    public void PlayAudioRepeating(AudioClip audioClip, float fadeDuration = 0.01f, float volume = 1f, GameObject parent = null)
     {
         foreach (AudioSource source in repeatingAudioSources)
         {
@@ -66,46 +71,46 @@ public class AudioManager : MonoBehaviour
             }
         }
 
-        AudioSource newSource = gameObject.AddComponent<AudioSource>();
+        AudioSource newSource = CreateNewSfxSource(parent);
         newSource.loop = true;
         newSource.clip = audioClip;
-        newSource.volume = 0.9f;
+        newSource.volume = volume;
         repeatingAudioSources.Add(newSource);
-        StartCoroutine(FadeIn(newSource, fadeDuration));
+        StartCoroutine(FadeIn(newSource, fadeDuration, volume));
     }
 
-    public void StopAudioRepeating(AudioClip audioClip, float fadeDuration = 0f)
+    public void StopAudioRepeating(AudioClip audioClip, float fadeDuration = 0.01f)
     {
         foreach (AudioSource source in repeatingAudioSources)
         {
             if (source.clip == audioClip)
             {
                 repeatingAudioSources.Remove(source);
-                StartCoroutine(FadeOut(source, fadeDuration));
+                StartCoroutine(FadeOut(source, fadeDuration, source.volume));
                 return;
             }
         }
     }
 
-    private IEnumerator FadeIn(AudioSource source, float fadeDuration)
+    private IEnumerator FadeIn(AudioSource source, float fadeDuration, float maxVolume)
     {
         source.Play();
 
         float timeElapsed = 0;
-        while (source && source.volume < 1)
+        while (source && source.volume < maxVolume)
         {
-            source.volume = Mathf.Lerp(0, 1, timeElapsed / fadeDuration);
+            source.volume = Mathf.Lerp(0, maxVolume, timeElapsed / fadeDuration);
             timeElapsed += Time.deltaTime;
             yield return true;
         }
     }
 
-    private IEnumerator FadeOut(AudioSource source, float fadeDuration)
+    private IEnumerator FadeOut(AudioSource source, float fadeDuration, float maxVolume)
     {
         float timeElapsed = 0;
         while (source && source.volume > 0)
         {
-            source.volume = Mathf.Lerp(1, 0, timeElapsed / fadeDuration);
+            source.volume = Mathf.Lerp(maxVolume, 0, timeElapsed / fadeDuration);
             timeElapsed += Time.deltaTime;
             yield return true;
         }
@@ -121,7 +126,6 @@ public class AudioManager : MonoBehaviour
         yield return new WaitForSeconds(delay);
 
         source.Stop();
-        //repeatingAudioSources.Remove(source);
         Destroy(source);
     }
 
@@ -136,5 +140,36 @@ public class AudioManager : MonoBehaviour
         }
 
         return false;
+    }
+
+    private AudioSource CreateNewSfxSource(GameObject parent = null)
+    {
+        AudioSource newSource;
+        if (parent)
+        {
+            newSource = parent.AddComponent<AudioSource>();
+        }
+        else
+        {
+            newSource = gameObject.AddComponent<AudioSource>();
+        }
+        newSource.outputAudioMixerGroup = sfxMixerGroup;
+        return newSource;
+    }
+
+    public void UpdateMixerValue(string parameterName, float value)
+    {
+        switch (parameterName)
+        {
+            case "Music Volume":
+                musicMixerGroup.audioMixer.SetFloat(parameterName, Mathf.Log10(value) * 20);
+                break;
+            case "SFX Volume":
+                sfxMixerGroup.audioMixer.SetFloat(parameterName, Mathf.Log10(value) * 20);
+                break;
+            case "Voice Volume":
+                voiceMixerGroup.audioMixer.SetFloat(parameterName, Mathf.Log10(value) * 20);
+                break;
+        }
     }
 }

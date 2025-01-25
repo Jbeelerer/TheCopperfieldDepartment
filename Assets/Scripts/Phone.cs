@@ -8,7 +8,6 @@ public class Phone : MonoBehaviour
     [SerializeField] private AudioClip phonePickup;
     [SerializeField] private AudioClip phoneHangup;
 
-    private AudioSource audioSource;
     private Narration narration;
 
     [SerializeField] private string callName;
@@ -16,6 +15,7 @@ public class Phone : MonoBehaviour
     [SerializeField] private bool isRinging = false;
 
     private GameManager gm;
+    private AudioManager am;
 
     private bool wasOnPc = false;
 
@@ -26,10 +26,10 @@ public class Phone : MonoBehaviour
     public bool GetIsRinging() { return isRinging; }
     void Start()
     {
-        audioSource = GetComponent<AudioSource>();
         narration = FindObjectOfType<Narration>();
         animator = GetComponent<Animator>();
         gm = GameManager.instance;
+        am = AudioManager.instance;
         gm.StateChanged.AddListener(Ring);
         gm.InvestigationStateChanged.AddListener(ExitTutorial);
     }
@@ -66,8 +66,7 @@ public class Phone : MonoBehaviour
         animator.Play("Ringing");
         isRinging = true;
         this.callName = callName;
-        audioSource.clip = phoneRing;
-        audioSource.Play();
+        am.PlayAudioRepeating(phoneRing, volume: 0.5f, parent: gameObject);
     }
 
     public void StartCall()
@@ -81,7 +80,7 @@ public class Phone : MonoBehaviour
             }
             return;
         }
-        audioSource.Stop();
+        am.StopAudioRepeating(phoneRing);
         Quaternion[] rotations = new Quaternion[2];
         rotations[0] = Quaternion.identity;
         rotations[1] = "phoneCallIntro" == callName ? Quaternion.Euler(-20, -100, 0) : Quaternion.identity;
@@ -100,7 +99,7 @@ public class Phone : MonoBehaviour
     {
         isRinging = false;
         animator.Play("Phone");
-        audioSource.Stop();
+        am.StopAudioRepeating(phoneRing);
     }
 
 
