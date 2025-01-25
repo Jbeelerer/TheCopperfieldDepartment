@@ -620,7 +620,8 @@ public class FPSController : MonoBehaviour
                                     if (requirementMet)
                                     {
                                         inputOverlay.SetIcon("");
-                                        gm.SetGameState(GameState.OnCalendar);
+                                        gm.InspectObject(hit.collider.transform, new Vector3(1.2f, 0, 0));
+                                        // gm.SetGameState(GameState.Inspecting);
                                     }
                                     break;
                                 case "Phone":
@@ -654,6 +655,14 @@ public class FPSController : MonoBehaviour
                                     }
                                     break;
                                 default:
+                                    switch (hit.collider.gameObject.name)
+                                    {
+                                        case "PostItBill":
+                                            gm.InspectObject(hit.collider.transform, new Vector3(0, 1.2f, 0));
+                                            break;
+                                        default:
+                                            break;
+                                    }
                                     break;
                             }
                         }
@@ -812,7 +821,7 @@ public class FPSController : MonoBehaviour
         inputOverlay.SetIcon("");
     }
 
-    private void ResetPlayer()
+    public void ResetPlayer()
     {
         transform.position = gm.GetStartPosition();
         transform.rotation = gm.GetStartRotation();

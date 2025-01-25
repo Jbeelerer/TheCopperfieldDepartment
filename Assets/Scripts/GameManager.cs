@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Cinemachine;
 using SaveSystem;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -21,7 +22,7 @@ public enum GameState
     Frozen,
     Paused,
     OnPC,
-    OnCalendar,
+    Inspecting,
 
 }
 public class GameManager : MonoBehaviour, ISavable
@@ -62,12 +63,10 @@ public class GameManager : MonoBehaviour, ISavable
     [SerializeField] private AudioClip door;
 
     private bool devMode = true;
-
-
     private List<investigationStates> firstTryResults = new List<investigationStates>();
     private List<investigationStates> results = new List<investigationStates>();
     private GameObject computerCam;
-    private GameObject calendarCam;
+    private GameObject inspectionCam;
 
     private GameObject mainCam;
 
@@ -95,20 +94,38 @@ public class GameManager : MonoBehaviour, ISavable
         playerOnEmployeeList = new CompetingEmployee("Player", 50, 0);
         competingEmployees.Add(playerOnEmployeeList);
     }
+
+    public void InspectObject(Transform o, Vector3 lookingDirection)
+    {
+        print("Inspecting " + o.name);
+        CinemachineVirtualCamera vcam = inspectionCam.GetComponent<CinemachineVirtualCamera>();
+        if (vcam.LookAt == o)
+        {
+            vcam.LookAt = null;
+            SetGameState(GameState.Playing);
+        }
+        else
+        {
+            inspectionCam.transform.position = o.position + lookingDirection;
+            vcam.LookAt = o;
+            SetGameState(GameState.Inspecting);
+        }
+
+    }
     public void SetGameState(GameState state)
     {
         reload();
         computerCam.SetActive(state == GameState.OnPC);
-        if (calendarCam)
-            calendarCam.SetActive(state == GameState.OnCalendar);
+        if (inspectionCam)
+            inspectionCam.SetActive(state == GameState.Inspecting);
 
         mainCam.SetActive(state == GameState.Playing || state == GameState.Paused || state == GameState.Frozen);
 
-        if (calendarCam)
-            calendarCam.transform.parent.parent.GetComponent<Collider>().enabled = state != GameState.OnCalendar;
+        if (inspectionCam)
+            inspectionCam.transform.parent.parent.GetComponent<Collider>().enabled = state != GameState.Inspecting;
 
-        Cursor.visible = state == GameState.OnCalendar;
-        Cursor.lockState = state == GameState.OnCalendar ? CursorLockMode.Confined : CursorLockMode.Locked;
+        Cursor.visible = state == GameState.Inspecting;
+        Cursor.lockState = state == GameState.Inspecting ? CursorLockMode.Confined : CursorLockMode.Locked;
 
         // handle startPos of mainCam
         if (state == GameState.Playing && gameState == GameState.OnPC)
@@ -121,12 +138,12 @@ public class GameManager : MonoBehaviour, ISavable
 
     public bool isOccupied()
     {
-        return gameState == GameState.OnPC || gameState == GameState.OnCalendar;
+        return gameState == GameState.OnPC || gameState == GameState.Inspecting;
     }
 
     public bool isFrozen()
     {
-        return gameState == GameState.OnPC || gameState == GameState.OnCalendar || gameState == GameState.Frozen;
+        return gameState == GameState.OnPC || gameState == GameState.Inspecting || gameState == GameState.Frozen;
     }
     public GameState GetGameState()
     {
@@ -269,8 +286,8 @@ public class GameManager : MonoBehaviour, ISavable
             mainCam = GameObject.Find("Virtual Camera");
         if (computerCam == null)
             computerCam = GameObject.Find("ComputerCam");
-        if (calendarCam == null)
-            calendarCam = GameObject.Find("CalendarCam");
+        if (inspectionCam == null)
+            inspectionCam = GameObject.Find("CalendarCam");
     }
     void Start()
     {
