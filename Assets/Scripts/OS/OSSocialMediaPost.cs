@@ -220,8 +220,8 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
         foreach (Transform option in postOptions.transform)
         {
             option.gameObject.SetActive(true);
-            // Disable post deletion option on first days
-            if (gm.GetDay() < 4 && option.gameObject.name == "DeletePost")
+            // Disable post deletion option ALWAYS, because the feature is currently not used
+            if (/*gm.GetDay() < 4 && */option.gameObject.name == "DeletePost")
             {
                 option.gameObject.SetActive(false);
             }
