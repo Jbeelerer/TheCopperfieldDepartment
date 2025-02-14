@@ -24,11 +24,11 @@ public class OSGovAppContent : MonoBehaviour, IPointerDownHandler, IPointerUpHan
         computerControls = GetComponentInParent<ComputerControls>();
 
         mails = computerControls.GetMails();
-        //foreach (Mail m in mails)
-        //{
-        GameObject newMail = Instantiate(mailPrefab, mailContainer.transform);
-        newMail.GetComponent<OSMail>().mail = mails[0];//m;
-        //}
+        foreach (Mail m in mails)
+        {
+            GameObject newMail = Instantiate(mailPrefab, mailContainer.transform);
+            newMail.GetComponent<OSMail>().mail = m;
+        }
     }
 
     public void OnPointerDown(PointerEventData eventData)

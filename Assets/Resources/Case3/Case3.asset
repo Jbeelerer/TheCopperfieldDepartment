@@ -14,14 +14,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 3
   people:
-  - {fileID: 11400000, guid: 3b80b8c93ccf44f00a16286fff82d3d2, type: 2}
   - {fileID: 11400000, guid: 7e47e3477d3024c94b1bc4fd25adf190, type: 2}
   - {fileID: 11400000, guid: 7a425d9a7f6dd487ab0d246ac26b21a4, type: 2}
   - {fileID: 11400000, guid: 4b29231e3f11b457d8eb4306459376b0, type: 2}
   - {fileID: 11400000, guid: f1cf7f42830be4e29bfb18af91422d04, type: 2}
   - {fileID: 11400000, guid: 67191a7368eff455fa4814b1fe466f6c, type: 2}
+  - {fileID: 11400000, guid: 3b80b8c93ccf44f00a16286fff82d3d2, type: 2}
   guiltyPerson: {fileID: 11400000, guid: 4b29231e3f11b457d8eb4306459376b0, type: 2}
   incriminatingPost: {fileID: 0}
+  personReasoning:
+  - person: {fileID: 11400000, guid: 3b80b8c93ccf44f00a16286fff82d3d2, type: 2}
+    reason: no
+  - person: {fileID: 11400000, guid: 7a425d9a7f6dd487ab0d246ac26b21a4, type: 2}
+    reason: no
+  - person: {fileID: 11400000, guid: 4b29231e3f11b457d8eb4306459376b0, type: 2}
+    reason: yes
+  - person: {fileID: 11400000, guid: f1cf7f42830be4e29bfb18af91422d04, type: 2}
+    reason: no
+  - person: {fileID: 11400000, guid: 67191a7368eff455fa4814b1fe466f6c, type: 2}
+    reason: no
+  - person: {fileID: 11400000, guid: 3b80b8c93ccf44f00a16286fff82d3d2, type: 2}
+    reason: no
   pinboardSize: 0.7
   personFoundText: 'Congratulations!! While apprehending the person you accused,
     we found damming evidence confirming the guilt!! '

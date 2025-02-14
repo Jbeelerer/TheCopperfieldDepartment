@@ -76,6 +76,8 @@ public class GameManager : MonoBehaviour, ISavable
 
     private Person currentlyAccused;
 
+    private string feedBackMailContent = "";
+
     private bool _pinboardBlocked = false;
     public bool PinboardBlocked
     {
@@ -378,12 +380,38 @@ public class GameManager : MonoBehaviour, ISavable
         currentCase = Resources.LoadAll<Case>("Case" + day)[0];
         // load all connections
         connections = Resources.LoadAll<Connections>("Case" + currentCase.id + "/Connections");
-        mails = Resources.LoadAll<Mail>("Case" + currentCase.id + "/Mails");
+        Mail[] tempMails = Resources.LoadAll<Mail>("Case" + currentCase.id + "/Mails");
+        if (feedBackMailContent != "")
+        {
+            Mail feedBackMail = Resources.Load<Mail>("FeedBackTemplate");
+            feedBackMail.message = feedBackMailContent;
+            mails = tempMails.Concat(new Mail[] { feedBackMail }).ToArray();
+        }
+        else
+        {
+            mails = tempMails;
+        }
+        // mails[tempMails.Count()] = feedBackMail;        
         posts = Resources.LoadAll<SocialMediaPost>("Case" + currentCase.id + "/Posts");
         return false;
     }
     public void LoadNewDay(int day)
     {
+        if (currentCase != null && currentCase.personReasoning != null && currentCase.personReasoning.Count != 0)
+        {
+            print(currentCase.personReasoning[0].reason);
+            //get reasong from where person is the currentlyAccused one
+            foreach (PersonReasoning pr in currentCase.personReasoning)
+            {
+                if (pr.person == currentlyAccused)
+                {
+                    feedBackMailContent = pr.reason;
+                    break;
+                }
+            }
+            //feedBackMailContent = currentCase.personReasoning.Find(x => x.person == currentlyAccused).reason;
+            //feedBackMailContent = currentCase.personReasoning.Find(x => x.person == currentlyAccused).reason;
+        }
         GameObject ow = GameObject.Find("OutsideWorld");
         if (ow != null)
         {
