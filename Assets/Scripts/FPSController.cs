@@ -85,6 +85,7 @@ public class FPSController : MonoBehaviour
 
     private float timeDragged = 0;
 
+    private Archives archives;
     public void ResetFoundConnections()
     {
         foreach (GameObject v in foundConnections.Values)
@@ -199,7 +200,6 @@ public class FPSController : MonoBehaviour
             }
         }
 
-
         if (!gm.isFrozen())
         {
             #region Handles Movment
@@ -266,6 +266,7 @@ public class FPSController : MonoBehaviour
                         }
                         else if (lastSelectedObject == null)
                         {
+                            print(nameOfThingLookedAt);
                             // handle interaction, while just looking
                             switch (nameOfThingLookedAt)
                             {
@@ -313,6 +314,9 @@ public class FPSController : MonoBehaviour
                                     break;
                                 case "CurvedScreen":
                                 case "Calendar":
+                                    inputOverlay.SetIcon("inspect");
+                                    break;
+                                case "Archive":
                                     inputOverlay.SetIcon("inspect");
                                     break;
                                 case "pin":
@@ -621,6 +625,19 @@ public class FPSController : MonoBehaviour
                                         inputOverlay.SetIcon("");
                                         gm.InspectObject(hit.collider.transform, new Vector3(1.2f, 0, 0));
                                         // gm.SetGameState(GameState.Inspecting);
+                                    }
+                                    break;
+                                case "Archive":
+                                    if (requirementMet && gm.GetGameState() != GameState.InArchive)
+                                    {
+                                        archives = currentSelectedObject.transform.gameObject.GetComponent<Archives>();
+                                        inputOverlay.SetIcon("");
+                                        //  gm.InspectObject(hit.collider.transform.GetChild(0), new Vector3(0, 2f, 2f));
+                                        // gm.InspectObject(currentSelectedObject.transform.GetChild(0), new Vector3(0, 2f, 3f), GameState.InArchive);
+                                        gm.InspectObject(currentSelectedObject.transform, new Vector3(0, 1f, 2f), GameState.InArchive);
+
+                                        archives.open();
+                                        // gm.SetGameState(GameState.Inspecting);  
                                     }
                                     break;
                                 case "Phone":
