@@ -33,7 +33,9 @@ public class OSSocialMediaContent : MonoBehaviour
     private List<OSSocialMediaPost> postList = new List<OSSocialMediaPost>();
     private ComputerControls computerControls;
     private List<SocialMediaUser> pinnedUsers = new List<SocialMediaUser>();
+    private List<SocialMediaUser> usersWithFoundPassword = new List<SocialMediaUser>();
     private FPSController fpsController;
+    private OSPopupManager popupManager;
     public SocialMediaUser currentUser;
 
     public GameObject currentFocusedPost = null;
@@ -51,6 +53,7 @@ public class OSSocialMediaContent : MonoBehaviour
     private void Start()
     {
         fpsController = GameObject.Find("Player").GetComponent<FPSController>();
+        popupManager = GameObject.Find("PopupMessage").GetComponent<OSPopupManager>();
         fpsController.OnPinDeletion.AddListener(RemovePinnedUser);
 
         foreach (SocialMediaPost s in computerControls.GetPosts())
@@ -321,6 +324,12 @@ public class OSSocialMediaContent : MonoBehaviour
 
     public void ShowUserConversations()
     {
+        if (!usersWithFoundPassword.Contains(currentUser))
+        {
+            computerControls.OpenWindow(OSAppType.WARNING, "You do not have the required credentials to log into this account!", hasCancelBtn: false);
+            return;
+        }
+
         ChangeSearchBar(currentUser.username + "'s DMs", false, CloseUserConversations);
 
         conversationsPage.transform.SetAsLastSibling();
@@ -331,7 +340,6 @@ public class OSSocialMediaContent : MonoBehaviour
         {
             if (convo.GetComponent<OSConversation>())
             {
-                print(currentUser.username + ", " + convo.GetComponent<OSConversation>().conversation.conversationMember1);
                 if (convo.GetComponent<OSConversation>().conversation.conversationMember1 == currentUser || convo.GetComponent<OSConversation>().conversation.conversationMember2 == currentUser)
                 {
                     convo.gameObject.SetActive(true);
@@ -342,6 +350,14 @@ public class OSSocialMediaContent : MonoBehaviour
                     convo.gameObject.SetActive(false);
                 }
             }
+        }
+    }
+
+    public void ShowLoginPopup()
+    {
+        if (usersWithFoundPassword.Contains(currentUser))
+        {
+            popupManager.DisplayAccountLoginMessage();
         }
     }
 
@@ -380,5 +396,10 @@ public class OSSocialMediaContent : MonoBehaviour
             searchBar.Find("BackButton").GetComponent<Button>().onClick.AddListener(() => backButtonFunc());
         }
         searchBar.Find("Image").gameObject.SetActive(showSearchIcon);
+    }
+
+    public void AddUserWithFoundPassword(SocialMediaUser user)
+    {
+        usersWithFoundPassword.Add(user);
     }
 }

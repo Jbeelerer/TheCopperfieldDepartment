@@ -14,6 +14,7 @@ public class SocialMediaPost : ScriptableObject, IPinnable
     public bool hiddenInHomeFeed;
     public bool suspicious;
     public bool notSuspicious;
+    public SocialMediaUser containsPasswordOfUser;
     bool IPinnable.suspicious { get => suspicious; }
     bool IPinnable.notSuspicious { get => notSuspicious; }
 }

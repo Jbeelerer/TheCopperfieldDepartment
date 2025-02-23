@@ -93,6 +93,12 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
                     postPinned = true;
                     pinboard.AddPin(post);
 
+                    // Add to list of users with found passwords, if a user is exposed in this post
+                    if (((SocialMediaPost)so).containsPasswordOfUser != null)
+                    {
+                        socialMediaContent.AddUserWithFoundPassword(((SocialMediaPost)so).containsPasswordOfUser);
+                    }
+
                     popupManager.DisplayPostPinMessage();
                 }
                 break;
