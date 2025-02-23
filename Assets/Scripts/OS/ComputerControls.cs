@@ -307,6 +307,11 @@ public class ComputerControls : MonoBehaviour, ISavable
         return gm.GetMails();
     }
 
+    public DMConversation[] GetConversations()
+    {
+        return gm.GetConversations();
+    }
+
     public void LeaveComputer()
     {
         gm.SetGameState(GameState.Playing);

@@ -48,6 +48,7 @@ public class GameManager : MonoBehaviour, ISavable
     [SerializeField] private SocialMediaPost[] posts;
     private SocialMediaUser[] users;
     private Person[] people;
+    private DMConversation[] conversations;
 
     private Vector3 startPosition;
     private Quaternion startRotation;
@@ -251,6 +252,11 @@ public class GameManager : MonoBehaviour, ISavable
         return posts;
     }
 
+    public DMConversation[] GetConversations()
+    {
+        return conversations;
+    }
+
     public List<CompetingEmployee> GetCompetingEmployees()
     {
         return competingEmployees;
@@ -357,6 +363,7 @@ public class GameManager : MonoBehaviour, ISavable
         connections = Resources.LoadAll<Connections>("Case" + currentCase.id + "/Connections");
         mails = Resources.LoadAll<Mail>("Case" + currentCase.id + "/Mails");
         posts = Resources.LoadAll<SocialMediaPost>("Case" + currentCase.id + "/Posts");
+        conversations = Resources.LoadAll<DMConversation>("Case" + currentCase.id + "/Conversations");
         return false;
     }
     public void LoadNewDay(int day)

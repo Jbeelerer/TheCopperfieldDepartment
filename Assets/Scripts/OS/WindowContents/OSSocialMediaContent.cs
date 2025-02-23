@@ -11,9 +11,18 @@ public class OSSocialMediaContent : MonoBehaviour
 {
     [SerializeField] private GameObject socialMediaPostContainer;
     [SerializeField] private GameObject postPrefab;
+    [SerializeField] private GameObject conversationPrefab;
+    [SerializeField] private GameObject dmPrefabLeft;
+    [SerializeField] private GameObject dmPrefabRight;
+    [SerializeField] private GameObject homePage;
+    [SerializeField] private GameObject homePageContent;
     [SerializeField] private GameObject profilePage;
     [SerializeField] private GameObject profilePageContent;
     [SerializeField] private Transform profilePageheader;
+    [SerializeField] private GameObject conversationsPage;
+    [SerializeField] private GameObject conversationsPageContent;
+    [SerializeField] private GameObject dmPage;
+    [SerializeField] private GameObject dmPageContent;
     [SerializeField] private Transform searchBar;
     [SerializeField] private GameObject searchHistoryContent;
     [SerializeField] private GameObject searchTermPrefab;
@@ -23,9 +32,9 @@ public class OSSocialMediaContent : MonoBehaviour
     private int postNumber = 1;
     private List<OSSocialMediaPost> postList = new List<OSSocialMediaPost>();
     private ComputerControls computerControls;
-    private SocialMediaUser currentUser;
     private List<SocialMediaUser> pinnedUsers = new List<SocialMediaUser>();
     private FPSController fpsController;
+    public SocialMediaUser currentUser;
 
     public GameObject currentFocusedPost = null;
 
@@ -49,6 +58,11 @@ public class OSSocialMediaContent : MonoBehaviour
             InstanciatePost(s);
         }
 
+        foreach (DMConversation convo in computerControls.GetConversations())
+        {
+            InstantiateConversation(convo);
+        }
+
         ResetHomeFeed();
     }
 
@@ -68,6 +82,7 @@ public class OSSocialMediaContent : MonoBehaviour
         postNumber++;
         newPost.transform.Find("TopRow").Find("ProfilePic").Find("imageMask").GetChild(0).GetComponent<Image>().sprite = post.author.image;
         newPost.transform.Find("TopRow").Find("name").GetComponent<TextMeshProUGUI>().text = post.author.username;
+        newPost.transform.Find("TopRow").Find("TimeStamp").GetComponent<TextMeshProUGUI>().text = post.time;
         newPost.transform.Find("content").GetComponent<TextMeshProUGUI>().text = post.content;
         if (post.image)
         {
@@ -83,6 +98,13 @@ public class OSSocialMediaContent : MonoBehaviour
         newPost.transform.Find("ForbiddenOptions").Find("Likes").GetComponentInChildren<TextMeshProUGUI>().text = GetRandomEngagementNumber(post.author.popularityLevel);
         Instantiate(newPost, profilePageContent.transform);
         postList.Add(newPost.GetComponent<OSSocialMediaPost>());
+    }
+
+    private void InstantiateConversation(DMConversation convo)
+    {
+        GameObject newConvo = Instantiate(conversationPrefab, conversationsPageContent.transform);
+        newConvo.GetComponent<OSConversation>().InstantiateConversation(convo);
+        newConvo.name = "Convo" + convo.id;
     }
 
     private string GetRandomEngagementNumber(PopularityLevel popularityLevel)
@@ -145,11 +167,9 @@ public class OSSocialMediaContent : MonoBehaviour
 
     public void FilterHomefeed(string filterTerm)
     {
-        CloseUserProfile();
+        ShowHomeFeed();
 
-        searchBar.Find("SearchText").GetComponent<TextMeshProUGUI>().text = "Searching: <b>" + filterTerm + "</b>";
-        searchBar.Find("BackButton").gameObject.SetActive(true);
-        searchBar.Find("Image").gameObject.SetActive(true);
+        ChangeSearchBar("Searching: <b>" + filterTerm + "</b>", true, ResetHomeFeed);
 
         foreach (Transform post in socialMediaPostContainer.transform)
         {
@@ -180,9 +200,7 @@ public class OSSocialMediaContent : MonoBehaviour
 
     public void ResetHomeFeed()
     {
-        searchBar.Find("SearchText").GetComponent<TextMeshProUGUI>().text = "Home";
-        searchBar.Find("BackButton").gameObject.SetActive(false);
-        searchBar.Find("Image").gameObject.SetActive(false);
+        ChangeSearchBar("Home", false);
 
         // Display all posts that aren't flagged to be hidden in the home feed
         foreach (Transform post in socialMediaPostContainer.transform)
@@ -200,11 +218,17 @@ public class OSSocialMediaContent : MonoBehaviour
         socialMediaPostContainer.GetComponentInParent<ScrollRect>().verticalNormalizedPosition = 1;
     }
 
+    public void ShowHomeFeed()
+    {
+        ChangeSearchBar("Home", false);
+
+        currentUser = null;
+        homePage.transform.SetAsLastSibling();
+    }
+
     public void ShowUserProfile(SocialMediaUser user)
     {
-        searchBar.Find("SearchText").GetComponent<TextMeshProUGUI>().text = "Profile View";
-        searchBar.Find("BackButton").gameObject.SetActive(true);
-        searchBar.Find("Image").gameObject.SetActive(false);
+        ChangeSearchBar("Profile View", false, ShowHomeFeed);
 
         currentUser = user;
         //profilePage.SetActive(true);
@@ -256,17 +280,6 @@ public class OSSocialMediaContent : MonoBehaviour
         newSearchTerm.GetComponent<OSSearchTerm>().user = user;
     }
 
-    public void CloseUserProfile()
-    {
-        searchBar.Find("SearchText").GetComponent<TextMeshProUGUI>().text = "Home";
-        searchBar.Find("BackButton").gameObject.SetActive(false);
-        searchBar.Find("Image").gameObject.SetActive(false);
-
-        currentUser = null;
-        //profilePage.SetActive(false);
-        profilePage.transform.SetAsFirstSibling();
-    }
-
     public void PinUser()
     {
         if (!pinnedUsers.Contains(currentUser))
@@ -304,5 +317,68 @@ public class OSSocialMediaContent : MonoBehaviour
         {
             profilePageheader.Find("PinUser").GetComponent<Image>().color = Color.red;
         }
+    }
+
+    public void ShowUserConversations()
+    {
+        ChangeSearchBar(currentUser.username + "'s DMs", false, CloseUserConversations);
+
+        conversationsPage.transform.SetAsLastSibling();
+        conversationsPage.GetComponent<ScrollRect>().verticalNormalizedPosition = 1;
+
+        // Show only conversations of current user
+        foreach (Transform convo in conversationsPageContent.transform)
+        {
+            if (convo.GetComponent<OSConversation>())
+            {
+                print(currentUser.username + ", " + convo.GetComponent<OSConversation>().conversation.conversationMember1);
+                if (convo.GetComponent<OSConversation>().conversation.conversationMember1 == currentUser || convo.GetComponent<OSConversation>().conversation.conversationMember2 == currentUser)
+                {
+                    convo.gameObject.SetActive(true);
+                    convo.GetComponent<OSConversation>().MatchConvoToSenderView(currentUser);
+                }
+                else
+                {
+                    convo.gameObject.SetActive(false);
+                }
+            }
+        }
+    }
+
+    public void CloseUserConversations()
+    {
+        ShowUserProfile(currentUser);
+    }
+
+    public void ShowUserDM(DMConversation convo)
+    {
+        ChangeSearchBar(currentUser.username + "'s DMs", false, ShowUserConversations);
+
+        foreach (Transform dm in dmPageContent.transform)
+        {
+            Destroy(dm.gameObject);
+        }
+        convo.messages.ForEach(m =>
+        {
+            GameObject newDM = m.sender == currentUser ? Instantiate(dmPrefabRight, dmPageContent.transform) : Instantiate(dmPrefabLeft, dmPageContent.transform);
+            newDM.GetComponent<OSDirectMessage>().InstantiateDM(m.message, m.timeStamp, m.image);
+            newDM.name = "DM";
+        });
+
+        dmPage.transform.SetAsLastSibling();
+    }
+
+    private void ChangeSearchBar(string text, bool showSearchIcon, UnityAction backButtonFunc = null)
+    {
+        searchBar.Find("SearchText").GetComponent<TextMeshProUGUI>().text = text;
+        searchBar.Find("BackButton").gameObject.SetActive(backButtonFunc != null);
+        if (backButtonFunc != null)
+        {
+            searchBar.Find("BackButton").GetComponent<Button>().onClick.RemoveAllListeners();
+            //UnityEvent backButtonEvent = new UnityEvent();
+            //backButtonEvent.AddListener(backButtonFunc);
+            searchBar.Find("BackButton").GetComponent<Button>().onClick.AddListener(() => backButtonFunc());
+        }
+        searchBar.Find("Image").gameObject.SetActive(showSearchIcon);
     }
 }

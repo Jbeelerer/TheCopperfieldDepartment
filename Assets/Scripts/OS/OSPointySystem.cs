@@ -163,7 +163,7 @@ public class OSPointySystem : MonoBehaviour
         {
             OSSocialMediaContent socialMediaContent = Object.FindObjectOfType<OSSocialMediaContent>();
             socialMediaContent.ResetHomeFeed();
-            socialMediaContent.CloseUserProfile();
+            socialMediaContent.ShowHomeFeed();
             socialMediaContent.EnableFirstPostOptions();
         }
 

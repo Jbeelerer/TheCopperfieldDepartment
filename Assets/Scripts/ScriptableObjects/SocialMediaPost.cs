@@ -9,6 +9,7 @@ public class SocialMediaPost : ScriptableObject, IPinnable
     [TextArea] public string content;
     public SocialMediaUser author;
     public string date;
+    public string time;
     public Sprite image;
     public bool hiddenInHomeFeed;
     public bool suspicious;
