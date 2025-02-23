@@ -376,15 +376,15 @@ public class Narration : MonoBehaviour
                     {
                         continue;
                     }
-                    if (entry.duration + totalTime < audioSource.clip.length)
+                    // if (entry.duration + totalTime < audioSource.clip.length)
                     {
                         audioSource.Stop();
                         audioSource.time = totalTime;
                         audioSource.Play();
                     }
-                    else
+                    //else
                     {
-                        audioSource.Stop();
+                        //audioSource.Stop();
                     }
                     textAnimator.Play("skip");
                 }

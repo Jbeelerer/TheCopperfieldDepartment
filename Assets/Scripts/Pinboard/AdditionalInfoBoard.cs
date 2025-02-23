@@ -99,6 +99,18 @@ public class AdditionalInfoBoard : MonoBehaviour
                 }
                 contentText.text = smp.content;
                 break;
+            case ArchiveData:
+                ArchiveData a = (ArchiveData)o;
+                if (a.image != null)
+                {
+                    pbMaterial.material.SetTexture("_Base", a.image.texture);
+                }
+                else
+                {
+                    transform.Find("Image").gameObject.SetActive(false);
+                }
+                contentText.text = a.content;
+                break;
         }
     }
 

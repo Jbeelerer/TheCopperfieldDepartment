@@ -23,12 +23,14 @@ public enum GameState
     Paused,
     OnPC,
     Inspecting,
+    InArchive
 
 }
 public class GameManager : MonoBehaviour, ISavable
 {
     public static GameManager instance;
     private GameState gameState = GameState.Playing;
+    private GameState prevGameState = GameState.Playing;
     [SerializeField] private int day = 1;
     private int furthestDay = 1;
     private int daySegment = 0;
@@ -39,6 +41,7 @@ public class GameManager : MonoBehaviour, ISavable
     public investigationStates investigationState = investigationStates.SuspectNotFound; //investigationStates.SuspectNotFound;
     public UnityEvent OnNewDay;
     public UnityEvent StateChanged;
+    public UnityEvent BeforeStateChanged;
     public UnityEvent InvestigationStateChanged;
     public UnityEvent OnNewSegment;
     private Case currentCase;
@@ -49,6 +52,7 @@ public class GameManager : MonoBehaviour, ISavable
     private SocialMediaUser[] users;
     private Person[] people;
     private DMConversation[] conversations;
+    private ArchiveData[] archiveData;
 
     private Vector3 startPosition;
     private Quaternion startRotation;
@@ -72,6 +76,8 @@ public class GameManager : MonoBehaviour, ISavable
     private GameObject mainCam;
 
     private Person currentlyAccused;
+
+    private string feedBackMailContent = "";
 
     private bool _pinboardBlocked = false;
     public bool PinboardBlocked
@@ -106,8 +112,12 @@ public class GameManager : MonoBehaviour, ISavable
         playerOnEmployeeList = new CompetingEmployee("Player", 50, 0);
         competingEmployees.Add(playerOnEmployeeList);
     }
+    public void LookAt(Transform t)
+    {
+        inspectionCam.GetComponent<CinemachineVirtualCamera>().LookAt = t;
+    }
 
-    public void InspectObject(Transform o, Vector3 lookingDirection)
+    public void InspectObject(Transform o, Vector3 lookingDirection, GameState state = GameState.Inspecting)
     {
         print("Inspecting " + o.name);
         CinemachineVirtualCamera vcam = inspectionCam.GetComponent<CinemachineVirtualCamera>();
@@ -120,25 +130,31 @@ public class GameManager : MonoBehaviour, ISavable
         {
             inspectionCam.transform.position = o.position + lookingDirection;
             vcam.LookAt = o;
-            SetGameState(GameState.Inspecting);
+            SetGameState(state);
         }
-
     }
     public void SetGameState(GameState state)
     {
+        prevGameState = gameState;
+        BeforeStateChanged?.Invoke();
+        if (state == GameState.Playing)
+        {
+            inspectionCam.GetComponent<CinemachineVirtualCamera>().LookAt = null;
+        }
         reload();
         computerCam.SetActive(state == GameState.OnPC);
         if (inspectionCam)
-            inspectionCam.SetActive(state == GameState.Inspecting);
+            inspectionCam.SetActive(state == GameState.Inspecting || state == GameState.InArchive);
 
         mainCam.SetActive(state == GameState.Playing || state == GameState.Paused || state == GameState.Frozen);
 
         if (inspectionCam)
-            inspectionCam.transform.parent.parent.GetComponent<Collider>().enabled = state != GameState.Inspecting;
+            inspectionCam.transform.parent.parent.GetComponent<Collider>().enabled = (state != GameState.Inspecting && state != GameState.InArchive);
 
-        Cursor.visible = state == GameState.Inspecting;
-        Cursor.lockState = state == GameState.Inspecting ? CursorLockMode.Confined : CursorLockMode.Locked;
-
+        Cursor.visible = (state == GameState.Inspecting || state == GameState.InArchive);
+        Cursor.lockState = (state == GameState.Inspecting || state == GameState.InArchive) ? CursorLockMode.Confined : CursorLockMode.Locked;
+        print(Cursor.visible);
+        print(state);
         // handle startPos of mainCam
         if (state == GameState.Playing && gameState == GameState.OnPC)
         {
@@ -150,16 +166,20 @@ public class GameManager : MonoBehaviour, ISavable
 
     public bool isOccupied()
     {
-        return gameState == GameState.OnPC || gameState == GameState.Inspecting;
+        return gameState == GameState.OnPC || gameState == GameState.Inspecting || gameState == GameState.InArchive;
     }
 
     public bool isFrozen()
     {
-        return gameState == GameState.OnPC || gameState == GameState.Inspecting || gameState == GameState.Frozen;
+        return gameState == GameState.OnPC || gameState == GameState.Inspecting || gameState == GameState.Frozen || gameState == GameState.InArchive;
     }
     public GameState GetGameState()
     {
         return gameState;
+    }
+    public GameState GetPrevGameState()
+    {
+        return prevGameState;
     }
     public investigationStates GetResultForDay(int i)
     {
@@ -241,6 +261,11 @@ public class GameManager : MonoBehaviour, ISavable
     {
         return people;
     }
+    public ArchiveData[] GetArchiveData()
+    {
+        return archiveData;
+    }
+
 
     public SocialMediaUser[] GetUsers()
     {
@@ -361,13 +386,39 @@ public class GameManager : MonoBehaviour, ISavable
         currentCase = Resources.LoadAll<Case>("Case" + day)[0];
         // load all connections
         connections = Resources.LoadAll<Connections>("Case" + currentCase.id + "/Connections");
-        mails = Resources.LoadAll<Mail>("Case" + currentCase.id + "/Mails");
+        Mail[] tempMails = Resources.LoadAll<Mail>("Case" + currentCase.id + "/Mails");
+        if (feedBackMailContent != "")
+        {
+            Mail feedBackMail = Resources.Load<Mail>("FeedBackTemplate");
+            feedBackMail.message = feedBackMailContent;
+            mails = tempMails.Concat(new Mail[] { feedBackMail }).ToArray();
+        }
+        else
+        {
+            mails = tempMails;
+        }
+        // mails[tempMails.Count()] = feedBackMail;        
         posts = Resources.LoadAll<SocialMediaPost>("Case" + currentCase.id + "/Posts");
         conversations = Resources.LoadAll<DMConversation>("Case" + currentCase.id + "/Conversations");
         return false;
     }
     public void LoadNewDay(int day)
     {
+        if (currentCase != null && currentCase.personReasoning != null && currentCase.personReasoning.Count != 0)
+        {
+            print(currentCase.personReasoning[0].reason);
+            //get reasong from where person is the currentlyAccused one
+            foreach (PersonReasoning pr in currentCase.personReasoning)
+            {
+                if (pr.person == currentlyAccused)
+                {
+                    feedBackMailContent = pr.reason;
+                    break;
+                }
+            }
+            //feedBackMailContent = currentCase.personReasoning.Find(x => x.person == currentlyAccused).reason;
+            //feedBackMailContent = currentCase.personReasoning.Find(x => x.person == currentlyAccused).reason;
+        }
         GameObject ow = GameObject.Find("OutsideWorld");
         if (ow != null)
         {
