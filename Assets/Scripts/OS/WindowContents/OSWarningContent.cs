@@ -31,7 +31,9 @@ public class OSWarningContent : MonoBehaviour
 
     public void ConfirmWarning()
     {
-        warningSuccessFunc.Invoke();
+        if (warningSuccessFunc != null)
+            warningSuccessFunc.Invoke();
+
         CloseWarning();
     }
 
