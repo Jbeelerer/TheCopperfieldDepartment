@@ -18,6 +18,9 @@ public enum PinboardElementType
     Info,
     MainSuspect,
     NotSetYet,
+    ArchiveData,
+
+    ArchiveDataWithImage
 }
 
 public enum AnnotationType
@@ -55,6 +58,8 @@ public class PinboardElement : MonoBehaviour
     [SerializeField] private GameObject socialMediaPostPinboardElement;
     [SerializeField] private GameObject socialMediaPostPinboardElementWithImage;
     [SerializeField] private GameObject socialMediaUserPinboardElement;
+    [SerializeField] private GameObject archiveDataPinboardElement;
+    [SerializeField] private GameObject archiveDataPinboardElementWithImage;
     [SerializeField] private Texture whiteBackground;
     private GameObject postItMesh;
     private Coroutine waitingForContentToBeSet;
@@ -128,6 +133,7 @@ public class PinboardElement : MonoBehaviour
     // the update boolean stop endless loops by stopping the update event from beeing fired again
     public void SetAnnotationType(AnnotationType annotationType, bool isUpdate = false)
     {
+        print("set annooo");
         // check if this was the culprit
         if (annotationType == AnnotationType.None && this.annotationType == AnnotationType.CaughtSuspect)
         {
@@ -135,6 +141,7 @@ public class PinboardElement : MonoBehaviour
             {
                 GameManager.instance.checkSuspicionRemoved(content as Person);
             }
+            print("remoove");
             flag.SetActive(false);
         }
         this.annotationType = annotationType;
@@ -400,7 +407,7 @@ public class PinboardElement : MonoBehaviour
                 yield break;
             }
         }
-        if (content is Person || content is SocialMediaPost || content is SocialMediaUser)
+        if (content is Person || content is SocialMediaPost || content is SocialMediaUser || content is ArchiveData)
         {
             float resFloat = Screen.height;
             transform.GetChild(2).GetComponent<RectTransform>().rect.Set(0, 20, resFloat, resFloat);
@@ -466,6 +473,16 @@ public class PinboardElement : MonoBehaviour
                 break;
             case PinboardElementType.SocialMediaPostWithImage:
                 postItMesh = Instantiate(socialMediaPostPinboardElementWithImage, transform);
+                image = postItMesh.transform.GetChild(1).gameObject;
+                image.transform.Rotate(new Vector3(0, 0, UnityEngine.Random.Range(-5, 5)));
+                postItMesh = postItMesh.transform.GetChild(0).gameObject;
+                break;
+            case PinboardElementType.ArchiveData:
+                postItMesh = Instantiate(archiveDataPinboardElement, transform);
+                postItMesh = postItMesh.transform.GetChild(1).gameObject;
+                break;
+            case PinboardElementType.ArchiveDataWithImage:
+                postItMesh = Instantiate(archiveDataPinboardElementWithImage, transform);
                 image = postItMesh.transform.GetChild(1).gameObject;
                 image.transform.Rotate(new Vector3(0, 0, UnityEngine.Random.Range(-5, 5)));
                 postItMesh = postItMesh.transform.GetChild(0).gameObject;
@@ -540,6 +557,19 @@ public class PinboardElement : MonoBehaviour
                 textElement.verticalAlignment = VerticalAlignmentOptions.Bottom;
                 textElement.transform.Rotate(new Vector3(0, 0, UnityEngine.Random.Range(1, 5)));
                 image.GetComponent<Renderer>().material.SetTexture("_Base", user.image.texture);
+                break;
+
+            case ArchiveData:
+                elementType = PinboardElementType.ArchiveData;
+                InitialiseElement();
+                ArchiveData archive = ConversionUtility.Convert<ArchiveData>(o);
+                textElement.text = archive.archivename;
+                elementType = archive.image == null ? PinboardElementType.ArchiveData : PinboardElementType.ArchiveDataWithImage;
+                textElement.text = archive.contentShort;
+                if (elementType == PinboardElementType.SocialMediaPostWithImage)
+                {
+                    image.GetComponent<Renderer>().material.SetTexture("_Base", archive.image.texture);
+                }
                 break;
             default:
                 break;

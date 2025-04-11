@@ -15,6 +15,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
     private OSSocialMediaContent socialMediaContent;
     private ComputerControls computerControls;
     private Camera canvasCam;
+    private Sprite postImage;
 
     private bool postPinned = false;
     private bool userPinned = false;
@@ -31,6 +32,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
         socialMediaContent = transform.GetComponentInParent<OSSocialMediaContent>();
         computerControls = transform.GetComponentInParent<ComputerControls>();
         canvasCam = GameObject.Find("computerTextureCam").GetComponent<Camera>();
+        postImage = transform.Find("ImageContainer").Find("AttachedImage").GetComponent<Image>().sprite;
 
         fpsController.OnPinDeletion.AddListener(RemovePinned);
         socialMediaContent.OnPinned.AddListener(MarkPinned);
@@ -90,6 +92,12 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
                     postOptions.transform.Find("PinPost").gameObject.SetActive(true);
                     postPinned = true;
                     pinboard.AddPin(post);
+
+                    // Add to list of users with found passwords, if a user is exposed in this post
+                    if (((SocialMediaPost)so).containsPasswordOfUser != null)
+                    {
+                        socialMediaContent.AddUserWithFoundPassword(((SocialMediaPost)so).containsPasswordOfUser);
+                    }
 
                     popupManager.DisplayPostPinMessage();
                 }
@@ -190,6 +198,11 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
         socialMediaContent.ShowUserProfile(post.author);
     }
 
+    public void OpenImageInWindow()
+    {
+        computerControls.OpenWindow(OSAppType.IMAGE, viewerImage: postImage);
+    }
+
     public void OnPointerClick(PointerEventData eventData)
     {
         TextMeshProUGUI textMesh = transform.Find("content").GetComponent<TextMeshProUGUI>();
@@ -220,8 +233,8 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
         foreach (Transform option in postOptions.transform)
         {
             option.gameObject.SetActive(true);
-            // Disable post deletion option on first days
-            if (gm.GetDay() < 4 && option.gameObject.name == "DeletePost")
+            // Disable post deletion option ALWAYS, because the feature is currently not used
+            if (/*gm.GetDay() < 4 && */option.gameObject.name == "DeletePost")
             {
                 option.gameObject.SetActive(false);
             }
