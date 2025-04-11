@@ -7,6 +7,8 @@ public class Archives : MonoBehaviour
 {
     [SerializeField] private GameObject[] files;
     [SerializeField] private GameObject filePrefab;
+    [SerializeField] private GameObject fotoFilePrefab;
+    [SerializeField] private GameObject textFilePrefab;
     [SerializeField] private List<ArchiveFile> archiveFiles = new List<ArchiveFile>();
     [SerializeField] private ArchiveData[] archiveData;
     private bool inUse = false;
@@ -29,7 +31,17 @@ public class Archives : MonoBehaviour
         float startPositionY = -5;
         foreach (ArchiveData fileData in archiveData)
         {
-            GameObject newFile = Instantiate(filePrefab, transform.GetChild(0));
+            GameObject fp = filePrefab;
+            if (fileData.type == ArchiveType.Image)
+            {
+                fp = fotoFilePrefab;
+            }
+            else if (fileData.type == ArchiveType.Text)
+            {
+                fp = textFilePrefab;
+            }
+
+            GameObject newFile = Instantiate(fp, transform.GetChild(0));
             ArchiveFile f = newFile.GetComponentInChildren<ArchiveFile>();
             f.instantiateFile(fileData);
             f.SetStickoutPosition(i);
@@ -84,7 +96,7 @@ public class Archives : MonoBehaviour
     void Update()
     {
         //shoot raycast from mouse
-        if (gm.GetGameState() == GameState.InArchive)
+        if (gm != null && gm.GetGameState() == GameState.InArchive)
         {
             // scroll through files
             //on any key down

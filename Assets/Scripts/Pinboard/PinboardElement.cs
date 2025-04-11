@@ -19,7 +19,7 @@ public enum PinboardElementType
     MainSuspect,
     NotSetYet,
     ArchiveData,
-
+    ArchiveDataText,
     ArchiveDataWithImage
 }
 
@@ -60,6 +60,7 @@ public class PinboardElement : MonoBehaviour
     [SerializeField] private GameObject socialMediaUserPinboardElement;
     [SerializeField] private GameObject archiveDataPinboardElement;
     [SerializeField] private GameObject archiveDataPinboardElementWithImage;
+    [SerializeField] private GameObject archiveDataPinboardElementText;
     [SerializeField] private Texture whiteBackground;
     private GameObject postItMesh;
     private Coroutine waitingForContentToBeSet;
@@ -483,8 +484,12 @@ public class PinboardElement : MonoBehaviour
                 break;
             case PinboardElementType.ArchiveDataWithImage:
                 postItMesh = Instantiate(archiveDataPinboardElementWithImage, transform);
-                image = postItMesh.transform.GetChild(1).gameObject;
-                image.transform.Rotate(new Vector3(0, 0, UnityEngine.Random.Range(-5, 5)));
+                image = transform.GetChild(0).gameObject;
+                image.transform.Rotate(new Vector3(0, 0, UnityEngine.Random.Range(-2, 2)));
+                postItMesh = postItMesh.transform.GetChild(0).gameObject;
+                break;
+            case PinboardElementType.ArchiveDataText:
+                postItMesh = Instantiate(archiveDataPinboardElementText, transform);
                 postItMesh = postItMesh.transform.GetChild(0).gameObject;
                 break;
             default:
@@ -560,9 +565,9 @@ public class PinboardElement : MonoBehaviour
                 break;
 
             case ArchiveData:
-                elementType = PinboardElementType.ArchiveData;
-                InitialiseElement();
                 ArchiveData archive = ConversionUtility.Convert<ArchiveData>(o);
+                elementType = archive.type == ArchiveType.Image ? archive.type == ArchiveType.Text ? PinboardElementType.ArchiveDataText : PinboardElementType.ArchiveDataWithImage : PinboardElementType.ArchiveData;
+                InitialiseElement();
                 textElement.text = archive.archivename;
                 elementType = archive.image == null ? PinboardElementType.ArchiveData : PinboardElementType.ArchiveDataWithImage;
                 textElement.text = archive.contentShort;

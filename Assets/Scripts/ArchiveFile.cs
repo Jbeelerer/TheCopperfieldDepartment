@@ -1,12 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ArchiveFile : MonoBehaviour
 {
     private Animator anim;
     private GameManager gm;
     private ArchiveData data;
+    [SerializeField] private Renderer fileImage;
+    [SerializeField] private TMP_Text fileTitle;
+    [SerializeField] private TMP_Text fileText;
     private bool isPinned = false;
 
     [SerializeField] private GameObject stickout;
@@ -37,6 +42,15 @@ public class ArchiveFile : MonoBehaviour
     public void instantiateFile(ArchiveData d)
     {
         data = d;
+        if (d.type != ArchiveType.Text)
+        {
+            fileImage.material.SetTexture("_Base", d.image.texture);
+        }
+        if (d.type != ArchiveType.Image)
+        {
+            fileTitle.text = d.archivename;
+            fileText.text = d.content;
+        }
     }
     public void select()
     {

@@ -604,6 +604,10 @@ public class GameManager : MonoBehaviour, ISavable
 
     private IEnumerator DelayFirstDay()
     {
+        if (day == 1)
+        {
+            PinboardBlocked = true;
+        }
         LoadNewDay(day);
         yield return null;
     }

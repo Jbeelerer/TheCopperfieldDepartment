@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -55,7 +56,11 @@ public class OSSocialMediaContent : MonoBehaviour
         fpsController = GameObject.Find("Player").GetComponent<FPSController>();
         popupManager = GameObject.Find("PopupMessage").GetComponent<OSPopupManager>();
         fpsController.OnPinDeletion.AddListener(RemovePinnedUser);
-
+        StartCoroutine(InstanciateContent());
+    }
+    private IEnumerator InstanciateContent()
+    {
+        yield return new WaitForSeconds(1);
         foreach (SocialMediaPost s in computerControls.GetPosts())
         {
             InstanciatePost(s);
