@@ -46,7 +46,10 @@ public class AdditionalInfoBoard : MonoBehaviour
     public void ShowInfo(bool b, ScriptableObject o)
     {
         if (o != content)
+        {
+            StartCoroutine(fastPullupCooldown());
             SetContent(o);
+        }
         ShowInfo(b);
     }
     public void StartPreview(ScriptableObject o)
@@ -58,6 +61,21 @@ public class AdditionalInfoBoard : MonoBehaviour
     {
         anim.SetBool("showInfo", false);
         anim.SetTrigger("cancelPreview");
+    }
+
+    private IEnumerator fastPullupCooldown()
+    {
+        if (anim.GetBool("fast"))
+        {
+            yield break;
+        }
+        else
+        {
+            yield return new WaitForSeconds(0.5f);
+            anim.SetBool("fast", true);
+            yield return new WaitForSeconds(3);
+            anim.SetBool("fast", false);
+        }
     }
 
     public void SetContent(ScriptableObject o)
