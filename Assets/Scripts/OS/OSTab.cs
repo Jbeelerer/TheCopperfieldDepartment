@@ -43,6 +43,9 @@ public class OSTab : MonoBehaviour
             case OSAppType.PEOPLE_LIST: 
                 tabText = "Suspects";
                 break;
+            case OSAppType.IMAGE:
+                tabText = "Image";
+                break;
         }
         transform.Find("Text").GetComponent<TextMeshProUGUI>().text = tabText;
     }
