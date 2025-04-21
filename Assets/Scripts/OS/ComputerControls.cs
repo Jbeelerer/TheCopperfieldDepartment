@@ -1,12 +1,7 @@
 using SaveSystem;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Device;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -19,7 +14,8 @@ public enum OSAppType
     PEOPLE_LIST,
     WARNING,
     START_SETTINGS,
-    IMAGE
+    IMAGE,
+    DM_PAGE
 }
 
 public enum OSInvestigationState
@@ -551,14 +547,13 @@ public class ComputerControls : MonoBehaviour, ISavable
         windows.Clear();
     }
 
-    public void OpenWindow(OSAppType type, string warningMessage = "Warning message", System.Action successFunc = null, bool hasCancelBtn = true, Sprite viewerImage = null)
+    public void OpenWindow(OSAppType type, string warningMessage = "Warning message", System.Action successFunc = null, bool hasCancelBtn = true, Sprite viewerImage = null, SocialMediaUser dmUser = null, bool dmUserPasswordFound = false)
     {
-        // PLay opening sound
         audioManager.PlayAudio(windowOpenSound);
-        // Check if the window is already open
+        // Check if the window is already open (if multiple instances of the same type are not allowed)
         foreach (OSWindow window in windows)
         {
-            if (window.appType == type)
+            if (window.appType == type && !window.multipleInstancesAllowed)
             {
                 // Reveal window and set back to screen middle if it exists but isn't active
                 if (!window.gameObject.activeInHierarchy)
@@ -568,11 +563,6 @@ public class ComputerControls : MonoBehaviour, ISavable
                     window.associatedTab.gameObject.SetActive(true);
                 }
                 BringWindowToFront(window);
-                // Update to new image if its the image viewer
-                if (window.appType == OSAppType.IMAGE)
-                {
-                    window.content.GetComponent<OSBigImageContent>().SetImage(viewerImage);
-                }
                 return;
             }
         }
@@ -583,6 +573,8 @@ public class ComputerControls : MonoBehaviour, ISavable
         newWindow.GetComponent<OSWindow>().warningSuccessFunc = successFunc;
         newWindow.GetComponent<OSWindow>().hasCancelBtn = hasCancelBtn;
         newWindow.GetComponent<OSWindow>().viewerImage = viewerImage;
+        newWindow.GetComponent<OSWindow>().dmUser = dmUser;
+        newWindow.GetComponent<OSWindow>().dmUserPasswordFound = dmUserPasswordFound;
         BringWindowToFront(newWindow.GetComponent<OSWindow>());
         // Don't add to open windows list if its a temporary window like a warning
         if (newWindow.GetComponent<OSWindow>().appType != OSAppType.WARNING && newWindow.GetComponent<OSWindow>().appType != OSAppType.START_SETTINGS)

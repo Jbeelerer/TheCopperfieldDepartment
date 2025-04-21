@@ -7,11 +7,11 @@ public class OSConversation : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 {
     public DMConversation conversation;
 
-    private OSPopupManager popupManager;
     private GameObject contactOptions;
     private GameManager gm;
-    private OSSocialMediaContent socialMediaContent;
+    private OSDmPageContent dmPageContent;
     private ComputerControls computerControls;
+    private OSSocialMediaContent socialMediaContent;
 
     private SocialMediaUser sender;
     private SocialMediaUser recipient;
@@ -19,11 +19,11 @@ public class OSConversation : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     // Start is called before the first frame update
     void Start()
     {
-        popupManager = GameObject.Find("PopupMessage").GetComponent<OSPopupManager>();
         gm = GameManager.instance;
         contactOptions = transform.Find("ContactOptions").gameObject;
-        socialMediaContent = transform.GetComponentInParent<OSSocialMediaContent>();
+        dmPageContent = transform.GetComponentInParent<OSDmPageContent>();
         computerControls = transform.GetComponentInParent<ComputerControls>();
+        socialMediaContent = GameObject.Find("DesktopInterface").GetComponentInChildren<OSSocialMediaContent>();
     }
 
     public void InstantiateConversation(DMConversation convo)
@@ -49,12 +49,13 @@ public class OSConversation : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OpenContactProfile()
     {
+        computerControls.OpenWindow(OSAppType.SOCIAL);
         socialMediaContent.ShowUserProfile(recipient);
     }
 
     public void OpenConversation()
     {
-        socialMediaContent.ShowUserDM(conversation);
+        dmPageContent.ShowUserDM(conversation);
     }
 
     public void OnPointerEnter(PointerEventData eventData)
