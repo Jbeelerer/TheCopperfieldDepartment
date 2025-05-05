@@ -24,14 +24,14 @@ public class OSSocialMediaContent : MonoBehaviour
     [SerializeField] private Sprite searchTermIconUser;
 
     private int postNumber = 1;
-    private List<OSSocialMediaPost> postList = new List<OSSocialMediaPost>();
     private ComputerControls computerControls;
     private List<SocialMediaUser> pinnedUsers = new List<SocialMediaUser>();
     private List<SocialMediaUser> usersWithFoundPassword = new List<SocialMediaUser>();
     private FPSController fpsController;
-    private OSPopupManager popupManager;
-    public SocialMediaUser currentUser;
 
+    [HideInInspector] public List<OSSocialMediaPost> postList = new List<OSSocialMediaPost>();
+
+    public SocialMediaUser currentUser;
     public GameObject currentFocusedPost = null;
 
     public PinEvent OnPinned;
@@ -46,7 +46,6 @@ public class OSSocialMediaContent : MonoBehaviour
     private void Start()
     {
         fpsController = GameObject.Find("Player").GetComponent<FPSController>();
-        popupManager = GameObject.Find("PopupMessage").GetComponent<OSPopupManager>();
         fpsController.OnPinDeletion.AddListener(RemovePinnedUser);
 
         foreach (SocialMediaPost s in computerControls.GetPosts())
@@ -65,12 +64,20 @@ public class OSSocialMediaContent : MonoBehaviour
         }
     }
 
-    public void InstanciatePost(SocialMediaPost post)
+    public void InstanciatePost(SocialMediaPost post, bool isInspection = false)
     {
         GameObject newPost = Instantiate(postPrefab, socialMediaPostContainer.transform);
         newPost.GetComponent<OSSocialMediaPost>().instanctiatePost(post);
         newPost.name = "Post" + postNumber;
         postNumber++;
+
+        postList.Add(newPost.GetComponent<OSSocialMediaPost>());
+
+        if (isInspection)
+        {
+            return;
+        }
+
         newPost.transform.Find("TopRow").Find("ProfilePic").Find("imageMask").GetChild(0).GetComponent<Image>().sprite = post.author.image;
         newPost.transform.Find("TopRow").Find("name").GetComponent<TextMeshProUGUI>().text = post.author.username;
         newPost.transform.Find("TopRow").Find("TimeStamp").GetComponent<TextMeshProUGUI>().text = post.time;
@@ -88,7 +95,6 @@ public class OSSocialMediaContent : MonoBehaviour
         newPost.transform.Find("ForbiddenOptions").Find("Shares").GetComponentInChildren<TextMeshProUGUI>().text = GetRandomEngagementNumber(post.author.popularityLevel);
         newPost.transform.Find("ForbiddenOptions").Find("Likes").GetComponentInChildren<TextMeshProUGUI>().text = GetRandomEngagementNumber(post.author.popularityLevel);
         Instantiate(newPost, profilePageContent.transform);
-        postList.Add(newPost.GetComponent<OSSocialMediaPost>());
     }
 
     private string GetRandomEngagementNumber(PopularityLevel popularityLevel)
@@ -326,5 +332,10 @@ public class OSSocialMediaContent : MonoBehaviour
     public void AddUserWithFoundPassword(SocialMediaUser user)
     {
         usersWithFoundPassword.Add(user);
+    }
+
+    public List<SocialMediaUser> GetUsersWithFoundPassword()
+    {
+        return usersWithFoundPassword;
     }
 }

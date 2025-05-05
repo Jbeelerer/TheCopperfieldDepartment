@@ -95,4 +95,11 @@ public class OSPopupManager : MonoBehaviour
         anim.Play("popupMessageSpawn", -1, 0);
         computerControls.audioManager.PlayAudio(notificationSound);
     }
+
+    public void DisplayPasswordFoundMessage()
+    {
+        messageText.text = "New password stored!";
+        anim.Play("popupMessageSpawn", -1, 0);
+        computerControls.audioManager.PlayAudio(notificationSound);
+    }
 }

@@ -41,6 +41,8 @@ public class ComputerControls : MonoBehaviour, ISavable
     public Sprite cursorNormal;
     public Sprite cursorClickable;
     public Sprite cursorForbidden;
+    public Sprite cursorInspect;
+    public Sprite cursorInspectExclamation;
     public OSInvestigationState investigationState = OSInvestigationState.NONE;
     public TextMeshProUGUI computerTime;
     public TextMeshProUGUI computerDate;
@@ -204,6 +206,16 @@ public class ComputerControls : MonoBehaviour, ISavable
         if (hitObject && hitObject.GetComponent<Button>() && !hitObject.GetComponent<Button>().isActiveAndEnabled)
         {
             cursor.GetComponent<Image>().sprite = cursorForbidden;
+        }
+
+        // Change cursor sprite if hovering over image/inspection area
+        if (hitObject && hitObject.GetComponent<OSImageInspectionContainer>())
+        {
+            cursor.GetComponent<Image>().sprite = cursorInspect;
+        }
+        if (hitObject && hitObject.GetComponent<OSImageInspectionArea>())
+        {
+            cursor.GetComponent<Image>().sprite = cursorInspectExclamation;
         }
     }
 
@@ -547,7 +559,7 @@ public class ComputerControls : MonoBehaviour, ISavable
         windows.Clear();
     }
 
-    public void OpenWindow(OSAppType type, string warningMessage = "Warning message", System.Action successFunc = null, bool hasCancelBtn = true, Sprite viewerImage = null, SocialMediaUser dmUser = null, bool dmUserPasswordFound = false)
+    public void OpenWindow(OSAppType type, string warningMessage = "Warning message", System.Action successFunc = null, bool hasCancelBtn = true, SocialMediaPost imagePost = null, SocialMediaUser dmUser = null, bool dmUserPasswordFound = false)
     {
         audioManager.PlayAudio(windowOpenSound);
         // Check if the window is already open (if multiple instances of the same type are not allowed)
@@ -572,7 +584,7 @@ public class ComputerControls : MonoBehaviour, ISavable
         newWindow.GetComponent<OSWindow>().warningMessage = warningMessage;
         newWindow.GetComponent<OSWindow>().warningSuccessFunc = successFunc;
         newWindow.GetComponent<OSWindow>().hasCancelBtn = hasCancelBtn;
-        newWindow.GetComponent<OSWindow>().viewerImage = viewerImage;
+        newWindow.GetComponent<OSWindow>().imagePost = imagePost;
         newWindow.GetComponent<OSWindow>().dmUser = dmUser;
         newWindow.GetComponent<OSWindow>().dmUserPasswordFound = dmUserPasswordFound;
         BringWindowToFront(newWindow.GetComponent<OSWindow>());

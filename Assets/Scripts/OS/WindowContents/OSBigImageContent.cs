@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class OSBigImageContent : MonoBehaviour
 {
+    [HideInInspector] public SocialMediaPost relatedPost;
+
     private Image image;
 
     void Awake()
@@ -14,8 +16,14 @@ public class OSBigImageContent : MonoBehaviour
         image = transform.GetComponentInChildren<Image>();
     }
 
-    public void SetImage(Sprite img)
+    public void Setup(SocialMediaPost imagePost)
     {
-        image.sprite = img;
+        relatedPost = imagePost;
+        image.sprite = imagePost.image;
+
+        if (relatedPost.imageInspectionAreaContainer != null)
+        {
+            Instantiate(relatedPost.imageInspectionAreaContainer, image.transform);
+        }
     }
 }

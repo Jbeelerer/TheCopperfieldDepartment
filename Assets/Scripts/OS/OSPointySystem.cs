@@ -1,4 +1,5 @@
 using SaveSystem;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -22,11 +23,13 @@ public class OSPointySystem : MonoBehaviour
     [SerializeField] private GameObject pointySpeechBubbleBottom;
     [SerializeField] private GameObject screenBlockadePointy;
     [SerializeField] private GameObject pointyFinger;
+    [SerializeField] private GameObject pinInspectionButton;
     [SerializeField] private AudioClip pointyPopupSound;
 
     public GameObject pointyButton;
     public GameObject spotlight;
 
+    [Header("Tutorial Steps")]
     [SerializeField] private List<PointyTutorialStep> stepsDefault = new List<PointyTutorialStep>();
     [SerializeField] private List<PointyTutorialStep> stepsDesktop = new List<PointyTutorialStep>();
     [SerializeField] private List<PointyTutorialStep> stepsStartSettings = new List<PointyTutorialStep>();
@@ -35,10 +38,15 @@ public class OSPointySystem : MonoBehaviour
     [SerializeField] private List<PointyTutorialStep> stepsSocialMedia = new List<PointyTutorialStep>();
     [SerializeField] private List<PointyTutorialStep> stepsEvilIntro = new List<PointyTutorialStep>();
     [SerializeField] private List<PointyTutorialStep> stepsEvilSocialMedia = new List<PointyTutorialStep>();
+    [SerializeField] private List<PointyTutorialStep> stepsInspectionTutorial = new List<PointyTutorialStep>();
+
+    [Header("Image Inspection")]
+    [SerializeField] private List<PointyTutorialStep> stepsImageInspection = new List<PointyTutorialStep>();
 
     [HideInInspector] public bool evilIntroCompleted = false;
 
     private ComputerControls computerControls;
+    private OSPopupManager popupManager;
     private GameObject nextTargetObject;
     private List<PointyTutorialStep> currentTutorial;
     private int currentStep;
@@ -46,9 +54,13 @@ public class OSPointySystem : MonoBehaviour
     private Vector2 originalSpotlightSize;
     private Animator pointyAnim;
 
+    private List<OSSocialMediaPost> pinnedInspectionPosts = new List<OSSocialMediaPost>();
+    private SocialMediaPost inspectionOriginalPost = null;
+
     private void Start()
     {
         computerControls = GetComponentInParent<ComputerControls>();
+        popupManager = GameObject.Find("PopupMessage").GetComponent<OSPopupManager>();
         pointyAnim = pointy.GetComponent<Animator>();
 
         spotlight.GetComponent<Image>().alphaHitTestMinimumThreshold = 1f;
@@ -69,8 +81,28 @@ public class OSPointySystem : MonoBehaviour
 
     public void StartTutorial(string name, bool toggledAutomatically = false)
     {
+        ShowPointy(name, toggledAutomatically);
+    }
+
+    public void StartImageInspection(SocialMediaPost relatedPost, string text, SocialMediaUser exposedPasswordUser)
+    {
+        inspectionOriginalPost = relatedPost;
+
+        // Add to list of users with found passwords, if a user password is exposed in this inspection area
+        OSSocialMediaContent socialMediaContent = Object.FindObjectOfType<OSSocialMediaContent>();
+        if (exposedPasswordUser && !socialMediaContent.GetUsersWithFoundPassword().Contains(exposedPasswordUser))
+        {
+            socialMediaContent.AddUserWithFoundPassword(exposedPasswordUser);
+            popupManager.DisplayPasswordFoundMessage();
+        }
+
+        ShowPointy("ImageInspection", false, text);
+    }
+
+    private void ShowPointy(string name, bool toggledAutomatically, string inspectionText = null)
+    {
         // Bool used to deactivate pointy in inspector
-        if (deactivatePointy)
+        if (deactivatePointy && name != "ImageInspection")
         {
             return;
         }
@@ -130,14 +162,25 @@ public class OSPointySystem : MonoBehaviour
                 currentTutorial = stepsEvilSocialMedia;
                 pointyAnim.Play("pointyEvilIdle");
                 break;
+            case "InspectionTutorial":
+                currentTutorial = stepsInspectionTutorial;
+                pointyAnim.Play("pointyDetectiveIdle");
+                break;
+            case "ImageInspection":
+                stepsImageInspection[1].message = inspectionText;
+                pinInspectionButton.SetActive(true);
+                currentTutorial = stepsImageInspection;
+                pointyAnim.Play("pointyDetectiveIdle");
+                break;
             case "Default":
             default:
                 currentTutorial = stepsDefault;
                 break;
         }
 
-        // Reset size and position of affected window
-        if (computerControls.currentFocusedWindow) {
+        // Reset size and position of affected window (if not inspection mode)
+        if (computerControls.currentFocusedWindow && name != "ImageInspection")
+        {
             computerControls.ResizeWindowSmall(computerControls.currentFocusedWindow);
             computerControls.currentFocusedWindow.rectTrans.position = computerControls.screen.position;
         }
@@ -238,11 +281,49 @@ public class OSPointySystem : MonoBehaviour
         spotlight.SetActive(false);
         screenBlockadePointy.SetActive(false);
         pointyFinger.gameObject.SetActive(false);
+        pinInspectionButton.SetActive(false);
     }
 
     public GameObject GetNextTargetObject()
     {
         return nextTargetObject;
+    }
+
+    public void PinInspection()
+    {
+        StartCoroutine(PinInspectionCoroutine());
+    }
+
+    private IEnumerator PinInspectionCoroutine()
+    {
+        OSSocialMediaContent socialMediaContent = computerControls.GetComponentInChildren<OSSocialMediaContent>(true);
+        OSSocialMediaPost inspectionPost = socialMediaContent.postList.Find(p => p.post.content == stepsImageInspection[1].message);
+
+        if (pinnedInspectionPosts.Contains(inspectionPost))
+        {
+            socialMediaContent.UnpinPost("content", inspectionPost.post);
+            pinnedInspectionPosts.Remove(inspectionPost);
+            //yield break;
+        }
+
+        if (!inspectionPost)
+        {
+            SocialMediaPost newPost = ScriptableObject.CreateInstance<SocialMediaPost>();
+            newPost.id = -1;
+            newPost.author = inspectionOriginalPost.author;
+            newPost.contentShort = stepsImageInspection[1].message;
+            newPost.content = stepsImageInspection[1].message;
+            newPost.image = null;
+            newPost.hiddenInHomeFeed = true;
+
+            socialMediaContent.InstanciatePost(newPost, isInspection: true);
+            inspectionPost = socialMediaContent.postList[socialMediaContent.postList.Count - 1];
+        }
+
+        yield return null;
+
+        socialMediaContent.PinPost("content", inspectionPost.post);
+        pinnedInspectionPosts.Add(inspectionPost);
     }
 
     public void LoadData(SaveData data)

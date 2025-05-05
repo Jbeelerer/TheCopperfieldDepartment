@@ -15,7 +15,6 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
     private OSSocialMediaContent socialMediaContent;
     private ComputerControls computerControls;
     private Camera canvasCam;
-    private Sprite postImage;
 
     private bool postPinned = false;
     private bool userPinned = false;
@@ -32,7 +31,6 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
         socialMediaContent = transform.GetComponentInParent<OSSocialMediaContent>();
         computerControls = transform.GetComponentInParent<ComputerControls>();
         canvasCam = GameObject.Find("computerTextureCam").GetComponent<Camera>();
-        postImage = transform.Find("ImageContainer").Find("AttachedImage").GetComponent<Image>().sprite;
 
         fpsController.OnPinDeletion.AddListener(RemovePinned);
         socialMediaContent.OnPinned.AddListener(MarkPinned);
@@ -78,7 +76,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
         {
             case SocialMediaPost:
                 // Pin specific post and its user
-                if (((SocialMediaPost)so).author == post.author)
+                if (((SocialMediaPost)so).author == post.author && post.author != null)
                 {
                     postOptions.transform.Find("PinUser").GetComponent<Image>().color = Color.red;
                     postOptions.transform.Find("PinUser").gameObject.SetActive(true);
@@ -92,12 +90,6 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
                     postOptions.transform.Find("PinPost").gameObject.SetActive(true);
                     postPinned = true;
                     pinboard.AddPin(post);
-
-                    // Add to list of users with found passwords, if a user is exposed in this post
-                    if (((SocialMediaPost)so).containsPasswordOfUser != null)
-                    {
-                        socialMediaContent.AddUserWithFoundPassword(((SocialMediaPost)so).containsPasswordOfUser);
-                    }
 
                     popupManager.DisplayPostPinMessage();
                 }
@@ -200,7 +192,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     public void OpenImageInWindow()
     {
-        computerControls.OpenWindow(OSAppType.IMAGE, viewerImage: postImage);
+        computerControls.OpenWindow(OSAppType.IMAGE, imagePost: post);
     }
 
     public void OnPointerClick(PointerEventData eventData)
