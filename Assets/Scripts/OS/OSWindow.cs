@@ -127,7 +127,6 @@ public class OSWindow : MonoBehaviour
         {
             content = Instantiate(dmPageContent, transform.Find("Content"));
             content.GetComponent<OSDmPageContent>().InitializeLoginPage(dmUser, dmUserPasswordFound);
-            resizeButtons = new RectTransform[] { buttonSmall, buttonLong };
             multipleInstancesAllowed = true;
             topBarTextMesh.text = "Direct Messages";
         }

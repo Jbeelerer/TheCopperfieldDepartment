@@ -7,7 +7,6 @@ public class DirectMessage
 {
     public SocialMediaUser sender;
     public string message;
-    public Sprite image;
     public string timeStamp;
 } 
 

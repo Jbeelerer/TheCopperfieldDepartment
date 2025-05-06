@@ -591,9 +591,11 @@ public class ComputerControls : MonoBehaviour, ISavable
         // Don't add to open windows list if its a temporary window like a warning
         if (newWindow.GetComponent<OSWindow>().appType != OSAppType.WARNING && newWindow.GetComponent<OSWindow>().appType != OSAppType.START_SETTINGS)
             windows.Add(newWindow.GetComponent<OSWindow>());
-        // Make warning window smaller than normal windows
+        // Resize custom sized small windows
         if (newWindow.GetComponent<OSWindow>().appType == OSAppType.WARNING)
             newWindow.GetComponent<OSWindow>().rectTrans.sizeDelta = new Vector2(300, 200);
+        if (newWindow.GetComponent<OSWindow>().appType == OSAppType.DM_PAGE)
+            newWindow.GetComponent<OSWindow>().rectTrans.sizeDelta = new Vector2(200, 300);
         // Create tab
         GameObject newTab = Instantiate(tabPrefab, transform.position, transform.rotation, tabContainer.transform);
         newTab.GetComponent<OSTab>().appType = type;
