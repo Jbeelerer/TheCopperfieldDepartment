@@ -39,6 +39,8 @@ public class OSPointySystem : MonoBehaviour
     [SerializeField] private List<PointyTutorialStep> stepsEvilIntro = new List<PointyTutorialStep>();
     [SerializeField] private List<PointyTutorialStep> stepsEvilSocialMedia = new List<PointyTutorialStep>();
     [SerializeField] private List<PointyTutorialStep> stepsInspectionTutorial = new List<PointyTutorialStep>();
+    [SerializeField] private List<PointyTutorialStep> stepsDmPasswordTutorial = new List<PointyTutorialStep>();
+    [SerializeField] private List<PointyTutorialStep> stepsDmPageTutorial = new List<PointyTutorialStep>();
 
     [Header("Image Inspection")]
     [SerializeField] private List<PointyTutorialStep> stepsImageInspection = new List<PointyTutorialStep>();
@@ -161,6 +163,12 @@ public class OSPointySystem : MonoBehaviour
             case "EvilSocialMedia":
                 currentTutorial = stepsEvilSocialMedia;
                 pointyAnim.Play("pointyEvilIdle");
+                break;
+            case "DmPasswordTutorial":
+                currentTutorial = stepsDmPasswordTutorial;
+                break;
+            case "DmPageTutorial":
+                currentTutorial = stepsDmPageTutorial;
                 break;
             case "InspectionTutorial":
                 currentTutorial = stepsInspectionTutorial;

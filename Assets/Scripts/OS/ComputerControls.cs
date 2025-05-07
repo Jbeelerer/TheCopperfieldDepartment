@@ -294,6 +294,9 @@ public class ComputerControls : MonoBehaviour, ISavable
             case OSAppType.START_SETTINGS:
                 pointySystem.StartTutorial("StartSettings", toggledAutomatically);
                 break;
+            case OSAppType.IMAGE:
+                pointySystem.StartTutorial("StartSettings", toggledAutomatically);
+                break;
             default:
                 pointySystem.StartTutorial("Default", toggledAutomatically);
                 break;
