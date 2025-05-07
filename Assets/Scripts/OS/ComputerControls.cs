@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.ProBuilder.MeshOperations;
 using UnityEngine.UI;
 
 public enum OSAppType
@@ -276,14 +277,14 @@ public class ComputerControls : MonoBehaviour, ISavable
         switch (currentFocusedWindow.appType)
         {
             case OSAppType.SOCIAL:
-                if (pointySystem.evilIntroCompleted)
+                /*if (pointySystem.evilIntroCompleted)
                 {
                     pointySystem.StartTutorial("EvilSocialMedia", toggledAutomatically);
-                }
-                else
-                {
+                }*/
+                //else
+                //{
                     pointySystem.StartTutorial("SocialMedia", toggledAutomatically);
-                }
+                //}
                 break;
             case OSAppType.GOV:
                 pointySystem.StartTutorial("GovApp", toggledAutomatically);
@@ -295,7 +296,10 @@ public class ComputerControls : MonoBehaviour, ISavable
                 pointySystem.StartTutorial("StartSettings", toggledAutomatically);
                 break;
             case OSAppType.IMAGE:
-                pointySystem.StartTutorial("StartSettings", toggledAutomatically);
+                if (gm.GetDay() == 4)
+                {
+                    pointySystem.StartTutorial("InspectionTutorial", toggledAutomatically);
+                }
                 break;
             default:
                 pointySystem.StartTutorial("Default", toggledAutomatically);
@@ -672,7 +676,8 @@ public class ComputerControls : MonoBehaviour, ISavable
         }
 
         // Open Pointy Tutorial if not already seen
-        if (window.GetComponent<OSWindow>().appType != OSAppType.WARNING && window.GetComponent<OSWindow>().appType != OSAppType.START_SETTINGS)
+        // TODO: making exceptions like with the dm page here is pretty bad rn, other solution?
+        if (window.GetComponent<OSWindow>().appType != OSAppType.WARNING && window.GetComponent<OSWindow>().appType != OSAppType.START_SETTINGS && window.GetComponent<OSWindow>().appType != OSAppType.DM_PAGE)
             TogglePointy(true);
     }
 

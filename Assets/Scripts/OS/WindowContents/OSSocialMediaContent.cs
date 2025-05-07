@@ -273,6 +273,12 @@ public class OSSocialMediaContent : MonoBehaviour
         newSearchTerm.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = user.username;
         newSearchTerm.transform.Find("Icon").GetComponent<Image>().sprite = searchTermIconUser;
         newSearchTerm.GetComponent<OSSearchTerm>().user = user;
+
+        // Show automatic Pointy DM Tutorial
+        if (GameManager.instance.GetDay() == 4 && user.username == "FinanceHenry")
+        {
+            computerControls.pointySystem.StartTutorial("DmPassword");
+        }
     }
 
     public void PinUser()
