@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEditor.Searcher;
@@ -10,8 +12,7 @@ using UnityEngine.UI;
 public class OSDmPageContent : MonoBehaviour
 {
     [SerializeField] private GameObject conversationPrefab;
-    [SerializeField] private GameObject dmPrefabLeft;
-    [SerializeField] private GameObject dmPrefabRight;
+    [SerializeField] private GameObject dmPrefab;
     [SerializeField] private GameObject conversationsPage;
     [SerializeField] private GameObject conversationsPageContent;
     [SerializeField] private GameObject dmPage;
@@ -21,6 +22,7 @@ public class OSDmPageContent : MonoBehaviour
     [SerializeField] private TMP_InputField passwordField;
     [SerializeField] private Button loginButton;
     [SerializeField] private GameObject loginFailedMessage;
+    [SerializeField] private UnityEngine.Color dmNameColor;
 
     private ComputerControls computerControls;
     private OSPopupManager popupManager;
@@ -79,7 +81,9 @@ public class OSDmPageContent : MonoBehaviour
 
     public void ShowUserDM(DMConversation convo)
     {
-        ChangeInfoBar(convo.conversationMember1 == currentUser ? convo.conversationMember2.username : convo.conversationMember1.username, ShowConversationsPage);
+        SocialMediaUser recipient = convo.conversationMember1 == currentUser ? convo.conversationMember2 : convo.conversationMember1;
+
+        ChangeInfoBar(recipient.username, ShowConversationsPage);
 
         foreach (Transform dm in dmPageContent.transform)
         {
@@ -87,8 +91,14 @@ public class OSDmPageContent : MonoBehaviour
         }
         convo.messages.ForEach(m =>
         {
-            GameObject newDM = m.sender == currentUser ? Instantiate(dmPrefabRight, dmPageContent.transform) : Instantiate(dmPrefabLeft, dmPageContent.transform);
-            newDM.GetComponent<OSDirectMessage>().InstantiateDM(m.message, m.timeStamp, m.image);
+            GameObject newDM = Instantiate(dmPrefab, dmPageContent.transform);
+
+            string message = "<b>";
+            message += (m.sender == currentUser ? "You" : "<color=#" + UnityEngine.ColorUtility.ToHtmlStringRGBA(dmNameColor) + ">" + recipient.username) + " ";
+            message += "(" + m.timeStamp + "):</color></b> ";
+            message += m.message;
+
+            newDM.GetComponentInChildren<TextMeshProUGUI>().text = message;
             newDM.name = "DM";
         });
 
