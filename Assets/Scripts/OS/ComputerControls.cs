@@ -62,6 +62,7 @@ public class ComputerControls : MonoBehaviour, ISavable
     private GameManager gm;
     private bool cursorActive = false;
     private GameObject eventSystem;
+    private Vector2 smallWindowSize = new Vector2(400, 300);
 
     [SerializeField] private RectTransform halfScreenBlockadeLeft;
     [SerializeField] private RectTransform halfScreenBlockadeRight;
@@ -163,8 +164,8 @@ public class ComputerControls : MonoBehaviour, ISavable
                     windowToBeDeleted = window;
                 }
 
-                // Put window into halfscreen mode if dragged to border of screen
-                if (window.isMoving)
+                // Put window into halfscreen mode if dragged to border of screen (only if it is allowed to be in long window mode)
+                if (window.isMoving && System.Array.IndexOf(window.resizeButtons, window.buttonLong) > -1)
                 {
                     if (PointInsideRect(cursor.position, halfScreenBlockadeLeft))
                     {
@@ -698,7 +699,7 @@ public class ComputerControls : MonoBehaviour, ISavable
         RemoveLeftRightWindow(window);
         window.rectTrans.anchorMin = new Vector2(0.5f, 0.5f);
         window.rectTrans.anchorMax = new Vector2(0.5f, 0.5f);
-        window.rectTrans.sizeDelta = new Vector2(400, 300);
+        window.rectTrans.sizeDelta = smallWindowSize;
         window.currWindowSize = WindowSize.SMALL;
         HideWindowSizeButton(window, window.buttonSmall);
     }

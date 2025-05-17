@@ -2371,7 +2371,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db4dc0f013449d04c86d2c9883ab05be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deactivatePointy: 1
+  deactivatePointy: 0
   pointy: {fileID: 1561082558638717806}
   pointySpeechBubbleTop: {fileID: 613414430866184620}
   pointySpeechBubbleBottom: {fileID: 5381382141094340695}
@@ -2425,7 +2425,7 @@ MonoBehaviour:
     spotlightSizeModifier: {x: 8, y: 1}
   - targetObjectName: ScreenBlockadePointy
     message: Some mails contain <b>attached files.</b><br>They can be opened by clicking
-      on them.<br><br><b>Click the screen to finish this tutorial.
+      on them.
     pointAtPointy: 0
     spotlightSizeModifier: {x: 0, y: 0}
   stepsPeopleList:
@@ -2442,27 +2442,17 @@ MonoBehaviour:
     message: Here, you can look at every citizen's information.<br><br><b>Pin someone
       to your pinboard by clicking this pin button!
     pointAtPointy: 0
-    spotlightSizeModifier: {x: 0.8, y: 0.8}
+    spotlightSizeModifier: {x: 1.2, y: 1.2}
   - targetObjectName: ScreenBlockadePointy
     message: The person has now been pinned to your <b>real office pinboard.</b><br><br>You
       can leave the computer <b>by pressing Escape</b> to check it out!
     pointAtPointy: 0
     spotlightSizeModifier: {x: 0, y: 0}
-  - targetObjectName: AccusePerson
+  - targetObjectName: ScreenBlockadePointy
     message: You can also <b>accuse a person</b>  if you think you've found today's
-      culprit.<br><br><b>Try clicking this button!
+      culprit.<br>This is done with <br>the other button next to the pin one.<b>
     pointAtPointy: 0
     spotlightSizeModifier: {x: 0.8, y: 0.8}
-  - targetObjectName: ScreenBlockadePointy
-    message: Here you can confirm your suspicion if you are really sure.<br><br><b>Click
-      the screen to continue.
-    pointAtPointy: 0
-    spotlightSizeModifier: {x: 0, y: 0}
-  - targetObjectName: ScreenBlockadePointy
-    message: When you think you've got the right person, you can <b>leave through
-      your office door and end the day.<br><br>Click the screen to close this tutorial.
-    pointAtPointy: 0
-    spotlightSizeModifier: {x: 0, y: 0}
   stepsSocialMedia:
   - targetObjectName: ScreenBlockadePointy
     message: The social media app shows you user posts in this feed.<br><br><b>Click
@@ -2481,11 +2471,6 @@ MonoBehaviour:
     spotlightSizeModifier: {x: 0, y: 0}
   - targetObjectName: imageMask
     message: To view someone's profile page, <b>click their avatar or name.
-    pointAtPointy: 0
-    spotlightSizeModifier: {x: 0, y: 0}
-  - targetObjectName: ScreenBlockadePointy
-    message: You can go back to the home feed via the <b>home button</b> at the top
-      of the page.<br><br><b>Click the screen to close this tutorial.
     pointAtPointy: 0
     spotlightSizeModifier: {x: 0, y: 0}
   stepsEvilIntro:
@@ -2537,7 +2522,11 @@ MonoBehaviour:
     spotlightSizeModifier: {x: 0, y: 0}
   stepsInspectionTutorial:
   - targetObjectName: ScreenBlockadePointy
-    message: 'Hey there, pal. Let me show you another small feature: <b>Inspecting
+    message: Bothering me during my cigar break, huh?
+    pointAtPointy: 0
+    spotlightSizeModifier: {x: 0, y: 0}
+  - targetObjectName: ScreenBlockadePointy
+    message: 'Hi, Detective Pointy here. Let me show you another small feature: <b>Inspecting
       Images</b>'
     pointAtPointy: 0
     spotlightSizeModifier: {x: 0, y: 0}
@@ -2548,6 +2537,27 @@ MonoBehaviour:
     spotlightSizeModifier: {x: 0, y: 0}
   - targetObjectName: ScreenBlockadePointy
     message: How about that suspicious <b>sticky note</b> over there?
+    pointAtPointy: 0
+    spotlightSizeModifier: {x: 0, y: 0}
+  stepsDmPasswordTutorial:
+  - targetObjectName: ScreenBlockadePointy
+    message: Need a quick refresher?
+    pointAtPointy: 0
+    spotlightSizeModifier: {x: 0, y: 0}
+  - targetObjectName: ScreenBlockadePointy
+    message: By the way, some clues can also be found in user's <b>private messages.</b>
+    pointAtPointy: 0
+    spotlightSizeModifier: {x: 0, y: 0}
+  - targetObjectName: HackUser
+    message: Click <b>this button</b> to access them!
+    pointAtPointy: 0
+    spotlightSizeModifier: {x: 0, y: 0}
+  - targetObjectName: ScreenBlockadePointy
+    message: You do need their <b>password</b> to get in, though.
+    pointAtPointy: 0
+    spotlightSizeModifier: {x: 0, y: 0}
+  - targetObjectName: ScreenBlockadePointy
+    message: Why don't you see if one of <b>their images</b> contains a clue to it?
     pointAtPointy: 0
     spotlightSizeModifier: {x: 0, y: 0}
   stepsImageInspection:
@@ -4447,7 +4457,7 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!1001 &2437133716068611865
+--- !u!1001 &2581153727879879847
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -4480,15 +4490,15 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -11
       objectReference: {fileID: 0}
-    - target: {fileID: 708961719834052343, guid: 23f9979d27c9d634bb8a83b630c2a410,
+    - target: {fileID: 721950494939822869, guid: 23f9979d27c9d634bb8a83b630c2a410,
         type: 3}
-      propertyPath: m_IsActive
-      value: 0
+      propertyPath: m_Size
+      value: 0.9999988
       objectReference: {fileID: 0}
     - target: {fileID: 721950494939822869, guid: 23f9979d27c9d634bb8a83b630c2a410,
         type: 3}
       propertyPath: m_Value
-      value: -1.4166666
+      value: 0.23076923
       objectReference: {fileID: 0}
     - target: {fileID: 991390257328940794, guid: 23f9979d27c9d634bb8a83b630c2a410,
         type: 3}
@@ -4509,6 +4519,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -92.13
+      objectReference: {fileID: 0}
+    - target: {fileID: 1150598993371702930, guid: 23f9979d27c9d634bb8a83b630c2a410,
+        type: 3}
+      propertyPath: m_Value
+      value: 0.7083333
       objectReference: {fileID: 0}
     - target: {fileID: 1155139287725562664, guid: 23f9979d27c9d634bb8a83b630c2a410,
         type: 3}
@@ -4534,11 +4549,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 60.19
-      objectReference: {fileID: 0}
-    - target: {fileID: 1662537354927143296, guid: 23f9979d27c9d634bb8a83b630c2a410,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0.000091552734
       objectReference: {fileID: 0}
     - target: {fileID: 2179401485835621128, guid: 23f9979d27c9d634bb8a83b630c2a410,
         type: 3}
@@ -4670,11 +4680,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2536337598718171173, guid: 23f9979d27c9d634bb8a83b630c2a410,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -1.2849989
-      objectReference: {fileID: 0}
     - target: {fileID: 2874521119517586204, guid: 23f9979d27c9d634bb8a83b630c2a410,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -4684,6 +4689,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2958825614499922953, guid: 23f9979d27c9d634bb8a83b630c2a410,
+        type: 3}
+      propertyPath: m_Value
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3291734711172329188, guid: 23f9979d27c9d634bb8a83b630c2a410,
         type: 3}
@@ -4735,11 +4745,6 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -32.875
       objectReference: {fileID: 0}
-    - target: {fileID: 4433374064917181402, guid: 23f9979d27c9d634bb8a83b630c2a410,
-        type: 3}
-      propertyPath: m_Value
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4774063182536072407, guid: 23f9979d27c9d634bb8a83b630c2a410,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -4782,23 +4787,33 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5212428144223410252, guid: 23f9979d27c9d634bb8a83b630c2a410,
         type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5212428144223410252, guid: 23f9979d27c9d634bb8a83b630c2a410,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5212428144223410252, guid: 23f9979d27c9d634bb8a83b630c2a410,
+        type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 83.5
       objectReference: {fileID: 0}
     - target: {fileID: 5212428144223410252, guid: 23f9979d27c9d634bb8a83b630c2a410,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -223.09998
+      value: -194.45
+      objectReference: {fileID: 0}
+    - target: {fileID: 6242950607137118106, guid: 23f9979d27c9d634bb8a83b630c2a410,
+        type: 3}
+      propertyPath: m_Value
+      value: 0.7083333
       objectReference: {fileID: 0}
     - target: {fileID: 6347080455100644582, guid: 23f9979d27c9d634bb8a83b630c2a410,
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 6347080455100644582, guid: 23f9979d27c9d634bb8a83b630c2a410,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6877674431308450237, guid: 23f9979d27c9d634bb8a83b630c2a410,
         type: 3}
@@ -4898,23 +4913,18 @@ PrefabInstance:
     - target: {fileID: 9172137306504893645, guid: 23f9979d27c9d634bb8a83b630c2a410,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: -77.51001
-      objectReference: {fileID: 0}
-    - target: {fileID: 9172137306504893645, guid: 23f9979d27c9d634bb8a83b630c2a410,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0.000030517578
+      value: -4.7200165
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 23f9979d27c9d634bb8a83b630c2a410, type: 3}
---- !u!224 &93549601163255951 stripped
+--- !u!224 &237621289482062641 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2350363257531963286, guid: 23f9979d27c9d634bb8a83b630c2a410,
     type: 3}
-  m_PrefabInstance: {fileID: 2437133716068611865}
+  m_PrefabInstance: {fileID: 2581153727879879847}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4672609857944131016
 PrefabInstance:
@@ -4932,62 +4942,62 @@ PrefabInstance:
     - target: {fileID: 1649386794918274165, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1649386794918274165, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1649386794918274165, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 150.00037
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1649386794918274165, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -14
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4063364042874013388, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4063364042874013388, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4063364042874013388, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 132.00037
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4063364042874013388, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -14
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4602181743040084170, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4602181743040084170, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4602181743040084170, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 168.00037
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4602181743040084170, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -14
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5348416955406788855, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
@@ -5117,22 +5127,22 @@ PrefabInstance:
     - target: {fileID: 8337292939638123737, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8337292939638123737, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8337292939638123737, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 186.00037
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8337292939638123737, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -14
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5140,7 +5150,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5348416955406788855, guid: bfaf4d4292cf94e6185261442422a160,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 93549601163255951}
+      addedObject: {fileID: 237621289482062641}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bfaf4d4292cf94e6185261442422a160, type: 3}
 --- !u!224 &783930945065270591 stripped
