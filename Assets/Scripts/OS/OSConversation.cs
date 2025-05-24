@@ -44,7 +44,7 @@ public class OSConversation : MonoBehaviour, IPointerEnterHandler, IPointerExitH
             recipient = conversation.conversationMember1;
         }
         transform.Find("ContactInfo").Find("Name").GetComponent<TextMeshProUGUI>().text = recipient.username;
-        transform.Find("ContactInfo").Find("ProfilePic").Find("ImageMask").Find("Image").GetComponent<Image>().sprite = recipient.image;
+        // transform.Find("ContactInfo").Find("ProfilePic").Find("ImageMask").Find("Image").GetComponent<Image>().sprite = recipient.image;
     }
 
     public void OpenContactProfile()
