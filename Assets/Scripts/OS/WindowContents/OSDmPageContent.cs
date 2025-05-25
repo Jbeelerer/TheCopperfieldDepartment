@@ -39,7 +39,7 @@ public class OSDmPageContent : MonoBehaviour
     {
         popupManager = GameObject.Find("PopupMessage").GetComponent<OSPopupManager>();
 
-        ChangeInfoBar("Login Page");
+        ChangeInfoBar("Login Page", hidden: true);
 
         usernameField.text = currentUser.username;
         if (passwordFound)
@@ -73,7 +73,7 @@ public class OSDmPageContent : MonoBehaviour
 
     public void ShowConversationsPage()
     {
-        ChangeInfoBar(currentUser.username + "'s DMs");
+        ChangeInfoBar("Messages");
 
         conversationsPage.transform.SetAsLastSibling();
         conversationsPage.GetComponent<ScrollRect>().verticalNormalizedPosition = 1;
@@ -105,8 +105,12 @@ public class OSDmPageContent : MonoBehaviour
         dmPage.transform.SetAsLastSibling();
     }
 
-    private void ChangeInfoBar(string text, UnityAction backButtonFunc = null)
+    private void ChangeInfoBar(string text, UnityAction backButtonFunc = null, bool hidden = false)
     {
+        infoBar.gameObject.SetActive(!hidden);
+        if (hidden) return;
+        Debug.Log("Test");
+
         infoBar.Find("Title").GetComponent<TextMeshProUGUI>().text = text;
         infoBar.Find("BackButton").gameObject.SetActive(backButtonFunc != null);
         if (backButtonFunc != null)
