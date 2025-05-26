@@ -1,13 +1,9 @@
 using SaveSystem;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Device;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.ProBuilder.MeshOperations;
 using UnityEngine.UI;
 
 public enum OSAppType
@@ -19,7 +15,8 @@ public enum OSAppType
     PEOPLE_LIST,
     WARNING,
     START_SETTINGS,
-    IMAGE
+    IMAGE,
+    DM_PAGE
 }
 
 public enum OSInvestigationState
@@ -45,6 +42,8 @@ public class ComputerControls : MonoBehaviour, ISavable
     public Sprite cursorNormal;
     public Sprite cursorClickable;
     public Sprite cursorForbidden;
+    public Sprite cursorInspect;
+    public Sprite cursorInspectExclamation;
     public OSInvestigationState investigationState = OSInvestigationState.NONE;
     public TextMeshProUGUI computerTime;
     public TextMeshProUGUI computerDate;
@@ -63,6 +62,7 @@ public class ComputerControls : MonoBehaviour, ISavable
     private GameManager gm;
     private bool cursorActive = false;
     private GameObject eventSystem;
+    private Vector2 smallWindowSize = new Vector2(400, 300);
 
     [SerializeField] private RectTransform halfScreenBlockadeLeft;
     [SerializeField] private RectTransform halfScreenBlockadeRight;
@@ -164,8 +164,8 @@ public class ComputerControls : MonoBehaviour, ISavable
                     windowToBeDeleted = window;
                 }
 
-                // Put window into halfscreen mode if dragged to border of screen
-                if (window.isMoving)
+                // Put window into halfscreen mode if dragged to border of screen (only if it is allowed to be in long window mode)
+                if (window.isMoving && System.Array.IndexOf(window.resizeButtons, window.buttonLong) > -1)
                 {
                     if (PointInsideRect(cursor.position, halfScreenBlockadeLeft))
                     {
@@ -208,6 +208,16 @@ public class ComputerControls : MonoBehaviour, ISavable
         if (hitObject && hitObject.GetComponent<Button>() && !hitObject.GetComponent<Button>().isActiveAndEnabled)
         {
             cursor.GetComponent<Image>().sprite = cursorForbidden;
+        }
+
+        // Change cursor sprite if hovering over image/inspection area
+        if (hitObject && hitObject.GetComponent<OSImageInspectionContainer>())
+        {
+            cursor.GetComponent<Image>().sprite = cursorInspect;
+        }
+        if (hitObject && hitObject.GetComponent<OSImageInspectionArea>())
+        {
+            cursor.GetComponent<Image>().sprite = cursorInspectExclamation;
         }
     }
 
@@ -268,14 +278,14 @@ public class ComputerControls : MonoBehaviour, ISavable
         switch (currentFocusedWindow.appType)
         {
             case OSAppType.SOCIAL:
-                if (pointySystem.evilIntroCompleted)
+                /*if (pointySystem.evilIntroCompleted)
                 {
                     pointySystem.StartTutorial("EvilSocialMedia", toggledAutomatically);
-                }
-                else
-                {
+                }*/
+                //else
+                //{
                     pointySystem.StartTutorial("SocialMedia", toggledAutomatically);
-                }
+                //}
                 break;
             case OSAppType.GOV:
                 pointySystem.StartTutorial("GovApp", toggledAutomatically);
@@ -285,6 +295,12 @@ public class ComputerControls : MonoBehaviour, ISavable
                 break;
             case OSAppType.START_SETTINGS:
                 pointySystem.StartTutorial("StartSettings", toggledAutomatically);
+                break;
+            case OSAppType.IMAGE:
+                if (gm.GetDay() == 4)
+                {
+                    pointySystem.StartTutorial("InspectionTutorial", toggledAutomatically);
+                }
                 break;
             default:
                 pointySystem.StartTutorial("Default", toggledAutomatically);
@@ -551,14 +567,13 @@ public class ComputerControls : MonoBehaviour, ISavable
         windows.Clear();
     }
 
-    public void OpenWindow(OSAppType type, string warningMessage = "Warning message", System.Action successFunc = null, bool hasCancelBtn = true, Sprite viewerImage = null)
+    public void OpenWindow(OSAppType type, string warningMessage = "Warning message", System.Action successFunc = null, bool hasCancelBtn = true, SocialMediaPost imagePost = null, SocialMediaUser dmUser = null, bool dmUserPasswordFound = false)
     {
-        // PLay opening sound
         audioManager.PlayAudio(windowOpenSound);
-        // Check if the window is already open
+        // Check if the window is already open (if multiple instances of the same type are not allowed)
         foreach (OSWindow window in windows)
         {
-            if (window.appType == type)
+            if (window.appType == type && !window.multipleInstancesAllowed)
             {
                 // Reveal window and set back to screen middle if it exists but isn't active
                 if (!window.gameObject.activeInHierarchy)
@@ -568,11 +583,6 @@ public class ComputerControls : MonoBehaviour, ISavable
                     window.associatedTab.gameObject.SetActive(true);
                 }
                 BringWindowToFront(window);
-                // Update to new image if its the image viewer
-                if (window.appType == OSAppType.IMAGE)
-                {
-                    window.content.GetComponent<OSBigImageContent>().SetImage(viewerImage);
-                }
                 return;
             }
         }
@@ -582,14 +592,18 @@ public class ComputerControls : MonoBehaviour, ISavable
         newWindow.GetComponent<OSWindow>().warningMessage = warningMessage;
         newWindow.GetComponent<OSWindow>().warningSuccessFunc = successFunc;
         newWindow.GetComponent<OSWindow>().hasCancelBtn = hasCancelBtn;
-        newWindow.GetComponent<OSWindow>().viewerImage = viewerImage;
+        newWindow.GetComponent<OSWindow>().imagePost = imagePost;
+        newWindow.GetComponent<OSWindow>().dmUser = dmUser;
+        newWindow.GetComponent<OSWindow>().dmUserPasswordFound = dmUserPasswordFound;
         BringWindowToFront(newWindow.GetComponent<OSWindow>());
         // Don't add to open windows list if its a temporary window like a warning
         if (newWindow.GetComponent<OSWindow>().appType != OSAppType.WARNING && newWindow.GetComponent<OSWindow>().appType != OSAppType.START_SETTINGS)
             windows.Add(newWindow.GetComponent<OSWindow>());
-        // Make warning window smaller than normal windows
+        // Resize custom sized small windows
         if (newWindow.GetComponent<OSWindow>().appType == OSAppType.WARNING)
             newWindow.GetComponent<OSWindow>().rectTrans.sizeDelta = new Vector2(300, 200);
+        if (newWindow.GetComponent<OSWindow>().appType == OSAppType.DM_PAGE)
+            newWindow.GetComponent<OSWindow>().rectTrans.sizeDelta = new Vector2(200, 300);
         // Create tab
         GameObject newTab = Instantiate(tabPrefab, transform.position, transform.rotation, tabContainer.transform);
         newTab.GetComponent<OSTab>().appType = type;
@@ -663,7 +677,8 @@ public class ComputerControls : MonoBehaviour, ISavable
         }
 
         // Open Pointy Tutorial if not already seen
-        if (window.GetComponent<OSWindow>().appType != OSAppType.WARNING && window.GetComponent<OSWindow>().appType != OSAppType.START_SETTINGS)
+        // TODO: making exceptions like with the dm page here is pretty bad rn, other solution?
+        if (window.GetComponent<OSWindow>().appType != OSAppType.WARNING && window.GetComponent<OSWindow>().appType != OSAppType.START_SETTINGS && window.GetComponent<OSWindow>().appType != OSAppType.DM_PAGE)
             TogglePointy(true);
     }
 
@@ -684,7 +699,7 @@ public class ComputerControls : MonoBehaviour, ISavable
         RemoveLeftRightWindow(window);
         window.rectTrans.anchorMin = new Vector2(0.5f, 0.5f);
         window.rectTrans.anchorMax = new Vector2(0.5f, 0.5f);
-        window.rectTrans.sizeDelta = new Vector2(400, 300);
+        window.rectTrans.sizeDelta = smallWindowSize;
         window.currWindowSize = WindowSize.SMALL;
         HideWindowSizeButton(window, window.buttonSmall);
     }

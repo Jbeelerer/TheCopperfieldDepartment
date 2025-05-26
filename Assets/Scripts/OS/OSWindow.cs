@@ -34,7 +34,10 @@ public class OSWindow : MonoBehaviour
     [HideInInspector] public string warningMessage = "";
     [HideInInspector] public System.Action warningSuccessFunc = null;
     [HideInInspector] public bool hasCancelBtn = true;
-    [HideInInspector] public Sprite viewerImage = null;
+    [HideInInspector] public SocialMediaPost imagePost = null;
+    [HideInInspector] public SocialMediaUser dmUser = null;
+    [HideInInspector] public bool dmUserPasswordFound = false;
+    [HideInInspector] public bool multipleInstancesAllowed = false;
 
     [SerializeField] private Sprite customSocialMediaWindow;
     [SerializeField] private Sprite customSocialMediaTopBar;
@@ -46,6 +49,7 @@ public class OSWindow : MonoBehaviour
     [SerializeField] private GameObject warningContent;
     [SerializeField] private GameObject startSettingsContent;
     [SerializeField] private GameObject bigImageContent;
+    [SerializeField] private GameObject dmPageContent;
 
     private void Awake()
     {
@@ -114,9 +118,17 @@ public class OSWindow : MonoBehaviour
         else if (appType == OSAppType.IMAGE)
         {
             content = Instantiate(bigImageContent, transform.Find("Content"));
-            content.GetComponent<OSBigImageContent>().SetImage(viewerImage);
+            content.GetComponent<OSBigImageContent>().Setup(imagePost);
             resizeButtons = new RectTransform[] { buttonSmall, buttonLong, buttonBig };
+            multipleInstancesAllowed = true;
             topBarTextMesh.text = "Image Viewer";
+        }
+        else if (appType == OSAppType.DM_PAGE)
+        {
+            content = Instantiate(dmPageContent, transform.Find("Content"));
+            content.GetComponent<OSDmPageContent>().InitializeLoginPage(dmUser, dmUserPasswordFound);
+            multipleInstancesAllowed = true;
+            topBarTextMesh.text = "Direct Messages";
         }
 
         // Activate allowed resize buttons (except for buttonSmall, it will be deactivated either way)
