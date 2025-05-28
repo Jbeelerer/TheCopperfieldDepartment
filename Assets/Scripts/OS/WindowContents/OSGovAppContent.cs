@@ -23,8 +23,9 @@ public class OSGovAppContent : MonoBehaviour, IPointerDownHandler, IPointerUpHan
         canvasCam = GameObject.Find("computerTextureCam").GetComponent<Camera>();
         computerControls = GetComponentInParent<ComputerControls>();
 
+        print(computerControls);
         mails = computerControls.GetMails();
-
+        print(mails.Length);
         foreach (Mail m in mails)
         {
             GameObject newMail = Instantiate(mailPrefab, mailContainer.transform);

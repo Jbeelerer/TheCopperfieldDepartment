@@ -88,6 +88,7 @@ public class ComputerControls : MonoBehaviour, ISavable
     void Awake()
     {
         mouseSensitivityModifier = UnityEngine.Screen.height / 40;
+        gm = GameManager.instance;
     }
 
     // Start is called before the first frame update
@@ -105,7 +106,6 @@ public class ComputerControls : MonoBehaviour, ISavable
 
         cursor.anchoredPosition = new Vector2(-1000, -1000);
 
-        gm = GameManager.instance;
         audioManager = AudioManager.instance;
 
         gm.OnNewDay.AddListener(CloseAllWindows);
@@ -284,7 +284,7 @@ public class ComputerControls : MonoBehaviour, ISavable
                 }*/
                 //else
                 //{
-                    pointySystem.StartTutorial("SocialMedia", toggledAutomatically);
+                pointySystem.StartTutorial("SocialMedia", toggledAutomatically);
                 //}
                 break;
             case OSAppType.GOV:

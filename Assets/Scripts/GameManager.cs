@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour, ISavable
     public UnityEvent OnNewSegment;
     private Case currentCase;
     [SerializeField] private int devCase;
-    private Mail[] mails;
+    [SerializeField] private Mail[] mails;
     private Connections[] connections;
     [SerializeField] private SocialMediaPost[] posts;
     private SocialMediaUser[] users;
