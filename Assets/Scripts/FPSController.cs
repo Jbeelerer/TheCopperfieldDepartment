@@ -623,8 +623,8 @@ public class FPSController : MonoBehaviour
                                     if (requirementMet)
                                     {
                                         inputOverlay.SetIcon("");
-                                        gm.InspectObject(hit.collider.transform, new Vector3(1.2f, 0, 0));
-                                        // gm.SetGameState(GameState.Inspecting);
+                                        gm.InspectObject(hit.collider.transform, new Vector3(0, 0, 1.2f));
+                                        // gm.SetGameState(GameState.Inspecting);  
                                     }
                                     break;
                                 case "Archive":
@@ -635,8 +635,8 @@ public class FPSController : MonoBehaviour
                                         //  gm.InspectObject(hit.collider.transform.GetChild(0), new Vector3(0, 2f, 2f));
                                         // gm.InspectObject(currentSelectedObject.transform.GetChild(0), new Vector3(0, 2f, 3f), GameState.InArchive);
                                         gm.InspectObject(currentSelectedObject.transform, new Vector3(0, 1f, 2f), GameState.InArchive);
-
                                         archives.open();
+                                        ArchiveManager.Instance.SetCurrentArchive(archives);
                                         // gm.SetGameState(GameState.Inspecting);  
                                     }
                                     break;

@@ -456,6 +456,7 @@ public class PinboardElement : MonoBehaviour
 
     public void InitialiseElement()
     {
+        print(elementType);
         switch (elementType)
         {
             case PinboardElementType.Person:
@@ -484,7 +485,8 @@ public class PinboardElement : MonoBehaviour
                 break;
             case PinboardElementType.ArchiveDataWithImage:
                 postItMesh = Instantiate(archiveDataPinboardElementWithImage, transform);
-                image = transform.GetChild(0).gameObject;
+                image = postItMesh.transform.GetChild(0).gameObject;
+                print("image: " + image);
                 image.transform.Rotate(new Vector3(0, 0, UnityEngine.Random.Range(-2, 2)));
                 postItMesh = postItMesh.transform.GetChild(0).gameObject;
                 break;
@@ -527,6 +529,7 @@ public class PinboardElement : MonoBehaviour
 
     public void SetContent(ScriptableObject o)
     {
+        print(o);
         TextMeshProUGUI textElement = gameObject.GetComponentInChildren<TextMeshProUGUI>();
         switch (o)
         {
@@ -565,14 +568,17 @@ public class PinboardElement : MonoBehaviour
                 break;
 
             case ArchiveData:
+                print("ArchiveData: " + o);
                 ArchiveData archive = ConversionUtility.Convert<ArchiveData>(o);
                 elementType = archive.type == ArchiveType.Image ? archive.type == ArchiveType.Text ? PinboardElementType.ArchiveDataText : PinboardElementType.ArchiveDataWithImage : PinboardElementType.ArchiveData;
                 InitialiseElement();
                 textElement.text = archive.archivename;
                 elementType = archive.image == null ? PinboardElementType.ArchiveData : PinboardElementType.ArchiveDataWithImage;
                 textElement.text = archive.contentShort;
-                if (elementType == PinboardElementType.SocialMediaPostWithImage)
+                print("ArchiveData: " + elementType + " " + archive.image.texture);
+                if (elementType == PinboardElementType.ArchiveDataWithImage)
                 {
+                    print("ArchiveData: " + image + "  " + elementType + " " + archive.image.texture);
                     image.GetComponent<Renderer>().material.SetTexture("_Base", archive.image.texture);
                 }
                 break;

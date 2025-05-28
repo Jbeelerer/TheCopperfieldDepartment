@@ -52,7 +52,7 @@ public class Calendar : MonoBehaviour
             day.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = (i).ToString();
             if (gm.GetFurthestDay() < i)
             {
-                day.transform.GetComponent<UnityEngine.UI.Button>().interactable = false;
+                // day.transform.GetComponent<UnityEngine.UI.Button>().interactable = false;
             }
             if (gm.GetDay() == i)
             {

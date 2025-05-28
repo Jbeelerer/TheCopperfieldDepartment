@@ -25,6 +25,15 @@ public class Archives : MonoBehaviour
     private int currentFile = 0;
     private bool wasInArchvie = false;
     // Start is called before the first frame update
+    public List<ArchiveFile> GetArchiveFiles()
+    {
+        return archiveFiles;
+    }
+
+    public void SetCurrentSelection(ArchiveFile file)
+    {
+        currentSelection = file;
+    }
     void Start()
     {
         float i = 0;
@@ -87,75 +96,32 @@ public class Archives : MonoBehaviour
         {
             currentSelection.deselect();
             currentSelection.close();
+            anim.SetBool("fileOpen", false);
             currentSelection = null;
         }
         fileOpen = false;
     }
 
     // Update is called once per frame
-    void Update()
+    public void OpenArchiveFile()
     {
-        //shoot raycast from mouse
-        if (gm != null && gm.GetGameState() == GameState.InArchive)
-        {
-            // scroll through files
-            //on any key down
-            if (Input.anyKeyDown)
-            {
-                if (Input.GetAxis("Vertical") > 0)
-                {
-                    currentFile = currentFile + 1 >= archiveFiles.Count ? 0 : currentFile + 1;
-                }
-                if (Input.GetAxis("Vertical") < 0)
-                {
-                    currentFile = currentFile - 1 < 0 ? archiveFiles.Count - 1 : currentFile - 1;
-                }
-                isScrolling = Input.GetAxis("Vertical") != 0;
-
-                if (isScrolling)
-                {
-                    isScrolling = false;
-                    if (currentSelection != null)
-                        currentSelection.deselect();
-                    currentSelection = archiveFiles[currentFile].gameObject.GetComponent<ArchiveFile>();
-                    // gm.LookAt(currentSelection.transform);
-                    currentSelection.select();
-                }
-                if (Input.GetButtonDown("Submit"))
-                {
-                    SelectFile(archiveFiles[currentFile]);
-                }
-            }
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
-            {
-                if (Input.GetMouseButtonDown(0) && hit.collider.gameObject.name == "PinFile")
-                {
-                    if (currentSelection != null)
-                    {
-                        pinboard.AddPin(currentSelection.GetData());
-                        //close(); 
-                        gm.SetGameState(GameState.Playing);
-
-                    }
-                }
-                if (hit.collider.gameObject.tag == "ArchiveFile" && !fileOpen)
-                {
-                    if (currentSelection != hit.collider.gameObject.GetComponent<ArchiveFile>() && !isScrolling)
-                    {
-                        SelectFile(hit.collider.gameObject.GetComponent<ArchiveFile>());
-                    }
-                }
-            }
-            if (Input.GetMouseButtonDown(0) && currentSelection != null && !fileOpen)
-            {
-                currentSelection.openFile();
-                fileOpen = true;
-            }
-
-        }
-
+        anim.SetBool("fileOpen", true);
+        currentSelection.openFile();
+        fileOpen = true;
+    }
+    public void CloseArchiveFile()
+    {
+        anim.SetBool("fileOpen", false);
+        currentSelection.closeFile(transform);
+        fileOpen = false;
+    }
+    // delayed so that the fps controller doesn't open the archive again
+    public IEnumerator DelayedClosArchive()
+    {
+        yield return new WaitForSeconds(0.5f);
+        close();
+        gm.SetGameState(GameState.Playing);
+        currentSelection = null;
     }
     public void SelectFile(ArchiveFile newFile)
     {

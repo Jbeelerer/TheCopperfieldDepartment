@@ -11,15 +11,17 @@ public class ArchiveFile : MonoBehaviour
     private ArchiveData data;
     [SerializeField] private Renderer fileImage;
     [SerializeField] private TMP_Text fileTitle;
+    [SerializeField] private TMP_Text fileMapTitle;
     [SerializeField] private TMP_Text fileText;
     private bool isPinned = false;
 
     [SerializeField] private GameObject stickout;
 
-    private float stickoutStart = 0.45f;
+    private float stickoutStart = 0.375f;
     public void SetStickoutPosition(float x)
     {
-        stickout.GetComponent<RectTransform>().localPosition = new Vector3(stickoutStart - (0.15f * (x / 2)), 0, -0.1f);
+        print("Setting stickout position to " + x);
+        stickout.GetComponent<RectTransform>().localPosition = new Vector3(stickoutStart - (0.25f * (x / 2)), 0, -0.1f);
     }
     public ArchiveData GetData()
     {
@@ -41,7 +43,10 @@ public class ArchiveFile : MonoBehaviour
     }
     public void instantiateFile(ArchiveData d)
     {
+        gm = FindObjectOfType<GameManager>();
+        anim = GetComponent<Animator>();
         data = d;
+        fileMapTitle.text = d.archivename;
         if (d.type != ArchiveType.Text)
         {
             fileImage.material.SetTexture("_Base", d.image.texture);
@@ -50,6 +55,23 @@ public class ArchiveFile : MonoBehaviour
         {
             fileTitle.text = d.archivename;
             fileText.text = d.content;
+        }
+        UpdateVisibility();
+        gm.OnNewDay.AddListener(UpdateVisibility);
+    }
+    public void UpdateVisibility()
+    {
+        if (gm.GetCurrentCase() == null)
+        {
+            return;
+        }
+        if (gm.GetCurrentCase().id >= data.startDay && gm.GetCurrentCase().id <= data.endDay)
+        {
+            gameObject.SetActive(true);
+        }
+        else
+        {
+            gameObject.SetActive(false);
         }
     }
     public void select()
@@ -68,6 +90,12 @@ public class ArchiveFile : MonoBehaviour
     {
         anim.SetBool("open", true);
         gm.InspectObject(transform, new Vector3(0, 1, 1f), GameState.InArchive);
+        //   data = d;     
+    }
+    public void closeFile(Transform archive)
+    {
+        anim.SetBool("open", false);
+        gm.InspectObject(archive, new Vector3(0, 1f, 2f), GameState.InArchive);
         //   data = d;     
     }
 }

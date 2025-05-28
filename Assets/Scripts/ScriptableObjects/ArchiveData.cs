@@ -12,6 +12,8 @@ public enum ArchiveType
 public class ArchiveData : ScriptableObject, IPinnable
 {
     public int id;
+    public int startDay;
+    public int endDay;
     public ArchiveType type;
     public string archivename;
     public Sprite image;
