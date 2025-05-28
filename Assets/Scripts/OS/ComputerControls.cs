@@ -88,7 +88,6 @@ public class ComputerControls : MonoBehaviour, ISavable
     void Awake()
     {
         mouseSensitivityModifier = UnityEngine.Screen.height / 40;
-        gm = GameManager.instance;
     }
 
     // Start is called before the first frame update
@@ -108,6 +107,8 @@ public class ComputerControls : MonoBehaviour, ISavable
 
         audioManager = AudioManager.instance;
 
+        gm = GameManager.instance;
+        print(gm);
         gm.OnNewDay.AddListener(CloseAllWindows);
 
         // Run stuff on first day only
@@ -297,7 +298,7 @@ public class ComputerControls : MonoBehaviour, ISavable
                 pointySystem.StartTutorial("StartSettings", toggledAutomatically);
                 break;
             case OSAppType.IMAGE:
-                if (gm.GetDay() == 4)
+                if (gm.GetDay() == 6)
                 {
                     pointySystem.StartTutorial("InspectionTutorial", toggledAutomatically);
                 }
