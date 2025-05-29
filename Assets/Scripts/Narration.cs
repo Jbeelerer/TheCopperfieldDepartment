@@ -449,6 +449,7 @@ public class Narration : MonoBehaviour
             FindObjectOfType<Radio>().PauseRadio();
             gm.NextDaySequence();
         }
+        audioSource.Pause();
         currentCall = null;
     }
 
