@@ -19,7 +19,7 @@ public class UIActions : MonoBehaviour
     {
         loadingScreen.SetActive(true);
         GameManager.instance.ResetGame();
-        SceneManager.LoadScene("MainScene");
+        SceneManager.LoadScene("NewMainScene");
     }
     public void QuitGame()
     {

@@ -110,8 +110,10 @@ public class ArchiveManager : MonoBehaviour
                 }
                 if (Input.GetButtonDown("Submit"))
                 {
+                    currentArchive.OpenArchiveFile();
                     //anim.SetBool("fileOpen", true);
                     SelectFile(currentArchive.GetArchiveFiles()[currentFile]);
+
                 }
                 currentArchive.SetCurrentSelection(currentSelection);
             }

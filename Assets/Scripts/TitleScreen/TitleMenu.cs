@@ -31,7 +31,7 @@ public class TitleMenu : MonoBehaviour
     // Used in animation event, after start animation has played
     public void StartGame()
     {
-        SceneManager.LoadScene("MainScene");
+        SceneManager.LoadScene("NewMainScene");
     }
 
     public void QuitGame()

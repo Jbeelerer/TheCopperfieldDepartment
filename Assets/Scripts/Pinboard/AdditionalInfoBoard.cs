@@ -19,6 +19,7 @@ public class AdditionalInfoBoard : MonoBehaviour
     private Transform personParent;
 
     private Transform contentParent;
+    [SerializeField] private Renderer bigPicture;
 
     private List<string> newInfo = new List<string>();
 
@@ -27,7 +28,6 @@ public class AdditionalInfoBoard : MonoBehaviour
     {
         contentParent = transform.Find("Content");
         personParent = transform.Find("Person");
-
         // image = personParent.Find("PB").GetComponent<UnityEngine.UI.Image>();
         title = personParent.Find("Titel").GetComponent<TextMeshProUGUI>();
         additionalInfos = personParent.Find("AdditionalInfos/AdditionalInfosText").GetComponent<TextMeshProUGUI>();
@@ -81,6 +81,7 @@ public class AdditionalInfoBoard : MonoBehaviour
     public void SetContent(ScriptableObject o)
     {
         contentParent.gameObject.SetActive(!(o is Person || o is SocialMediaUser));
+        bigPicture.gameObject.SetActive(o is ArchiveData && ((ArchiveData)o).type == ArchiveType.Image);
         personParent.gameObject.SetActive(o is Person || o is SocialMediaUser);
         additionalInfos.text = "";
         transform.Find("Image").gameObject.SetActive(true);
@@ -119,7 +120,11 @@ public class AdditionalInfoBoard : MonoBehaviour
                 break;
             case ArchiveData:
                 ArchiveData a = (ArchiveData)o;
-                if (a.image != null)
+                if (a.type == ArchiveType.Image && a.image != null)
+                {
+                    bigPicture.material.SetTexture("_Base", a.image.texture);
+                }
+                else if (a.image != null)
                 {
                     pbMaterial.material.SetTexture("_Base", a.image.texture);
                 }

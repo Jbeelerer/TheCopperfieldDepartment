@@ -47,7 +47,7 @@ public class WerkschauReseting : MonoBehaviour
                 display.SetActive(false);
                 loadingScreen.SetActive(true);
                 GameManager.instance.ResetGame();
-                SceneManager.LoadScene("MainScene");
+                SceneManager.LoadScene("NewMainScene");
             }
         }
 

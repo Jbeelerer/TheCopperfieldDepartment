@@ -135,7 +135,7 @@ public class GameManager : MonoBehaviour, ISavable
     }
     public void SetGameState(GameState state)
     {
-        PinboardBlocked = day == 1;
+        // PinboardBlocked = day == 1;
         prevGameState = gameState;
         BeforeStateChanged?.Invoke();
         if (state == GameState.Playing)
@@ -452,7 +452,7 @@ public class GameManager : MonoBehaviour, ISavable
         daySegment = 0;
         SortCompetingEmployees();
         OnNewDay?.Invoke();
-        PinboardBlocked = day == 1;
+        PinboardBlocked = false;//day == 1;
     }
 
     public void SortCompetingEmployees()

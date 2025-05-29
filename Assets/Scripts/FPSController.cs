@@ -406,7 +406,7 @@ public class FPSController : MonoBehaviour
             bool requirementMet = true;
             if (narration.HasRequirement())
             {
-                if (nameOfThingLookedAt == "PinboardModel")
+                if (nameOfThingLookedAt == "PinboardModel" || nameOfThingLookedAt == "Block")
                 {
                     narration.CheckIfRequirementMet(Requirement.WalkToBoard);
                 }
