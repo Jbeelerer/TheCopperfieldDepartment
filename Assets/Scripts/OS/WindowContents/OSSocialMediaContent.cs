@@ -52,7 +52,7 @@ public class OSSocialMediaContent : MonoBehaviour
     }
     private IEnumerator InstanciateContent()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForEndOfFrame();
         foreach (SocialMediaPost s in computerControls.GetPosts())
         {
             InstanciatePost(s);

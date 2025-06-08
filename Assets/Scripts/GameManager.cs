@@ -54,6 +54,8 @@ public class GameManager : MonoBehaviour, ISavable
     private DMConversation[] conversations;
     private ArchiveData[] archiveData;
 
+    [SerializeField] private string[] dayOrder;
+
     private Vector3 startPosition;
     private Quaternion startRotation;
     [SerializeField] private GameObject newDayPrefab;
@@ -206,7 +208,7 @@ public class GameManager : MonoBehaviour, ISavable
 
     public void SaveData(SaveData data)
     {
-        if (Resources.LoadAll<Case>("Case" + furthestDay).Count() == 0)
+        if (Resources.LoadAll<Case>("Case" + dayOrder[furthestDay]).Count() == 0)
         {
             //  return;
         }
@@ -376,7 +378,7 @@ public class GameManager : MonoBehaviour, ISavable
         {
             day = devCase;
         }
-        if (Resources.LoadAll<Case>("Case" + day).Count() == 0)
+        if (Resources.LoadAll<Case>("Case" + dayOrder[day]).Count() == 0)
         {
             // TODO: implement endgame  
             SceneManager.LoadScene("TheEnd");
@@ -384,10 +386,10 @@ public class GameManager : MonoBehaviour, ISavable
             //  return; 
             // todo: Only temp solution...
         }
-        currentCase = Resources.LoadAll<Case>("Case" + day)[0];
+        currentCase = Resources.LoadAll<Case>("Case" + dayOrder[day])[0];
         // load all connections
-        connections = Resources.LoadAll<Connections>("Case" + currentCase.id + "/Connections");
-        Mail[] tempMails = Resources.LoadAll<Mail>("Case" + currentCase.id + "/Mails");
+        connections = Resources.LoadAll<Connections>("Case" + dayOrder[currentCase.id] + "/Connections");
+        Mail[] tempMails = Resources.LoadAll<Mail>("Case" + dayOrder[currentCase.id] + "/Mails");
         if (feedBackMailContent != "")
         {
             Mail feedBackMail = Resources.Load<Mail>("FeedBackTemplate");
@@ -399,8 +401,8 @@ public class GameManager : MonoBehaviour, ISavable
             mails = tempMails;
         }
         // mails[tempMails.Count()] = feedBackMail;        
-        posts = Resources.LoadAll<SocialMediaPost>("Case" + currentCase.id + "/Posts");
-        conversations = Resources.LoadAll<DMConversation>("Case" + currentCase.id + "/Conversations");
+        posts = Resources.LoadAll<SocialMediaPost>("Case" + dayOrder[currentCase.id] + "/Posts");
+        conversations = Resources.LoadAll<DMConversation>("Case" + dayOrder[currentCase.id] + "/Conversations");
         return false;
     }
     public void LoadNewDay(int day)
