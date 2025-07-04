@@ -78,7 +78,18 @@ public class ComputerControls : MonoBehaviour, ISavable
 
     public void SetMouseSensitivity(float sensitivity)
     {
-        mouseSensitivity = sensitivity;
+        if (sensitivity > 0)
+        {
+            mouseSensitivity = sensitivity;
+        } 
+        else if (sensitivity < 0)
+        {
+            mouseSensitivity = 1f + sensitivity * 0.1f;
+        } 
+        else
+        {
+            mouseSensitivity = 1;
+        }
     }
     public float GetMouseSensitivity()
     {
@@ -87,7 +98,7 @@ public class ComputerControls : MonoBehaviour, ISavable
 
     void Awake()
     {
-        mouseSensitivityModifier = UnityEngine.Screen.height / 40;
+        mouseSensitivityModifier = UnityEngine.Screen.height / 120;
     }
 
     // Start is called before the first frame update
@@ -124,8 +135,8 @@ public class ComputerControls : MonoBehaviour, ISavable
         if (!cursorActive)
             return;
 
-        mouseSpeedX = (mouseSensitivity + mouseSensitivityModifier) * Input.GetAxis("Mouse X");
-        mouseSpeedY = (mouseSensitivity + mouseSensitivityModifier) * Input.GetAxis("Mouse Y");
+        mouseSpeedX = mouseSensitivity * mouseSensitivityModifier * Input.GetAxis("Mouse X");
+        mouseSpeedY = mouseSensitivity * mouseSensitivityModifier * Input.GetAxis("Mouse Y");
 
         // Move cursor
         MoveMouse();
