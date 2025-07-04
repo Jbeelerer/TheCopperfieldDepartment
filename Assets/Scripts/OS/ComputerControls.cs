@@ -2,6 +2,7 @@ using SaveSystem;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.ProBuilder.MeshOperations;
 using UnityEngine.UI;
@@ -75,6 +76,7 @@ public class ComputerControls : MonoBehaviour, ISavable
     [HideInInspector] public OSWindow currentFocusedWindow;
 
     public PinEvent OnUnpinned;
+    public UnityEvent<SocialMediaUser> OnUserPasswordFound;
 
     public void SetMouseSensitivity(float sensitivity)
     {

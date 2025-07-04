@@ -98,6 +98,7 @@ public class OSPointySystem : MonoBehaviour
         if (exposedPasswordUser && !socialMediaContent.GetUsersWithFoundPassword().Contains(exposedPasswordUser))
         {
             socialMediaContent.AddUserWithFoundPassword(exposedPasswordUser);
+            computerControls.OnUserPasswordFound?.Invoke(exposedPasswordUser);
             computerControls.OpenWindow(OSAppType.WARNING, $"Password saved!<br><br>You can now log into <b>{exposedPasswordUser.username}'s</b> account!", DisplayPasswordFoundMsg, false);
         }
 
