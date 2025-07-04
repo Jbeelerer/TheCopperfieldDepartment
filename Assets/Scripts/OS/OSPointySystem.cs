@@ -1,6 +1,7 @@
 using SaveSystem;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,6 +13,8 @@ public class PointyTutorialStep
     [TextArea] public string message;
     public bool pointAtPointy;
     public Vector2 spotlightSizeModifier;
+    public string specificParentName;
+    public int stepsToGetToSpecificParent;
 }
 
 public class OSPointySystem : MonoBehaviour
@@ -36,6 +39,7 @@ public class OSPointySystem : MonoBehaviour
     [SerializeField] private List<PointyTutorialStep> stepsGovApp = new List<PointyTutorialStep>();
     [SerializeField] private List<PointyTutorialStep> stepsPeopleList = new List<PointyTutorialStep>();
     [SerializeField] private List<PointyTutorialStep> stepsSocialMedia = new List<PointyTutorialStep>();
+    [SerializeField] private List<PointyTutorialStep> stepsSocialMediaProfiles = new List<PointyTutorialStep>();
     [SerializeField] private List<PointyTutorialStep> stepsEvilIntro = new List<PointyTutorialStep>();
     [SerializeField] private List<PointyTutorialStep> stepsEvilSocialMedia = new List<PointyTutorialStep>();
     [SerializeField] private List<PointyTutorialStep> stepsInspectionTutorial = new List<PointyTutorialStep>();
@@ -157,6 +161,9 @@ public class OSPointySystem : MonoBehaviour
             case "SocialMedia":
                 currentTutorial = stepsSocialMedia;
                 break;
+            case "SocialMediaProfiles":
+                currentTutorial = stepsSocialMediaProfiles;
+                break;
             case "PeopleList":
                 currentTutorial = stepsPeopleList;
                 break;
@@ -211,6 +218,7 @@ public class OSPointySystem : MonoBehaviour
 
         // Reset social media to home feed at start of its tutorial
         if (currentTutorial == stepsSocialMedia && currentStep == 1
+            || currentTutorial == stepsSocialMediaProfiles && currentStep == 1
             || currentTutorial == stepsEvilSocialMedia && currentStep == 4)
         {
             OSSocialMediaContent socialMediaContent = Object.FindObjectOfType<OSSocialMediaContent>();
@@ -225,6 +233,26 @@ public class OSPointySystem : MonoBehaviour
         PointyTutorialStep step = currentTutorial[currentStep];
         nextTargetObject = GameObject.Find(step.targetObjectName);
 
+        // Exceptions: Define more specific target object through a unique parent name if multiple with the same name exist at once
+        // TODO: Find cleaner solution for such exceptions in the future
+        if (!string.IsNullOrEmpty(currentTutorial[currentStep].specificParentName))
+        {
+            var objectsWithSameName = Resources.FindObjectsOfTypeAll<GameObject>().Where(obj => obj.name == step.targetObjectName);
+            foreach (var obj in objectsWithSameName)
+            {
+                Transform currentParent = obj.transform;
+                for (int i = 0; i < currentTutorial[currentStep].stepsToGetToSpecificParent; i++)
+                {
+                    currentParent = currentParent.parent;
+                }
+                if (currentParent.name == currentTutorial[currentStep].specificParentName)
+                {
+                    nextTargetObject = obj;
+                    break;
+                }
+            }
+        }
+        
         spotlight.GetComponent<RectTransform>().sizeDelta = originalSpotlightSize;
         // Resize spotlight if custom size is set
         if (step.spotlightSizeModifier != Vector2.zero)
@@ -284,6 +312,12 @@ public class OSPointySystem : MonoBehaviour
         pointyButton.GetComponent<Animator>().Play("buttonPointyQuestion");
         pointyAnim.Play("pinnyIdle");
 
+        // Show social media notif if PeopleList tutorial complete on day 1
+        if (currentTutorial == stepsPeopleList && GameManager.instance.GetDay() == 1 && !computerControls.CheckIfWindowIsOpen(OSAppType.SOCIAL))
+        {
+            computerControls.TriggerAppNotification(OSAppType.SOCIAL);
+        }
+
         nextTargetObject = null;
         currentTutorial = null;
         pointy.SetActive(false);
@@ -333,6 +367,11 @@ public class OSPointySystem : MonoBehaviour
 
         socialMediaContent.PinPost("content", inspectionPost.post);
         pinnedInspectionPosts.Add(inspectionPost);
+    }
+
+    public bool GetIsPointyActive()
+    {
+        return pointy.activeSelf;
     }
 
     public void LoadData(SaveData data)

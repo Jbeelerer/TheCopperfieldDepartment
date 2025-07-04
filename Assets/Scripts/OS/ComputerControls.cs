@@ -295,9 +295,14 @@ public class ComputerControls : MonoBehaviour, ISavable
                     pointySystem.StartTutorial("EvilSocialMedia", toggledAutomatically);
                 }*/
                 //else
-                //{
-                pointySystem.StartTutorial("SocialMedia", toggledAutomatically);
-                //}
+                if (gm.GetDay() == 2)
+                {
+                    pointySystem.StartTutorial("SocialMediaProfiles", toggledAutomatically);
+                }
+                else
+                {
+                    pointySystem.StartTutorial("SocialMedia", toggledAutomatically);
+                }
                 break;
             case OSAppType.GOV:
                 pointySystem.StartTutorial("GovApp", toggledAutomatically);
@@ -392,8 +397,39 @@ public class ComputerControls : MonoBehaviour, ISavable
         }
     }
 
+    public bool CheckIfWindowIsOpen(OSAppType appType)
+    {
+        foreach (OSWindow window in windows)
+        {
+            if (window.appType == appType && window.gameObject.activeInHierarchy)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void TriggerAppNotification(OSAppType appType)
+    {
+        // TODO: Handle this inside the OSApplication class instead
+        foreach (OSApplication app in apps)
+        {
+            if (app.appType == appType)
+            {
+                if (app.transform.Find("Notif"))
+                {
+                    app.transform.Find("Notif").gameObject.SetActive(true);
+                }
+                break;
+            }
+        }
+    }
+
     private void CheckAppMouseUp()
     {
+        if (pointySystem.GetIsPointyActive())
+            return;
+
         foreach (OSApplication app in apps)
         {
             GameObject hitObject = GetFirstHitObject();
@@ -577,6 +613,7 @@ public class ComputerControls : MonoBehaviour, ISavable
             Destroy(window.gameObject);
         }
         windows.Clear();
+        pointySystem.HidePointy();
     }
 
     public void OpenWindow(OSAppType type, string warningMessage = "Warning message", System.Action successFunc = null, bool hasCancelBtn = true, SocialMediaPost imagePost = null, SocialMediaUser dmUser = null, bool dmUserPasswordFound = false)
