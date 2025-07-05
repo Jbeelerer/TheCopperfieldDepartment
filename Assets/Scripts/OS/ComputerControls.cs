@@ -6,6 +6,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.ProBuilder.MeshOperations;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 public enum OSAppType
 {
@@ -17,7 +18,8 @@ public enum OSAppType
     WARNING,
     START_SETTINGS,
     IMAGE,
-    DM_PAGE
+    DM_PAGE,
+    TIPS_PAGE
 }
 
 public enum OSInvestigationState
@@ -618,7 +620,7 @@ public class ComputerControls : MonoBehaviour, ISavable
         pointySystem.HidePointy();
     }
 
-    public void OpenWindow(OSAppType type, string warningMessage = "Warning message", System.Action successFunc = null, bool hasCancelBtn = true, SocialMediaPost imagePost = null, SocialMediaUser dmUser = null, bool dmUserPasswordFound = false)
+    public void OpenWindow(OSAppType type, string warningMessage = "Warning message", System.Action successFunc = null, bool hasCancelBtn = true, SocialMediaPost imagePost = null, Sprite imageFile = null, VideoClip videoFile = null, SocialMediaUser dmUser = null, bool dmUserPasswordFound = false)
     {
         audioManager.PlayAudio(windowOpenSound);
         // Check if the window is already open (if multiple instances of the same type are not allowed)
@@ -644,6 +646,8 @@ public class ComputerControls : MonoBehaviour, ISavable
         newWindow.GetComponent<OSWindow>().warningSuccessFunc = successFunc;
         newWindow.GetComponent<OSWindow>().hasCancelBtn = hasCancelBtn;
         newWindow.GetComponent<OSWindow>().imagePost = imagePost;
+        newWindow.GetComponent<OSWindow>().imageFile = imageFile;
+        newWindow.GetComponent<OSWindow>().videoFile = videoFile;
         newWindow.GetComponent<OSWindow>().dmUser = dmUser;
         newWindow.GetComponent<OSWindow>().dmUserPasswordFound = dmUserPasswordFound;
         BringWindowToFront(newWindow.GetComponent<OSWindow>());
