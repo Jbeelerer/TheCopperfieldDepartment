@@ -44,6 +44,8 @@ public class OSPointySystem : MonoBehaviour
     [SerializeField] private List<PointyTutorialStep> stepsEvilSocialMedia = new List<PointyTutorialStep>();
     [SerializeField] private List<PointyTutorialStep> stepsInspectionTutorial = new List<PointyTutorialStep>();
     [SerializeField] private List<PointyTutorialStep> stepsDmPasswordTutorial = new List<PointyTutorialStep>();
+    [SerializeField] private List<PointyTutorialStep> stepsTipsPageStartTutorial = new List<PointyTutorialStep>();
+    [SerializeField] private List<PointyTutorialStep> stepsTipsPageTutorial = new List<PointyTutorialStep>();
 
     [Header("Image Inspection")]
     [SerializeField] private List<PointyTutorialStep> stepsImageInspection = new List<PointyTutorialStep>();
@@ -89,6 +91,14 @@ public class OSPointySystem : MonoBehaviour
         ShowPointy(name, toggledAutomatically);
     }
 
+    public IEnumerator StartTutorialDelayed(string name, float delay, bool toggledAutomatically = false)
+    {
+        yield return new WaitForSeconds(delay);
+        computerControls.CloseAllWindows();
+        StartTutorial(name, toggledAutomatically);
+        yield break;
+    }
+
     public void StartImageInspection(SocialMediaPost relatedPost, string text, SocialMediaUser exposedPasswordUser)
     {
         inspectionOriginalPost = relatedPost;
@@ -124,7 +134,7 @@ public class OSPointySystem : MonoBehaviour
         }
 
         // Add to completed list if not already there
-        if (!completedTutorials.Contains(name))
+        if (!CheckIfTutorialCompleted(name))
         {
             completedTutorials.Add(name);
         }
@@ -178,6 +188,12 @@ public class OSPointySystem : MonoBehaviour
                 break;
             case "DmPassword":
                 currentTutorial = stepsDmPasswordTutorial;
+                break;
+            case "TipsPageStart":
+                currentTutorial = stepsTipsPageStartTutorial;
+                break;
+            case "TipsPage":
+                currentTutorial = stepsTipsPageTutorial;
                 break;
             case "InspectionTutorial":
                 currentTutorial = stepsInspectionTutorial;
@@ -319,6 +335,12 @@ public class OSPointySystem : MonoBehaviour
             computerControls.TriggerAppNotification(OSAppType.SOCIAL);
         }
 
+        // Show delayed tips tutorial if people list and social media tutorials are completed
+        if (CheckIfTutorialCompleted("SocialMedia") && CheckIfTutorialCompleted("PeopleList") && !CheckIfTutorialCompleted("TipsPageStart"))
+        {
+            StartCoroutine(StartTutorialDelayed("TipsPageStart", 4f, true));
+        }
+
         nextTargetObject = null;
         currentTutorial = null;
         pointy.SetActive(false);
@@ -373,6 +395,11 @@ public class OSPointySystem : MonoBehaviour
     public bool GetIsPointyActive()
     {
         return pointy.activeSelf;
+    }
+
+    public bool CheckIfTutorialCompleted(string name)
+    {
+        return completedTutorials.Contains(name);
     }
 
     public void LoadData(SaveData data)

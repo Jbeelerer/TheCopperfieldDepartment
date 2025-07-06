@@ -18,9 +18,12 @@ public class OSTipsPageContent : MonoBehaviour
 
     public void InitializeFiles()
     {
+        int itemCount = 0;
         foreach (MediaItem item in mediaItems)
         {
+            itemCount++;
             var newMediaFile = Instantiate(mediaFilePrefab, mediaFileContainer);
+            newMediaFile.name = "MediaFile" + itemCount;
             if (item.image != null)
             {
                 newMediaFile.GetComponent<OSMediaFile>().Initialize(item.image);

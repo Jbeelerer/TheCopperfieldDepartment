@@ -124,7 +124,7 @@ public class ComputerControls : MonoBehaviour, ISavable
 
         gm = GameManager.instance;
         print(gm);
-        gm.OnNewDay.AddListener(CloseAllWindows);
+        gm.OnNewDay.AddListener(ResetComputer);
 
         // Run stuff on first day only
         if (gm.GetDay() == 1)
@@ -321,6 +321,12 @@ public class ComputerControls : MonoBehaviour, ISavable
                 if (gm.GetDay() == 6)
                 {
                     pointySystem.StartTutorial("InspectionTutorial", toggledAutomatically);
+                }
+                break;
+            case OSAppType.TIPS_PAGE:
+                if (pointySystem.CheckIfTutorialCompleted("TipsPageStart"))
+                {
+                    pointySystem.StartTutorial("TipsPage", toggledAutomatically);
                 }
                 break;
             default:
@@ -608,7 +614,15 @@ public class ComputerControls : MonoBehaviour, ISavable
         window.gameObject.SetActive(false);
     }
 
-    private void CloseAllWindows()
+    public void CloseAllWindows()
+    {
+        foreach (OSWindow window in windows)
+        {
+            CloseWindow(window);
+        }
+    }
+
+    public void ResetComputer()
     {
         foreach (OSWindow window in windows)
         {

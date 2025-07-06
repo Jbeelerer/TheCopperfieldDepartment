@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
+//using UnityEngine.UIElements;
 using UnityEngine.Video;
 
 public class OSBigImageContent : MonoBehaviour
@@ -45,5 +42,8 @@ public class OSBigImageContent : MonoBehaviour
         videoPlayer.gameObject.SetActive(true);
         videoTexture.gameObject.SetActive(true);
         videoPlayer.clip = videoFile;
+        videoPlayer.targetTexture.Release();
+        videoPlayer.targetTexture.width = (int)videoFile.width;
+        videoPlayer.targetTexture.height = (int)videoFile.height;
     }
 }
