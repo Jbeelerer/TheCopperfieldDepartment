@@ -21,6 +21,9 @@ public class ArchiveData : ScriptableObject, IPinnable
     [TextArea] public string content;
     [TextArea] public string contentShort;
     public bool suspicious; public bool notSuspicious;
+    public bool isSmall;
+    bool IPinnable.isSmall { get => isSmall; }
+
     bool IPinnable.suspicious { get => suspicious; }
     bool IPinnable.notSuspicious { get => notSuspicious; }
 }

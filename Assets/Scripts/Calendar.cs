@@ -8,7 +8,6 @@ public class Calendar : MonoBehaviour
     [SerializeField] private GameObject dayPrefab;
     GameManager gm;
     SaveManager sm;
-
     [SerializeField] private Sprite suspectFound;
     [SerializeField] private Sprite SuspectNotFound;
     [SerializeField] private Sprite SuspectSaved;
@@ -52,7 +51,7 @@ public class Calendar : MonoBehaviour
             day.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = (i).ToString();
             if (gm.GetFurthestDay() < i)
             {
-                // day.transform.GetComponent<UnityEngine.UI.Button>().interactable = false;
+                day.transform.GetComponent<UnityEngine.UI.Button>().interactable = false;
             }
             if (gm.GetDay() == i)
             {

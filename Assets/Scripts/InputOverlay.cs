@@ -19,10 +19,10 @@ public class InputOverlay : MonoBehaviour
     [SerializeField] private Sprite draw;
     [SerializeField] private Sprite pin;
 
-
     private Slider onHoldDisplay;
 
-    private Image image;
+    [SerializeField] private Image image;
+    [SerializeField] private Image bg;
 
     private bool isHolding = false;
 
@@ -39,10 +39,11 @@ public class InputOverlay : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        image = GetComponent<Image>();
+        // image = GetComponent<Image>();
         onHoldDisplay = transform.GetComponentInChildren<Slider>();
         onHoldDisplay.gameObject.SetActive(false);
         image.enabled = false;
+        bg.enabled = false;
         GetComponentInChildren<TextMeshProUGUI>().gameObject.SetActive(false);
         defaultPosition = transform.position;
     }
@@ -58,6 +59,7 @@ public class InputOverlay : MonoBehaviour
     {
         currentIcon = imageName;
         image.enabled = true;
+        bg.enabled = true;
         // don't allow any icon changes while moving pins only empty
         if (!forceIcon && image.sprite == handClosed && imageName != "handOpen" && imageName != "")
         {
@@ -101,6 +103,7 @@ public class InputOverlay : MonoBehaviour
             default:
                 image.sprite = defaultIcon;
                 image.enabled = false;
+                bg.enabled = false;
                 break;
         }
     }

@@ -23,6 +23,9 @@ public class SocialMediaUser : ScriptableObject, IPinnable
     public bool suspicious;
     public bool notSuspicious;
     public PopularityLevel popularityLevel;
+    public bool isSmall;
+    bool IPinnable.isSmall { get => isSmall; }
+
     bool IPinnable.suspicious { get => suspicious; }
     bool IPinnable.notSuspicious { get => notSuspicious; }
 }

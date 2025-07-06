@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SocialPlatforms.Impl;
+using Unity.VisualScripting;
 
 public class AdditionalInfoBoard : MonoBehaviour
 {
@@ -45,6 +46,10 @@ public class AdditionalInfoBoard : MonoBehaviour
     }
     public void ShowInfo(bool b, ScriptableObject o)
     {
+        if (o is IPinnable temp)
+        {
+            anim.SetBool("isLow", temp.isSmall);
+        }
         if (o != content)
         {
             StartCoroutine(fastPullupCooldown());

@@ -58,7 +58,9 @@ public class GameManager : MonoBehaviour, ISavable
 
     private Vector3 startPosition;
     private Quaternion startRotation;
+    private Quaternion startCameraRotation;
     [SerializeField] private GameObject newDayPrefab;
+    [SerializeField] private GameObject dayIntro;
 
     private bool answerCommited = false;
     public Narration narration;
@@ -82,14 +84,25 @@ public class GameManager : MonoBehaviour, ISavable
     private string feedBackMailContent = "";
 
     private bool _pinboardBlocked = false;
+
+    private bool calendarLoad = false;
+    private GameObject instantiatedDayIntro;
     public bool PinboardBlocked
     {
         get { return _pinboardBlocked; }
         set
         {
+            print(GameObject.Find("Pinboard").GetComponent<Pinboard>() + " ---->>>> " + value);
             GameObject.Find("Pinboard").GetComponent<Pinboard>().pinboardInteractions(value);
             _pinboardBlocked = value;
         }
+    }
+
+    // wait for the new scene and the pinboard to be ready 
+    private IEnumerator dalayedPinboardBlocked(bool t)
+    {
+        yield return new WaitForSeconds(0.5f);
+        PinboardBlocked = t;
     }
 
     public bool GetIfDevMode()
@@ -122,6 +135,10 @@ public class GameManager : MonoBehaviour, ISavable
     public void InspectObject(Transform o, Vector3 lookingDirection, GameState state = GameState.Inspecting)
     {
         print("Inspecting " + o.name);
+        if (inspectionCam == null)
+        {
+            reload();
+        }
         CinemachineVirtualCamera vcam = inspectionCam.GetComponent<CinemachineVirtualCamera>();
         if (vcam.LookAt == o)
         {
@@ -208,7 +225,7 @@ public class GameManager : MonoBehaviour, ISavable
 
     public void SaveData(SaveData data)
     {
-        if (Resources.LoadAll<Case>("Case" + dayOrder[furthestDay]).Count() == 0)
+        if (Resources.LoadAll<Case>(dayOrder[furthestDay]).Count() == 0)
         {
             //  return;
         }
@@ -240,7 +257,11 @@ public class GameManager : MonoBehaviour, ISavable
                 playerOnEmployeeList = e;
             }
         }
+        print("Loading day: " + furthestDay);
         LoadNewDay(furthestDay);
+
+        PinboardBlocked = day == 1;
+        DayIntro();
     }
     public bool GetAnswerCommited()
     {
@@ -248,8 +269,10 @@ public class GameManager : MonoBehaviour, ISavable
     }
     public void SetStartTransform(Transform t)
     {
+        print("Setting start transform to: " + t.position + " " + t.rotation);
         startPosition = t.position;
         startRotation = t.rotation;
+        startCameraRotation = t.GetChild(0).transform.rotation;
     }
     public Vector3 GetStartPosition()
     {
@@ -257,7 +280,14 @@ public class GameManager : MonoBehaviour, ISavable
     }
     public Quaternion GetStartRotation()
     {
+        print("startRotation: " + startRotation);
         return startRotation;
+    }
+
+    public Quaternion GetStartCamRotation()
+    {
+        print("startCameraRotation: " + startCameraRotation);
+        return startCameraRotation;
     }
 
     public Person[] GetPeople()
@@ -340,26 +370,23 @@ public class GameManager : MonoBehaviour, ISavable
         am = AudioManager.instance;
         // TODO REMOVED SAVE SYSTEM FOR NOW
         StartCoroutine(DelayFirstDay());
-        /*
-                if (Utility.CheckSaveFileExists(instance.saveFile.ToString()))
-                {
-                    SaveManager.instance.SetupSaveFile(instance.saveFile.ToString());
-                    if (Utility.CheckSaveFileExists(instance.saveFile.ToString()))
-                    {
-                        SaveManager.instance.LoadGame();
-                    }
-                    //Todo: can probably be removed... (Will do later <3)
-                    else
-                    {
-                        StartCoroutine(DelayFirstDay());
-                        //LoadNewDay(day);
-                    }
-                }
-                else
-                {
-                    StartCoroutine(DelayFirstDay());
-                    //LoadNewDay(day); 
-                }*/
+
+        SetStartTransform(GameObject.Find("Player").transform);
+
+        if (Utility.CheckSaveFileExists(instance.saveFile.ToString()))
+        {
+            SaveManager.instance.SetupSaveFile(instance.saveFile.ToString());
+            if (Utility.CheckSaveFileExists(instance.saveFile.ToString()))
+            {
+                SaveManager.instance.LoadGame();
+            }
+        }
+        else
+        {
+            DayIntro();
+            StartCoroutine(DelayFirstDay());
+            //LoadNewDay(day); 
+        }
     }
 
     public void SetNarration(Narration n)
@@ -378,7 +405,7 @@ public class GameManager : MonoBehaviour, ISavable
         {
             day = devCase;
         }
-        if (Resources.LoadAll<Case>("Case" + dayOrder[day]).Count() == 0)
+        if (Resources.LoadAll<Case>(dayOrder[day]).Count() == 0)
         {
             // TODO: implement endgame  
             SceneManager.LoadScene("TheEnd");
@@ -386,10 +413,10 @@ public class GameManager : MonoBehaviour, ISavable
             //  return; 
             // todo: Only temp solution...
         }
-        currentCase = Resources.LoadAll<Case>("Case" + dayOrder[day])[0];
+        currentCase = Resources.LoadAll<Case>(dayOrder[day])[0];
         // load all connections
-        connections = Resources.LoadAll<Connections>("Case" + dayOrder[currentCase.id] + "/Connections");
-        Mail[] tempMails = Resources.LoadAll<Mail>("Case" + dayOrder[currentCase.id] + "/Mails");
+        connections = Resources.LoadAll<Connections>(dayOrder[day] + "/Connections");
+        Mail[] tempMails = Resources.LoadAll<Mail>(dayOrder[day] + "/Mails");
         if (feedBackMailContent != "")
         {
             Mail feedBackMail = Resources.Load<Mail>("FeedBackTemplate");
@@ -401,12 +428,14 @@ public class GameManager : MonoBehaviour, ISavable
             mails = tempMails;
         }
         // mails[tempMails.Count()] = feedBackMail;        
-        posts = Resources.LoadAll<SocialMediaPost>("Case" + dayOrder[currentCase.id] + "/Posts");
-        conversations = Resources.LoadAll<DMConversation>("Case" + dayOrder[currentCase.id] + "/Conversations");
+        posts = Resources.LoadAll<SocialMediaPost>(dayOrder[day] + "/Posts");
+        conversations = Resources.LoadAll<DMConversation>(dayOrder[day] + "/Conversations");
         return false;
     }
     public void LoadNewDay(int day)
     {
+        if (instantiatedDayIntro != null)
+            Destroy(instantiatedDayIntro);
         if (currentCase != null && currentCase.personReasoning != null && currentCase.personReasoning.Count != 0)
         {
             print(currentCase.personReasoning[0].reason);
@@ -428,6 +457,7 @@ public class GameManager : MonoBehaviour, ISavable
             ow.GetComponent<Animator>().SetTrigger("NewDay");
         }
         this.day = day;
+        StartCoroutine(dalayedPinboardBlocked(day == 1));
         bool over = LoadCase();
         if (over)
         {
@@ -454,7 +484,11 @@ public class GameManager : MonoBehaviour, ISavable
         daySegment = 0;
         SortCompetingEmployees();
         OnNewDay?.Invoke();
-        PinboardBlocked = false;//day == 1;
+        reload();
+        if (calendarLoad)
+        {
+            DayIntro();
+        }
     }
 
     public void SortCompetingEmployees()
@@ -467,7 +501,6 @@ public class GameManager : MonoBehaviour, ISavable
     {
         GameObject g = Instantiate(newDayPrefab);
         g.GetComponent<Animator>().Play("TimeTravel");
-
     }
     public void NextDaySequence()
     {
@@ -511,7 +544,7 @@ public class GameManager : MonoBehaviour, ISavable
             }
             // don't save in dev mode, if you want to, just add comment syntax to the if statement
             // TODO: Deactivate for current version
-            //  SaveManager.instance.SaveGame();
+            SaveManager.instance.SaveGame();
         }
         LoadNewDay(day);
     }
@@ -588,6 +621,13 @@ public class GameManager : MonoBehaviour, ISavable
             setNewDay();
         }
     }
+    public void LoadDayOverCalendar(int d)
+    {
+        calendarLoad = true;
+        LoadNewDay(d);
+        GameManager.instance.SetGameState(GameState.Playing);
+        //DayIntro(0.5f);
+    }
 
     // Update is called once per frame
     void Update()
@@ -605,7 +645,20 @@ public class GameManager : MonoBehaviour, ISavable
         }
     }
 
-
+    public void DayIntro(float delay = 0)
+    {
+        StartCoroutine(DayIntroCoroutine(delay));
+    }
+    public IEnumerator DayIntroCoroutine(float delay = 0)
+    {
+        yield return new WaitForSeconds(delay);
+        GameObject instantiatedDayIntro = Instantiate(dayIntro);
+        instantiatedDayIntro.transform.GetChild(0).GetChild(0).GetComponent<TMPro.TextMeshProUGUI>().text = "Day " + day + ":";
+        instantiatedDayIntro.transform.GetChild(0).GetChild(1).GetComponent<TMPro.TextMeshProUGUI>().text = currentCase.caseName;
+        instantiatedDayIntro.SetActive(true);
+        //yield return new WaitForSeconds(4f);
+        // instantiatedDayIntro.SetActive(false);
+    }
     private IEnumerator DelayFirstDay()
     {
         if (day == 1)

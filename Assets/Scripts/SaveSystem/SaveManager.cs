@@ -75,8 +75,6 @@ namespace SaveSystem
 
         public void SaveGame()
         {
-            //TODO: For the moment disable the save system
-            return;
             if (saveData == null)
                 saveData = new SaveData();
 
@@ -99,8 +97,6 @@ namespace SaveSystem
 
         public void LoadGame()
         {
-            //TODO: For the moment disable the save system
-            return;
             print("loading");
             // Grab the save data file 
             saveData = saveFileHandler.Load();

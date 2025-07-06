@@ -86,6 +86,15 @@ public class FPSController : MonoBehaviour
     private float timeDragged = 0;
 
     private Archives archives;
+
+
+    private RaycastHit hit;
+    private Ray ray;
+    private bool hasHitSomething;
+    bool requirementMet = true;
+
+
+    [SerializeField] private Camera threadCamera;
     public void ResetFoundConnections()
     {
         foreach (GameObject v in foundConnections.Values)
@@ -106,11 +115,11 @@ public class FPSController : MonoBehaviour
         inputOverlay = gameObject.GetComponentInChildren<InputOverlay>();
 
         computerControls = GameObject.Find("DesktopInterface").GetComponent<ComputerControls>();
-        gm.SetStartTransform(transform);
         narration = GetComponentInChildren<Narration>();
         additionalInfoBoard = transform.GetChild(0).Find("MoreInfo").GetComponent<AdditionalInfoBoard>();
         gm.OnNewDay.AddListener(ResetFoundConnections);
         gm.OnNewDay.AddListener(ResetPlayer);
+        threadCamera.enabled = false;
     }
     private void FixedUpdate()
     {
@@ -131,6 +140,297 @@ public class FPSController : MonoBehaviour
                 DeleteElement();
             }
         }
+
+        ray = playerCamera.ScreenPointToRay(Input.mousePosition);
+        hasHitSomething = Physics.Raycast(ray, out hit);
+
+        #region Handles Interaction
+
+        // if removingTime is the default value it is active and the currentselectedObject shouldn't change
+        #region Look at things
+        if (hasHitSomething && !onHoldDown && gm.GetGameState() == GameState.Playing)
+        {
+            if (Vector3.Distance(hit.collider.gameObject.transform.position, transform.position) <= interactionReach || selectedPinboardElement != null || currentThread != null)
+            {
+                string tempName = hit.collider.gameObject.name;
+                if (tempName == "PinboardModel" || tempName == "pin" || tempName == "DeadZone" || tempName == "Pinboard" || tempName == "pinboardElement(Clone)")
+                {
+                    if (!threadCamera.enabled)
+                        threadCamera.enabled = true;
+                }
+
+                if (hit.collider.gameObject.tag == "Grabbable")
+                {
+                    nameOfThingLookedAt = hit.collider.gameObject.name;
+                    inputOverlay.SetIcon("handOpen");
+                }
+                else if (hit.collider.gameObject.tag == "Interactable")
+                {
+                    nameOfThingLookedAt = hit.collider.gameObject.name;
+
+                    // if lastSelectedObject the player is grabing a thread and shouldn't be able see anything else
+                    if (grabbedObject != null)
+                    {
+                        if (nameOfThingLookedAt == "PinboardModel" && grabbedObject.GetComponent<TrashedPostIt>() != null)
+                        {
+                            inputOverlay.SetIcon("pin");
+                        }
+                    }
+                    else if (lastSelectedObject == null)
+                    {
+                        // handle interaction, while just looking
+                        switch (nameOfThingLookedAt)
+                        {
+                            case "PinboardModel":
+                                // interactionReach = 10f;
+                                if (selectedPinboardElement == null && currentThread == null)//TODO: add Pen exception
+                                {
+                                    inputOverlay.SetIcon("defaultIcon");
+                                }
+                                if (selectedPinboardElement != null)
+                                {
+                                    if (removingTime != -1)
+                                    {
+                                        removingTime = -1f;
+                                        inputOverlay.stopHold();
+                                        inputOverlay.SetIcon("handClosed");
+                                    }
+                                }
+                                break;
+                            case "DeadZone":
+                                if (selectedPinboardElement != null && removingTime == -1)
+                                {
+                                    inputOverlay.SetIcon("trash", true);
+                                    // the typical animation makes no sense here TODO: Maybe add a new animation
+                                    am.PlayAudio(pickupSound);
+                                    removingTime = 1f;
+                                    inputOverlay.startHold(removingTime);
+                                }
+                                break;
+                            case "Button":
+                                break;
+                            case "pinboardElement(Clone)":
+                                PinboardElement pe = hit.collider.gameObject.GetComponent<PinboardElement>();
+                                inputOverlay.SetIcon("handOpen");
+                                // highlight and scale the pinboardElement
+                                pe.HighlightElement(true);
+                                if (selectedPenAnim != null)
+                                {
+                                    inputOverlay.SetIcon("pen");
+                                }
+                                else if (pe.GetIfHasInfo())
+                                {
+                                    additionalInfoBoard.ShowInfo(true, pe.GetContent());
+                                }
+                                break;
+                            case "CurvedScreen":
+                            case "Calendar":
+                                inputOverlay.SetIcon("inspect");
+                                break;
+                            case "Archive":
+                                inputOverlay.SetIcon("inspect");
+                                break;
+                            case "pin":
+                                inputOverlay.SetIcon("trash");
+                                break;
+                            case "threadCollider":
+                                inputOverlay.SetIcon("scissors");
+                                break;
+                            case "Door":
+                                inputOverlay.SetIcon("exit");
+                                break;
+                            case "Pen":
+                                inputOverlay.SetIcon("handOpen");
+                                break;
+                            case "Phone":
+                                inputOverlay.SetIcon("inspect");
+                                break;
+                            case "Radio":
+                                inputOverlay.SetIcon("handOpen");
+                                break;
+                            case "Block":
+                                inputOverlay.SetIcon("handOpen");
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    if (nameOfThingLookedAt != "pinboardElement(Clone)" && nameOfThingLookedAt != "pin")// currentSelectedObject.name != "pinboardElement(Clone)" && currentSelectedObject.name != "pin"
+                    {
+                        // undoes highlight and scaling of the pinboardElement  
+                        if (currentSelectedObject != null && (currentSelectedObject.name == "pinboardElement(Clone)" || currentSelectedObject.name == "pin"))
+                        {
+                            if (selectedPinboardElement == null)
+                            {
+                                // This is so hovering on the pin won't cancel the AdditionalInfoBoard
+                                PinboardElement tempPe = currentSelectedObject.GetComponent<PinboardElement>();
+                                if (currentSelectedObject.name == "pin")
+                                {
+                                    tempPe = currentSelectedObject.GetComponentInParent<PinboardElement>();
+                                }
+                                if (tempPe != null)
+                                    tempPe.HighlightElement(false);
+                            }
+                            additionalInfoBoard.CancelPreview();
+                        }
+                    }
+                    // highlight when hovering with a thread over a pinboardElement
+                    else if (lastSelectedObject != null && hit.collider.gameObject.name == "pinboardElement(Clone)")
+                    {
+                        hit.collider.gameObject.GetComponent<PinboardElement>().HighlightElement(true);
+                    }
+                    // dont reset the currentSelectedObject if the player is removing a pinboardElement
+                    if (nameOfThingLookedAt != "DeadZone")
+                    {
+                        currentSelectedObject = hit.collider.gameObject;
+                    }
+                }
+            }
+            else if (currentSelectedObject != null && removingTime == -1)
+            {
+                if (threadCamera.enabled)
+                {
+                    threadCamera.enabled = false;
+                }
+                DeselectPen();
+                if (selectedPinboardElement != null)
+                {
+                    selectedPinboardElement.gameObject.layer = 0;
+                    selectedPinboardElement.transform.Find("pin").GetComponent<Collider>().enabled = true;
+                    selectedPinboardElement.transform.position = originalPosition;
+                    selectedPinboardElement.GetComponentInParent<Animator>().SetBool("pinNormal", true);
+                    selectedPinboardElement.GetComponent<PinboardElement>().setIsMoving(false);
+                    am.PlayReverseAudio(pickupSound);
+                    selectedPinboardElement = null;
+                }
+                currentSelectedObject = null;
+                if (currentThread != null)
+                {
+                    TryToPlaceThread("");
+                }
+                additionalInfoBoard.CancelPreview();
+                inputOverlay.ChangeIconIfDifferent("");
+                //interactionReach = 3f; 
+            }
+            else
+            {
+                //interactionReach = 3f;
+                inputOverlay.ChangeIconIfDifferent("");
+            }
+        }
+        requirementMet = true;
+        if (narration.HasRequirement())
+        {
+            if (nameOfThingLookedAt == "PinboardModel" || nameOfThingLookedAt == "Block")
+            {
+                narration.CheckIfRequirementMet(Requirement.WalkToBoard);
+            }
+            else if (nameOfThingLookedAt == "pinboardElement(Clone)")
+            {
+                if (currentSelectedObject != null && currentSelectedObject.GetComponent<PinboardElement>().GetIfHasInfo())
+                {
+                    narration.CheckIfRequirementMet(Requirement.LookAtPostIt);
+                }
+            }
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (currentSelectedObject != null && (currentSelectedObject.name == "pinboardElement(Clone)" || currentSelectedObject.name == "pin") && currentThread != null && lastSelectedObject != currentSelectedObject)
+                {
+                    GameObject postIt = currentSelectedObject;
+                    if (currentSelectedObject.name == "pin")
+                    {
+                        postIt = currentSelectedObject.transform.parent.gameObject;
+                    }
+                    Person person = postIt.GetComponent<PinboardElement>().GetContent() as Person;
+                    if (person == null)
+                    {
+                        SocialMediaUser user = postIt.GetComponent<PinboardElement>().GetContent() as SocialMediaUser;
+                        if (user != null && user.name == "0Imar")
+                        {
+                            narration.CheckIfRequirementMet(Requirement.ConnectPostITContradiction);
+                            narration.CheckIfRequirementMet(Requirement.ConnectPostIT);
+                        }
+                        else if (!postIt.GetComponent<PinboardElement>().GetIfDeletable())
+                        {
+                            narration.CheckIfRequirementMet(Requirement.FindSuspect);
+                        }
+                    }
+                    else
+                    {
+                        if (person.name == "0Imar")
+                        {
+                            narration.CheckIfRequirementMet(Requirement.ConnectPostIT);
+                            narration.CheckIfRequirementMet(Requirement.FindSuspect);
+                        }
+                        else if (person.name == "0Olga")
+                        {
+                            narration.CheckIfRequirementMet(Requirement.ConnectPostITContradiction);
+                            narration.CheckIfRequirementMet(Requirement.FindSuspect);
+                        }
+                    }
+                }
+                else if (currentSelectedObject != null)
+                {
+                    switch (currentSelectedObject.name)
+                    {
+                        case "pinboardElement(Clone)":
+                            narration.CheckIfRequirementMet(Requirement.MovePostIt);
+                            break;
+                        case "pin":
+                            narration.CheckIfRequirementMet(Requirement.DeletePostIt);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            if (Input.GetMouseButtonDown(1))
+            {
+                if (currentSelectedObject.name == "pinboardElement(Clone)" || currentSelectedObject.name == "pin")
+                {
+                    GameObject postIt = currentSelectedObject;
+                    if (currentSelectedObject.name == "pin")
+                    {
+                        postIt = currentSelectedObject.transform.parent.gameObject;
+                    }
+
+                    Person person = postIt.GetComponent<PinboardElement>().GetContent() as Person;
+                    if (person != null)
+                    {
+                        if (person.name == "0Imar")
+                        {
+                            narration.CheckIfRequirementMet(Requirement.ConnectPostIT, false);
+                            narration.CheckIfRequirementMet(Requirement.FindSuspect, false);
+
+                        }
+                        else if (person.name == "0Olga")
+                        {
+                            narration.CheckIfRequirementMet(Requirement.ConnectPostITContradiction, false);
+                            narration.CheckIfRequirementMet(Requirement.FindSuspect, false);
+                        }
+                    }
+                    else
+                    {
+                        SocialMediaUser user = postIt.GetComponent<PinboardElement>().GetContent() as SocialMediaUser;
+                        if (user != null)
+                        {
+                            if (user.name == "0Imar")
+                            {
+                                narration.CheckIfRequirementMet(Requirement.ConnectPostITContradiction, false);
+                                narration.CheckIfRequirementMet(Requirement.ConnectPostIT, false);
+                            }
+                            else if (!postIt.GetComponent<PinboardElement>().GetIfDeletable())
+                            {
+                                narration.CheckIfRequirementMet(Requirement.FindSuspect, false);
+                            }
+                        }
+                    }
+                }
+            }
+            requirementMet = narration.GetIfInteractionAllowed();
+        }
+
+        #endregion
     }
 
     private void DeleteElement()
@@ -187,6 +487,10 @@ public class FPSController : MonoBehaviour
     }
     void Update()
     {
+        if (gm == null)
+        {
+            gm = GameManager.instance;
+        }
         // on e key pressed ExitPC is "E"
         if (Input.GetButtonDown("ExitPC") && gm.isOccupied())
         {
@@ -236,292 +540,12 @@ public class FPSController : MonoBehaviour
 
             #endregion
 
-            RaycastHit hit;
-            Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
-            bool hasHitSomething = Physics.Raycast(ray, out hit);
-
-            #region Handles Interaction
-
-            // if removingTime is the default value it is active and the currentselectedObject shouldn't change
-            #region Look at things
-            if (hasHitSomething && !onHoldDown)
-            {
-                if (Vector3.Distance(hit.collider.gameObject.transform.position, transform.position) <= interactionReach)
-                {
-                    if (hit.collider.gameObject.tag == "Grabbable")
-                    {
-                        nameOfThingLookedAt = hit.collider.gameObject.name;
-                        inputOverlay.SetIcon("handOpen");
-                    }
-                    else if (hit.collider.gameObject.tag == "Interactable")
-                    {
-                        nameOfThingLookedAt = hit.collider.gameObject.name;
-                        // if lastSelectedObject the player is grabing a thread and shouldn't be able see anything else
-                        if (grabbedObject != null)
-                        {
-                            if (nameOfThingLookedAt == "PinboardModel" && grabbedObject.GetComponent<TrashedPostIt>() != null)
-                            {
-                                inputOverlay.SetIcon("pin");
-                            }
-                        }
-                        else if (lastSelectedObject == null)
-                        {
-                            print(nameOfThingLookedAt);
-                            // handle interaction, while just looking
-                            switch (nameOfThingLookedAt)
-                            {
-                                case "PinboardModel":
-                                    // interactionReach = 10f;
-                                    if (selectedPinboardElement == null && currentThread == null)//TODO: add Pen exxption
-                                    {
-                                        inputOverlay.SetIcon("defaultIcon");
-                                    }
-                                    if (selectedPinboardElement != null)
-                                    {
-                                        if (removingTime != -1)
-                                        {
-                                            removingTime = -1f;
-                                            inputOverlay.stopHold();
-                                            inputOverlay.SetIcon("handClosed");
-                                        }
-                                    }
-                                    break;
-                                case "DeadZone":
-                                    if (selectedPinboardElement != null && removingTime == -1)
-                                    {
-                                        inputOverlay.SetIcon("trash", true);
-                                        // the typical animation makes no sense here TODO: Maybe add a new animation
-                                        am.PlayAudio(pickupSound);
-                                        removingTime = 1f;
-                                        inputOverlay.startHold(removingTime);
-                                    }
-                                    break;
-                                case "Button":
-                                    break;
-                                case "pinboardElement(Clone)":
-                                    PinboardElement pe = hit.collider.gameObject.GetComponent<PinboardElement>();
-                                    inputOverlay.SetIcon("handOpen");
-                                    // highlight and scale the pinboardElement
-                                    pe.HighlightElement(true);
-                                    if (selectedPenAnim != null)
-                                    {
-                                        inputOverlay.SetIcon("pen");
-                                    }
-                                    else if (pe.GetIfHasInfo())
-                                    {
-                                        additionalInfoBoard.ShowInfo(true, pe.GetContent());
-                                    }
-                                    break;
-                                case "CurvedScreen":
-                                case "Calendar":
-                                    inputOverlay.SetIcon("inspect");
-                                    break;
-                                case "Archive":
-                                    inputOverlay.SetIcon("inspect");
-                                    break;
-                                case "pin":
-                                    inputOverlay.SetIcon("trash");
-                                    break;
-                                case "threadCollider":
-                                    inputOverlay.SetIcon("scissors");
-                                    break;
-                                case "Door":
-                                    inputOverlay.SetIcon("exit");
-                                    break;
-                                case "Pen":
-                                    inputOverlay.SetIcon("handOpen");
-                                    break;
-                                case "Phone":
-                                    inputOverlay.SetIcon("inspect");
-                                    break;
-                                case "Radio":
-                                    inputOverlay.SetIcon("handOpen");
-                                    break;
-                                case "Block":
-                                    inputOverlay.SetIcon("handOpen");
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                        if (nameOfThingLookedAt != "pinboardElement(Clone)" && nameOfThingLookedAt != "pin")// currentSelectedObject.name != "pinboardElement(Clone)" && currentSelectedObject.name != "pin"
-                        {
-                            // undoes highlight and scaling of the pinboardElement  
-                            if (currentSelectedObject != null && (currentSelectedObject.name == "pinboardElement(Clone)" || currentSelectedObject.name == "pin"))
-                            {
-                                if (selectedPinboardElement == null)
-                                {
-                                    // This is so hovering on the pin won't cancel the AdditionalInfoBoard
-                                    PinboardElement tempPe = currentSelectedObject.GetComponent<PinboardElement>();
-                                    if (currentSelectedObject.name == "pin")
-                                    {
-                                        tempPe = currentSelectedObject.GetComponentInParent<PinboardElement>();
-                                    }
-                                    if (tempPe != null)
-                                        tempPe.HighlightElement(false);
-                                }
-                                additionalInfoBoard.CancelPreview();
-                            }
-                        }
-                        // highlight when hovering with a thread over a pinboardElement
-                        else if (lastSelectedObject != null && hit.collider.gameObject.name == "pinboardElement(Clone)")
-                        {
-                            hit.collider.gameObject.GetComponent<PinboardElement>().HighlightElement(true);
-                        }
-                        // dont reset the currentSelectedObject if the player is removing a pinboardElement
-                        if (nameOfThingLookedAt != "DeadZone")
-                        {
-                            currentSelectedObject = hit.collider.gameObject;
-                        }
-                    }
-                }
-                else if (currentSelectedObject != null && removingTime == -1)
-                {
-                    DeselectPen();
-                    if (selectedPinboardElement != null)
-                    {
-                        selectedPinboardElement.gameObject.layer = 0;
-                        selectedPinboardElement.transform.Find("pin").GetComponent<Collider>().enabled = true;
-                        selectedPinboardElement.transform.position = originalPosition;
-                        selectedPinboardElement.GetComponentInParent<Animator>().SetBool("pinNormal", true);
-                        selectedPinboardElement.GetComponent<PinboardElement>().setIsMoving(false);
-                        am.PlayReverseAudio(pickupSound);
-                        selectedPinboardElement = null;
-                    }
-                    currentSelectedObject = null;
-                    if (currentThread != null)
-                    {
-                        TryToPlaceThread("");
-                    }
-                    additionalInfoBoard.CancelPreview();
-                    inputOverlay.ChangeIconIfDifferent("");
-                    //interactionReach = 3f; 
-                }
-                else
-                {
-                    //interactionReach = 3f;
-                    inputOverlay.ChangeIconIfDifferent("");
-                }
-            }
-            bool requirementMet = true;
-            if (narration.HasRequirement())
-            {
-                if (nameOfThingLookedAt == "PinboardModel" || nameOfThingLookedAt == "Block")
-                {
-                    narration.CheckIfRequirementMet(Requirement.WalkToBoard);
-                }
-                else if (nameOfThingLookedAt == "pinboardElement(Clone)")
-                {
-                    if (currentSelectedObject != null && currentSelectedObject.GetComponent<PinboardElement>().GetIfHasInfo())
-                    {
-                        narration.CheckIfRequirementMet(Requirement.LookAtPostIt);
-                    }
-                }
-                if (Input.GetMouseButtonDown(0))
-                {
-                    if (currentSelectedObject != null && (currentSelectedObject.name == "pinboardElement(Clone)" || currentSelectedObject.name == "pin") && currentThread != null && lastSelectedObject != currentSelectedObject)
-                    {
-                        GameObject postIt = currentSelectedObject;
-                        if (currentSelectedObject.name == "pin")
-                        {
-                            postIt = currentSelectedObject.transform.parent.gameObject;
-                        }
-                        Person person = postIt.GetComponent<PinboardElement>().GetContent() as Person;
-                        if (person == null)
-                        {
-                            SocialMediaUser user = postIt.GetComponent<PinboardElement>().GetContent() as SocialMediaUser;
-                            if (user != null && user.name == "0Imar")
-                            {
-                                narration.CheckIfRequirementMet(Requirement.ConnectPostITContradiction);
-                                narration.CheckIfRequirementMet(Requirement.ConnectPostIT);
-                            }
-                            else if (!postIt.GetComponent<PinboardElement>().GetIfDeletable())
-                            {
-                                narration.CheckIfRequirementMet(Requirement.FindSuspect);
-                            }
-                        }
-                        else
-                        {
-                            if (person.name == "0Imar")
-                            {
-                                narration.CheckIfRequirementMet(Requirement.ConnectPostIT);
-                                narration.CheckIfRequirementMet(Requirement.FindSuspect);
-                            }
-                            else if (person.name == "0Olga")
-                            {
-                                narration.CheckIfRequirementMet(Requirement.ConnectPostITContradiction);
-                                narration.CheckIfRequirementMet(Requirement.FindSuspect);
-                            }
-                        }
-                    }
-                    else if (currentSelectedObject != null)
-                    {
-                        switch (currentSelectedObject.name)
-                        {
-                            case "pinboardElement(Clone)":
-                                narration.CheckIfRequirementMet(Requirement.MovePostIt);
-                                break;
-                            case "pin":
-                                narration.CheckIfRequirementMet(Requirement.DeletePostIt);
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                }
-                if (Input.GetMouseButtonDown(1))
-                {
-                    if (currentSelectedObject.name == "pinboardElement(Clone)" || currentSelectedObject.name == "pin")
-                    {
-                        GameObject postIt = currentSelectedObject;
-                        if (currentSelectedObject.name == "pin")
-                        {
-                            postIt = currentSelectedObject.transform.parent.gameObject;
-                        }
-
-                        Person person = postIt.GetComponent<PinboardElement>().GetContent() as Person;
-                        if (person != null)
-                        {
-                            if (person.name == "0Imar")
-                            {
-                                narration.CheckIfRequirementMet(Requirement.ConnectPostIT, false);
-                                narration.CheckIfRequirementMet(Requirement.FindSuspect, false);
-
-                            }
-                            else if (person.name == "0Olga")
-                            {
-                                narration.CheckIfRequirementMet(Requirement.ConnectPostITContradiction, false);
-                                narration.CheckIfRequirementMet(Requirement.FindSuspect, false);
-                            }
-                        }
-                        else
-                        {
-                            SocialMediaUser user = postIt.GetComponent<PinboardElement>().GetContent() as SocialMediaUser;
-                            if (user != null)
-                            {
-                                if (user.name == "0Imar")
-                                {
-                                    narration.CheckIfRequirementMet(Requirement.ConnectPostITContradiction, false);
-                                    narration.CheckIfRequirementMet(Requirement.ConnectPostIT, false);
-                                }
-                                else if (!postIt.GetComponent<PinboardElement>().GetIfDeletable())
-                                {
-                                    narration.CheckIfRequirementMet(Requirement.FindSuspect, false);
-                                }
-                            }
-                        }
-                    }
-                }
-                requirementMet = narration.GetIfInteractionAllowed();
-            }
-
-
             // if (requirementMet)
             {
-                #endregion
                 #region Handle left click
                 if (Input.GetMouseButtonDown(0))
                 {
+                    inputOverlay.SetIcon("");
                     if (hit.collider.gameObject.tag == "Grabbable")
                     {
                         grabbedObject = hit.collider.gameObject.GetComponent<Grabbable>();
@@ -757,7 +781,6 @@ public class FPSController : MonoBehaviour
                     if (lastSelectedObject.transform != hit.collider.transform && !(lastSelectedObject.transform == hit.collider.transform.parent && hit.collider.gameObject.name == "pin"))
                     {
                         TryToPlaceThread(nameOfThingLookedAt);
-                        print(pinboard.FlaggedThread);
                     }
                 }
                 #endregion
@@ -846,6 +869,8 @@ public class FPSController : MonoBehaviour
     {
         transform.position = gm.GetStartPosition();
         transform.rotation = gm.GetStartRotation();
+        rotationX = 0;
+        cameraObject.localRotation = Quaternion.Euler(0, 0, 0);
     }
 
     private void DeselectPen()
@@ -860,8 +885,12 @@ public class FPSController : MonoBehaviour
 
     public void TryToPlaceThread(string underground)
     {
-        if (underground == "pinboardElement(Clone)")
+        if (underground == "pinboardElement(Clone)" || underground == "pin")
         {
+            if (underground == "pin")
+            {
+                currentSelectedObject = currentSelectedObject.transform.parent.gameObject;
+            }
             HandleThread();
         }
         else
@@ -871,7 +900,6 @@ public class FPSController : MonoBehaviour
         }
         lastSelectedObject = null;
         currentThread = null;
-        print(pinboard.FlaggedThread);
     }
     public void HandleThread()
     {
@@ -912,7 +940,6 @@ public class FPSController : MonoBehaviour
                 pinboard.FlaggedPersonPin = lastSelectedObject.GetComponent<PinboardElement>(); ;
             }
         }
-        print(pinboard.FlaggedThread);
     }
 
     public IEnumerator PlayPenAnimation(string animName)

@@ -16,6 +16,9 @@ public class Person : ScriptableObject, IPinnable
     public Dictionary<ScriptableObject, string> connectionDescription = new Dictionary<ScriptableObject, string>();
     public bool suspicious;
     public bool notSuspicious;
+    public bool isSmall;
+    bool IPinnable.isSmall { get => isSmall; }
+
     bool IPinnable.suspicious { get => suspicious; }
     bool IPinnable.notSuspicious { get => notSuspicious; }
 

@@ -419,8 +419,9 @@ public class Narration : MonoBehaviour
                 audioSource.Play();
             }
         }
-        if (gm.GetGameState() == GameState.Frozen)
+        if (gm.GetGameState() == GameState.Frozen && firstDayFeedbackNegativeClip != clip && firstDayFeedbackPositiveClip != clip)
         {
+            print("Resetting camera rotation");
             player.ResetCameraRotation(startRotation);
         }
         sequenceHadRequirement = false;
