@@ -4,6 +4,7 @@ using TMPro;
 //using UnityEditor.PackageManager.UI;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 public enum WindowSize
 {
@@ -35,6 +36,8 @@ public class OSWindow : MonoBehaviour
     [HideInInspector] public System.Action warningSuccessFunc = null;
     [HideInInspector] public bool hasCancelBtn = true;
     [HideInInspector] public SocialMediaPost imagePost = null;
+    [HideInInspector] public Sprite imageFile = null;
+    [HideInInspector] public VideoClip videoFile = null;
     [HideInInspector] public SocialMediaUser dmUser = null;
     [HideInInspector] public bool dmUserPasswordFound = false;
     [HideInInspector] public bool multipleInstancesAllowed = false;
@@ -50,6 +53,8 @@ public class OSWindow : MonoBehaviour
     [SerializeField] private GameObject startSettingsContent;
     [SerializeField] private GameObject bigImageContent;
     [SerializeField] private GameObject dmPageContent;
+    [SerializeField] private GameObject tipsPageContent;
+    [SerializeField] private GameObject videoContent;
 
     private void Awake()
     {
@@ -118,10 +123,17 @@ public class OSWindow : MonoBehaviour
         else if (appType == OSAppType.IMAGE)
         {
             content = Instantiate(bigImageContent, transform.Find("Content"));
-            content.GetComponent<OSBigImageContent>().Setup(imagePost);
+
+            if (imagePost)
+                content.GetComponent<OSBigImageContent>().Setup(imagePost);
+            else if (imageFile)
+                content.GetComponent<OSBigImageContent>().Setup(imageFile);
+            else if (videoFile)
+                content.GetComponent<OSBigImageContent>().Setup(videoFile);
+
             resizeButtons = new RectTransform[] { buttonSmall, buttonLong, buttonBig };
             multipleInstancesAllowed = true;
-            topBarTextMesh.text = "Image Viewer";
+            topBarTextMesh.text = "Media Viewer";
         }
         else if (appType == OSAppType.DM_PAGE)
         {
@@ -129,6 +141,12 @@ public class OSWindow : MonoBehaviour
             content.GetComponent<OSDmPageContent>().InitializeLoginPage(dmUser, dmUserPasswordFound);
             multipleInstancesAllowed = true;
             topBarTextMesh.text = "Direct Messages";
+        }
+        else if (appType == OSAppType.TIPS_PAGE)
+        {
+            content = Instantiate(tipsPageContent, transform.Find("Content"));
+            resizeButtons = new RectTransform[] { buttonSmall, buttonLong };
+            topBarTextMesh.text = "Tips & Tricks - File Explorer";
         }
 
         // Activate allowed resize buttons (except for buttonSmall, it will be deactivated either way)

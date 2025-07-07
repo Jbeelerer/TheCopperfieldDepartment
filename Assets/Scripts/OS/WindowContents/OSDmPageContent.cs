@@ -39,16 +39,11 @@ public class OSDmPageContent : MonoBehaviour
     {
         popupManager = GameObject.Find("PopupMessage").GetComponent<OSPopupManager>();
 
+        computerControls.OnUserPasswordFound.AddListener(UnlockPassword);
+
         ChangeInfoBar("Login Page", hidden: true);
 
-        usernameField.text = currentUser.username;
-        if (passwordFound)
-        {
-            InstantiateConversations();
-            passwordField.text = "********";
-        }
-        loginButton.interactable = passwordFound;
-        loginFailedMessage.SetActive(!passwordFound);
+        SetLoginPageInfo();
     }
 
     public void InitializeLoginPage(SocialMediaUser user, bool pwFound)
@@ -69,6 +64,27 @@ public class OSDmPageContent : MonoBehaviour
                 newConvo.GetComponent<OSConversation>().MatchConvoToSenderView(currentUser);
             }
         }
+    }
+
+    private void UnlockPassword(SocialMediaUser affectedUser)
+    {
+        if (affectedUser == currentUser)
+        {
+            passwordFound = true;
+            SetLoginPageInfo();
+        }
+    }
+
+    private void SetLoginPageInfo()
+    {
+        usernameField.text = currentUser.username;
+        if (passwordFound)
+        {
+            InstantiateConversations();
+            passwordField.text = "********";
+        }
+        loginButton.interactable = passwordFound;
+        loginFailedMessage.SetActive(!passwordFound);
     }
 
     public void ShowConversationsPage()

@@ -164,6 +164,9 @@ public class AudioManager : MonoBehaviour
             case "Music Volume":
                 musicMixerGroup.audioMixer.SetFloat(parameterName, Mathf.Log10(value) * 20);
                 break;
+            case "Title Music Volume":
+                musicMixerGroup.audioMixer.SetFloat(parameterName, Mathf.Log10(value) * 20);
+                break;
             case "SFX Volume":
                 sfxMixerGroup.audioMixer.SetFloat(parameterName, Mathf.Log10(value) * 20);
                 break;
