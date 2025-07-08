@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 
 public class TitleMenu : MonoBehaviour
 {
     [SerializeField] private AudioSource bgm;
+    [SerializeField] private GameObject settingsPage;
 
     private Animator anim;
     private AudioSource doorAudio;
@@ -15,6 +17,8 @@ public class TitleMenu : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         doorAudio = GetComponent<AudioSource>();
+
+        settingsPage.GetComponent<SettingsMenu>().ApplyCurrentSettings();
     }
 
     public void PlayStartAnimation()
@@ -37,5 +41,15 @@ public class TitleMenu : MonoBehaviour
     public void QuitGame()
     {
         Application.Quit();
+    }
+
+    public void OpenSettings()
+    {
+        settingsPage.SetActive(true);
+    }
+
+    public void CloseSettings()
+    {
+        settingsPage.SetActive(false);
     }
 }

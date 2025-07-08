@@ -8,6 +8,8 @@ using static UnityEngine.Rendering.DebugUI;
 
 public class SettingsMenu : MonoBehaviour
 {
+    [SerializeField] private AudioManager audioManager;
+
     [SerializeField] private GameObject gameSettings;
     [SerializeField] private GameObject soundSettings;
     [SerializeField] private GameObject displaySettings;
@@ -32,8 +34,6 @@ public class SettingsMenu : MonoBehaviour
     private float musicVolume;
     private float voiceVolume;
 
-    private AudioManager am;
-
     private void OnEnable()
     {
         ShowGameSettings();
@@ -47,8 +47,6 @@ public class SettingsMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        am = AudioManager.instance;
-
         resolutionDropdown.options.Insert(0, new TMP_Dropdown.OptionData(Screen.currentResolution.width + " x " + Screen.currentResolution.height + " (Monitor Resolution)"));
     }
 
@@ -83,15 +81,18 @@ public class SettingsMenu : MonoBehaviour
 
     public void OnMusicSliderValueChange(float value)
     {
-        if (am)
-            am.UpdateMixerValue("Music Volume", value);
+        if (audioManager)
+        {
+            audioManager.UpdateMixerValue("Music Volume", value);
+            audioManager.UpdateMixerValue("Title Music Volume", value);
+        }
         musicVolume = value;
     }
 
     public void OnVoiceSliderValueChange(float value)
     {
-        if (am)
-            am.UpdateMixerValue("Voice Volume", value);
+        if (audioManager)
+            audioManager.UpdateMixerValue("Voice Volume", value);
         voiceVolume = value;
     }
 
@@ -102,20 +103,23 @@ public class SettingsMenu : MonoBehaviour
 
     public void ApplyGameSettings()
     {
-        subtitleObj.SetActive(subtitleToggle.isOn);
+        if (subtitleObj != null)
+            subtitleObj.SetActive(subtitleToggle.isOn);
         PlayerPrefs.SetInt("SubtitlesOn", subtitleToggle.isOn ? 1 : 0);
 
-        switch (subtitleSizeDropdown.value)
-        {
-            case 0:
-                subtitleObj.GetComponent<TextMeshProUGUI>().fontSize = 18;
-                break;
-            case 1:
-                subtitleObj.GetComponent<TextMeshProUGUI>().fontSize = 24;
-                break;
-            case 2:
-                subtitleObj.GetComponent<TextMeshProUGUI>().fontSize = 30;
-                break;
+        if (subtitleObj != null) {
+            switch (subtitleSizeDropdown.value)
+            {
+                case 0:
+                    subtitleObj.GetComponent<TextMeshProUGUI>().fontSize = 18;
+                    break;
+                case 1:
+                    subtitleObj.GetComponent<TextMeshProUGUI>().fontSize = 24;
+                    break;
+                case 2:
+                    subtitleObj.GetComponent<TextMeshProUGUI>().fontSize = 30;
+                    break;
+            }
         }
         PlayerPrefs.SetInt("SubtitleSize", subtitleSizeDropdown.value);
     }
@@ -143,6 +147,7 @@ public class SettingsMenu : MonoBehaviour
 
     public void ApplyCurrentSettings()
     {
+        SetDisplayedSettingsToCurrent();
         ApplyGameSettings();
         ApplySoundSettings();
         ApplyDisplaySettings();

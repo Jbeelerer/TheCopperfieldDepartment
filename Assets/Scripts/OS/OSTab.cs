@@ -44,7 +44,10 @@ public class OSTab : MonoBehaviour
                 tabText = "Suspects";
                 break;
             case OSAppType.IMAGE:
-                tabText = "Image";
+                tabText = "Media";
+                break;
+            case OSAppType.TIPS_PAGE:
+                tabText = "Tips & Tricks";
                 break;
         }
         transform.Find("Text").GetComponent<TextMeshProUGUI>().text = tabText;

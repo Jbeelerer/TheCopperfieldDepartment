@@ -2,9 +2,11 @@ using SaveSystem;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.ProBuilder.MeshOperations;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 public enum OSAppType
 {
@@ -16,7 +18,8 @@ public enum OSAppType
     WARNING,
     START_SETTINGS,
     IMAGE,
-    DM_PAGE
+    DM_PAGE,
+    TIPS_PAGE
 }
 
 public enum OSInvestigationState
@@ -75,10 +78,22 @@ public class ComputerControls : MonoBehaviour, ISavable
     [HideInInspector] public OSWindow currentFocusedWindow;
 
     public PinEvent OnUnpinned;
+    public UnityEvent<SocialMediaUser> OnUserPasswordFound;
 
     public void SetMouseSensitivity(float sensitivity)
     {
-        mouseSensitivity = sensitivity;
+        if (sensitivity > 0)
+        {
+            mouseSensitivity = sensitivity;
+        } 
+        else if (sensitivity < 0)
+        {
+            mouseSensitivity = 1f + sensitivity * 0.1f;
+        } 
+        else
+        {
+            mouseSensitivity = 1;
+        }
     }
     public float GetMouseSensitivity()
     {
@@ -87,7 +102,7 @@ public class ComputerControls : MonoBehaviour, ISavable
 
     void Awake()
     {
-        mouseSensitivityModifier = UnityEngine.Screen.height / 40;
+        mouseSensitivityModifier = UnityEngine.Screen.height / 120;
     }
 
     // Start is called before the first frame update
@@ -109,7 +124,7 @@ public class ComputerControls : MonoBehaviour, ISavable
 
         gm = GameManager.instance;
         print(gm);
-        gm.OnNewDay.AddListener(CloseAllWindows);
+        gm.OnNewDay.AddListener(ResetComputer);
 
         // Run stuff on first day only
         if (gm.GetDay() == 1)
@@ -124,8 +139,8 @@ public class ComputerControls : MonoBehaviour, ISavable
         if (!cursorActive)
             return;
 
-        mouseSpeedX = (mouseSensitivity + mouseSensitivityModifier) * Input.GetAxis("Mouse X");
-        mouseSpeedY = (mouseSensitivity + mouseSensitivityModifier) * Input.GetAxis("Mouse Y");
+        mouseSpeedX = mouseSensitivity * mouseSensitivityModifier * Input.GetAxis("Mouse X");
+        mouseSpeedY = mouseSensitivity * mouseSensitivityModifier * Input.GetAxis("Mouse Y");
 
         // Move cursor
         MoveMouse();
@@ -284,9 +299,14 @@ public class ComputerControls : MonoBehaviour, ISavable
                     pointySystem.StartTutorial("EvilSocialMedia", toggledAutomatically);
                 }*/
                 //else
-                //{
-                pointySystem.StartTutorial("SocialMedia", toggledAutomatically);
-                //}
+                if (gm.GetDay() == 2)
+                {
+                    pointySystem.StartTutorial("SocialMediaProfiles", toggledAutomatically);
+                }
+                else
+                {
+                    pointySystem.StartTutorial("SocialMedia", toggledAutomatically);
+                }
                 break;
             case OSAppType.GOV:
                 pointySystem.StartTutorial("GovApp", toggledAutomatically);
@@ -301,6 +321,12 @@ public class ComputerControls : MonoBehaviour, ISavable
                 if (gm.GetDay() == 6)
                 {
                     pointySystem.StartTutorial("InspectionTutorial", toggledAutomatically);
+                }
+                break;
+            case OSAppType.TIPS_PAGE:
+                if (pointySystem.CheckIfTutorialCompleted("TipsPageStart"))
+                {
+                    pointySystem.StartTutorial("TipsPage", toggledAutomatically);
                 }
                 break;
             default:
@@ -381,8 +407,39 @@ public class ComputerControls : MonoBehaviour, ISavable
         }
     }
 
+    public bool CheckIfWindowIsOpen(OSAppType appType)
+    {
+        foreach (OSWindow window in windows)
+        {
+            if (window.appType == appType && window.gameObject.activeInHierarchy)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void TriggerAppNotification(OSAppType appType)
+    {
+        // TODO: Handle this inside the OSApplication class instead
+        foreach (OSApplication app in apps)
+        {
+            if (app.appType == appType)
+            {
+                if (app.transform.Find("Notif"))
+                {
+                    app.transform.Find("Notif").gameObject.SetActive(true);
+                }
+                break;
+            }
+        }
+    }
+
     private void CheckAppMouseUp()
     {
+        if (pointySystem.GetIsPointyActive())
+            return;
+
         foreach (OSApplication app in apps)
         {
             GameObject hitObject = GetFirstHitObject();
@@ -557,7 +614,15 @@ public class ComputerControls : MonoBehaviour, ISavable
         window.gameObject.SetActive(false);
     }
 
-    private void CloseAllWindows()
+    public void CloseAllWindows()
+    {
+        foreach (OSWindow window in windows)
+        {
+            CloseWindow(window);
+        }
+    }
+
+    public void ResetComputer()
     {
         foreach (OSWindow window in windows)
         {
@@ -566,9 +631,10 @@ public class ComputerControls : MonoBehaviour, ISavable
             Destroy(window.gameObject);
         }
         windows.Clear();
+        pointySystem.HidePointy();
     }
 
-    public void OpenWindow(OSAppType type, string warningMessage = "Warning message", System.Action successFunc = null, bool hasCancelBtn = true, SocialMediaPost imagePost = null, SocialMediaUser dmUser = null, bool dmUserPasswordFound = false)
+    public void OpenWindow(OSAppType type, string warningMessage = "Warning message", System.Action successFunc = null, bool hasCancelBtn = true, SocialMediaPost imagePost = null, Sprite imageFile = null, VideoClip videoFile = null, SocialMediaUser dmUser = null, bool dmUserPasswordFound = false)
     {
         audioManager.PlayAudio(windowOpenSound);
         // Check if the window is already open (if multiple instances of the same type are not allowed)
@@ -594,6 +660,8 @@ public class ComputerControls : MonoBehaviour, ISavable
         newWindow.GetComponent<OSWindow>().warningSuccessFunc = successFunc;
         newWindow.GetComponent<OSWindow>().hasCancelBtn = hasCancelBtn;
         newWindow.GetComponent<OSWindow>().imagePost = imagePost;
+        newWindow.GetComponent<OSWindow>().imageFile = imageFile;
+        newWindow.GetComponent<OSWindow>().videoFile = videoFile;
         newWindow.GetComponent<OSWindow>().dmUser = dmUser;
         newWindow.GetComponent<OSWindow>().dmUserPasswordFound = dmUserPasswordFound;
         BringWindowToFront(newWindow.GetComponent<OSWindow>());
