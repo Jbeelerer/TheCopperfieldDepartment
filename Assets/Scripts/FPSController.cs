@@ -8,6 +8,8 @@ using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.Events;
 using System;
 using Cinemachine;
+using SaveSystem;
+using UnityEngine.SceneManagement;
 
 
 [System.Serializable]
@@ -546,6 +548,12 @@ public class FPSController : MonoBehaviour
                 if (Input.GetMouseButtonDown(0))
                 {
                     inputOverlay.SetIcon("");
+                    if (hit.collider.gameObject.name == "Trash")
+                    {
+                        SaveManager.instance.DeleteSave();
+                        gm.ResetGame();
+                        SceneManager.LoadScene(0);
+                    }
                     if (hit.collider.gameObject.tag == "Grabbable")
                     {
                         grabbedObject = hit.collider.gameObject.GetComponent<Grabbable>();
