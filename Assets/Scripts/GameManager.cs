@@ -87,6 +87,13 @@ public class GameManager : MonoBehaviour, ISavable
 
     private bool calendarLoad = false;
     private GameObject instantiatedDayIntro;
+
+    private bool instantiateLoadedDay = false;
+
+    public bool GetInstantiateLoadedDay()
+    {
+        return instantiateLoadedDay;
+    }
     public bool PinboardBlocked
     {
         get { return _pinboardBlocked; }
@@ -258,8 +265,7 @@ public class GameManager : MonoBehaviour, ISavable
             }
         }
         print("Loading day: " + furthestDay);
-        LoadNewDay(furthestDay);
-
+        LoadNewDay(furthestDay, true);
         PinboardBlocked = day == 1;
         DayIntro();
     }
@@ -368,9 +374,6 @@ public class GameManager : MonoBehaviour, ISavable
     {
         saveManager = SaveManager.instance;
         am = AudioManager.instance;
-        // TODO REMOVED SAVE SYSTEM FOR NOW
-        StartCoroutine(DelayFirstDay());
-
         SetStartTransform(GameObject.Find("Player").transform);
 
         if (Utility.CheckSaveFileExists(instance.saveFile.ToString()))
@@ -432,8 +435,9 @@ public class GameManager : MonoBehaviour, ISavable
         conversations = Resources.LoadAll<DMConversation>(dayOrder[day] + "/Conversations");
         return false;
     }
-    public void LoadNewDay(int day)
+    public void LoadNewDay(int day, bool loaded = false)
     {
+        instantiateLoadedDay = loaded;
         if (instantiatedDayIntro != null)
             Destroy(instantiatedDayIntro);
         if (currentCase != null && currentCase.personReasoning != null && currentCase.personReasoning.Count != 0)
@@ -485,7 +489,7 @@ public class GameManager : MonoBehaviour, ISavable
         SortCompetingEmployees();
         OnNewDay?.Invoke();
         reload();
-        if (calendarLoad)
+        if (calendarLoad && day != 1)
         {
             DayIntro();
         }

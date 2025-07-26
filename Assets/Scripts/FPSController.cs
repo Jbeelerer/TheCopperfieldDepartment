@@ -875,6 +875,11 @@ public class FPSController : MonoBehaviour
 
     public void ResetPlayer()
     {
+        StartCoroutine(waitForPlayerToBeReady());
+    }
+    public IEnumerator waitForPlayerToBeReady()
+    {
+        yield return new WaitForEndOfFrame();
         transform.position = gm.GetStartPosition();
         transform.rotation = gm.GetStartRotation();
         rotationX = 0;

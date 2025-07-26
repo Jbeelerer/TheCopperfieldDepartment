@@ -1,4 +1,5 @@
 using SaveSystem;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -85,11 +86,11 @@ public class ComputerControls : MonoBehaviour, ISavable
         if (sensitivity > 0)
         {
             mouseSensitivity = sensitivity;
-        } 
+        }
         else if (sensitivity < 0)
         {
             mouseSensitivity = 1f + sensitivity * 0.1f;
-        } 
+        }
         else
         {
             mouseSensitivity = 1;
@@ -123,14 +124,20 @@ public class ComputerControls : MonoBehaviour, ISavable
         audioManager = AudioManager.instance;
 
         gm = GameManager.instance;
-        print(gm);
         gm.OnNewDay.AddListener(ResetComputer);
+        // wait for the initialization of the saved day
+        StartCoroutine(waitForDayInit());
+    }
 
+    public IEnumerator waitForDayInit()
+    {
+        yield return new WaitForEndOfFrame();
         // Run stuff on first day only
         if (gm.GetDay() == 1)
         {
             OpenWindow(OSAppType.START_SETTINGS);
         }
+
     }
 
     // Update is called once per frame

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
@@ -129,6 +130,11 @@ public class Narration : MonoBehaviour
         timedSubtitles = JsonUtility.FromJson<TimedSubtitles>(jsonFile.text);
         shortSubtitles = JsonUtility.FromJson<ShortSubtitles>(shortSubtitlesJsonFile.text);
 
+        StartCoroutine(CheckIntroSequence());
+    }
+    public IEnumerator CheckIntroSequence()
+    {
+        yield return new WaitForEndOfFrame();
         if (gm.GetDay() == 1)
         {
             gm.PinboardBlocked = true;
