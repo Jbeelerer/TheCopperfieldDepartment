@@ -216,7 +216,7 @@ public class OSSocialMediaContent : MonoBehaviour
 
     public void ShowHomeFeed()
     {
-        ChangeSearchBar("Home", false);
+        ChangeSearchBar("Hot & Trending", false);
 
         currentUser = null;
         homePage.transform.SetAsLastSibling();
