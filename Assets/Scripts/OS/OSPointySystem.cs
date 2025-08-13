@@ -17,7 +17,7 @@ public class PointyTutorialStep
     public int stepsToGetToSpecificParent;
 }
 
-public class OSPointySystem : MonoBehaviour
+public class OSPointySystem : MonoBehaviour, ISavable
 {
     [SerializeField] private bool deactivatePointy = false;
 

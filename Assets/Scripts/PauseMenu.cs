@@ -34,7 +34,7 @@ public class PauseMenu : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.Escape))
         {
             // Don't allow pausing when at computer
             if (!isPaused && gm.GetGameState() != GameState.OnPC)

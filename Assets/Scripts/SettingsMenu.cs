@@ -44,10 +44,9 @@ public class SettingsMenu : MonoBehaviour
         ApplySoundSettings();
     }
 
-    // Start is called before the first frame update
-    void Start()
+    public void AddNativeResolution()
     {
-        resolutionDropdown.options.Insert(0, new TMP_Dropdown.OptionData(Screen.currentResolution.width + " x " + Screen.currentResolution.height + " (Monitor Resolution)"));
+        resolutionDropdown.options.Insert(0, new TMP_Dropdown.OptionData(Display.main.systemWidth + " x " + Display.main.systemHeight + " (Monitor Resolution)"));
     }
 
     public void ShowGameSettings()

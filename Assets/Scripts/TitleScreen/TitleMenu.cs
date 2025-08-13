@@ -18,6 +18,7 @@ public class TitleMenu : MonoBehaviour
         anim = GetComponent<Animator>();
         doorAudio = GetComponent<AudioSource>();
 
+        settingsPage.GetComponent<SettingsMenu>().AddNativeResolution();
         settingsPage.GetComponent<SettingsMenu>().ApplyCurrentSettings();
     }
 
