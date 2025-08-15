@@ -9,6 +9,8 @@ using UnityEngine.UI;
 public class OSSettingsContent : MonoBehaviour
 {
     [SerializeField] private Slider sensitivitySlider;
+    [SerializeField] private Image cursorImage1;
+    [SerializeField] private Texture2D[] cursorSkinTextures;
 
     private ComputerControls computerControls;
 
@@ -24,6 +26,14 @@ public class OSSettingsContent : MonoBehaviour
     public void ChangeSensitivity()
     {
         computerControls.SetMouseSensitivity(sensitivitySlider.value);
+    }
+
+    public void ChangeCursorSkin(bool forward)
+    {
+        if (forward)
+        {
+            cursorImage1.sprite = Sprite.Create(cursorSkinTextures[0], new Rect(0, 32, 32, 32), new Vector2(0.5f, 0.5f));
+        }
     }
 
     public void ConfirmSettings()
