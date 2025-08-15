@@ -9,8 +9,7 @@ using UnityEngine.UI;
 public class OSSettingsContent : MonoBehaviour
 {
     [SerializeField] private Slider sensitivitySlider;
-    [SerializeField] private Image cursorImage1;
-    [SerializeField] private Texture2D[] cursorSkinTextures;
+    [SerializeField] private Transform cursorShowcaseSprites;
 
     private ComputerControls computerControls;
 
@@ -21,6 +20,7 @@ public class OSSettingsContent : MonoBehaviour
             computerControls = transform.GetComponentInParent<ComputerControls>();
 
         sensitivitySlider.value = computerControls.GetMouseSensitivity();
+        SetCursorShowcaseSprites();
     }
 
     public void ChangeSensitivity()
@@ -28,11 +28,19 @@ public class OSSettingsContent : MonoBehaviour
         computerControls.SetMouseSensitivity(sensitivitySlider.value);
     }
 
-    public void ChangeCursorSkin(bool forward)
+    public void ChangeCursorSkin(bool cyclingForward)
     {
-        if (forward)
+        computerControls.SwitchCursorSkin(cyclingForward);
+
+        SetCursorShowcaseSprites();
+    }
+
+    private void SetCursorShowcaseSprites()
+    {
+        Sprite[] newCursorSprites = computerControls.GetCursorSprites();
+        for (int i = 0; i < cursorShowcaseSprites.childCount; i++)
         {
-            cursorImage1.sprite = Sprite.Create(cursorSkinTextures[0], new Rect(0, 32, 32, 32), new Vector2(0.5f, 0.5f));
+            cursorShowcaseSprites.GetChild(i).GetComponent<Image>().sprite = newCursorSprites[i];
         }
     }
 

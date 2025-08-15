@@ -22,6 +22,7 @@ namespace SaveSystem
         public List<SaveableEmployee> competingEmployees = new List<SaveableEmployee>();
 
         public float mouseSensitivity;
+        public int cursorSkinIndex;
         public List<string> completedTutorials = new List<string>();
 
         public SaveData()

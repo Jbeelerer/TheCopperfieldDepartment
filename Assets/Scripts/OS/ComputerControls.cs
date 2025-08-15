@@ -34,6 +34,7 @@ public class ComputerControls : MonoBehaviour, ISavable
 {
     private float mouseSensitivity = 1;
     private float mouseSensitivityModifier = 0;
+    private int cursorSkinIndex = 0;
     public RectTransform cursor;
     public RectTransform background;
     public RectTransform taskBar;
@@ -43,9 +44,7 @@ public class ComputerControls : MonoBehaviour, ISavable
     public GameObject windowPrefab;
     public GameObject tabPrefab;
     public List<OSApplication> apps = new List<OSApplication>();
-    public Sprite cursorNormal;
-    public Sprite cursorClickable;
-    public Sprite cursorForbidden;
+    public Texture2D[] cursorSkinTextures;
     public Sprite cursorInspect;
     public Sprite cursorInspectExclamation;
     public OSInvestigationState investigationState = OSInvestigationState.NONE;
@@ -77,6 +76,10 @@ public class ComputerControls : MonoBehaviour, ISavable
     [HideInInspector] public AudioManager audioManager;
     [HideInInspector] public RectTransform screen;
     [HideInInspector] public OSWindow currentFocusedWindow;
+    [HideInInspector] public Sprite cursorNormal;
+    [HideInInspector] public Sprite cursorClickable;
+    [HideInInspector] public Sprite cursorForbidden;
+    [HideInInspector] public Sprite cursorLoading;
 
     public PinEvent OnUnpinned;
     public UnityEvent<SocialMediaUser> OnUserPasswordFound;
@@ -99,6 +102,36 @@ public class ComputerControls : MonoBehaviour, ISavable
     public float GetMouseSensitivity()
     {
         return mouseSensitivity;
+    }
+
+    private void SetCursorSkin()
+    {
+        cursorNormal = Sprite.Create(cursorSkinTextures[cursorSkinIndex], new Rect(0, 144, 48, 48), new Vector2(0.5f, 0.5f));
+        cursorClickable = Sprite.Create(cursorSkinTextures[cursorSkinIndex], new Rect(0, 96, 48, 48), new Vector2(0.5f, 0.5f));
+        cursorForbidden = Sprite.Create(cursorSkinTextures[cursorSkinIndex], new Rect(0, 48, 48, 48), new Vector2(0.5f, 0.5f));
+        cursorLoading = Sprite.Create(cursorSkinTextures[cursorSkinIndex], new Rect(0, 0, 48, 48), new Vector2(0.5f, 0.5f));
+    }
+
+    public void SwitchCursorSkin(bool cyclingForward)
+    {
+        if (cyclingForward)
+        {
+            cursorSkinIndex++;
+            if (cursorSkinIndex >= cursorSkinTextures.Length)
+                cursorSkinIndex = 0;
+        }
+        else
+        {
+            cursorSkinIndex--;
+            if (cursorSkinIndex < 0)
+                cursorSkinIndex = cursorSkinTextures.Length - 1;
+        }
+        SetCursorSkin();
+    }
+
+    public Sprite[] GetCursorSprites()
+    {
+        return new Sprite[] { cursorNormal, cursorClickable, cursorForbidden, cursorLoading };
     }
 
     void Awake()
@@ -127,6 +160,8 @@ public class ComputerControls : MonoBehaviour, ISavable
         gm.OnNewDay.AddListener(ResetComputer);
         // wait for the initialization of the saved day
         StartCoroutine(waitForDayInit());
+
+        SetCursorSkin();
     }
 
     public IEnumerator waitForDayInit()
@@ -842,10 +877,13 @@ public class ComputerControls : MonoBehaviour, ISavable
     public void LoadData(SaveData data)
     {
         mouseSensitivity = data.mouseSensitivity;
+        cursorSkinIndex = data.cursorSkinIndex;
+        SetCursorSkin();
     }
 
     public void SaveData(SaveData data)
     {
         data.mouseSensitivity = mouseSensitivity;
+        data.cursorSkinIndex = cursorSkinIndex;
     }
 }
