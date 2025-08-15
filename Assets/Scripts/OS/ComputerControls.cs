@@ -35,6 +35,7 @@ public class ComputerControls : MonoBehaviour, ISavable
     private float mouseSensitivity = 1;
     private float mouseSensitivityModifier = 0;
     private int cursorSkinIndex = 0;
+    private int wallpaperIndex = 0;
     public RectTransform cursor;
     public RectTransform background;
     public RectTransform taskBar;
@@ -47,6 +48,7 @@ public class ComputerControls : MonoBehaviour, ISavable
     public Texture2D[] cursorSkinTextures;
     public Sprite cursorInspect;
     public Sprite cursorInspectExclamation;
+    public Sprite[] wallpapers;
     public OSInvestigationState investigationState = OSInvestigationState.NONE;
     public TextMeshProUGUI computerTime;
     public TextMeshProUGUI computerDate;
@@ -134,6 +136,33 @@ public class ComputerControls : MonoBehaviour, ISavable
         return new Sprite[] { cursorNormal, cursorClickable, cursorForbidden, cursorLoading };
     }
 
+    private void SetWallpaper()
+    {
+        transform.Find("Background").GetComponent<Image>().sprite = wallpapers[wallpaperIndex];
+    }
+
+    public void SwitchWallpaper(bool cyclingForward)
+    {
+        if (cyclingForward)
+        {
+            wallpaperIndex++;
+            if (wallpaperIndex >= wallpapers.Length)
+                wallpaperIndex = 0;
+        }
+        else
+        {
+            wallpaperIndex--;
+            if (wallpaperIndex < 0)
+                wallpaperIndex = wallpapers.Length - 1;
+        }
+        SetWallpaper();
+    }
+
+    public string GetCurrentWallpaperName()
+    {
+        return wallpapers[wallpaperIndex].name;
+    }
+
     void Awake()
     {
         mouseSensitivityModifier = UnityEngine.Screen.height / 120;
@@ -162,6 +191,7 @@ public class ComputerControls : MonoBehaviour, ISavable
         StartCoroutine(waitForDayInit());
 
         SetCursorSkin();
+        SetWallpaper();
     }
 
     public IEnumerator waitForDayInit()
@@ -879,11 +909,14 @@ public class ComputerControls : MonoBehaviour, ISavable
         mouseSensitivity = data.mouseSensitivity;
         cursorSkinIndex = data.cursorSkinIndex;
         SetCursorSkin();
+        wallpaperIndex = data.wallpaperIndex;
+        SetWallpaper();
     }
 
     public void SaveData(SaveData data)
     {
         data.mouseSensitivity = mouseSensitivity;
         data.cursorSkinIndex = cursorSkinIndex;
+        data.wallpaperIndex = wallpaperIndex;
     }
 }

@@ -23,6 +23,7 @@ namespace SaveSystem
 
         public float mouseSensitivity;
         public int cursorSkinIndex;
+        public int wallpaperIndex;
         public List<string> completedTutorials = new List<string>();
 
         public SaveData()

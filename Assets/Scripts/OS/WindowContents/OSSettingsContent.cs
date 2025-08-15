@@ -10,6 +10,7 @@ public class OSSettingsContent : MonoBehaviour
 {
     [SerializeField] private Slider sensitivitySlider;
     [SerializeField] private Transform cursorShowcaseSprites;
+    [SerializeField] private TextMeshProUGUI wallpaperName;
 
     private ComputerControls computerControls;
 
@@ -21,6 +22,7 @@ public class OSSettingsContent : MonoBehaviour
 
         sensitivitySlider.value = computerControls.GetMouseSensitivity();
         SetCursorShowcaseSprites();
+        SetWallpaperName();
     }
 
     public void ChangeSensitivity()
@@ -31,7 +33,6 @@ public class OSSettingsContent : MonoBehaviour
     public void ChangeCursorSkin(bool cyclingForward)
     {
         computerControls.SwitchCursorSkin(cyclingForward);
-
         SetCursorShowcaseSprites();
     }
 
@@ -42,6 +43,17 @@ public class OSSettingsContent : MonoBehaviour
         {
             cursorShowcaseSprites.GetChild(i).GetComponent<Image>().sprite = newCursorSprites[i];
         }
+    }
+
+    public void ChangeWallpaper(bool cyclingForward)
+    {
+        computerControls.SwitchWallpaper(cyclingForward);
+        SetWallpaperName();
+    }
+
+    private void SetWallpaperName()
+    {
+        wallpaperName.text = computerControls.GetCurrentWallpaperName();
     }
 
     public void ConfirmSettings()
