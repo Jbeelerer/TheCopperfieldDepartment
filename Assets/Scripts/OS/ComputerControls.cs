@@ -80,8 +80,8 @@ public class ComputerControls : MonoBehaviour, ISavable
     [HideInInspector] public OSWindow currentFocusedWindow;
     [HideInInspector] public Sprite cursorNormal;
     [HideInInspector] public Sprite cursorClickable;
-    [HideInInspector] public Sprite cursorForbidden;
     [HideInInspector] public Sprite cursorLoading;
+    [HideInInspector] public Sprite cursorForbidden;
 
     public PinEvent OnUnpinned;
     public UnityEvent<SocialMediaUser> OnUserPasswordFound;
@@ -110,8 +110,8 @@ public class ComputerControls : MonoBehaviour, ISavable
     {
         cursorNormal = Sprite.Create(cursorSkinTextures[cursorSkinIndex], new Rect(0, 144, 48, 48), new Vector2(0.5f, 0.5f));
         cursorClickable = Sprite.Create(cursorSkinTextures[cursorSkinIndex], new Rect(0, 96, 48, 48), new Vector2(0.5f, 0.5f));
-        cursorForbidden = Sprite.Create(cursorSkinTextures[cursorSkinIndex], new Rect(0, 48, 48, 48), new Vector2(0.5f, 0.5f));
-        cursorLoading = Sprite.Create(cursorSkinTextures[cursorSkinIndex], new Rect(0, 0, 48, 48), new Vector2(0.5f, 0.5f));
+        cursorLoading = Sprite.Create(cursorSkinTextures[cursorSkinIndex], new Rect(0, 48, 48, 48), new Vector2(0.5f, 0.5f));
+        cursorForbidden = Sprite.Create(cursorSkinTextures[cursorSkinIndex], new Rect(0, 0, 48, 48), new Vector2(0.5f, 0.5f));
     }
 
     public void SwitchCursorSkin(bool cyclingForward)
@@ -133,7 +133,7 @@ public class ComputerControls : MonoBehaviour, ISavable
 
     public Sprite[] GetCursorSprites()
     {
-        return new Sprite[] { cursorNormal, cursorClickable, cursorForbidden, cursorLoading };
+        return new Sprite[] { cursorNormal, cursorClickable, cursorLoading, cursorForbidden };
     }
 
     private void SetWallpaper()
@@ -371,7 +371,7 @@ public class ComputerControls : MonoBehaviour, ISavable
                     pointySystem.StartTutorial("EvilSocialMedia", toggledAutomatically);
                 }*/
                 //else
-                if (gm.GetDay() == 2)
+                if (gm.GetDay() == 3)
                 {
                     pointySystem.StartTutorial("SocialMediaProfiles", toggledAutomatically);
                 }
