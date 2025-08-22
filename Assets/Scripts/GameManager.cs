@@ -651,8 +651,11 @@ public class GameManager : MonoBehaviour, ISavable
 
     public void DayIntro(float delay = 0)
     {
-        StartCoroutine(DayIntroCoroutine(delay));
-    }
+        if (day != 1)
+        {
+            StartCoroutine(DayIntroCoroutine(delay));
+        }
+    } 
     public IEnumerator DayIntroCoroutine(float delay = 0)
     {
         yield return new WaitForSeconds(delay);

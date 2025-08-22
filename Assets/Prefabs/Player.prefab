@@ -471,7 +471,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1148861583767469598}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -482,7 +482,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -0.000030517578, y: 0.000045776367}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1389251453309212496
@@ -2725,6 +2725,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cd322e0fe84347edbd39e50d41300ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  allSlides:
+  - slideName: intro
+    slide:
+    - {fileID: 21300000, guid: 2ce157e72ee84a34fa2bb14920aa875f, type: 3}
+    - {fileID: 21300000, guid: be3a512d19c579f4cb07b9674326e655, type: 3}
+    - {fileID: 21300000, guid: ed8b6ac7d7085aa439213a09eb36a5db, type: 3}
+    - {fileID: 21300000, guid: 6a52c74d493c67747a577f6c2bda225c, type: 3}
+    - {fileID: 21300000, guid: 93e667aad82f0c943b694e6248e8517d, type: 3}
+    - {fileID: 21300000, guid: 6bdf2e35aaf676b42bc3c836675a90d0, type: 3}
+  slideDisplayer: {fileID: 1148861583767469598}
   voiceMixerGroup: {fileID: 2883899741997736550, guid: 49c5b94da172b564cbb9aa4823a6a470,
     type: 2}
   notLeavingVoice: {fileID: 8300000, guid: bdbbbb453fe4246d08d1d78c004c5b79, type: 3}
@@ -4072,7 +4082,7 @@ PrefabInstance:
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 5155838672828550619, guid: a9439a789a58b47ae89076e09c23c8f8,
         type: 3}
-      insertIndex: -1
+      insertIndex: 1
       addedObject: {fileID: 144372554891533500}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a9439a789a58b47ae89076e09c23c8f8, type: 3}

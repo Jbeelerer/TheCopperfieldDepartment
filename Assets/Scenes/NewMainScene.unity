@@ -125,6 +125,44 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!84 &1652612
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 5
+  m_Width: 256
+  m_Height: 256
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 90
+  m_ColorFormat: 0
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_EnableRandomWrite: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!1 &58528904
 GameObject:
   m_ObjectHideFlags: 0
@@ -678,6 +716,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f3c343b11a5594f0aa8f9685f4094ebd, type: 3}
+--- !u!1 &185376340 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1148861583767469598, guid: 469e21c591b784c9a821d608d66deb51,
+    type: 3}
+  m_PrefabInstance: {fileID: 1930086772}
+  m_PrefabAsset: {fileID: 0}
 --- !u!43 &254708936
 Mesh:
   m_ObjectHideFlags: 0
@@ -1300,7 +1344,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_TargetTexture
       value: 
-      objectReference: {fileID: 429434582}
+      objectReference: {fileID: 1328038160}
     - target: {fileID: 1212448485681063110, guid: c83f138dcde4140b8bfb76cd908da4e3,
         type: 3}
       propertyPath: m_Mesh
@@ -1520,7 +1564,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2129462852}
+      objectReference: {fileID: 1032907787}
     - target: {fileID: 4864691175902742160, guid: c83f138dcde4140b8bfb76cd908da4e3,
         type: 3}
       propertyPath: m_Mesh
@@ -1710,7 +1754,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_TargetTexture
       value: 
-      objectReference: {fileID: 1156383170}
+      objectReference: {fileID: 1111531405}
     - target: {fileID: 7396450561798700967, guid: c83f138dcde4140b8bfb76cd908da4e3,
         type: 3}
       propertyPath: m_StaticEditorFlags
@@ -1986,44 +2030,6 @@ Mesh:
     offset: 0
     size: 0
     path: 
---- !u!84 &429434582
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 5
-  m_Width: 1024
-  m_Height: 1024
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 90
-  m_ColorFormat: 0
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_EnableRandomWrite: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 0
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!1001 &441683637
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3519,44 +3525,6 @@ Mesh:
     offset: 0
     size: 0
     path: 
---- !u!84 &645148994
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 5
-  m_Width: 256
-  m_Height: 256
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 90
-  m_ColorFormat: 0
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_EnableRandomWrite: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!1001 &656332978
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5316,6 +5284,44 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!84 &894920950
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 5
+  m_Width: 1024
+  m_Height: 1024
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 90
+  m_ColorFormat: 0
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_EnableRandomWrite: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!1 &914298850
 GameObject:
   m_ObjectHideFlags: 0
@@ -6184,6 +6190,127 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!21 &1032907787
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: DustParticle(Clone)
+  m_Shader: {fileID: 4800000, guid: fc2655527708b470d9b23bfe28ede3e9, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - VL_PHYSICAL_ATTEN
+  - VL_SHADOWS
+  - VL_SPOT
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 3102
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BaseMap:
+        m_Texture: {fileID: 2800000, guid: ed6dc1204147d451d96326c7fedc6727, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Cookie2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: ed6dc1204147d451d96326c7fedc6727, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SpecGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AlphaClip: 0
+    - _Blend: 0
+    - _BlendOp: 0
+    - _Border: 1
+    - _BumpScale: 1
+    - _CameraFadingEnabled: 0
+    - _CameraFarFadeDistance: 2
+    - _CameraNearFadeDistance: 1
+    - _ColorMode: 0
+    - _Cull: 2
+    - _Cutoff: 0.5
+    - _DistanceFallOff: 1
+    - _DistortionBlend: 0.5
+    - _DistortionEnabled: 0
+    - _DistortionStrength: 1
+    - _DistortionStrengthScaled: 0.1
+    - _DstBlend: 0
+    - _EnvironmentReflections: 1
+    - _FlipbookBlending: 0
+    - _FlipbookMode: 0
+    - _GlossMapScale: 0
+    - _Glossiness: 0
+    - _GlossyReflections: 0
+    - _Metallic: 0
+    - _Mode: 0
+    - _NearClipDistance: 0
+    - _OcclusionStrength: 1
+    - _ParticleDistanceAtten: 225
+    - _QueueOffset: 0
+    - _ReceiveShadows: 1
+    - _Smoothness: 0.5
+    - _SmoothnessTextureChannel: 0
+    - _SoftParticlesEnabled: 0
+    - _SoftParticlesFarFadeDistance: 1
+    - _SoftParticlesNearFadeDistance: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _Surface: 0
+    - _WorkflowMode: 1
+    - _ZWrite: 1
+    m_Colors:
+    - _AreaExtents: {r: 0, g: 0, b: 0, a: 1}
+    - _BaseColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _BaseColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
+    - _BoundsCenter: {r: 0.14, g: 1.0971384, b: 2.013188, a: 0}
+    - _BoundsExtents: {r: 25.35714, g: 7.6622, b: 25.585197, a: 0}
+    - _CameraFadeParams: {r: 0, g: 0, b: 0, a: 0}
+    - _Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _ConeAxis: {r: 0, g: -13.484704, b: 0.4894898, a: 182.0768}
+    - _ConeTipData: {r: 0.14, g: 7.8394904, b: 1.7684432, a: 0}
+    - _Cookie2D_Offset: {r: 0, g: 0, b: 0, a: 0}
+    - _Cookie2D_SS: {r: 1, g: 1, b: 0, a: 0}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _ExtraGeoData: {r: 25.35714, g: -0.005492188, b: 1, a: 13.493584}
+    - _FallOff: {r: 1, g: 2, b: 15, a: 0}
+    - _ParticleTintColor: {r: 0.35, g: 0.33307782, b: 0.28231132, a: 0.35}
+    - _ShadowIntensity: {r: 1, g: 0, b: 0, a: 0}
+    - _SoftParticleFadeParams: {r: 0, g: 0, b: 0, a: 0}
+    - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
+    - _TintColor: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 0.5019608}
+  m_BuildTextureStacks: []
 --- !u!1 &1082835585
 GameObject:
   m_ObjectHideFlags: 0
@@ -6302,6 +6429,44 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!84 &1111531405
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 5
+  m_Width: 256
+  m_Height: 256
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 90
+  m_ColorFormat: 0
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_EnableRandomWrite: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 0
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!1 &1130293588
 GameObject:
   m_ObjectHideFlags: 0
@@ -6346,44 +6511,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!84 &1134100960
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 5
-  m_Width: 1024
-  m_Height: 1024
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 90
-  m_ColorFormat: 0
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_EnableRandomWrite: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!43 &1146266003
 Mesh:
   m_ObjectHideFlags: 0
@@ -6549,44 +6676,6 @@ Mesh:
     offset: 0
     size: 0
     path: 
---- !u!84 &1156383170
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 5
-  m_Width: 256
-  m_Height: 256
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 90
-  m_ColorFormat: 0
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_EnableRandomWrite: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 0
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!1001 &1210533512
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7767,6 +7856,44 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!84 &1328038160
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 5
+  m_Width: 1024
+  m_Height: 1024
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 90
+  m_ColorFormat: 0
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_EnableRandomWrite: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 0
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!43 &1469198373
 Mesh:
   m_ObjectHideFlags: 0
@@ -9304,6 +9431,11 @@ PrefabInstance:
       propertyPath: interactionReach
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 1148861583767469598, guid: 469e21c591b784c9a821d608d66deb51,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1182157706933207207, guid: 469e21c591b784c9a821d608d66deb51,
         type: 3}
       propertyPath: m_text
@@ -9396,6 +9528,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8469155976466149539, guid: 469e21c591b784c9a821d608d66deb51,
         type: 3}
+      propertyPath: slideDisplayer
+      value: 
+      objectReference: {fileID: 185376340}
+    - target: {fileID: 8469155976466149539, guid: 469e21c591b784c9a821d608d66deb51,
+        type: 3}
       propertyPath: deletePostVoice
       value: 
       objectReference: {fileID: 8300000, guid: 6784f2fb3686b43aca4797777aa3f1f7, type: 3}
@@ -9404,6 +9541,11 @@ PrefabInstance:
       propertyPath: notLeavingVoice
       value: 
       objectReference: {fileID: 8300000, guid: bdb52bab6acba48b9b9c64ca40e24901, type: 3}
+    - target: {fileID: 8469155976466149539, guid: 469e21c591b784c9a821d608d66deb51,
+        type: 3}
+      propertyPath: slides.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8469155976466149539, guid: 469e21c591b784c9a821d608d66deb51,
         type: 3}
       propertyPath: suspectFoundVoice
@@ -9416,6 +9558,11 @@ PrefabInstance:
       objectReference: {fileID: 8300000, guid: 68893926aa2d24b4199f359688a35513, type: 3}
     - target: {fileID: 8469155976466149539, guid: 469e21c591b784c9a821d608d66deb51,
         type: 3}
+      propertyPath: allSlides.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8469155976466149539, guid: 469e21c591b784c9a821d608d66deb51,
+        type: 3}
       propertyPath: negativeFeedbackVoice
       value: 
       objectReference: {fileID: 8300000, guid: bfe38ebc35e644a13b45798aa4e0a9ff, type: 3}
@@ -9424,6 +9571,146 @@ PrefabInstance:
       propertyPath: positiveFeedbackVoice
       value: 
       objectReference: {fileID: 8300000, guid: d13f46384d4de42118b1ed048b357730, type: 3}
+    - target: {fileID: 8469155976466149539, guid: 469e21c591b784c9a821d608d66deb51,
+        type: 3}
+      propertyPath: slides.Array.data[0].slideName
+      value: intro
+      objectReference: {fileID: 0}
+    - target: {fileID: 8469155976466149539, guid: 469e21c591b784c9a821d608d66deb51,
+        type: 3}
+      propertyPath: allSlides.Array.data[0].slideName
+      value: intro
+      objectReference: {fileID: 0}
+    - target: {fileID: 8469155976466149539, guid: 469e21c591b784c9a821d608d66deb51,
+        type: 3}
+      propertyPath: slides.Array.data[0].slide.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8469155976466149539, guid: 469e21c591b784c9a821d608d66deb51,
+        type: 3}
+      propertyPath: allSlides.Array.data[0].slide.Array.size
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 8469155976466149539, guid: 469e21c591b784c9a821d608d66deb51,
+        type: 3}
+      propertyPath: slides.Array.data[0].slide.Array.data[0]
+      value: 
+      objectReference: {fileID: 21300000, guid: 2ce157e72ee84a34fa2bb14920aa875f,
+        type: 3}
+    - target: {fileID: 8469155976466149539, guid: 469e21c591b784c9a821d608d66deb51,
+        type: 3}
+      propertyPath: slides.Array.data[0].slide.Array.data[1]
+      value: 
+      objectReference: {fileID: 21300000, guid: be3a512d19c579f4cb07b9674326e655,
+        type: 3}
+    - target: {fileID: 8469155976466149539, guid: 469e21c591b784c9a821d608d66deb51,
+        type: 3}
+      propertyPath: slides.Array.data[0].slide.Array.data[2]
+      value: 
+      objectReference: {fileID: 21300000, guid: ed8b6ac7d7085aa439213a09eb36a5db,
+        type: 3}
+    - target: {fileID: 8469155976466149539, guid: 469e21c591b784c9a821d608d66deb51,
+        type: 3}
+      propertyPath: slides.Array.data[0].slide.Array.data[3]
+      value: 
+      objectReference: {fileID: 21300000, guid: 6a52c74d493c67747a577f6c2bda225c,
+        type: 3}
+    - target: {fileID: 8469155976466149539, guid: 469e21c591b784c9a821d608d66deb51,
+        type: 3}
+      propertyPath: slides.Array.data[0].slide.Array.data[4]
+      value: 
+      objectReference: {fileID: 21300000, guid: 93e667aad82f0c943b694e6248e8517d,
+        type: 3}
+    - target: {fileID: 8469155976466149539, guid: 469e21c591b784c9a821d608d66deb51,
+        type: 3}
+      propertyPath: slides.Array.data[0].slide.Array.data[5]
+      value: 
+      objectReference: {fileID: 21300000, guid: 6bdf2e35aaf676b42bc3c836675a90d0,
+        type: 3}
+    - target: {fileID: 8469155976466149539, guid: 469e21c591b784c9a821d608d66deb51,
+        type: 3}
+      propertyPath: allSlides.Array.data[0].slide.Array.data[0]
+      value: 
+      objectReference: {fileID: 21300000, guid: 2ce157e72ee84a34fa2bb14920aa875f,
+        type: 3}
+    - target: {fileID: 8469155976466149539, guid: 469e21c591b784c9a821d608d66deb51,
+        type: 3}
+      propertyPath: allSlides.Array.data[0].slide.Array.data[1]
+      value: 
+      objectReference: {fileID: 21300000, guid: 2ce157e72ee84a34fa2bb14920aa875f,
+        type: 3}
+    - target: {fileID: 8469155976466149539, guid: 469e21c591b784c9a821d608d66deb51,
+        type: 3}
+      propertyPath: allSlides.Array.data[0].slide.Array.data[2]
+      value: 
+      objectReference: {fileID: 21300000, guid: 2ce157e72ee84a34fa2bb14920aa875f,
+        type: 3}
+    - target: {fileID: 8469155976466149539, guid: 469e21c591b784c9a821d608d66deb51,
+        type: 3}
+      propertyPath: allSlides.Array.data[0].slide.Array.data[3]
+      value: 
+      objectReference: {fileID: 21300000, guid: 2ce157e72ee84a34fa2bb14920aa875f,
+        type: 3}
+    - target: {fileID: 8469155976466149539, guid: 469e21c591b784c9a821d608d66deb51,
+        type: 3}
+      propertyPath: allSlides.Array.data[0].slide.Array.data[4]
+      value: 
+      objectReference: {fileID: 21300000, guid: be3a512d19c579f4cb07b9674326e655,
+        type: 3}
+    - target: {fileID: 8469155976466149539, guid: 469e21c591b784c9a821d608d66deb51,
+        type: 3}
+      propertyPath: allSlides.Array.data[0].slide.Array.data[5]
+      value: 
+      objectReference: {fileID: 21300000, guid: be3a512d19c579f4cb07b9674326e655,
+        type: 3}
+    - target: {fileID: 8469155976466149539, guid: 469e21c591b784c9a821d608d66deb51,
+        type: 3}
+      propertyPath: allSlides.Array.data[0].slide.Array.data[6]
+      value: 
+      objectReference: {fileID: 21300000, guid: ed8b6ac7d7085aa439213a09eb36a5db,
+        type: 3}
+    - target: {fileID: 8469155976466149539, guid: 469e21c591b784c9a821d608d66deb51,
+        type: 3}
+      propertyPath: allSlides.Array.data[0].slide.Array.data[7]
+      value: 
+      objectReference: {fileID: 21300000, guid: ed8b6ac7d7085aa439213a09eb36a5db,
+        type: 3}
+    - target: {fileID: 8469155976466149539, guid: 469e21c591b784c9a821d608d66deb51,
+        type: 3}
+      propertyPath: allSlides.Array.data[0].slide.Array.data[8]
+      value: 
+      objectReference: {fileID: 21300000, guid: 6a52c74d493c67747a577f6c2bda225c,
+        type: 3}
+    - target: {fileID: 8469155976466149539, guid: 469e21c591b784c9a821d608d66deb51,
+        type: 3}
+      propertyPath: allSlides.Array.data[0].slide.Array.data[9]
+      value: 
+      objectReference: {fileID: 21300000, guid: 6a52c74d493c67747a577f6c2bda225c,
+        type: 3}
+    - target: {fileID: 8469155976466149539, guid: 469e21c591b784c9a821d608d66deb51,
+        type: 3}
+      propertyPath: allSlides.Array.data[0].slide.Array.data[10]
+      value: 
+      objectReference: {fileID: 21300000, guid: 93e667aad82f0c943b694e6248e8517d,
+        type: 3}
+    - target: {fileID: 8469155976466149539, guid: 469e21c591b784c9a821d608d66deb51,
+        type: 3}
+      propertyPath: allSlides.Array.data[0].slide.Array.data[11]
+      value: 
+      objectReference: {fileID: 21300000, guid: 93e667aad82f0c943b694e6248e8517d,
+        type: 3}
+    - target: {fileID: 8469155976466149539, guid: 469e21c591b784c9a821d608d66deb51,
+        type: 3}
+      propertyPath: allSlides.Array.data[0].slide.Array.data[12]
+      value: 
+      objectReference: {fileID: 21300000, guid: 93e667aad82f0c943b694e6248e8517d,
+        type: 3}
+    - target: {fileID: 8469155976466149539, guid: 469e21c591b784c9a821d608d66deb51,
+        type: 3}
+      propertyPath: allSlides.Array.data[0].slide.Array.data[13]
+      value: 
+      objectReference: {fileID: 21300000, guid: 6bdf2e35aaf676b42bc3c836675a90d0,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -10035,127 +10322,6 @@ Mesh:
     offset: 0
     size: 0
     path: 
---- !u!21 &2129462852
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: DustParticle(Clone)
-  m_Shader: {fileID: 4800000, guid: fc2655527708b470d9b23bfe28ede3e9, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords:
-  - VL_PHYSICAL_ATTEN
-  - VL_SHADOWS
-  - VL_SPOT
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 1
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3102
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: ed6dc1204147d451d96326c7fedc6727, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _BumpMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Cookie2D:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _EmissionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: ed6dc1204147d451d96326c7fedc6727, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MetallicGlossMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _OcclusionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SpecGlossMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _AlphaClip: 0
-    - _Blend: 0
-    - _BlendOp: 0
-    - _Border: 1
-    - _BumpScale: 1
-    - _CameraFadingEnabled: 0
-    - _CameraFarFadeDistance: 2
-    - _CameraNearFadeDistance: 1
-    - _ColorMode: 0
-    - _Cull: 2
-    - _Cutoff: 0.5
-    - _DistanceFallOff: 1
-    - _DistortionBlend: 0.5
-    - _DistortionEnabled: 0
-    - _DistortionStrength: 1
-    - _DistortionStrengthScaled: 0.1
-    - _DstBlend: 0
-    - _EnvironmentReflections: 1
-    - _FlipbookBlending: 0
-    - _FlipbookMode: 0
-    - _GlossMapScale: 0
-    - _Glossiness: 0
-    - _GlossyReflections: 0
-    - _Metallic: 0
-    - _Mode: 0
-    - _NearClipDistance: 0
-    - _OcclusionStrength: 1
-    - _ParticleDistanceAtten: 225
-    - _QueueOffset: 0
-    - _ReceiveShadows: 1
-    - _Smoothness: 0.5
-    - _SmoothnessTextureChannel: 0
-    - _SoftParticlesEnabled: 0
-    - _SoftParticlesFarFadeDistance: 1
-    - _SoftParticlesNearFadeDistance: 0
-    - _SpecularHighlights: 1
-    - _SrcBlend: 1
-    - _Surface: 0
-    - _WorkflowMode: 1
-    - _ZWrite: 1
-    m_Colors:
-    - _AreaExtents: {r: 0, g: 0, b: 0, a: 1}
-    - _BaseColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    - _BaseColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
-    - _BoundsCenter: {r: 0.14, g: 1.0971384, b: 2.013188, a: 0}
-    - _BoundsExtents: {r: 25.35714, g: 7.6622, b: 25.585197, a: 0}
-    - _CameraFadeParams: {r: 0, g: 0, b: 0, a: 0}
-    - _Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    - _ConeAxis: {r: 0, g: -13.484704, b: 0.4894898, a: 182.0768}
-    - _ConeTipData: {r: 0.14, g: 7.8394904, b: 1.7684432, a: 0}
-    - _Cookie2D_Offset: {r: 0, g: 0, b: 0, a: 0}
-    - _Cookie2D_SS: {r: 1, g: 1, b: 0, a: 0}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _ExtraGeoData: {r: 25.35714, g: -0.005492188, b: 1, a: 13.493584}
-    - _FallOff: {r: 1, g: 2, b: 15, a: 0}
-    - _ParticleTintColor: {r: 0.35, g: 0.33307782, b: 0.28231132, a: 0.35}
-    - _ShadowIntensity: {r: 1, g: 0, b: 0, a: 0}
-    - _SoftParticleFadeParams: {r: 0, g: 0, b: 0, a: 0}
-    - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
-    - _TintColor: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 0.5019608}
-  m_BuildTextureStacks: []
 --- !u!1 &2142857802
 GameObject:
   m_ObjectHideFlags: 0

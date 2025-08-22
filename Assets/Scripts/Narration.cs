@@ -32,6 +32,12 @@ public class TimedSubtitle
     public string focus;
 }
 [System.Serializable]
+public class Slides
+{
+    public string slideName;
+    public Sprite[] slide;
+}
+[System.Serializable]
 public class TimedSubtitles
 {
     public TimedSubtitle[] intro;
@@ -57,6 +63,8 @@ public class ShortSubtitles
 
 public class Narration : MonoBehaviour
 {
+    [SerializeField] private Slides[] allSlides;
+    [SerializeField] private GameObject slideDisplayer;
     [SerializeField] private AudioMixerGroup voiceMixerGroup;
 
     [SerializeField] private AudioClip notLeavingVoice;
@@ -160,7 +168,7 @@ public class Narration : MonoBehaviour
                 currentCall = PlaySequence(timedSubtitles.exit, exit, false);
                 break;
             case "intro":
-                currentCall = PlaySequence(timedSubtitles.intro, introClip, false);
+                currentCall = PlaySequence(timedSubtitles.intro, introClip, false, false, true);
                 break;
             case "phoneCallIntro":
                 gm.PinboardBlocked = false;
@@ -302,7 +310,7 @@ public class Narration : MonoBehaviour
         currentCall = PlaySequence(content, clip, playNextDayAnimation);
     }
 
-    public IEnumerator PlaySequence(TimedSubtitle[] content, AudioClip clip, bool playNextDayAnimation = true)
+    public IEnumerator PlaySequence(TimedSubtitle[] content, AudioClip clip, bool playNextDayAnimation = true, bool autoplay = true, bool slides = false)
     {
         FPSController player = GameObject.Find("Player").GetComponent<FPSController>();
         Radio radio = FindObjectOfType<Radio>();
@@ -320,6 +328,11 @@ public class Narration : MonoBehaviour
         audioSource.clip = clip;
         audioSource.Play();
         bool lookedAway = false;
+        int slideCounter = 0;
+        
+        slideDisplayer.SetActive(slides);
+        slideDisplayer.transform.GetChild(1).gameObject.SetActive(false);
+        
 
         foreach (TimedSubtitle entry in content)
         {
@@ -371,12 +384,24 @@ public class Narration : MonoBehaviour
                 subtitleText.text = entry.text;
                 isTalking = true;
                 float startTime = Time.time;
-                while (!skip && (Time.time - startTime < entry.duration))
+                if (!autoplay)
+                {
+                    StartCoroutine(pauseSequence(entry.duration));
+                }
+                while ((!skip) && (!autoplay || Time.time - startTime < entry.duration))
                 {
                     yield return null;
                 }
+
                 if (skip)
                 {
+                    if (slides)
+                    {
+                        
+                        slideDisplayer.transform.GetChild(1).gameObject.SetActive(false);
+                        slideCounter++; 
+                        slideDisplayer.transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = allSlides[0].slide[slideCounter];
+                    }
                     skip = false;
                     if (entry.requirement != Requirement.None)
                     {
@@ -394,7 +419,6 @@ public class Narration : MonoBehaviour
                     }
                     textAnimator.Play("skip");
                 }
-
                 isTalking = false;
                 if (entry.requirement != Requirement.None)
                 {
@@ -458,6 +482,14 @@ public class Narration : MonoBehaviour
         }
         audioSource.Pause();
         currentCall = null;
+    }
+
+    private IEnumerator pauseSequence(float time)
+    {
+        yield return new WaitForSeconds(time);
+        
+        slideDisplayer.transform.GetChild(1).gameObject.SetActive(true);
+        audioSource.Stop(); 
     }
 
     public bool CancelSequence()
