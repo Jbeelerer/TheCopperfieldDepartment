@@ -397,10 +397,17 @@ public class Narration : MonoBehaviour
                 {
                     if (slides)
                     {
-                        
+
                         slideDisplayer.transform.GetChild(1).gameObject.SetActive(false);
-                        slideCounter++; 
-                        slideDisplayer.transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = allSlides[0].slide[slideCounter];
+                        slideCounter++;
+                        if (slideCounter >= allSlides[0].slide.Length)
+                        {
+                            slideDisplayer.SetActive(false);
+                        }
+                        else
+                        {
+                            slideDisplayer.transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = allSlides[0].slide[slideCounter];
+                        }
                     }
                     skip = false;
                     if (entry.requirement != Requirement.None)
