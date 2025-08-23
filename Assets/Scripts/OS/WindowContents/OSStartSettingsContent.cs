@@ -38,12 +38,11 @@ public class OSStartSettingsContent : MonoBehaviour
 
     public void ConfirmSettings()
     {
-        computerControls.SetMouseSensitivity(sensitivitySlider.value); ;
+        computerControls.SetMouseSensitivity(sensitivitySlider.value);
+        computerControls.CloseAllWindows();
         computerControls.TogglePointy(true);
 
         screenBlockadeBG.GetComponent<Image>().enabled = false;
         screenBlockadeTaskBar.GetComponent<Image>().enabled = false;
-        Destroy(GetComponentInParent<OSWindow>().associatedTab.gameObject);
-        Destroy(GetComponentInParent<OSWindow>().gameObject);
     }
 }

@@ -47,6 +47,7 @@ public class SettingsMenu : MonoBehaviour
     public void AddNativeResolution()
     {
         resolutionDropdown.options.Insert(0, new TMP_Dropdown.OptionData(Display.main.systemWidth + " x " + Display.main.systemHeight + " (Monitor Resolution)"));
+        resolutionDropdown.value = 4;
     }
 
     public void ShowGameSettings()
@@ -158,8 +159,8 @@ public class SettingsMenu : MonoBehaviour
         subtitleToggle.isOn = PlayerPrefs.GetInt("SubtitlesOn", 1) == 1;
 
         subtitleSizeDropdown.value = PlayerPrefs.GetInt("SubtitleSize", 1);
-        resolutionDropdown.Select();
-        resolutionDropdown.RefreshShownValue();
+        subtitleSizeDropdown.Select();
+        subtitleSizeDropdown.RefreshShownValue();
 
         //Sound
         sfxSlider.value = (float)PlayerPrefs.GetInt("SFXVolume", 100) / 100;

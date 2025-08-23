@@ -29,6 +29,7 @@ public class OSSocialMediaContent : MonoBehaviour
     private List<SocialMediaUser> pinnedUsers = new List<SocialMediaUser>();
     private List<SocialMediaUser> usersWithFoundPassword = new List<SocialMediaUser>();
     private FPSController fpsController;
+    private Sprite pinUserDefaultSprite;
 
     [HideInInspector] public List<OSSocialMediaPost> postList = new List<OSSocialMediaPost>();
 
@@ -49,7 +50,13 @@ public class OSSocialMediaContent : MonoBehaviour
         fpsController = GameObject.Find("Player").GetComponent<FPSController>();
         fpsController.OnPinDeletion.AddListener(RemovePinnedUser);
         StartCoroutine(InstanciateContent());
+
+        pinUserDefaultSprite = profilePageheader.Find("PinUser").GetComponent<Button>().image.sprite;
+
+        if (GameManager.instance.GetDay() < 5)
+            profilePageheader.Find("HackUser").gameObject.SetActive(false);
     }
+
     private IEnumerator InstanciateContent()
     {
         yield return new WaitForEndOfFrame();
@@ -238,11 +245,11 @@ public class OSSocialMediaContent : MonoBehaviour
         profilePageheader.Find("Description").GetComponent<TextMeshProUGUI>().text = user.bioText;
         if (pinnedUsers.Contains(user))
         {
-            profilePageheader.Find("PinUser").GetComponent<Image>().color = Color.red;
+            profilePageheader.Find("PinUser").GetComponent<Image>().sprite = profilePageheader.Find("PinUser").GetComponent<Button>().spriteState.pressedSprite;
         }
         else
         {
-            profilePageheader.Find("PinUser").GetComponent<Image>().color = Color.white;
+            profilePageheader.Find("PinUser").GetComponent<Image>().sprite = pinUserDefaultSprite;
         }
 
         // Show only posts from current user profile
@@ -305,7 +312,7 @@ public class OSSocialMediaContent : MonoBehaviour
         }
         if (so == currentUser)
         {
-            profilePageheader.Find("PinUser").GetComponent<Image>().color = Color.white;
+            profilePageheader.Find("PinUser").GetComponent<Image>().sprite = pinUserDefaultSprite;
         }
     }
 
@@ -317,7 +324,7 @@ public class OSSocialMediaContent : MonoBehaviour
         }
         if (user == currentUser)
         {
-            profilePageheader.Find("PinUser").GetComponent<Image>().color = Color.red;
+            profilePageheader.Find("PinUser").GetComponent<Image>().sprite = profilePageheader.Find("PinUser").GetComponent<Button>().spriteState.pressedSprite;
         }
     }
 

@@ -13,6 +13,9 @@ public class OSPerson : MonoBehaviour
     private ComputerControls computerControls;
     private bool personPinned = false;
 
+    private Sprite pinUserDefaultSprite;
+    private Sprite accuseButtonDefaultSprite;
+
     private void OnEnable()
     {
         if (person)
@@ -31,6 +34,9 @@ public class OSPerson : MonoBehaviour
         peopleListContent = transform.GetComponentInParent<OSPeopleListContent>();
         computerControls = transform.GetComponentInParent<ComputerControls>();
 
+        pinUserDefaultSprite = transform.Find("PinPerson").GetComponent<Image>().sprite;
+        accuseButtonDefaultSprite = transform.Find("AccusePerson").GetComponent<Image>().sprite;
+
         fpsController.OnPinDeletion.AddListener(RemovePinned);
         //peopleListContent.OnAccusedPersonClear.AddListener(ClearAccused);
         gm.InvestigationStateChanged.AddListener(UpdateAccusation);
@@ -48,7 +54,7 @@ public class OSPerson : MonoBehaviour
             case Person:
                 if (so == person)
                 {
-                    transform.Find("PinPerson").GetComponent<Image>().color = Color.white;
+                    transform.Find("PinPerson").GetComponent<Image>().sprite = pinUserDefaultSprite;
                     personPinned = false;
                 }
                 break;
@@ -61,7 +67,7 @@ public class OSPerson : MonoBehaviour
         if (!personPinned)
         {
             pinboard.AddPin(person);
-            transform.Find("PinPerson").GetComponent<Image>().color = Color.red;
+            transform.Find("PinPerson").GetComponent<Image>().sprite = transform.Find("PinPerson").GetComponent<Button>().spriteState.pressedSprite;
             personPinned = true;
 
             popupManager.DisplayPersonPinMessage();
@@ -69,7 +75,7 @@ public class OSPerson : MonoBehaviour
         // Unpinning person
         else
         {
-            transform.Find("PinPerson").GetComponent<Image>().color = Color.white;
+            transform.Find("PinPerson").GetComponent<Image>().sprite = pinUserDefaultSprite;
             computerControls.OnUnpinned?.Invoke(person);
             personPinned = false;
 
@@ -81,7 +87,7 @@ public class OSPerson : MonoBehaviour
     {
         if (!gm.checkIfPersonAccused(person))
         {
-            computerControls.OpenWindow(OSAppType.WARNING, "You are about to accuse this person.<br><b>This can still be changed later.</b><br><br>Do you want to proceed?", AccusePersonSuccess);
+            computerControls.OpenWindow(OSAppType.WARNING, "You are about to accuse this person. <b>This can still be changed later.</b><br><br>Do you want to proceed?", AccusePersonSuccess);
         }
         else
         {
@@ -106,11 +112,11 @@ public class OSPerson : MonoBehaviour
                 computerControls.GetComponentInChildren<OSSocialMediaContent>().ClearDeletedPost();
             }
             popupManager.DisplayPersonAccusedMessage();
-            transform.Find("AccusePerson").GetComponent<Image>().color = Color.red;
+            transform.Find("AccusePerson").GetComponent<Image>().sprite = transform.Find("AccusePerson").GetComponent<Button>().spriteState.pressedSprite;
         }
         else
         {
-            transform.Find("AccusePerson").GetComponent<Image>().color = Color.white;
+            transform.Find("AccusePerson").GetComponent<Image>().sprite = accuseButtonDefaultSprite;
         }
     }
 

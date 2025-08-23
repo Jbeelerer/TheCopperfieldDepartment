@@ -765,7 +765,7 @@ public class ComputerControls : MonoBehaviour//, ISavable
         newWindow.GetComponent<OSWindow>().dmUserPasswordFound = dmUserPasswordFound;
         BringWindowToFront(newWindow.GetComponent<OSWindow>());
         // Don't add to open windows list if its a temporary window like a warning
-        if (newWindow.GetComponent<OSWindow>().appType != OSAppType.WARNING && newWindow.GetComponent<OSWindow>().appType != OSAppType.START_SETTINGS)
+        if (newWindow.GetComponent<OSWindow>().appType != OSAppType.WARNING)
             windows.Add(newWindow.GetComponent<OSWindow>());
         // Resize custom sized small windows
         if (newWindow.GetComponent<OSWindow>().appType == OSAppType.WARNING)

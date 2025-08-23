@@ -16,6 +16,10 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
     private ComputerControls computerControls;
     private Camera canvasCam;
 
+    private Sprite pinUserDefaultSprite;
+    private Sprite pinPostDefaultSprite;
+    private Sprite DeletePostDefaultSprite;
+
     private bool postPinned = false;
     private bool userPinned = false;
     private bool postDeleted = false;
@@ -37,6 +41,10 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
         socialMediaContent.OnDeletedRefresh.AddListener(MarkDeleted);
         computerControls.OnUnpinned.AddListener(RemovePinned);
         socialMediaContent.OnDeletedPostClear.AddListener(ClearDeleted);
+
+        pinUserDefaultSprite = postOptions.transform.Find("PinUser").GetComponent<Image>().sprite;
+        pinPostDefaultSprite = postOptions.transform.Find("PinPost").GetComponent<Image>().sprite;
+        DeletePostDefaultSprite = postOptions.transform.Find("DeletePost").GetComponent<Image>().sprite;
     }
 
     private void RemovePinned(ScriptableObject so)
@@ -46,7 +54,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
             case SocialMediaPost:
                 if (so == post)
                 {
-                    postOptions.transform.Find("PinPost").GetComponent<Image>().color = Color.white;
+                    postOptions.transform.Find("PinPost").GetComponent<Image>().sprite = pinPostDefaultSprite;
                     //postOptions.transform.Find("PinPost").gameObject.SetActive(false);
                     postPinned = false;
 
@@ -56,7 +64,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
             case SocialMediaUser:
                 if (so == post.author)
                 {
-                    postOptions.transform.Find("PinUser").GetComponent<Image>().color = Color.white;
+                    postOptions.transform.Find("PinUser").GetComponent<Image>().sprite = pinUserDefaultSprite;
                     if (gameObject != socialMediaContent.currentFocusedPost)
                     {
                         postOptions.transform.Find("PinUser").gameObject.SetActive(false);
@@ -78,7 +86,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
                 // Pin specific post and its user
                 if (((SocialMediaPost)so).author == post.author && post.author != null)
                 {
-                    postOptions.transform.Find("PinUser").GetComponent<Image>().color = Color.red;
+                    postOptions.transform.Find("PinUser").GetComponent<Image>().sprite = postOptions.transform.Find("PinUser").GetComponent<Button>().spriteState.pressedSprite;
                     postOptions.transform.Find("PinUser").gameObject.SetActive(true);
                     userPinned = true;
                     pinboard.AddPin(post.author);
@@ -86,7 +94,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
                 }
                 if (so == post)
                 {
-                    postOptions.transform.Find("PinPost").GetComponent<Image>().color = Color.red;
+                    postOptions.transform.Find("PinPost").GetComponent<Image>().sprite = postOptions.transform.Find("PinPost").GetComponent<Button>().spriteState.pressedSprite;
                     postOptions.transform.Find("PinPost").gameObject.SetActive(true);
                     postPinned = true;
                     pinboard.AddPin(post);
@@ -98,7 +106,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
                 // Pin only user
                 if (so == post.author)
                 {
-                    postOptions.transform.Find("PinUser").GetComponent<Image>().color = Color.red;
+                    postOptions.transform.Find("PinUser").GetComponent<Image>().sprite = postOptions.transform.Find("PinUser").GetComponent<Button>().spriteState.pressedSprite;
                     postOptions.transform.Find("PinUser").gameObject.SetActive(true);
                     userPinned = true;
                     pinboard.AddPin(post.author);
@@ -114,7 +122,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
     {
         if ((SocialMediaPost)so == post)
         {
-            postOptions.transform.Find("DeletePost").GetComponent<Image>().color = Color.red;
+            postOptions.transform.Find("DeletePost").GetComponent<Image>().sprite = postOptions.transform.Find("DeletePost").GetComponent<Button>().spriteState.pressedSprite;
             postOptions.transform.Find("DeletePost").gameObject.SetActive(true);
             postDeleted = true;
         }
@@ -177,7 +185,7 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     private void ClearDeleted()
     {
-        postOptions.transform.Find("DeletePost").GetComponent<Image>().color = Color.white;
+        postOptions.transform.Find("DeletePost").GetComponent<Image>().sprite = DeletePostDefaultSprite;
         if (gameObject != socialMediaContent.currentFocusedPost)
         {
             postOptions.transform.Find("DeletePost").gameObject.SetActive(false);
