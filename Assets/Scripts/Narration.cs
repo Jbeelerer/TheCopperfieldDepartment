@@ -133,7 +133,6 @@ public class Narration : MonoBehaviour
         textAnimator = subtitleText.GetComponent<Animator>();
 
         blackScreen = GameObject.Find("BlackScreen");
-        blackScreen.SetActive(false);
 
         timedSubtitles = JsonUtility.FromJson<TimedSubtitles>(jsonFile.text);
         shortSubtitles = JsonUtility.FromJson<ShortSubtitles>(shortSubtitlesJsonFile.text);
@@ -147,6 +146,10 @@ public class Narration : MonoBehaviour
         {
             gm.PinboardBlocked = true;
             PlaySequence("intro");
+        }
+        else
+        {
+         blackScreen.SetActive(false);
         }
     }
 
@@ -384,25 +387,36 @@ public class Narration : MonoBehaviour
                 subtitleText.text = entry.text;
                 isTalking = true;
                 float startTime = Time.time;
+                Coroutine pause = null;
                 if (!autoplay)
                 {
-                    StartCoroutine(pauseSequence(entry.duration));
+                    pause = StartCoroutine(pauseSequence(entry.duration));
+                    while (!skip)
+                    {
+                        yield return null;
+                    }
                 }
-                while ((!skip) && (!autoplay || Time.time - startTime < entry.duration))
+                else
                 {
-                    yield return null;
+                    while ((!skip) && Time.time - startTime < entry.duration)
+                    {
+                        yield return null;
+                    }
                 }
 
                 if (skip)
                 {
-                    if (slides)
+                    if (!autoplay)
+                    {
+                        StopCoroutine(pause);
+                    }
+                    if (slides) 
                     {
 
                         slideDisplayer.transform.GetChild(1).gameObject.SetActive(false);
                         slideCounter++;
                         if (slideCounter >= allSlides[0].slide.Length)
                         {
-                            slideDisplayer.SetActive(false);
                         }
                         else
                         {
@@ -467,6 +481,7 @@ public class Narration : MonoBehaviour
         yield return new WaitForSeconds(phonePickup.length);
         gm.SetGameState(GameState.Playing);
         subtitleText.text = "";
+        slideDisplayer.SetActive(false);
 
         if (clip == introClip)
         {

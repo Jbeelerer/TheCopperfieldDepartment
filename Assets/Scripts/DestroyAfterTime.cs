@@ -21,8 +21,9 @@ public class DestroyAfterTime : MonoBehaviour
     public IEnumerator DestroyAfterSeconds(float seconds)
     {
         yield return new WaitForSeconds(seconds);
-        if (isDay)
-            GameManager.instance.DayIntro();
+        if (isDay){
+            print("DayIntro");
+            GameManager.instance.DayIntro();}
         Destroy(gameObject);
     }
 }

@@ -85,7 +85,7 @@ public class GameManager : MonoBehaviour, ISavable
 
     private bool _pinboardBlocked = false;
 
-    private bool calendarLoad = false;
+    public bool calendarLoad = false;
     private GameObject instantiatedDayIntro;
 
     private bool instantiateLoadedDay = false;
@@ -386,7 +386,7 @@ public class GameManager : MonoBehaviour, ISavable
         }
         else
         {
-            DayIntro();
+          //  DayIntro();
             StartCoroutine(DelayFirstDay());
             //LoadNewDay(day); 
         }
@@ -546,11 +546,11 @@ public class GameManager : MonoBehaviour, ISavable
             {
                 results[day - 2] = investigationState;
             }
-            // don't save in dev mode, if you want to, just add comment syntax to the if statement
-            // TODO: Deactivate for current version
-            SaveManager.instance.SaveGame();
+                SaveManager.instance.SaveGame();
+            
         }
         LoadNewDay(day);
+        calendarLoad = false; 
     }
 
     public Connections checkForConnectionText(ScriptableObject from, ScriptableObject to)

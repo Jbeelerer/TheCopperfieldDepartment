@@ -547,7 +547,7 @@ public class FPSController : MonoBehaviour
                 #region Handle left click
                 if (Input.GetMouseButtonDown(0))
                 {
-                    inputOverlay.SetIcon("");
+                    //inputOverlay.SetIcon("");
                     if (hit.collider.gameObject.name == "Trash")
                     {
                         SaveManager.instance.DeleteSave();
@@ -726,8 +726,8 @@ public class FPSController : MonoBehaviour
                     {
                         onHoldDown = false;
                         inputOverlay.stopHold();
-                        removingTime = -1f;
-                        inputOverlay.SetIcon("");
+                        removingTime = -1f; 
+                        //inputOverlay.SetIcon("");
                     }
                     //Also allow for dragging the pinboardElement
                     else if (selectedPinboardElement != null)
@@ -735,12 +735,12 @@ public class FPSController : MonoBehaviour
                         if (Time.time - timeDragged > 0.3f)
                         {
                             PlacePinboardElement(nameOfThingLookedAt);
-                            inputOverlay.SetIcon("");
+                          //  inputOverlay.SetIcon("");
                         }
                     }
                     else
                     {
-                        inputOverlay.SetIcon("");
+                        //inputOverlay.SetIcon("");
                     }
                 }
                 #endregion
@@ -870,7 +870,7 @@ public class FPSController : MonoBehaviour
         selectedPinboardElement.GetComponent<PinboardElement>().setIsMoving(false);
         am.PlayReverseAudio(pickupSound);
         selectedPinboardElement = null;
-        inputOverlay.SetIcon("");
+       // inputOverlay.SetIcon("");
     }
 
     public void ResetPlayer()

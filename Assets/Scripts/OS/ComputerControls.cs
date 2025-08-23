@@ -30,7 +30,7 @@ public enum OSInvestigationState
     POST_DELETED
 }
 
-public class ComputerControls : MonoBehaviour, ISavable
+public class ComputerControls : MonoBehaviour//, ISavable
 {
     private float mouseSensitivity = 1;
     private float mouseSensitivityModifier = 0;
@@ -100,6 +100,8 @@ public class ComputerControls : MonoBehaviour, ISavable
         {
             mouseSensitivity = 1;
         }
+        PlayerPrefs.SetFloat("mouseSensitivity", mouseSensitivity);
+        PlayerPrefs.Save();
     }
     public float GetMouseSensitivity()
     {
@@ -128,7 +130,9 @@ public class ComputerControls : MonoBehaviour, ISavable
             if (cursorSkinIndex < 0)
                 cursorSkinIndex = cursorSkinTextures.Length - 1;
         }
-        SetCursorSkin();
+        SetCursorSkin(); 
+        PlayerPrefs.SetInt("cursorSkinIndex", cursorSkinIndex);
+        PlayerPrefs.Save();
     }
 
     public Sprite[] GetCursorSprites()
@@ -156,6 +160,8 @@ public class ComputerControls : MonoBehaviour, ISavable
                 wallpaperIndex = wallpapers.Length - 1;
         }
         SetWallpaper();
+        PlayerPrefs.SetInt("wallpaperIndex", wallpaperIndex);
+        PlayerPrefs.Save();
     }
 
     public string GetCurrentWallpaperName()
@@ -190,6 +196,19 @@ public class ComputerControls : MonoBehaviour, ISavable
         // wait for the initialization of the saved day
         StartCoroutine(waitForDayInit());
 
+        if (PlayerPrefs.HasKey("mouseSensitivity"))
+        {
+            mouseSensitivity = PlayerPrefs.GetFloat("mouseSensitivity");
+            mouseSensitivityModifier = UnityEngine.Screen.height / 120;
+        }
+        if (PlayerPrefs.HasKey("cursorSkinIndex"))
+        {
+            cursorSkinIndex = PlayerPrefs.GetInt("cursorSkinIndex");    
+        }
+        if (PlayerPrefs.HasKey("wallpaperIndex"))
+        {
+            wallpaperIndex = PlayerPrefs.GetInt("wallpaperIndex");
+        }
         SetCursorSkin();
         SetWallpaper();
     }
@@ -363,6 +382,14 @@ public class ComputerControls : MonoBehaviour, ISavable
             return;
         }
 
+        if (!PlayerPrefs.HasKey(currentFocusedWindow.appType + "") || PlayerPrefs.GetInt(currentFocusedWindow.appType + "") == 0)
+        {
+            PlayerPrefs.SetInt(currentFocusedWindow.appType + "", 1);
+        }
+        else
+        {
+            return;
+        } 
         switch (currentFocusedWindow.appType)
         {
             case OSAppType.SOCIAL:
@@ -904,9 +931,10 @@ public class ComputerControls : MonoBehaviour, ISavable
                point.y >= rectMin.y && point.y <= rectMax.y;
     }
 
-    public void LoadData(SaveData data)
+   /* public void LoadData(SaveData data)
     {
         mouseSensitivity = data.mouseSensitivity;
+        print(data.mouseSensitivity);
         cursorSkinIndex = data.cursorSkinIndex;
         SetCursorSkin();
         wallpaperIndex = data.wallpaperIndex;
@@ -918,5 +946,5 @@ public class ComputerControls : MonoBehaviour, ISavable
         data.mouseSensitivity = mouseSensitivity;
         data.cursorSkinIndex = cursorSkinIndex;
         data.wallpaperIndex = wallpaperIndex;
-    }
+    }*/
 }
