@@ -35,10 +35,9 @@ public class Phone : MonoBehaviour
     }
     public void ExitTutorial()
     {
-        if (gm.GetAnswerCommited())
+        if (gm.GetAnswerCommited() && gm.GetDay() == 1)
         {
             Ring("exit");
-            print("exit!!!!!!");
             gm.InvestigationStateChanged.RemoveListener(ExitTutorial);
         }
     }

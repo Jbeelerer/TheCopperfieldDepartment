@@ -129,7 +129,15 @@ public class PinboardElement : MonoBehaviour
             {
                 SetAnnotationType(AnnotationType.None, true);
             }
+            else
+            {
+                flag.SetActive(false);
+            }
         }
+    }
+    public void HideFlag()
+    {
+        flag.SetActive(false);
     }
     // the update boolean stop endless loops by stopping the update event from beeing fired again
     public void SetAnnotationType(AnnotationType annotationType, bool isUpdate = false)

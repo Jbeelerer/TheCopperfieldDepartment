@@ -53,6 +53,19 @@ public class Pinboard : MonoBehaviour
         trashedPinboardElements[o] = go;
     }
 
+    public void ResetFlaggedPerson()
+    {
+        if (FlaggedPersonPin != null)
+        {
+        FlaggedPersonPin.SetAnnotationType(AnnotationType.None);
+        FlaggedPersonPin = null;
+        }
+        if (FlaggedThread != null)
+        {
+             FlaggedThread = null;
+        }
+        
+    }
     public void AddTutorialRelevantObjects()
     {
         foreach (ScriptableObject o in tutorialRelevantObjects)

@@ -90,6 +90,8 @@ public class GameManager : MonoBehaviour, ISavable
 
     private bool instantiateLoadedDay = false;
 
+    private Pinboard pinboard;
+
     public bool GetInstantiateLoadedDay()
     {
         return instantiateLoadedDay;
@@ -372,6 +374,7 @@ public class GameManager : MonoBehaviour, ISavable
     }
     void Start()
     {
+        pinboard = GameObject.Find("Pinboard").GetComponent<Pinboard>();
         saveManager = SaveManager.instance;
         am = AudioManager.instance;
         SetStartTransform(GameObject.Find("Player").transform);
@@ -437,6 +440,8 @@ public class GameManager : MonoBehaviour, ISavable
     }
     public void LoadNewDay(int day, bool loaded = false)
     {
+        currentlyAccused = null;
+
         instantiateLoadedDay = loaded;
         if (instantiatedDayIntro != null)
             Destroy(instantiatedDayIntro);
@@ -493,6 +498,7 @@ public class GameManager : MonoBehaviour, ISavable
         {
             DayIntro();
         }
+        calendarLoad = false; 
     }
 
     public void SortCompetingEmployees()
@@ -550,7 +556,6 @@ public class GameManager : MonoBehaviour, ISavable
             
         }
         LoadNewDay(day);
-        calendarLoad = false; 
     }
 
     public Connections checkForConnectionText(ScriptableObject from, ScriptableObject to)
