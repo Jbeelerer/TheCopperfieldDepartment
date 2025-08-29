@@ -65,6 +65,7 @@ public class ComputerControls : MonoBehaviour//, ISavable
     private float timeCursorStopped = 0;
     private float tooltipDelay = 0.3f;
     private GameManager gm;
+    private PauseMenu pauseMenu;
     private bool cursorActive = false;
     private GameObject eventSystem;
     private Vector2 smallWindowSize = new Vector2(400, 300);
@@ -195,6 +196,8 @@ public class ComputerControls : MonoBehaviour//, ISavable
         gm.OnNewDay.AddListener(ResetComputer);
         // wait for the initialization of the saved day
         StartCoroutine(waitForDayInit());
+
+        pauseMenu = FindObjectOfType<PauseMenu>();
 
         if (PlayerPrefs.HasKey("mouseSensitivity"))
         {
@@ -458,6 +461,7 @@ public class ComputerControls : MonoBehaviour//, ISavable
     {
         gm.SetGameState(GameState.Playing);
         ToggleCursor();
+        StartCoroutine(pauseMenu.StartPauseMenuCooldown());
     }
 
     public void ToggleCursor()
