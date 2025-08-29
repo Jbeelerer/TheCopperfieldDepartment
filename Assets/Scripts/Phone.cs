@@ -10,6 +10,7 @@ public class Phone : MonoBehaviour
 
     private Narration narration;
 
+    [SerializeField] private PhoneHighlight phoneHighlight;
     [SerializeField] private string callName;
 
     [SerializeField] private bool isRinging = false;
@@ -26,6 +27,7 @@ public class Phone : MonoBehaviour
     public bool GetIsRinging() { return isRinging; }
     void Start()
     {
+        phoneHighlight.gameObject.SetActive(false);
         narration = FindObjectOfType<Narration>();
         animator = GetComponent<Animator>();
         gm = GameManager.instance;
@@ -64,6 +66,8 @@ public class Phone : MonoBehaviour
     {
         animator.Play("Ringing");
         isRinging = true;
+        phoneHighlight.gameObject.SetActive(true);
+        phoneHighlight.StartCoroutine(phoneHighlight.PhoneRinging(transform));
         this.callName = callName;
         am.PlayAudioRepeating(phoneRing, volume: 0.5f, parent: gameObject);
     }
@@ -88,6 +92,8 @@ public class Phone : MonoBehaviour
 
         //rotations[2] = Quaternion.Euler(-20, -70, 0);
 
+
+        phoneHighlight.StopHighlight();
         narration.PlaySequence(callName, rotations);
         isRinging = false;
         animator.Play("Pickup");
