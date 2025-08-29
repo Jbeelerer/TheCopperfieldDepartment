@@ -710,7 +710,10 @@ public class ComputerControls : MonoBehaviour//, ISavable
 
     private void CloseWindow(OSWindow window)
     {
-        ResizeWindowSmall(window);
+        // Don't resize dm page window
+        if (window.appType != OSAppType.DM_PAGE)
+            ResizeWindowSmall(window);
+
         currentFocusedWindow = null;
         //pointySystem.ToggleButtonNotif("Default");
         window.associatedTab.gameObject.SetActive(false);
@@ -743,9 +746,14 @@ public class ComputerControls : MonoBehaviour//, ISavable
         // Check if the window is already open (if multiple instances of the same type are not allowed)
         foreach (OSWindow window in windows)
         {
-            if (window.appType == type && !window.multipleInstancesAllowed)
+            if ((window.appType == type && !window.multipleInstancesAllowed) 
+                || (imagePost != null && window.imagePost == imagePost)
+                || (imageFile != null && window.imageFile == imageFile)
+                || (videoFile != null && window.videoFile == videoFile)
+                || (dmUser != null && window.dmUser == dmUser)
+                )
             {
-                // Reveal window and set back to screen middle if it exists but isn't active
+                // Reveal window and set back to screen middle if it exists but isn't active (also for image viewer windows with an already open image or dm windows with already open user)
                 if (!window.gameObject.activeInHierarchy)
                 {
                     window.gameObject.SetActive(true);
