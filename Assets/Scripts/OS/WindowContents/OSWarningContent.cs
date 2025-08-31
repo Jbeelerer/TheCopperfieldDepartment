@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class OSWarningContent : MonoBehaviour
 {
+    private ComputerControls computerControls;
     private TextMeshProUGUI warningMessage;
     private System.Action warningSuccessFunc;
     private GameObject screenBlockadeBG;
@@ -19,6 +20,8 @@ public class OSWarningContent : MonoBehaviour
 
     private void Start()
     {
+        computerControls = transform.GetComponentInParent<ComputerControls>();
+
         screenBlockadeBG = GameObject.Find("ScreenBlockadeBG");
         screenBlockadeBG.GetComponent<Image>().enabled = true;
         screenBlockadeBG.transform.SetAsLastSibling();
@@ -34,20 +37,18 @@ public class OSWarningContent : MonoBehaviour
         if (warningSuccessFunc != null)
             warningSuccessFunc.Invoke();
 
-        CloseWarning();
+        computerControls.CloseWindow(GetComponentInParent<OSWindow>());
     }
 
     public void CancelWarning()
     {
-        CloseWarning();
+        computerControls.CloseWindow(GetComponentInParent<OSWindow>());
     }
 
-    private void CloseWarning()
+    public void HideScreenBlockade()
     {
         screenBlockadeBG.GetComponent<Image>().enabled = false;
         screenBlockadeTaskBar.GetComponent<Image>().enabled = false;
-        Destroy(GetComponentInParent<OSWindow>().associatedTab.gameObject);
-        Destroy(GetComponentInParent<OSWindow>().gameObject);
     }
 
     public void SetWarningMessage(string msg)

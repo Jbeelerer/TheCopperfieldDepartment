@@ -253,6 +253,10 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        // Keep post options open if pointy tutorial is active
+        if (computerControls.pointySystem.GetIsPointyActive())
+            return;
+
         foreach (Transform option in postOptions.transform)
         {
             option.gameObject.SetActive(false);
