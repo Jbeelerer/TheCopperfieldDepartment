@@ -23,6 +23,7 @@ public enum GameState
     Paused,
     OnPC,
     Inspecting,
+    DayOver,
     InArchive
 
 }
@@ -60,6 +61,7 @@ public class GameManager : MonoBehaviour, ISavable
     private Quaternion startRotation;
     private Quaternion startCameraRotation;
     [SerializeField] private GameObject newDayPrefab;
+    [SerializeField] private GameObject feedbackReportPrefab;
     [SerializeField] private GameObject dayIntro;
 
     private bool answerCommited = false;
@@ -81,7 +83,7 @@ public class GameManager : MonoBehaviour, ISavable
 
     private Person currentlyAccused;
 
-    private string feedBackMailContent = "";
+    private string feedBackExplanation = "";
 
     private bool _pinboardBlocked = false;
 
@@ -173,15 +175,15 @@ public class GameManager : MonoBehaviour, ISavable
         reload();
         computerCam.SetActive(state == GameState.OnPC);
         if (inspectionCam)
-            inspectionCam.SetActive(state == GameState.Inspecting || state == GameState.InArchive);
+            inspectionCam.SetActive(state == GameState.Inspecting ||state == GameState.DayOver|| state == GameState.InArchive);
 
-        mainCam.SetActive(state == GameState.Playing || state == GameState.Paused || state == GameState.Frozen);
+        mainCam.SetActive(state == GameState.Playing ||state == GameState.DayOver || state == GameState.Paused || state == GameState.Frozen);
 
-        if (inspectionCam)
-            inspectionCam.transform.parent.parent.GetComponent<Collider>().enabled = (state != GameState.Inspecting && state != GameState.InArchive);
+        if (inspectionCam) 
+            inspectionCam.transform.parent.parent.GetComponent<Collider>().enabled = (state != GameState.Inspecting && state != GameState.DayOver && state != GameState.InArchive);
 
-        Cursor.visible = (state == GameState.Inspecting || state == GameState.InArchive);
-        Cursor.lockState = (state == GameState.Inspecting || state == GameState.InArchive) ? CursorLockMode.Confined : CursorLockMode.Locked;
+        Cursor.visible = (state == GameState.Inspecting  ||state == GameState.DayOver|| state == GameState.InArchive);
+        Cursor.lockState = (state == GameState.Inspecting  ||state == GameState.DayOver|| state == GameState.InArchive) ? CursorLockMode.Confined : CursorLockMode.Locked;
         print(Cursor.visible);
         print(state);
         // handle startPos of mainCam
@@ -195,12 +197,12 @@ public class GameManager : MonoBehaviour, ISavable
 
     public bool isOccupied()
     {
-        return gameState == GameState.OnPC || gameState == GameState.Inspecting || gameState == GameState.InArchive;
+        return gameState == GameState.OnPC || gameState == GameState.Inspecting|| gameState == GameState.DayOver || gameState == GameState.InArchive;
     }
 
     public bool isFrozen()
     {
-        return gameState == GameState.OnPC || gameState == GameState.Inspecting || gameState == GameState.Frozen || gameState == GameState.InArchive;
+        return gameState == GameState.OnPC || gameState == GameState.Inspecting|| gameState == GameState.DayOver || gameState == GameState.Frozen || gameState == GameState.InArchive;
     }
     public GameState GetGameState()
     {
@@ -230,6 +232,11 @@ public class GameManager : MonoBehaviour, ISavable
     public int GetFurthestDay()
     {
         return furthestDay;
+    }
+
+    public string GetFeedBackExplanation()
+    {
+        return feedBackExplanation;
     }
 
     public void SaveData(SaveData data)
@@ -423,11 +430,11 @@ public class GameManager : MonoBehaviour, ISavable
         // load all connections
         connections = Resources.LoadAll<Connections>(dayOrder[day] + "/Connections");
         Mail[] tempMails = Resources.LoadAll<Mail>(dayOrder[day] + "/Mails");
-        if (feedBackMailContent != "")
+        if (feedBackExplanation != "")
         {
-            Mail feedBackMail = Resources.Load<Mail>("FeedBackTemplate");
-            feedBackMail.message = feedBackMailContent;
-            mails = tempMails.Concat(new Mail[] { feedBackMail }).ToArray();
+           // Mail feedBackMail = Resources.Load<Mail>("FeedBackTemplate");
+           // feedBackMail.message = feedBackExplanation;
+           // mails = tempMails.Concat(new Mail[] { feedBackMail }).ToArray();
         }
         else
         {
@@ -438,9 +445,14 @@ public class GameManager : MonoBehaviour, ISavable
         conversations = Resources.LoadAll<DMConversation>(dayOrder[day] + "/Conversations");
         return false;
     }
+    public IEnumerator delaySuspectClearing(float delay = 0)
+    {
+        yield return new WaitForSeconds(delay);
+        currentlyAccused = null;
+    }
     public void LoadNewDay(int day, bool loaded = false)
     {
-        currentlyAccused = null;
+        delaySuspectClearing(1);   
 
         instantiateLoadedDay = loaded;
         if (instantiatedDayIntro != null)
@@ -453,7 +465,7 @@ public class GameManager : MonoBehaviour, ISavable
             {
                 if (pr.person == currentlyAccused)
                 {
-                    feedBackMailContent = pr.reason;
+                    feedBackExplanation = pr.reason;
                     break;
                 }
             }
@@ -498,7 +510,7 @@ public class GameManager : MonoBehaviour, ISavable
         {
             DayIntro();
         }
-        calendarLoad = false; 
+        calendarLoad = false;
     }
 
     public void SortCompetingEmployees()
@@ -514,11 +526,12 @@ public class GameManager : MonoBehaviour, ISavable
     }
     public void NextDaySequence()
     {
-        GameObject g = Instantiate(newDayPrefab);
+        GameObject g = Instantiate(feedbackReportPrefab);
     }
 
     public void setNewDay(bool firstDay = false)
-    {
+    { 
+        SetGameState(GameState.DayOver);   
         int pointsThisDay = investigationState == investigationStates.SuspectFound ? 100 : investigationState == investigationStates.SuspectSaved ? 0 : -100;
         answerCommited = false;
         if (!firstDay)
@@ -660,10 +673,16 @@ public class GameManager : MonoBehaviour, ISavable
         {
             StartCoroutine(DayIntroCoroutine(delay));
         }
+        else
+        {
+             SetGameState(GameState.Playing);
+        }
     } 
     public IEnumerator DayIntroCoroutine(float delay = 0)
     {
         yield return new WaitForSeconds(delay);
+        
+        SetGameState(GameState.Playing);
         GameObject instantiatedDayIntro = Instantiate(dayIntro);
         instantiatedDayIntro.transform.GetChild(0).GetChild(0).GetComponent<TMPro.TextMeshProUGUI>().text = "Day " + day + ":";
         instantiatedDayIntro.transform.GetChild(0).GetChild(1).GetComponent<TMPro.TextMeshProUGUI>().text = currentCase.caseName;
