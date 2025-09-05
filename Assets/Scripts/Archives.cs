@@ -7,6 +7,7 @@ public class Archives : MonoBehaviour
 {
     [SerializeField] private GameObject[] files;
     [SerializeField] private GameObject filePrefab;
+    [SerializeField] private GameObject locked;
     [SerializeField] private GameObject fotoFilePrefab;
     [SerializeField] private GameObject textFilePrefab;
     [SerializeField] private List<ArchiveFile> archiveFiles = new List<ArchiveFile>();
@@ -36,6 +37,7 @@ public class Archives : MonoBehaviour
     }
     void Start()
     {
+        GameManager.instance.OnNewDay.AddListener(UpdateArchiveAvailability);
         float i = 0;
         float startPositionY = -5;
         foreach (ArchiveData fileData in archiveData)
@@ -64,6 +66,11 @@ public class Archives : MonoBehaviour
         pinboard = GameObject.Find("Pinboard").GetComponent<Pinboard>();
         gm = FindObjectOfType<GameManager>();
         gm.StateChanged.AddListener(closeIfInArchive);
+    }
+
+    private void UpdateArchiveAvailability()
+    {
+        locked.SetActive(!GameManager.instance.GetCurrentCase().hasArchived);
     }
     private void closeIfInArchive()
     {
