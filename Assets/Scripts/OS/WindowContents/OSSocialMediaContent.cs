@@ -128,7 +128,6 @@ public class OSSocialMediaContent : MonoBehaviour
 
     public void EnableFirstPostOptions()
     {
-        print(postList.Count);
         postList[0].OnPointerEnter(null);
     }
 

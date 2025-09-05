@@ -19,6 +19,7 @@ public class PauseMenu : MonoBehaviour
     private SettingsMenu settings;
 
     private bool isPaused = false;
+    private bool pauseMenuOnCooldown = false;
 
     void Start()
     {
@@ -34,14 +35,14 @@ public class PauseMenu : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             // Don't allow pausing when at computer
-            if (!isPaused && gm.GetGameState() != GameState.OnPC)
+            if (!isPaused && gm.GetGameState() == GameState.Playing && !pauseMenuOnCooldown)
             {
                 PauseGame();
             }
-            else
+            else if (gm.GetGameState() == GameState.Paused)
             {
                 ResumeGame();
             }
@@ -52,6 +53,8 @@ public class PauseMenu : MonoBehaviour
     {
         //Time.timeScale = 0;
         isPaused = true;
+        gm.SetGameState(GameState.Paused);
+
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
@@ -65,6 +68,8 @@ public class PauseMenu : MonoBehaviour
     {
         //Time.timeScale = 1;
         isPaused = false;
+        gm.SetGameState(GameState.Playing);
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
@@ -72,6 +77,13 @@ public class PauseMenu : MonoBehaviour
         am.UpdateMixerValue("SFX Volume", settings.sfxVolume);
 
         CloseAllMenus();
+    }
+
+    public IEnumerator StartPauseMenuCooldown()
+    {
+        pauseMenuOnCooldown = true;
+        yield return new WaitForSeconds(0.5f);
+        pauseMenuOnCooldown = false;
     }
 
     public void OpenOverview()

@@ -36,7 +36,9 @@ public class SettingsMenu : MonoBehaviour
 
     private void OnEnable()
     {
-        ShowGameSettings();
+        // TODO: Only show game settings again when there are relevant settings to show
+        //ShowGameSettings();
+        ShowSoundSettings();
     }
 
     private void OnDisable()

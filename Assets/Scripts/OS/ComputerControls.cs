@@ -65,6 +65,7 @@ public class ComputerControls : MonoBehaviour//, ISavable
     private float timeCursorStopped = 0;
     private float tooltipDelay = 0.3f;
     private GameManager gm;
+    private PauseMenu pauseMenu;
     private bool cursorActive = false;
     private GameObject eventSystem;
     private Vector2 smallWindowSize = new Vector2(400, 300);
@@ -195,6 +196,8 @@ public class ComputerControls : MonoBehaviour//, ISavable
         gm.OnNewDay.AddListener(ResetComputer);
         // wait for the initialization of the saved day
         StartCoroutine(waitForDayInit());
+
+        pauseMenu = FindObjectOfType<PauseMenu>();
 
         if (PlayerPrefs.HasKey("mouseSensitivity"))
         {
@@ -458,6 +461,7 @@ public class ComputerControls : MonoBehaviour//, ISavable
     {
         gm.SetGameState(GameState.Playing);
         ToggleCursor();
+        StartCoroutine(pauseMenu.StartPauseMenuCooldown());
     }
 
     public void ToggleCursor()
@@ -704,10 +708,26 @@ public class ComputerControls : MonoBehaviour//, ISavable
         button.gameObject.SetActive(false);
     }
 
-    private void CloseWindow(OSWindow window)
+    public void CloseWindow(OSWindow window, bool fullReset = false)
     {
-        ResizeWindowSmall(window);
         currentFocusedWindow = null;
+
+        // Completely destroy associated gameobjects if its a warning window
+        if (window.appType == OSAppType.WARNING)
+        {
+            window.GetComponentInChildren<OSWarningContent>().HideScreenBlockade();
+            if (!fullReset) {
+                Destroy(window.associatedTab.gameObject);
+                Destroy(window.gameObject);
+                windows.Remove(window);
+            }
+            return;
+        }
+
+        // Don't resize dm page window
+        if (window.appType != OSAppType.DM_PAGE)
+            ResizeWindowSmall(window);
+
         //pointySystem.ToggleButtonNotif("Default");
         window.associatedTab.gameObject.SetActive(false);
         window.gameObject.SetActive(false);
@@ -725,25 +745,31 @@ public class ComputerControls : MonoBehaviour//, ISavable
     {
         foreach (OSWindow window in windows)
         {
-            CloseWindow(window);
+            CloseWindow(window, fullReset: true);
             Destroy(window.associatedTab.gameObject);
             Destroy(window.gameObject);
         }
         windows.Clear();
         pointySystem.HidePointy();
+        TriggerAppNotification(OSAppType.GOV);
     }
 
     public void OpenWindow(OSAppType type, string warningMessage = "Warning message", System.Action successFunc = null, bool hasCancelBtn = true, SocialMediaPost imagePost = null, Sprite imageFile = null, VideoClip videoFile = null, SocialMediaUser dmUser = null, bool dmUserPasswordFound = false)
     {
-        audioManager.PlayAudio(windowOpenSound);
         // Check if the window is already open (if multiple instances of the same type are not allowed)
         foreach (OSWindow window in windows)
         {
-            if (window.appType == type && !window.multipleInstancesAllowed)
+            if ((window.appType == type && !window.multipleInstancesAllowed) 
+                || (imagePost != null && window.imagePost == imagePost)
+                || (imageFile != null && window.imageFile == imageFile)
+                || (videoFile != null && window.videoFile == videoFile)
+                || (dmUser != null && window.dmUser == dmUser)
+                )
             {
-                // Reveal window and set back to screen middle if it exists but isn't active
+                // Reveal window and set back to screen middle if it exists but isn't active (also for image viewer windows with an already open image or dm windows with already open user)
                 if (!window.gameObject.activeInHierarchy)
                 {
+                    audioManager.PlayAudio(windowOpenSound);
                     window.gameObject.SetActive(true);
                     SetWindowOpenPosition(window);
                     window.associatedTab.gameObject.SetActive(true);
@@ -752,6 +778,7 @@ public class ComputerControls : MonoBehaviour//, ISavable
                 return;
             }
         }
+        audioManager.PlayAudio(windowOpenSound);
         // Create window
         GameObject newWindow = Instantiate(windowPrefab, transform.position, transform.rotation, background.transform);
         newWindow.GetComponent<OSWindow>().appType = type;
@@ -764,9 +791,7 @@ public class ComputerControls : MonoBehaviour//, ISavable
         newWindow.GetComponent<OSWindow>().dmUser = dmUser;
         newWindow.GetComponent<OSWindow>().dmUserPasswordFound = dmUserPasswordFound;
         BringWindowToFront(newWindow.GetComponent<OSWindow>());
-        // Don't add to open windows list if its a temporary window like a warning
-        if (newWindow.GetComponent<OSWindow>().appType != OSAppType.WARNING)
-            windows.Add(newWindow.GetComponent<OSWindow>());
+        windows.Add(newWindow.GetComponent<OSWindow>());
         // Resize custom sized small windows
         if (newWindow.GetComponent<OSWindow>().appType == OSAppType.WARNING)
             newWindow.GetComponent<OSWindow>().rectTrans.sizeDelta = new Vector2(300, 200);
