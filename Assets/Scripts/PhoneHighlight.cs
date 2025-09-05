@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,11 +8,13 @@ public class PhoneHighlight : MonoBehaviour
 {
     private RectTransform rectTransform;
     private Image image;
+    private GameManager gm;
     // Start is called before the first frame update
     void Start()
     {
         rectTransform = GetComponent<RectTransform>();
         image = GetComponent<Image>();
+        gm = FindObjectOfType<GameManager>();
 
     }
 
@@ -32,6 +35,15 @@ public class PhoneHighlight : MonoBehaviour
         while (true)
         {
             yield return new WaitForEndOfFrame();
+
+            if (gm.GetGameState() != GameState.Playing)
+            {
+                rectTransform.localScale = new Vector3(0, 0, 0);
+                while (gm.GetGameState() != GameState.Playing)
+                {
+                    yield return new WaitForEndOfFrame();   
+                }
+            }
 
             Vector3 phoneWorldPos = phonePosition.position;
             Vector3 screenPos = Camera.main.WorldToViewportPoint(phoneWorldPos);
