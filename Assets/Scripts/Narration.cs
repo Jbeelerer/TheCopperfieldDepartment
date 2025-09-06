@@ -315,6 +315,7 @@ public class Narration : MonoBehaviour
 
     public IEnumerator PlaySequence(TimedSubtitle[] content, AudioClip clip, bool playNextDayAnimation = true, bool autoplay = true, bool slides = false)
     {
+        AudioManager.instance.StartSequenceMix();
         FPSController player = GameObject.Find("Player").GetComponent<FPSController>();
         Radio radio = FindObjectOfType<Radio>();
         startRotation = player.transform.rotation;
@@ -332,10 +333,10 @@ public class Narration : MonoBehaviour
         audioSource.Play();
         bool lookedAway = false;
         int slideCounter = 0;
-        
+
         slideDisplayer.SetActive(slides);
         slideDisplayer.transform.GetChild(1).gameObject.SetActive(false);
-        
+
 
         foreach (TimedSubtitle entry in content)
         {
@@ -410,7 +411,7 @@ public class Narration : MonoBehaviour
                     {
                         StopCoroutine(pause);
                     }
-                    if (slides) 
+                    if (slides)
                     {
 
                         slideDisplayer.transform.GetChild(1).gameObject.SetActive(false);
@@ -501,10 +502,12 @@ public class Narration : MonoBehaviour
         {
             FindObjectOfType<Radio>().PauseRadio();
             gm.NextDaySequence();
-            gm.SetGameState(GameState.DayOver);   
-        } 
+            gm.SetGameState(GameState.DayOver);
+        }
         audioSource.Pause();
         currentCall = null;
+         
+        AudioManager.instance.EndSequenceMix();
     }
 
     private IEnumerator pauseSequence(float time)

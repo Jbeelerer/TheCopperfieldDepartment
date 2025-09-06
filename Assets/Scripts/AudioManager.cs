@@ -12,6 +12,9 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioMixerGroup musicMixerGroup;
     [SerializeField] private AudioMixerGroup voiceMixerGroup;
 
+    private float originalMusicVolume = 1f;
+    private float originalSFXVolume = 1f;
+
     private List<AudioSource> repeatingAudioSources = new List<AudioSource>();
 
     // Start is called before the first frame update
@@ -175,4 +178,21 @@ public class AudioManager : MonoBehaviour
                 break;
         }
     }
+
+    public void StartSequenceMix()
+    {  
+        print("Start Sequence Mix");
+        musicMixerGroup.audioMixer.GetFloat("Music Volume", out originalMusicVolume);
+        musicMixerGroup.audioMixer.SetFloat("Music Volume", 0);
+        float test;
+        musicMixerGroup.audioMixer.GetFloat("Music Volume", out test);
+        print(test);  
+        sfxMixerGroup.audioMixer.GetFloat("SFX Volume", out originalSFXVolume);
+        sfxMixerGroup.audioMixer.SetFloat("SFX Volume",  0);  
+    } 
+    public void EndSequenceMix()
+    {  
+        musicMixerGroup.audioMixer.SetFloat("Music Volume", originalMusicVolume );
+        sfxMixerGroup.audioMixer.SetFloat("SFX Volume", originalSFXVolume );
+    } 
 }
