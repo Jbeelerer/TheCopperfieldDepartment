@@ -501,7 +501,8 @@ public class Narration : MonoBehaviour
         {
             FindObjectOfType<Radio>().PauseRadio();
             gm.NextDaySequence();
-        }
+            gm.SetGameState(GameState.DayOver);   
+        } 
         audioSource.Pause();
         currentCall = null;
     }

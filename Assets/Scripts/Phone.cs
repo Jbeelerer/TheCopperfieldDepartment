@@ -51,12 +51,12 @@ public class Phone : MonoBehaviour
             wasOnPc = true;
             ResetPhone();
         }
-        if (gm.GetGameState() == GameState.Playing && wasOnPc && gm.GetDay() == 1 && !isRinging)
+        if (gm.GetGameState() == GameState.Playing && wasOnPc && gm.GetDay() == 1 && !isRinging && !gm.GetAnswerCommited())
         {
             wasOnPc = false;
             string callName = FindObjectOfType<Pinboard>().tutorialElementOnBoard();
             Ring(callName);
-            if (callName == "phoneCallIntro")
+            if (callName == "phoneCallIntro")   
             {
                 gm.StateChanged.RemoveListener(Ring);
             }
