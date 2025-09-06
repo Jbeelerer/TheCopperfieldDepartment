@@ -537,6 +537,7 @@ public class Narration : MonoBehaviour
             {
                 GameObject.Find("Player").GetComponent<FPSController>().ResetCameraRotation(startRotation);
             }
+            AudioManager.instance.EndSequenceMix();
             return true;
         }
         return false;
