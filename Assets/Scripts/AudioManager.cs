@@ -181,14 +181,10 @@ public class AudioManager : MonoBehaviour
 
     public void StartSequenceMix()
     {  
-        print("Start Sequence Mix");
         musicMixerGroup.audioMixer.GetFloat("Music Volume", out originalMusicVolume);
-        musicMixerGroup.audioMixer.SetFloat("Music Volume", 0);
-        float test;
-        musicMixerGroup.audioMixer.GetFloat("Music Volume", out test);
-        print(test);  
+        musicMixerGroup.audioMixer.SetFloat("Music Volume", Mathf.Log10(0.0001f) * 20);
         sfxMixerGroup.audioMixer.GetFloat("SFX Volume", out originalSFXVolume);
-        sfxMixerGroup.audioMixer.SetFloat("SFX Volume",  0);  
+        sfxMixerGroup.audioMixer.SetFloat("SFX Volume", Mathf.Log10(0.0001f) * 20);  
     } 
     public void EndSequenceMix()
     {  
