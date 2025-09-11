@@ -83,6 +83,7 @@ public class ComputerControls : MonoBehaviour//, ISavable
     [HideInInspector] public Sprite cursorClickable;
     [HideInInspector] public Sprite cursorLoading;
     [HideInInspector] public Sprite cursorForbidden;
+    [HideInInspector] public bool isHoveringOverLink = false;
 
     public PinEvent OnUnpinned;
     public UnityEvent<SocialMediaUser> OnUserPasswordFound;
@@ -308,6 +309,10 @@ public class ComputerControls : MonoBehaviour//, ISavable
         // Check if cursor is still and tooltip should be displayed
         CheckForTooltip();
 
+        if (!isHoveringOverLink)
+        {
+            cursor.GetComponent<Image>().sprite = cursorNormal;
+        }
         GameObject hitObject = GetFirstHitObject();
         // Change cursor sprite if hovering over button
         if (hitObject && (!hitObject.GetComponent<TextMeshProUGUI>() || hitObject.GetComponent<Button>()))
