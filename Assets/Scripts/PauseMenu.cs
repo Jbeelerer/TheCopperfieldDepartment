@@ -107,7 +107,6 @@ public class PauseMenu : MonoBehaviour
 
     public void CloseGame()
     {
-        //Time.timeScale = 1;
-        Application.Quit();
+        SceneManager.LoadScene("TitleScene");
     }
 }

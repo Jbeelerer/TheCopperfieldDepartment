@@ -19,7 +19,7 @@ public class OSMail : MonoBehaviour
         govAppContent = transform.GetComponentInParent<OSGovAppContent>();
         computerControls = transform.GetComponentInParent<ComputerControls>();
 
-        transform.Find("Date").GetComponent<TextMeshProUGUI>().text = "<b>" + computerControls.computerDate.text;
+        transform.Find("Date").GetComponent<TextMeshProUGUI>().text = "<b>" + System.DateTime.Parse(computerControls.computerDate.text).ToString("MM/dd/yy", new System.Globalization.CultureInfo("en-US"));
         transform.Find("Sender").GetComponent<TextMeshProUGUI>().text = "<b>" + mail.sender;
         transform.Find("Title").GetComponent<TextMeshProUGUI>().text = "<b>" + mail.title;
         transform.Find("MainCaseIcon").gameObject.SetActive(mail.isMainCase);

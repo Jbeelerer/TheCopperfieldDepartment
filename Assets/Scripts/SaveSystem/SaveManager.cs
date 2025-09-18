@@ -89,7 +89,7 @@ namespace SaveSystem
         public void DeleteSave()
         {
             print("deleting");
-            print(GameManager.instance.GetSaveFile().ToString());
+            //print(GameManager.instance.GetSaveFile().ToString());
             // if(Utility.CheckSaveFileExists(GameManager.instance.saveFile.ToString())){
             saveFileHandler.DeleteSave();
             //}
@@ -111,6 +111,11 @@ namespace SaveSystem
             {
                 s.LoadData(saveData);
             }
+        }
+
+        public bool GetSaveExists()
+        {
+            return saveFileHandler.Load() != null;
         }
 
         List<ISavable> FindAllISavables()

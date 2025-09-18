@@ -54,6 +54,7 @@ public class ComputerControls : MonoBehaviour
     public TextMeshProUGUI computerDate;
     public OSPointySystem pointySystem;
     public Sprite[] appIcons;
+    public System.DateTime initialComputerDate = new System.DateTime(1982, 5, 1);
 
     private float mouseSpeedX;
     private float mouseSpeedY;
@@ -749,6 +750,7 @@ public class ComputerControls : MonoBehaviour
         windows.Clear();
         pointySystem.HidePointy();
         TriggerAppNotification(OSAppType.GOV);
+        computerDate.text = initialComputerDate.AddDays(gm.GetDay() - 1).ToString("MM/dd/yyyy", new System.Globalization.CultureInfo("en-US"));
     }
 
     public void OpenWindow(OSAppType type, string warningMessage = "Warning message", System.Action successFunc = null, bool hasCancelBtn = true, SocialMediaPost imagePost = null, Sprite imageFile = null, VideoClip videoFile = null, SocialMediaUser dmUser = null, bool dmUserPasswordFound = false)
