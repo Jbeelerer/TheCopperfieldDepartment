@@ -30,7 +30,7 @@ public enum OSInvestigationState
     POST_DELETED
 }
 
-public class ComputerControls : MonoBehaviour//, ISavable
+public class ComputerControls : MonoBehaviour
 {
     private float mouseSensitivity = 1;
     private float mouseSensitivityModifier = 0;
@@ -390,14 +390,6 @@ public class ComputerControls : MonoBehaviour//, ISavable
             return;
         }
 
-        if (!PlayerPrefs.HasKey(currentFocusedWindow.appType + "") || PlayerPrefs.GetInt(currentFocusedWindow.appType + "") == 0)
-        {
-            PlayerPrefs.SetInt(currentFocusedWindow.appType + "", 1);
-        }
-        else
-        {
-            return;
-        } 
         switch (currentFocusedWindow.appType)
         {
             case OSAppType.SOCIAL:
@@ -960,21 +952,4 @@ public class ComputerControls : MonoBehaviour//, ISavable
         return point.x >= rectMin.x && point.x <= rectMax.x &&
                point.y >= rectMin.y && point.y <= rectMax.y;
     }
-
-   /* public void LoadData(SaveData data)
-    {
-        mouseSensitivity = data.mouseSensitivity;
-        print(data.mouseSensitivity);
-        cursorSkinIndex = data.cursorSkinIndex;
-        SetCursorSkin();
-        wallpaperIndex = data.wallpaperIndex;
-        SetWallpaper();
-    }
-
-    public void SaveData(SaveData data)
-    {
-        data.mouseSensitivity = mouseSensitivity;
-        data.cursorSkinIndex = cursorSkinIndex;
-        data.wallpaperIndex = wallpaperIndex;
-    }*/
 }

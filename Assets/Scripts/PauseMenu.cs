@@ -28,6 +28,7 @@ public class PauseMenu : MonoBehaviour
         am = AudioManager.instance;
         settings = GetComponentInChildren<SettingsMenu>(true);
 
+        settings.AddNativeResolution();
         settings.ApplyCurrentSettings();
 
         ResumeGame();
