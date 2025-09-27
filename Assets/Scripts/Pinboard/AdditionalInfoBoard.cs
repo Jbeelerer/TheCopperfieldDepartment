@@ -8,9 +8,31 @@ using Unity.VisualScripting;
 
 public class AdditionalInfoBoard : MonoBehaviour
 {
+    [SerializeField] private GameObject backgroundClipboardImage; 
+    [SerializeField] private Sprite userInfoBG; 
+    [SerializeField] private Sprite personInfoBG;
+    [SerializeField] private Sprite postContentInfoBG;
+
+    // user
+    [SerializeField] private GameObject userInfo;
+    [SerializeField] private Image userImage;
+    [SerializeField] private TMP_Text userName; 
+    [SerializeField] private TMP_Text userContent;
+
+    // person
+    [SerializeField] private GameObject personInfo;
+    [SerializeField] private Image personImage;
+    [SerializeField] private TMP_Text personName;
+    [SerializeField] private TMP_Text personContent;
+
+    // post content
+    [SerializeField] private GameObject postContentInfo;
+    [SerializeField] private GameObject postContentUserImage;
+    [SerializeField] private Image postContentImage;
+    [SerializeField] private TMP_Text postContentText;
     private ScriptableObject content;
     private Animator anim;
-
+/*
     [SerializeField] private Renderer pbMaterial;
     private TextMeshProUGUI title;
     private TextMeshProUGUI additionalInfos;
@@ -19,14 +41,14 @@ public class AdditionalInfoBoard : MonoBehaviour
 
     private Transform personParent;
 
-    private Transform contentParent;
+    private Transform contentParent;*/
     [SerializeField] private Renderer bigPicture;
 
     private List<string> newInfo = new List<string>();
 
     // Start is called before the first frame update
     void Start()
-    {
+    {/*
         contentParent = transform.Find("Content");
         personParent = transform.Find("Person");
         // image = personParent.Find("PB").GetComponent<UnityEngine.UI.Image>();
@@ -36,7 +58,7 @@ public class AdditionalInfoBoard : MonoBehaviour
         contentText = contentParent.Find("contentText").GetComponent<TextMeshProUGUI>();
 
 
-        additionalInfos.text = "";
+        additionalInfos.text = "";*/
         anim = GetComponent<Animator>();
 
     }
@@ -85,59 +107,75 @@ public class AdditionalInfoBoard : MonoBehaviour
 
     public void SetContent(ScriptableObject o)
     {
-        contentParent.gameObject.SetActive(!(o is Person || o is SocialMediaUser));
-        bigPicture.gameObject.SetActive(o is ArchiveData && ((ArchiveData)o).type == ArchiveType.Image);
-        personParent.gameObject.SetActive(o is Person || o is SocialMediaUser);
-        additionalInfos.text = "";
-        transform.Find("Image").gameObject.SetActive(true);
+        // contentParent.gameObject.SetActive(!(o is Person || o is SocialMediaUser));
+        // bigPicture.gameObject.SetActive(o is ArchiveData && ((ArchiveData)o).type == ArchiveType.Image);
+        // personParent.gameObject.SetActive(o is Person || o is SocialMediaUser);
+        // additionalInfos.text = "";
+        // transform.Find("Image").gameObject.SetActive(true);
         // check if scribtable object is type person  
-        switch (o)
+       personInfo.SetActive(false);
+        userInfo.SetActive(false); 
+        postContentInfo.SetActive(false);
+        postContentUserImage.SetActive(false);
+        switch (o) 
         {
             case Person:
                 Person p = (Person)o;
-                title.text = p.personName;
-                pbMaterial.material.SetTexture("_Base", p.image.texture);
+                backgroundClipboardImage.GetComponent<Image>().sprite = personInfoBG;
+                personInfo.SetActive(true);
+                personImage.sprite = p.image;
+                personName.text = p.personName; 
+                personContent.text = "";  
                 foreach (string info in p.additionalInfos)
                 {
-                    additionalInfos.text += "- " + info + "<br>";
+                    personContent.text += "- " + info + "<br>";
                 }
                 break;
             case SocialMediaUser:
                 SocialMediaUser smu = (SocialMediaUser)o;
-                pbMaterial.material.SetTexture("_Base", smu.image.texture);
-                title.text = smu.username;
+                backgroundClipboardImage.GetComponent<Image>().sprite = userInfoBG;
+                userInfo.SetActive(true);
+                userImage.sprite = smu.image; 
+                userName.text = smu.username;
+                userContent.text = "";
                 foreach (string info in smu.additionalInfos)
                 {
-                    additionalInfos.text += "- " + info + "<br>";
+                    userContent.text += "- " + info + "<br>";
                 }
                 break;
             case SocialMediaPost:
                 SocialMediaPost smp = (SocialMediaPost)o;
-                if (smp.image != null)
+                backgroundClipboardImage.GetComponent<Image>().sprite = postContentInfoBG;
+                postContentInfo.SetActive(true);
+                postContentUserImage.SetActive(true);
+                postContentUserImage.transform.GetChild(0).GetComponent<Image>().sprite = smp.author.image;
+                if (smp.image != null)  
                 {
-                    pbMaterial.material.SetTexture("_Base", smp.image.texture);
+                    postContentImage.gameObject.SetActive(true);
+                    postContentImage.sprite = smp.image;
                 }
                 else
                 {
-                    transform.Find("Image").gameObject.SetActive(false);
+                    postContentImage.gameObject.SetActive(false);
                 }
-                contentText.text = smp.content;
+                postContentText.text = smp.content;
                 break;
             case ArchiveData:
                 ArchiveData a = (ArchiveData)o;
+                postContentInfo.SetActive(true);
                 if (a.type == ArchiveType.Image && a.image != null)
                 {
                     bigPicture.material.SetTexture("_Base", a.image.texture);
                 }
                 else if (a.image != null)
                 {
-                    pbMaterial.material.SetTexture("_Base", a.image.texture);
+                    //pbMaterial.material.SetTexture("_Base", a.image.texture);
                 }
                 else
                 {
                     transform.Find("Image").gameObject.SetActive(false);
                 }
-                contentText.text = a.content;
+                postContentText.text = a.content;
                 break;
         }
     }
