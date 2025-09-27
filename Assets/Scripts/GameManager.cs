@@ -356,7 +356,7 @@ public class GameManager : MonoBehaviour, ISavable
         }
         else
         {
-            DontDestroyOnLoad(gameObject);
+            //DontDestroyOnLoad(gameObject);
             instance = this;
         }
         reload();

@@ -124,6 +124,8 @@ public class SettingsMenu : MonoBehaviour
             }
         }
         PlayerPrefs.SetInt("SubtitleSize", subtitleSizeDropdown.value);
+
+        PlayerPrefs.Save();
     }
 
     public void ApplySoundSettings()
@@ -134,6 +136,8 @@ public class SettingsMenu : MonoBehaviour
         PlayerPrefs.SetInt("MusicVolume", (int)(musicVolume * 100));
         OnVoiceSliderValueChange(voiceVolume);
         PlayerPrefs.SetInt("VoiceVolume", (int)(voiceVolume * 100));
+
+        PlayerPrefs.Save();
     }
 
     public void ApplyDisplaySettings()
@@ -145,6 +149,8 @@ public class SettingsMenu : MonoBehaviour
         int verticalRes = Int32.Parse(resolutionDropdown.options[resolutionDropdown.value].text.Split(' ')[2].Trim());
         Screen.SetResolution(horizontalRes, verticalRes, fullScreenToggle.isOn);
         PlayerPrefs.SetInt("ResolutionDropdownValue", resolutionDropdown.value);
+
+        PlayerPrefs.Save();
     }
 
     public void ApplyCurrentSettings()

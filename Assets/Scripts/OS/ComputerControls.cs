@@ -30,7 +30,7 @@ public enum OSInvestigationState
     POST_DELETED
 }
 
-public class ComputerControls : MonoBehaviour//, ISavable
+public class ComputerControls : MonoBehaviour
 {
     private float mouseSensitivity = 1;
     private float mouseSensitivityModifier = 0;
@@ -54,6 +54,7 @@ public class ComputerControls : MonoBehaviour//, ISavable
     public TextMeshProUGUI computerDate;
     public OSPointySystem pointySystem;
     public Sprite[] appIcons;
+    public System.DateTime initialComputerDate = new System.DateTime(1982, 5, 1);
 
     private float mouseSpeedX;
     private float mouseSpeedY;
@@ -390,14 +391,6 @@ public class ComputerControls : MonoBehaviour//, ISavable
             return;
         }
 
-        if (!PlayerPrefs.HasKey(currentFocusedWindow.appType + "") || PlayerPrefs.GetInt(currentFocusedWindow.appType + "") == 0)
-        {
-            PlayerPrefs.SetInt(currentFocusedWindow.appType + "", 1);
-        }
-        else
-        {
-            return;
-        } 
         switch (currentFocusedWindow.appType)
         {
             case OSAppType.SOCIAL:
@@ -757,6 +750,7 @@ public class ComputerControls : MonoBehaviour//, ISavable
         windows.Clear();
         pointySystem.HidePointy();
         TriggerAppNotification(OSAppType.GOV);
+        computerDate.text = initialComputerDate.AddDays(gm.GetDay() - 1).ToString("MM/dd/yyyy", new System.Globalization.CultureInfo("en-US"));
     }
 
     public void OpenWindow(OSAppType type, string warningMessage = "Warning message", System.Action successFunc = null, bool hasCancelBtn = true, SocialMediaPost imagePost = null, Sprite imageFile = null, VideoClip videoFile = null, SocialMediaUser dmUser = null, bool dmUserPasswordFound = false)
@@ -960,21 +954,4 @@ public class ComputerControls : MonoBehaviour//, ISavable
         return point.x >= rectMin.x && point.x <= rectMax.x &&
                point.y >= rectMin.y && point.y <= rectMax.y;
     }
-
-   /* public void LoadData(SaveData data)
-    {
-        mouseSensitivity = data.mouseSensitivity;
-        print(data.mouseSensitivity);
-        cursorSkinIndex = data.cursorSkinIndex;
-        SetCursorSkin();
-        wallpaperIndex = data.wallpaperIndex;
-        SetWallpaper();
-    }
-
-    public void SaveData(SaveData data)
-    {
-        data.mouseSensitivity = mouseSensitivity;
-        data.cursorSkinIndex = cursorSkinIndex;
-        data.wallpaperIndex = wallpaperIndex;
-    }*/
 }
