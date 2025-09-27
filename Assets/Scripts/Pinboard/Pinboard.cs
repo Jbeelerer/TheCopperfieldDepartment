@@ -12,6 +12,7 @@ public class Pinboard : MonoBehaviour
 {
     Transform pinboardModel;
 
+    [SerializeField] private Color contradictionColor;
     [SerializeField] private GameObject pinPrefab;
 
     [SerializeField] private GameObject thread;
@@ -57,6 +58,7 @@ public class Pinboard : MonoBehaviour
     {
         if (FlaggedPersonPin != null)
         {
+            
         FlaggedPersonPin.SetAnnotationType(AnnotationType.None);
         FlaggedPersonPin = null;
         }
@@ -137,8 +139,8 @@ public class Pinboard : MonoBehaviour
             // handle contradiction color 
             //Color color;
             // UnityEngine.ColorUtility.TryParseHtmlString(connection.isContradiction ? "#F5867C" : "#F5DB7C", out color);
-            instance.transform.Find("PostitNew").GetComponent<MeshRenderer>().material.color = connection.isContradiction ? Color.red : Color.white;
-            instance.transform.position = thread.transform.GetChild(0).position - new Vector3(0, 0.05f, 0);
+            instance.transform.Find("PostitNew").GetComponent<MeshRenderer>().material.color = connection.isContradiction ? contradictionColor : Color.white;
+            instance.transform.position = thread.transform.GetChild(0).position - new Vector3(0, 0.05f, 0); 
             instance.GetComponentInChildren<TextMeshProUGUI>().text = connection.text;
             toElement.AddConnection(connection, instance.transform);
             fromElement.AddConnection(connection, instance.transform);
@@ -150,9 +152,9 @@ public class Pinboard : MonoBehaviour
         gm = GameManager.instance;
         pinboardModel = transform.GetChild(0);
         //pinboardModel.localScale = new Vector3(pinboardModel.localScale.x * gm.GetCurrentCase().pinboardSize, pinboardModel.localScale.y * gm.GetCurrentCase().pinboardSize, pinboardModel.localScale.z);
-        //instantiate a pin for the suspect   
-        AddPin(null, new Vector3(0, 0, -pinboardModel.localScale.z / 2));
-        AddPin(threadInfo, new Vector3(0.5f - (pinboardModel.localScale.x / 2), 0, -pinboardModel.localScale.z / 2));
+        //instantiate a pin for the suspect    
+        AddPin(null, new Vector3(0, 0, -pinboardModel.localScale.z / 2)); 
+        AddPin(threadInfo, new Vector3(1f - (pinboardModel.localScale.x / 2), 0, -pinboardModel.localScale.z / 2));
         AddPin(rightPenClickInfo, new Vector3(0.5f - (pinboardModel.localScale.x / 2), 0.5f - (pinboardModel.localScale.y / 2), -pinboardModel.localScale.z / 2));
         AddPin(leftPenClickInfo, new Vector3(0.5f + minSpaceBetweenPins - (pinboardModel.localScale.x / 2), 0.5f - (pinboardModel.localScale.y / 2), -pinboardModel.localScale.z / 2));
         narration = FindObjectOfType<Narration>();

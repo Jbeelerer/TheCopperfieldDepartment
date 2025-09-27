@@ -103,7 +103,6 @@ public class GameManager : MonoBehaviour, ISavable
         get { return _pinboardBlocked; }
         set
         {
-            print(GameObject.Find("Pinboard").GetComponent<Pinboard>() + " ---->>>> " + value);
             GameObject.Find("Pinboard").GetComponent<Pinboard>().pinboardInteractions(value);
             _pinboardBlocked = value;
         }
@@ -145,7 +144,6 @@ public class GameManager : MonoBehaviour, ISavable
 
     public void InspectObject(Transform o, Vector3 lookingDirection, GameState state = GameState.Inspecting)
     {
-        print("Inspecting " + o.name);
         if (inspectionCam == null)
         {
             reload();
@@ -168,7 +166,8 @@ public class GameManager : MonoBehaviour, ISavable
         // PinboardBlocked = day == 1;
         prevGameState = gameState;
         BeforeStateChanged?.Invoke();
-        if (state == GameState.Playing)
+
+        if (state == GameState.Playing && inspectionCam != null)
         {
             inspectionCam.GetComponent<CinemachineVirtualCamera>().LookAt = null;
         }
@@ -184,8 +183,7 @@ public class GameManager : MonoBehaviour, ISavable
 
         Cursor.visible = (state == GameState.Inspecting  ||state == GameState.DayOver|| state == GameState.InArchive);
         Cursor.lockState = (state == GameState.Inspecting  ||state == GameState.DayOver|| state == GameState.InArchive) ? CursorLockMode.Confined : CursorLockMode.Locked;
-        print(Cursor.visible);
-        print(state);
+    
         // handle startPos of mainCam
         if (state == GameState.Playing && gameState == GameState.OnPC)
         {
@@ -260,7 +258,7 @@ public class GameManager : MonoBehaviour, ISavable
     public void LoadData(SaveData data)
     {
         furthestDay = data.currentDay;
-        results = data.result;
+        results = data.result; 
         firstTryResults = data.firstTryResult;
         competingEmployees.Clear();
         foreach (SaveableEmployee se in data.competingEmployees)
@@ -284,7 +282,6 @@ public class GameManager : MonoBehaviour, ISavable
     }
     public void SetStartTransform(Transform t)
     {
-        print("Setting start transform to: " + t.position + " " + t.rotation);
         startPosition = t.position;
         startRotation = t.rotation;
         startCameraRotation = t.GetChild(0).transform.rotation;
@@ -295,13 +292,11 @@ public class GameManager : MonoBehaviour, ISavable
     }
     public Quaternion GetStartRotation()
     {
-        print("startRotation: " + startRotation);
         return startRotation;
     }
 
     public Quaternion GetStartCamRotation()
     {
-        print("startCameraRotation: " + startCameraRotation);
         return startCameraRotation;
     }
 
@@ -359,6 +354,7 @@ public class GameManager : MonoBehaviour, ISavable
             //DontDestroyOnLoad(gameObject);
             instance = this;
         }
+        DontDestroyOnLoad(instance); 
         reload();
 
         // initiate competing employees
@@ -381,6 +377,11 @@ public class GameManager : MonoBehaviour, ISavable
     }
     void Start()
     {
+        print("Day: " + calendarLoad);
+        if (calendarLoad)
+        {  
+            return;
+        }
         pinboard = GameObject.Find("Pinboard").GetComponent<Pinboard>();
         saveManager = SaveManager.instance;
         am = AudioManager.instance;
@@ -459,7 +460,6 @@ public class GameManager : MonoBehaviour, ISavable
             Destroy(instantiatedDayIntro);
         if (currentCase != null && currentCase.personReasoning != null && currentCase.personReasoning.Count != 0)
         {
-            print(currentCase.personReasoning[0].reason);
             //get reasong from where person is the currentlyAccused one
             foreach (PersonReasoning pr in currentCase.personReasoning)
             {
@@ -681,6 +681,10 @@ public class GameManager : MonoBehaviour, ISavable
     public IEnumerator DayIntroCoroutine(float delay = 0)
     {
         yield return new WaitForSeconds(delay);
+        while (GameObject.Find("Virtual Camera") == null)
+        { 
+            yield return new WaitForSeconds(0.1f);
+        } 
         
         SetGameState(GameState.Playing);
         GameObject instantiatedDayIntro = Instantiate(dayIntro);

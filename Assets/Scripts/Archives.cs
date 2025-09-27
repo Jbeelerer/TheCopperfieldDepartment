@@ -74,7 +74,6 @@ public class Archives : MonoBehaviour
     }
     private void closeIfInArchive()
     {
-        print("----- >>>" + gm.GetGameState());
         if (wasInArchvie && gm.GetGameState() == GameState.Playing)
         {
             wasInArchvie = false;

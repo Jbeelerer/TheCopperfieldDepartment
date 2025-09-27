@@ -17,5 +17,5 @@ public class CalendarDay : MonoBehaviour
         gm.PlayTimeTravelSequence();
         gm.LoadDayOverCalendar(int.Parse(gameObject.GetComponentInChildren<TMPro.TextMeshProUGUI>().text));
         SceneManager.LoadScene(sceneName);
-    }
+    } 
 }
