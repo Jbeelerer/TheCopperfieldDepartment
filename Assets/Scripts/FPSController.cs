@@ -10,7 +10,6 @@ using System;
 using Cinemachine;
 using SaveSystem;
 using UnityEngine.SceneManagement;
-using Microsoft.Unity.VisualStudio.Editor;
 
 
 [System.Serializable]

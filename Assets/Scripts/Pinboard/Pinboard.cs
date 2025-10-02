@@ -154,10 +154,10 @@ public class Pinboard : MonoBehaviour
         //pinboardModel.localScale = new Vector3(pinboardModel.localScale.x * gm.GetCurrentCase().pinboardSize, pinboardModel.localScale.y * gm.GetCurrentCase().pinboardSize, pinboardModel.localScale.z);
         //instantiate a pin for the suspect    
         AddPin(null, new Vector3(0, 0, -pinboardModel.localScale.z / 2)); 
-        AddPin(threadInfo, new Vector3(1f - (pinboardModel.localScale.x / 2), 0, -pinboardModel.localScale.z / 2));
+        AddPin(threadInfo, new Vector3( (pinboardModel.localScale.x / 3), 0, -pinboardModel.localScale.z / 2));   
         AddPin(rightPenClickInfo, new Vector3(0.5f - (pinboardModel.localScale.x / 2), 0.5f - (pinboardModel.localScale.y / 2), -pinboardModel.localScale.z / 2));
         AddPin(leftPenClickInfo, new Vector3(0.5f + minSpaceBetweenPins - (pinboardModel.localScale.x / 2), 0.5f - (pinboardModel.localScale.y / 2), -pinboardModel.localScale.z / 2));
-        narration = FindObjectOfType<Narration>();
+        narration = FindObjectOfType<Narration>();  
         GameObject.FindObjectOfType<ComputerControls>().OnUnpinned.AddListener(RemoveByScriptableObject);
         gm.OnNewDay.AddListener(ResetPinboard);
         gm.InvestigationStateChanged.AddListener(AddAccusation);

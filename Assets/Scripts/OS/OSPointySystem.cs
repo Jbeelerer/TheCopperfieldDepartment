@@ -63,12 +63,14 @@ public class OSPointySystem : MonoBehaviour, ISavable
 
     private List<OSSocialMediaPost> pinnedInspectionPosts = new List<OSSocialMediaPost>();
     private SocialMediaPost inspectionOriginalPost = null;
-
+    private void Awake()
+    {
+        pointyAnim = pointy.GetComponent<Animator>();
+    }
     private void Start()
     {
         computerControls = GetComponentInParent<ComputerControls>();
         popupManager = GameObject.Find("PopupMessage").GetComponent<OSPopupManager>();
-        pointyAnim = pointy.GetComponent<Animator>();
 
         spotlight.GetComponent<Image>().alphaHitTestMinimumThreshold = 1f;
         originalSpotlightSize = spotlight.GetComponent<RectTransform>().sizeDelta;

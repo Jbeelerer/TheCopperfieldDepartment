@@ -419,10 +419,10 @@ public class GameManager : MonoBehaviour, ISavable
         {
             day = devCase;
         }
-        if (Resources.LoadAll<Case>(dayOrder[day]).Count() == 0)
+        if (day == 5)//Resources.LoadAll<Case>(dayOrder[day]).Count()
         {
             // TODO: implement endgame  
-            SceneManager.LoadScene("TheEnd");
+            SceneManager.LoadScene(0);
             return true;
             //  return; 
             // todo: Only temp solution...

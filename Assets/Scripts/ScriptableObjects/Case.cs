@@ -22,5 +22,5 @@ public class Case : ScriptableObject
 public class PersonReasoning
 {
     public ScriptableObject person;
-    public string reason;
+    [TextArea] public string reason;
 }
