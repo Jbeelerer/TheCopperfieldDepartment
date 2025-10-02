@@ -419,14 +419,6 @@ public class GameManager : MonoBehaviour, ISavable
         {
             day = devCase;
         }
-        if (day == 5)//Resources.LoadAll<Case>(dayOrder[day]).Count()
-        {
-            // TODO: implement endgame  
-            SceneManager.LoadScene(0);
-            return true;
-            //  return; 
-            // todo: Only temp solution...
-        }
         currentCase = Resources.LoadAll<Case>(dayOrder[day])[0];
         // load all connections
         connections = Resources.LoadAll<Connections>(dayOrder[day] + "/Connections");
@@ -511,6 +503,16 @@ public class GameManager : MonoBehaviour, ISavable
             DayIntro();
         }
         calendarLoad = false;
+    }
+    public void reloadIfOver()
+    {
+        if (day == 5)//Resources.LoadAll<Case>(dayOrder[day]).Count()
+        {
+            // TODO: implement endgame  
+            SceneManager.LoadScene(0);
+            //  return; 
+            // todo: Only temp solution...
+        }
     }
 
     public void SortCompetingEmployees()

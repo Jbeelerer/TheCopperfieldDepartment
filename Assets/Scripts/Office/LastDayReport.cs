@@ -37,6 +37,7 @@ public class LastDayReport : MonoBehaviour
     public void Next()
     {
         GameObject g = Instantiate(newDayPrefab);
+        GameManager.instance.reloadIfOver();
         Destroy(gameObject);
     }
 }
