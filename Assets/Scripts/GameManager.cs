@@ -63,7 +63,6 @@ public class GameManager : MonoBehaviour, ISavable
     [SerializeField] private GameObject newDayPrefab;
     [SerializeField] private GameObject feedbackReportPrefab;
     [SerializeField] private GameObject dayIntro;
-
     private bool answerCommited = false;
     public Narration narration;
     private int saveFile;
@@ -273,7 +272,7 @@ public class GameManager : MonoBehaviour, ISavable
         }
         print("Loading day: " + furthestDay);
         LoadNewDay(furthestDay, true);
-        PinboardBlocked = day == 1;
+        PinboardBlocked = day < 2;
         DayIntro();
     }
     public bool GetAnswerCommited()
@@ -450,20 +449,6 @@ public class GameManager : MonoBehaviour, ISavable
         instantiateLoadedDay = loaded;
         if (instantiatedDayIntro != null)
             Destroy(instantiatedDayIntro);
-        if (currentCase != null && currentCase.personReasoning != null && currentCase.personReasoning.Count != 0)
-        {
-            //get reasong from where person is the currentlyAccused one
-            foreach (PersonReasoning pr in currentCase.personReasoning)
-            {
-                if (pr.person == currentlyAccused)
-                {
-                    feedBackExplanation = pr.reason;
-                    break;
-                }
-            }
-            //feedBackMailContent = currentCase.personReasoning.Find(x => x.person == currentlyAccused).reason;
-            //feedBackMailContent = currentCase.personReasoning.Find(x => x.person == currentlyAccused).reason;
-        }
         GameObject ow = GameObject.Find("OutsideWorld");
         if (ow != null)
         {
@@ -567,8 +552,8 @@ public class GameManager : MonoBehaviour, ISavable
             {
                 results[day - 2] = investigationState;
             }
-                SaveManager.instance.SaveGame();
-            
+            SaveManager.instance.SaveGame();
+
         }
         LoadNewDay(day);
     }
@@ -606,6 +591,7 @@ public class GameManager : MonoBehaviour, ISavable
     {
         currentlyAccused = p;
         answerCommited = true;
+        
         narration.Say("suspectFound");
         if (p == currentCase.guiltyPerson)
         {
@@ -614,6 +600,17 @@ public class GameManager : MonoBehaviour, ISavable
         else
         {
             investigationState = investigationStates.SuspectNotFound;
+        }
+        if (currentCase != null && currentCase.personReasoning != null && currentCase.personReasoning.Count != 0)
+        {
+            foreach (PersonReasoning pr in currentCase.personReasoning)
+            {
+                if (pr.person == currentlyAccused)
+                {
+                    feedBackExplanation = pr.reason;
+                    break;
+                }
+            }
         }
         InvestigationStateChanged?.Invoke();
     }
@@ -698,7 +695,7 @@ public class GameManager : MonoBehaviour, ISavable
     }
     private IEnumerator DelayFirstDay()
     {
-        if (day == 1)
+        if (day < 2)
         {
             PinboardBlocked = true;
         }

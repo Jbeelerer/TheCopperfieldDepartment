@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -17,16 +18,18 @@ public class LastDayReport : MonoBehaviour
 
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         gm = GameManager.instance;
 
         suspectName.text = gm.GetCurrentlyAccused().personName;
         suspectImage.sprite = gm.GetCurrentlyAccused().image;
         explenation.text = gm.GetFeedBackExplanation();
-        if (gm.GetResultForDay(gm.GetDay() - 1) == investigationStates.SuspectFound)
+        print(gm.GetFeedBackExplanation()); 
+        print(gm.GetDay()-2); 
+        if (gm.GetResultForDay(gm.GetDay()-2) == investigationStates.SuspectFound)
         {
-            stamp.sprite = stampSuccess;
+            stamp.sprite = stampSuccess; 
         }
         else
         {

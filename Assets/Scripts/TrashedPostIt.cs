@@ -28,6 +28,19 @@ public class TrashedPostIt : MonoBehaviour
     public void ReAddPostIt()
     {
         pinboard.AddPin(content);
+        OSSocialMediaContent oSSocialMediaContent = Object.FindObjectOfType<OSSocialMediaContent>();
+        // @alex help??
+        if (content.GetType() == typeof(SocialMediaPost))
+        {
+        }
+        else if (content.GetType() == typeof(SocialMediaUser))
+        {
+
+        }
+        else if (content.GetType() == typeof(Person))
+        {
+
+        } 
         Destroy(gameObject);
     }
 }

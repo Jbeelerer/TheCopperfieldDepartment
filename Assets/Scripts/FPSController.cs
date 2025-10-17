@@ -254,6 +254,7 @@ public class FPSController : MonoBehaviour
                                 inputOverlay.SetIcon("handOpen");
                                 break;
                             default:
+                                inputOverlay.SetIcon("inspect");
                                 break;
                         }
                     }
@@ -709,7 +710,8 @@ public class FPSController : MonoBehaviour
                                 default:
                                     switch (hit.collider.gameObject.name)
                                     {
-                                        case "PostItBill":
+                                        case "PostItBill": 
+                                            inputOverlay.SetIcon("");
                                             gm.InspectObject(hit.collider.transform, new Vector3(0, 1.2f, 0));
                                             break;
                                         default:

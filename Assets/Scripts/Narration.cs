@@ -59,6 +59,11 @@ public class ShortSubtitles
     public TimedSubtitle suspectFound;
     public TimedSubtitle phoneNotWorking;
     public TimedSubtitle blocked;
+    public TimedSubtitle phoneCallIntro_replay;
+    public TimedSubtitle phoneReminderNothingAdded_replay;
+    public TimedSubtitle phoneReminderPersonNotAdded_replay;
+    public TimedSubtitle phoneReminderPostNotAdded_replay;
+    public TimedSubtitle exit_replay;
 }
 
 public class Narration : MonoBehaviour
@@ -141,6 +146,7 @@ public class Narration : MonoBehaviour
     }
     public IEnumerator CheckIntroSequence()
     {
+        yield return new WaitForEndOfFrame();
         yield return new WaitForEndOfFrame();
         if (gm.GetDay() == 1)
         {
@@ -285,6 +291,31 @@ public class Narration : MonoBehaviour
                 audioSource.clip = null;
                 subtitleText.text = shortSubtitles.blocked.text;
                 duration = shortSubtitles.phoneNotWorking.duration;
+                break;
+            case "phoneCallIntro_replay":
+                audioSource.clip = null;
+                subtitleText.text = shortSubtitles.phoneCallIntro_replay.text;
+                duration = shortSubtitles.phoneCallIntro_replay.duration;
+                break;
+            case "phoneReminderNothingAdded_replay":
+                audioSource.clip = null;
+                subtitleText.text = shortSubtitles.phoneReminderNothingAdded_replay.text;
+                duration = shortSubtitles.phoneReminderNothingAdded_replay.duration;
+                break;
+            case "phoneReminderPersonNotAdded_replay":
+                audioSource.clip = null;
+                subtitleText.text = shortSubtitles.phoneReminderPersonNotAdded_replay.text;
+                duration = shortSubtitles.phoneReminderPersonNotAdded_replay.duration;
+                break;
+            case "phoneReminderPostNotAdded_replay":
+                audioSource.clip = null;
+                subtitleText.text = shortSubtitles.phoneReminderPostNotAdded_replay.text;
+                duration = shortSubtitles.phoneReminderPostNotAdded_replay.duration;
+                break;
+            case "exit_replay":
+                audioSource.clip = null;
+                subtitleText.text = shortSubtitles.exit_replay.text;
+                duration = shortSubtitles.exit_replay.duration;
                 break;
         }
         StartCoroutine(DisableSubtitle(duration));

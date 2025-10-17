@@ -21,6 +21,7 @@ public class Phone : MonoBehaviour
     private bool wasOnPc = false;
 
     private Animator animator;
+    private string lastCallName;
 
     // TODO: maybe create a scriptable object for the phone calls for each day
 
@@ -46,14 +47,14 @@ public class Phone : MonoBehaviour
 
     public void Ring()
     {
-        if (gm.GetGameState() == GameState.OnPC)
+        if (gm.GetGameState() == GameState.OnPC && gm.GetDay() == 2)
         {
             wasOnPc = true;
             ResetPhone();
         }
-        if (gm.GetGameState() == GameState.Playing && wasOnPc && gm.GetDay() == 1 && !isRinging && !gm.GetAnswerCommited())
+        if (gm.GetGameState() == GameState.Playing && wasOnPc && gm.GetDay() == 2 && !isRinging && !gm.GetAnswerCommited())
         {
-            wasOnPc = false;
+            wasOnPc = false; 
             string callName = FindObjectOfType<Pinboard>().tutorialElementOnBoard();
             Ring(callName);
             if (callName == "phoneCallIntro")   
@@ -64,8 +65,9 @@ public class Phone : MonoBehaviour
     }
     public void Ring(string callName)
     {
+        lastCallName = callName;
         animator.Play("Ringing");
-        isRinging = true;
+        isRinging = true; 
         phoneHighlight.gameObject.SetActive(true);
         phoneHighlight.StartCoroutine(phoneHighlight.PhoneRinging(transform));
         this.callName = callName;
@@ -79,7 +81,14 @@ public class Phone : MonoBehaviour
             if (!narration.CancelSequence())
             {
                 gm.StateChanged.AddListener(Ring);
-                narration.Say("phoneNotWorking");
+                if (lastCallName != null)
+                {
+                    narration.Say(lastCallName+"_replay");
+                }
+                else
+                {
+                    narration.Say("phoneNotWorking");
+                }
             }
             return;
         }
