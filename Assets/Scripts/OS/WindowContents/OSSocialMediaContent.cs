@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Net.Mime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -131,29 +130,27 @@ public class OSSocialMediaContent : MonoBehaviour
         postList[0].OnPointerEnter(null);
     }
 
-    public void PinPost(string type, SocialMediaPost post)
+    public void PinPost(ScriptableObject content)
     {
-        switch (type)
+        if (content.GetType() == typeof(SocialMediaPost))
         {
-            case "name":
-                OnPinned?.Invoke(post.author);
-                break;
-            case "content":
-                OnPinned?.Invoke(post);
-                break;
+            OnPinned?.Invoke((SocialMediaPost)content);
+        }
+        else if (content.GetType() == typeof(SocialMediaUser))
+        {
+            OnPinned?.Invoke((SocialMediaUser)content);
         }
     }
 
-    public void UnpinPost(string type, SocialMediaPost post)
+    public void UnpinPost(ScriptableObject content)
     {
-        switch (type)
+        if (content.GetType() == typeof(SocialMediaPost))
         {
-            case "name":
-                computerControls.OnUnpinned?.Invoke(post.author);
-                break;
-            case "content":
-                computerControls.OnUnpinned?.Invoke(post);
-                break;
+            computerControls.OnUnpinned?.Invoke((SocialMediaPost)content);
+        }
+        else if (content.GetType() == typeof(SocialMediaUser))
+        {
+            computerControls.OnUnpinned?.Invoke((SocialMediaUser)content);
         }
     }
 

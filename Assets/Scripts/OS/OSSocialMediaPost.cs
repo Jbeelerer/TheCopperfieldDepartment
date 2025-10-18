@@ -134,30 +134,27 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
         this.post = post;
     }
 
-    public void AddPostToPinboard(string type)
+    public void AddPostToPinboard()
     {
-        switch (type)
+        if (!postPinned)
         {
-            case "name":
-                if (!userPinned)
-                {
-                    socialMediaContent.PinPost(type, post);
-                }
-                else
-                {
-                    socialMediaContent.UnpinPost(type, post);
-                }
-                break;
-            case "content":
-                if (!postPinned)
-                {
-                    socialMediaContent.PinPost(type, post);
-                }
-                else
-                {
-                    socialMediaContent.UnpinPost(type, post);
-                }
-                break;
+            socialMediaContent.PinPost(post);
+        }
+        else
+        {
+            socialMediaContent.UnpinPost(post);
+        }
+    }
+
+    public void AddUserToPinboard()
+    {
+        if (!userPinned)
+        {
+            socialMediaContent.PinPost(post.author);
+        }
+        else
+        {
+            socialMediaContent.UnpinPost(post.author);
         }
     }
 

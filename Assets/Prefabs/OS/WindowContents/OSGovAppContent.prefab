@@ -235,7 +235,6 @@ GameObject:
   - component: {fileID: 6347025819518419777}
   - component: {fileID: 3054108438655907298}
   - component: {fileID: 9127980268299843566}
-  - component: {fileID: 1758723073832300315}
   m_Layer: 5
   m_Name: ButtonDown
   m_TagString: Untagged
@@ -300,19 +299,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &1758723073832300315
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1390538695970902892}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b1c49704632a794483eed7869721e33, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tooltipText: Scroll Upwards
 --- !u!1 &1445960423736570950
 GameObject:
   m_ObjectHideFlags: 0
@@ -434,7 +420,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 6026981513356179954}
   m_Direction: 0
   m_Value: 1
-  m_Size: 1
+  m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1072,7 +1058,6 @@ GameObject:
   - component: {fileID: 8134795884513538645}
   - component: {fileID: 1410570030834116729}
   - component: {fileID: 7409359804224629865}
-  - component: {fileID: 5622781464811402859}
   m_Layer: 5
   m_Name: ButtonDown
   m_TagString: Untagged
@@ -1137,19 +1122,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &5622781464811402859
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4074754074065327199}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b1c49704632a794483eed7869721e33, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tooltipText: Scroll Upwards
 --- !u!1 &4358756313079786424
 GameObject:
   m_ObjectHideFlags: 0
@@ -1740,10 +1712,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 4660763943425053596}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 182.5, y: 0}
-  m_SizeDelta: {x: 365, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 182.5, y: -10.005}
+  m_SizeDelta: {x: 365, y: 20.01}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5262395847130243413
 CanvasRenderer:
@@ -2283,7 +2255,6 @@ GameObject:
   - component: {fileID: 5960731044495848759}
   - component: {fileID: 98912496676183687}
   - component: {fileID: 5781823542546040349}
-  - component: {fileID: 2131555983003428044}
   m_Layer: 5
   m_Name: ButtonUp
   m_TagString: Untagged
@@ -2348,19 +2319,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &2131555983003428044
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6412204412736745375}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b1c49704632a794483eed7869721e33, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tooltipText: Scroll Upwards
 --- !u!1 &6481245252913244599
 GameObject:
   m_ObjectHideFlags: 0
@@ -3275,7 +3233,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4292431392704557057}
   m_HandleRect: {fileID: 614828235066300678}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -3505,7 +3463,6 @@ GameObject:
   - component: {fileID: 8647983807743887715}
   - component: {fileID: 6518475904369398737}
   - component: {fileID: 1368964915547387387}
-  - component: {fileID: 362771996688234334}
   m_Layer: 5
   m_Name: ButtonUp
   m_TagString: Untagged
@@ -3570,19 +3527,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &362771996688234334
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8663842242811190821}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b1c49704632a794483eed7869721e33, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tooltipText: Scroll Upwards
 --- !u!1 &8726618548543394320
 GameObject:
   m_ObjectHideFlags: 0

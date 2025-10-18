@@ -1,20 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TrashedPostIt : MonoBehaviour
 {
     private ScriptableObject content;
     private Pinboard pinboard;
+    private OSSocialMediaContent socialMediaContent;
+    private OSPeopleListContent peopleListContent;
     // Start is called before the first frame update
     void Start()
     {
+        socialMediaContent = FindObjectOfType<OSSocialMediaContent>();
+        peopleListContent = FindObjectOfType<OSPeopleListContent>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-    }
     public ScriptableObject GetContent()
     {
         return content;
@@ -27,19 +25,17 @@ public class TrashedPostIt : MonoBehaviour
     }
     public void ReAddPostIt()
     {
-        pinboard.AddPin(content);
-        OSSocialMediaContent oSSocialMediaContent = Object.FindObjectOfType<OSSocialMediaContent>();
-        // @alex help??
         if (content.GetType() == typeof(SocialMediaPost))
         {
+            socialMediaContent.OnPinned?.Invoke((SocialMediaPost)content);
         }
         else if (content.GetType() == typeof(SocialMediaUser))
         {
-
+            socialMediaContent.OnPinned?.Invoke((SocialMediaUser)content);
         }
         else if (content.GetType() == typeof(Person))
         {
-
+            peopleListContent.PinPerson((Person)content);
         } 
         Destroy(gameObject);
     }

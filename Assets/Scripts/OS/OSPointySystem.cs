@@ -369,7 +369,7 @@ public class OSPointySystem : MonoBehaviour, ISavable
 
         if (pinnedInspectionPosts.Contains(inspectionPost))
         {
-            socialMediaContent.UnpinPost("content", inspectionPost.post);
+            socialMediaContent.UnpinPost(inspectionPost.post);
             pinnedInspectionPosts.Remove(inspectionPost);
             //yield break;
         }
@@ -390,7 +390,7 @@ public class OSPointySystem : MonoBehaviour, ISavable
 
         yield return null;
 
-        socialMediaContent.PinPost("content", inspectionPost.post);
+        socialMediaContent.PinPost(inspectionPost.post);
         pinnedInspectionPosts.Add(inspectionPost);
     }
 

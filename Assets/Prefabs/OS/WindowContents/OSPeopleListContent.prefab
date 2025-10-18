@@ -316,7 +316,6 @@ GameObject:
   - component: {fileID: 5436723557132753170}
   - component: {fileID: 2990919929991539563}
   - component: {fileID: 4112516811448744889}
-  - component: {fileID: 1806140038521045489}
   m_Layer: 5
   m_Name: ButtonDown
   m_TagString: Untagged
@@ -381,19 +380,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &1806140038521045489
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1045235365438588378}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b1c49704632a794483eed7869721e33, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tooltipText: Scroll Upwards
 --- !u!1 &1120504953625827669
 GameObject:
   m_ObjectHideFlags: 0
@@ -481,7 +467,6 @@ GameObject:
   - component: {fileID: 4461731294364696581}
   - component: {fileID: 3123096415119339029}
   - component: {fileID: 7057310675905377464}
-  - component: {fileID: 3644482021801170455}
   m_Layer: 5
   m_Name: ButtonUp
   m_TagString: Untagged
@@ -546,19 +531,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &3644482021801170455
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1167857385800150470}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b1c49704632a794483eed7869721e33, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tooltipText: Scroll Upwards
 --- !u!1 &1368110333861716385
 GameObject:
   m_ObjectHideFlags: 0
@@ -787,7 +759,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0.0000042915344, y: -17}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &7222482879175751501
 CanvasRenderer:
@@ -1035,7 +1007,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 579312907080682216}
   m_HandleRect: {fileID: 3605685897631851720}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:

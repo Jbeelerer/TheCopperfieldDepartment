@@ -1,8 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class OSPeopleListContent : MonoBehaviour
@@ -10,7 +9,7 @@ public class OSPeopleListContent : MonoBehaviour
     [SerializeField] private GameObject profileContainer;
     [SerializeField] private GameObject personProfilePrefab;
     private int personNumber = 1;
-    private List<OSPerson> peopleList = new List<OSPerson>();
+    private readonly List<OSPerson> peopleList = new List<OSPerson>();
     private ComputerControls computerControls;
 
     //public UnityEvent OnAccusedPersonClear;
@@ -49,11 +48,8 @@ public class OSPeopleListContent : MonoBehaviour
         peopleList.Add(newProfile.GetComponent<OSPerson>());
     }
 
-    /*public void ClearAccusedPeople()
+    public void PinPerson(Person person)
     {
-        foreach (OSPerson person in peopleList)
-        {
-            person.ClearAccusation();
-        }
-    }*/
+        peopleList.FirstOrDefault(p => p.person == person)?.AddPersonToPinboard();
+    }
 }

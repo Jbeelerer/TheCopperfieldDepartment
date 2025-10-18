@@ -225,8 +225,8 @@ public class ComputerControls : MonoBehaviour
         if (gm.GetDay() == 1)
         {
             OpenWindow(OSAppType.START_SETTINGS);
+            CloseAppNotification(OSAppType.SOCIAL);
         }
-
     }
 
     // Update is called once per frame
@@ -536,6 +536,21 @@ public class ComputerControls : MonoBehaviour
         }
     }
 
+    public void CloseAppNotification(OSAppType appType)
+    {
+        foreach (OSApplication app in apps)
+        {
+            if (app.appType == appType)
+            {
+                if (app.transform.Find("Notif"))
+                {
+                    app.transform.Find("Notif").gameObject.SetActive(false);
+                }
+                break;
+            }
+        }
+    }
+
     private void CheckAppMouseUp()
     {
         if (pointySystem.GetIsPointyActive())
@@ -549,12 +564,7 @@ public class ComputerControls : MonoBehaviour
 
             if (Object.ReferenceEquals(hitObject, app.gameObject))
             {
-                // Remove Notif icon if present
-                if (app.transform.Find("Notif"))
-                {
-                    app.transform.Find("Notif").gameObject.SetActive(false);
-                }
-
+                CloseAppNotification(app.appType);
                 OpenWindow(app.appType);
                 return;
             }
@@ -750,6 +760,7 @@ public class ComputerControls : MonoBehaviour
         windows.Clear();
         pointySystem.HidePointy();
         TriggerAppNotification(OSAppType.GOV);
+        TriggerAppNotification(OSAppType.SOCIAL);
         computerDate.text = initialComputerDate.AddDays(gm.GetDay() - 1).ToString("MM/dd/yyyy", new System.Globalization.CultureInfo("en-US"));
     }
 

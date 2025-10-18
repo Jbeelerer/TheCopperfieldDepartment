@@ -495,7 +495,7 @@ public class FPSController : MonoBehaviour
             gm = GameManager.instance;
         }
         // on e key pressed ExitPC is "E"
-        if (Input.GetButtonDown("ExitPC") && gm.isOccupied())
+        if ((Input.GetButtonDown("ExitPC") || Input.GetKeyDown(KeyCode.S)) && gm.isOccupied())
         {
             if (gm.GetGameState() == GameState.OnPC)
             {
