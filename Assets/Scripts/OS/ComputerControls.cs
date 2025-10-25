@@ -108,7 +108,15 @@ public class ComputerControls : MonoBehaviour
     }
     public float GetMouseSensitivity()
     {
-        return mouseSensitivity;
+        if (mouseSensitivity >= 1)
+        {
+            return mouseSensitivity;
+        }
+        else
+        {
+            // Convert back to negative number for accurate pos on slider
+            return (1f - mouseSensitivity) * -10f;
+        }
     }
 
     private void SetCursorSkin()
