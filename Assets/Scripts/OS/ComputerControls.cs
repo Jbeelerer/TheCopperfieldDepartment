@@ -1,11 +1,9 @@
-using SaveSystem;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using UnityEngine.ProBuilder.MeshOperations;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
@@ -66,7 +64,6 @@ public class ComputerControls : MonoBehaviour
     private float timeCursorStopped = 0;
     private float tooltipDelay = 0.3f;
     private GameManager gm;
-    private PauseMenu pauseMenu;
     private bool cursorActive = false;
     private GameObject eventSystem;
     private Vector2 smallWindowSize = new Vector2(400, 300);
@@ -206,8 +203,6 @@ public class ComputerControls : MonoBehaviour
         gm.OnNewDay.AddListener(ResetComputer);
         // wait for the initialization of the saved day
         StartCoroutine(waitForDayInit());
-
-        pauseMenu = FindObjectOfType<PauseMenu>();
 
         if (PlayerPrefs.HasKey("mouseSensitivity"))
         {
@@ -465,9 +460,7 @@ public class ComputerControls : MonoBehaviour
 
     public void LeaveComputer()
     {
-        gm.SetGameState(GameState.Playing);
         ToggleCursor();
-        StartCoroutine(pauseMenu.StartPauseMenuCooldown());
     }
 
     public void ToggleCursor()
@@ -819,11 +812,9 @@ public class ComputerControls : MonoBehaviour
         GameObject newTab = Instantiate(tabPrefab, transform.position, transform.rotation, tabContainer.transform);
         newTab.GetComponent<OSTab>().appType = type;
         newWindow.GetComponent<OSWindow>().associatedTab = newTab.GetComponent<OSTab>();
-        // Set window position
-        SetWindowOpenPosition(newWindow.GetComponent<OSWindow>());
-        // Open Pointy Tutorial if it exists for the window
-        //if (/*gm.GetDay() == 1 && */newWindow.GetComponent<OSWindow>().appType != OSAppType.WARNING && newWindow.GetComponent<OSWindow>().appType != OSAppType.START_SETTINGS)
-        //    TogglePointy(true);
+        // Set window position (only if pointy isnt active, else keep in the middle)
+        if (!pointySystem.GetIsPointyActive())
+            SetWindowOpenPosition(newWindow.GetComponent<OSWindow>());
     }
 
     private void SetWindowOpenPosition(OSWindow window)

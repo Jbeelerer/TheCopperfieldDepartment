@@ -430,8 +430,9 @@ public class GameManager : MonoBehaviour, ISavable
         }
         else
         {
-            mails = tempMails;
+            
         }
+        mails = tempMails;
         // mails[tempMails.Count()] = feedBackMail;        
         posts = Resources.LoadAll<SocialMediaPost>(dayOrder[day] + "/Posts");
         conversations = Resources.LoadAll<DMConversation>(dayOrder[day] + "/Conversations");
