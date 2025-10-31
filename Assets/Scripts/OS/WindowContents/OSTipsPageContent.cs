@@ -21,6 +21,11 @@ public class OSTipsPageContent : MonoBehaviour, ISavable
         foreach (MediaItem item in mediaItems)
         {
             itemCount++;
+
+            // Dont show tip 1 (pinboard tutorial) on first day
+            if (GameManager.instance.GetDay() == 1 && itemCount == 1)
+                continue;
+
             var newMediaFile = Instantiate(mediaFilePrefab, mediaFileContainer);
             newMediaFile.name = "MediaFile" + itemCount;
             if (item.image != null)

@@ -2828,15 +2828,44 @@ MonoBehaviour:
     spotlightSizeModifier: {x: 0, y: 0}
     specificParentName: 
     stepsToGetToSpecificParent: 0
+  - targetObjectName: ScreenBlockadePointy
+    message: Each person has a description with <b>clues</b> that might <b>link them
+      to a social media account.</b>
+    pointAtPointy: 0
+    spotlightSizeModifier: {x: 0.8, y: 0.8}
+    specificParentName: 
+    stepsToGetToSpecificParent: 0
+  - targetObjectName: ScreenBlockadePointy
+    message: 'You can also <b>accuse a person</b> here if you think you''ve found
+      today''s culprit.<br>
+
+      Use the <b>accuse button</b> next to each person.'
+    pointAtPointy: 0
+    spotlightSizeModifier: {x: 0.8, y: 0.8}
+    specificParentName: 
+    stepsToGetToSpecificParent: 0
+  stepsPeopleListPinning:
+  - targetObjectName: ScreenBlockadePointy
+    message: Hey there, Pointy speaking!
+    pointAtPointy: 0
+    spotlightSizeModifier: {x: 0, y: 0}
+    specificParentName: 
+    stepsToGetToSpecificParent: 0
+  - targetObjectName: ScreenBlockadePointy
+    message: 'Here''s another useful hint for the suspect list:'
+    pointAtPointy: 0
+    spotlightSizeModifier: {x: 0.8, y: 0.8}
+    specificParentName: 
+    stepsToGetToSpecificParent: 0
   - targetObjectName: PinPerson
-    message: Here, you can look at every citizen's information.<br><br><b>Pin someone
-      to your pinboard by clicking this pin button!
+    message: You can <b>pin someone</b> to your pinboard by clicking this <b>pin
+      button!</b>
     pointAtPointy: 0
     spotlightSizeModifier: {x: 1.2, y: 1.2}
     specificParentName: Profile1
     stepsToGetToSpecificParent: 1
   - targetObjectName: PinPerson
-    message: Let's also pin the other one for now.
+    message: Let's also pin the other person for now.
     pointAtPointy: 0
     spotlightSizeModifier: {x: 1.2, y: 1.2}
     specificParentName: Profile2
@@ -2847,29 +2876,55 @@ MonoBehaviour:
     spotlightSizeModifier: {x: 0, y: 0}
     specificParentName: 
     stepsToGetToSpecificParent: 0
-  - targetObjectName: ScreenBlockadePointy
-    message: You can also <b>accuse a person</b>  if you think you've found today's
-      culprit.<br>This is done with <br>the button next to the pin one.<b>
-    pointAtPointy: 0
-    spotlightSizeModifier: {x: 0.8, y: 0.8}
-    specificParentName: 
-    stepsToGetToSpecificParent: 0
   stepsSocialMedia:
   - targetObjectName: ScreenBlockadePointy
-    message: The social media app shows you user posts in this feed.<br><br><b>Click
-      the screen to continue.
+    message: 'The social media app <b>"Qwakr"</b> shows you user posts in this feed.<br>
+
+      <b>Click
+      the screen to continue.'
     pointAtPointy: 0
     spotlightSizeModifier: {x: 0, y: 0}
     specificParentName: 
     stepsToGetToSpecificParent: 0
+  - targetObjectName: ScreenBlockadePointy
+    message: 'Here, you can see the <b>criminal''s account</b> you are currently
+      searching for: <b>@NOT_Imar</b>'
+    pointAtPointy: 0
+    spotlightSizeModifier: {x: 0, y: 0}
+    specificParentName: 
+    stepsToGetToSpecificParent: 0
+  - targetObjectName: ScreenBlockadePointy
+    message: Try to find out which <b>person</b> from our suspect list is most likely
+      <b>hiding behind this account!</b>
+    pointAtPointy: 0
+    spotlightSizeModifier: {x: 0, y: 0}
+    specificParentName: 
+    stepsToGetToSpecificParent: 0
+  stepsSocialMediaPinning:
+  - targetObjectName: ScreenBlockadePointy
+    message: 'Another tip for using Qwakr:'
+    pointAtPointy: 0
+    spotlightSizeModifier: {x: 0, y: 0}
+    specificParentName: 
+    stepsToGetToSpecificParent: 0
+  - targetObjectName: PinUser
+    message: If a <b>user</b> seems interesting, you can <b>pin them</b> with this
+      button.
+    pointAtPointy: 0
+    spotlightSizeModifier: {x: 0, y: 0}
+    specificParentName: Post1
+    stepsToGetToSpecificParent: 2
   - targetObjectName: PinPost
-    message: If a post seems interesting, you can <b>pin it</b> with this button.
+    message: <b>Posts</b> are pinned with the button next to it.
     pointAtPointy: 0
     spotlightSizeModifier: {x: 0, y: 0}
     specificParentName: Post1
     stepsToGetToSpecificParent: 2
   - targetObjectName: ScreenBlockadePointy
-    message: Posts and users are then pinned to your <b>real office pinboard.</b>
+    message: 'Posts and users are pinned to your <b>real office pinboard.</b><br>
+
+      It
+      can help you <b>keep an overview</b> in more complex situations!'
     pointAtPointy: 0
     spotlightSizeModifier: {x: 0, y: 0}
     specificParentName: 

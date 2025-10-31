@@ -406,16 +406,27 @@ public class ComputerControls : MonoBehaviour
                 {
                     pointySystem.StartTutorial("SocialMediaProfiles", toggledAutomatically);
                 }
-                else
+                else if (gm.GetDay() == 1)
                 {
                     pointySystem.StartTutorial("SocialMedia", toggledAutomatically);
+                }
+                else
+                {
+                    pointySystem.StartTutorial("SocialMediaPinning", toggledAutomatically);
                 }
                 break;
             case OSAppType.GOV:
                 pointySystem.StartTutorial("GovApp", toggledAutomatically);
                 break;
             case OSAppType.PEOPLE_LIST:
-                pointySystem.StartTutorial("PeopleList", toggledAutomatically);
+                if (gm.GetDay() == 2)
+                {
+                    pointySystem.StartTutorial("PeopleListPinning", toggledAutomatically);
+                }
+                else
+                {
+                    pointySystem.StartTutorial("PeopleList", toggledAutomatically);
+                }
                 break;
             case OSAppType.START_SETTINGS:
                 pointySystem.StartTutorial("StartSettings", toggledAutomatically);
