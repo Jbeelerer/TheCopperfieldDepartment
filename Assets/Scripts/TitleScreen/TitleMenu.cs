@@ -45,7 +45,14 @@ public class TitleMenu : MonoBehaviour
     public void StartGame()
     {
         if (startNewGame)
+        {
             SaveManager.instance.DeleteSave();
+            if (GameManager.instance != null)
+            {
+                GameManager.instance.ResetGame();
+                GameManager.instance.CompleteReset();
+            }
+        }
 
         SceneManager.LoadScene("NewMainScene");
     }

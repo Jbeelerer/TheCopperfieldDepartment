@@ -26,8 +26,9 @@ public class LastDayReport : MonoBehaviour
         suspectImage.sprite = gm.GetCurrentlyAccused().image;
         explenation.text = gm.GetFeedBackExplanation();
         print(gm.GetFeedBackExplanation()); 
-        print(gm.GetDay()-2); 
-        if (gm.GetResultForDay(gm.GetDay()-2) == investigationStates.SuspectFound)
+        print(gm.GetDay()-3);
+        int variableDaySubtract = gm.GetDay() == 2 ? 2 : 3;
+        if (gm.GetResultForDay(gm.GetDay()- variableDaySubtract) == investigationStates.SuspectFound)
         {
             stamp.sprite = stampSuccess; 
         }

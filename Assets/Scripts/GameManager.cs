@@ -107,6 +107,14 @@ public class GameManager : MonoBehaviour, ISavable
         }
     }
 
+    public void CompleteReset()
+    {
+        furthestDay = 1;
+        LoadNewDay(1);
+        SaveManager.instance.SaveGame();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
     // wait for the new scene and the pinboard to be ready 
     private IEnumerator dalayedPinboardBlocked(bool t)
     {

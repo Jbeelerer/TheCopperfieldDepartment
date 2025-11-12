@@ -19,6 +19,7 @@ public class Phone : MonoBehaviour
     private AudioManager am;
 
     private bool wasOnPc = false;
+    private bool hadPinboardIntro = false;
 
     private Animator animator;
     private string lastCallName;
@@ -52,15 +53,16 @@ public class Phone : MonoBehaviour
             wasOnPc = true;
             ResetPhone();
         }
-        if (gm.GetGameState() == GameState.Playing && wasOnPc && gm.GetDay() == 2 && !isRinging && !gm.GetAnswerCommited())
+        if (gm.GetGameState() == GameState.Playing && wasOnPc && !hadPinboardIntro && gm.GetDay() == 2 && !isRinging && !gm.GetAnswerCommited())
         {
-            wasOnPc = false; 
-            string callName = FindObjectOfType<Pinboard>().tutorialElementOnBoard();
-            Ring(callName);
+            wasOnPc = false;
+            hadPinboardIntro = true;
+            string callName = "phoneCallIntro";
             if (callName == "phoneCallIntro")   
             {
                 gm.StateChanged.RemoveListener(Ring);
             }
+            Ring(callName);
         }
     }
     public void Ring(string callName)

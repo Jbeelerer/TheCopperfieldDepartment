@@ -65,8 +65,8 @@ public class Calendar : MonoBehaviour
             }
             if (gm.GetFurthestDay() > i)
             {
-                day.transform.Find("FirstTryResult").GetComponent<UnityEngine.UI.Image>().sprite = gm.GetResultForDay(i - 1) == investigationStates.SuspectFound ? suspectFound : gm.GetResultForDay(i - 1) == investigationStates.SuspectNotFound ? SuspectNotFound : SuspectSaved;
-                day.transform.Find("FirstTryResult").GetComponent<UnityEngine.UI.Image>().color = gm.GetResultForDay(i - 1) == investigationStates.SuspectNotFound ? Color.red : Color.green;
+                //day.transform.Find("FirstTryResult").GetComponent<UnityEngine.UI.Image>().sprite = gm.GetResultForDay(i - 1) == investigationStates.SuspectFound ? suspectFound : gm.GetResultForDay(i - 1) == investigationStates.SuspectNotFound ? SuspectNotFound : SuspectSaved;
+                //day.transform.Find("FirstTryResult").GetComponent<UnityEngine.UI.Image>().color = gm.GetResultForDay(i - 1) == investigationStates.SuspectNotFound ? Color.red : Color.green;
             }
         }
 
