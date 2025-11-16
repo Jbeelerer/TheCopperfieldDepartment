@@ -227,6 +227,11 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        socialMediaContent.currentFocusedPost = gameObject;
+
+        if (gm.GetDay() == 1)
+            return;
+
         foreach (Transform option in postOptions.transform)
         {
             option.gameObject.SetActive(true);
@@ -236,7 +241,6 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
                 option.gameObject.SetActive(false);
             }
         }
-        socialMediaContent.currentFocusedPost = gameObject;
     }
 
     public void OnPointerMove(PointerEventData eventData)

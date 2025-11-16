@@ -89,6 +89,8 @@ public class FPSController : MonoBehaviour
 
     private Archives archives;
 
+    private PauseMenu pauseMenu;
+
 
     private RaycastHit hit;
     private Ray ray;
@@ -122,6 +124,7 @@ public class FPSController : MonoBehaviour
         gm.OnNewDay.AddListener(ResetFoundConnections);
         gm.OnNewDay.AddListener(ResetPlayer);
         threadCamera.enabled = false;
+        pauseMenu = FindObjectOfType<PauseMenu>();
     }
     private void FixedUpdate()
     {
@@ -501,10 +504,8 @@ public class FPSController : MonoBehaviour
             {
                 computerControls.LeaveComputer();
             }
-            else
-            {
-                gm.SetGameState(GameState.Playing);
-            }
+            StartCoroutine(pauseMenu.StartPauseMenuCooldown());
+            gm.SetGameState(GameState.Playing);
         }
 
         if (!gm.isFrozen())

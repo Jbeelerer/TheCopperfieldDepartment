@@ -38,7 +38,9 @@ public class OSPointySystem : MonoBehaviour, ISavable
     [SerializeField] private List<PointyTutorialStep> stepsStartSettings = new List<PointyTutorialStep>();
     [SerializeField] private List<PointyTutorialStep> stepsGovApp = new List<PointyTutorialStep>();
     [SerializeField] private List<PointyTutorialStep> stepsPeopleList = new List<PointyTutorialStep>();
+    [SerializeField] private List<PointyTutorialStep> stepsPeopleListPinning = new List<PointyTutorialStep>();
     [SerializeField] private List<PointyTutorialStep> stepsSocialMedia = new List<PointyTutorialStep>();
+    [SerializeField] private List<PointyTutorialStep> stepsSocialMediaPinning = new List<PointyTutorialStep>();
     [SerializeField] private List<PointyTutorialStep> stepsSocialMediaProfiles = new List<PointyTutorialStep>();
     [SerializeField] private List<PointyTutorialStep> stepsEvilIntro = new List<PointyTutorialStep>();
     [SerializeField] private List<PointyTutorialStep> stepsEvilSocialMedia = new List<PointyTutorialStep>();
@@ -174,11 +176,17 @@ public class OSPointySystem : MonoBehaviour, ISavable
             case "SocialMedia":
                 currentTutorial = stepsSocialMedia;
                 break;
+            case "SocialMediaPinning":
+                currentTutorial = stepsSocialMediaPinning;
+                break;
             case "SocialMediaProfiles":
                 currentTutorial = stepsSocialMediaProfiles;
                 break;
             case "PeopleList":
                 currentTutorial = stepsPeopleList;
+                break;
+            case "PeopleListPinning":
+                currentTutorial = stepsPeopleListPinning;
                 break;
             case "EvilIntro":
                 currentTutorial = stepsEvilIntro;
@@ -236,9 +244,9 @@ public class OSPointySystem : MonoBehaviour, ISavable
         pointyButton.GetComponent<Animator>().Play("buttonPointyClose");
 
         // Reset social media to home feed at start of its tutorial
-        if (currentTutorial == stepsSocialMedia && currentStep == 1
-            || currentTutorial == stepsSocialMediaProfiles && currentStep == 1
-            || currentTutorial == stepsEvilSocialMedia && currentStep == 4)
+        if (currentTutorial == stepsSocialMediaPinning && currentStep == 1 ||
+            currentTutorial == stepsSocialMediaProfiles && currentStep == 1 ||
+            currentTutorial == stepsEvilSocialMedia && currentStep == 4)
         {
             OSSocialMediaContent socialMediaContent = Object.FindObjectOfType<OSSocialMediaContent>();
             socialMediaContent.ResetHomeFeed();
@@ -337,8 +345,8 @@ public class OSPointySystem : MonoBehaviour, ISavable
             computerControls.TriggerAppNotification(OSAppType.SOCIAL);
         }
 
-        // Show delayed tips tutorial if people list and social media tutorials are completed
-        if (CheckIfTutorialCompleted("SocialMedia") && CheckIfTutorialCompleted("PeopleList") && !CheckIfTutorialCompleted("TipsPageStart"))
+        // Show delayed tips tutorial if day 2 people list and social media tutorials are completed
+        if (CheckIfTutorialCompleted("SocialMediaPinning") && CheckIfTutorialCompleted("PeopleListPinning") && !CheckIfTutorialCompleted("TipsPageStart"))
         {
             StartCoroutine(StartTutorialDelayed("TipsPageStart", 4f, true));
         }

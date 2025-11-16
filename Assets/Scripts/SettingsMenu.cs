@@ -1,10 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.Rendering.DebugUI;
 
 public class SettingsMenu : MonoBehaviour
 {
@@ -17,6 +14,7 @@ public class SettingsMenu : MonoBehaviour
     [SerializeField] private GameObject subtitleObj;
 
     [Header("Game Settings")]
+    [SerializeField] private Slider lookSensitivitySlider;
     [SerializeField] private Toggle subtitleToggle;
     [SerializeField] private TMP_Dropdown subtitleSizeDropdown;
 
@@ -36,9 +34,7 @@ public class SettingsMenu : MonoBehaviour
 
     private void OnEnable()
     {
-        // TODO: Only show game settings again when there are relevant settings to show
-        //ShowGameSettings();
-        ShowSoundSettings();
+        ShowGameSettings();
     }
 
     private void OnDisable()
@@ -105,6 +101,13 @@ public class SettingsMenu : MonoBehaviour
 
     public void ApplyGameSettings()
     {
+        FPSController fpsController = FindObjectOfType<FPSController>();
+        if (fpsController != null)
+        {
+            fpsController.lookSpeed = lookSensitivitySlider.value / 25;
+        }
+        PlayerPrefs.SetInt("LookSensitivity", (int)lookSensitivitySlider.value);
+
         if (subtitleObj != null)
             subtitleObj.SetActive(subtitleToggle.isOn);
         PlayerPrefs.SetInt("SubtitlesOn", subtitleToggle.isOn ? 1 : 0);
@@ -164,6 +167,8 @@ public class SettingsMenu : MonoBehaviour
     private void SetDisplayedSettingsToCurrent()
     {
         //Game
+        lookSensitivitySlider.value = PlayerPrefs.GetInt("LookSensitivity", 50);
+
         subtitleToggle.isOn = PlayerPrefs.GetInt("SubtitlesOn", 1) == 1;
 
         subtitleSizeDropdown.value = PlayerPrefs.GetInt("SubtitleSize", 1);

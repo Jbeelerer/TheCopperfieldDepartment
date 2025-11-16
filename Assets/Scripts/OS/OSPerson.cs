@@ -40,6 +40,10 @@ public class OSPerson : MonoBehaviour
         fpsController.OnPinDeletion.AddListener(RemovePinned);
         //peopleListContent.OnAccusedPersonClear.AddListener(ClearAccused);
         gm.InvestigationStateChanged.AddListener(UpdateAccusation);
+
+        // Dont show pin person button on first day
+        if (gm.GetDay() == 1)
+            transform.Find("PinPerson").gameObject.SetActive(false);
     }
 
     public void InstantiatePerson(Person person)

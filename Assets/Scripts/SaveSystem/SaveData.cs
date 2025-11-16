@@ -25,6 +25,7 @@ namespace SaveSystem
         public int cursorSkinIndex;
         public int wallpaperIndex;
         public List<string> completedTutorials = new List<string>();
+        public List<string> openedTips = new List<string>();
 
         public SaveData()
         {
