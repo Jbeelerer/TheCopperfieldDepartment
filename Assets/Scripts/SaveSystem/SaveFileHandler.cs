@@ -15,6 +15,7 @@ namespace SaveSystem
             //filePath = Application.persistentDataPath + Path.DirectorySeparatorChar + this.fileName; // Alt method (probably not as good)
         }
 
+
         public void DeleteSave()
         {
             if (File.Exists(filePath))
