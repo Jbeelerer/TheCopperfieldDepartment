@@ -531,6 +531,23 @@ public class GameManager : MonoBehaviour, ISavable
                     e.addNewPointsRandomly(day - 1);
             }
             day++;
+           
+            if (day > furthestDay)
+            {
+                furthestDay = day;
+            }
+
+            if (results.Count <= furthestDay && furthestDay == day)
+            {
+                print("added" + investigationState);
+                results.Add(investigationState);
+                firstTryResults.Add(investigationState);
+            }
+            else
+            {
+                results[day - 2] = investigationState;
+            } 
+
             if (day == 2)
             {
                 narration.PlaySequence(investigationState == investigationStates.SuspectFound ? "firstDayFeedbackPositive" : "firstDayFeedbackNegative");
@@ -539,20 +556,7 @@ public class GameManager : MonoBehaviour, ISavable
             {
                 NextDaySequence();
             }
-            if (day > furthestDay)
-            {
-                furthestDay = day;
-            }
-
-            if (results.Count <= furthestDay && furthestDay == day)
-            {
-                results.Add(investigationState);
-                firstTryResults.Add(investigationState);
-            }
-            else
-            {
-                results[day - 2] = investigationState;
-            }
+            
             SaveManager.instance.SaveGame();
 
         }
