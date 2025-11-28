@@ -524,19 +524,6 @@ public class GameManager : MonoBehaviour, ISavable
         answerCommited = false;
         if (!firstDay)
         {
-            playerOnEmployeeList.addNewPoints(pointsThisDay, day - 1);
-            foreach (CompetingEmployee e in competingEmployees)
-            {
-                if (e.GetEmployeeName() != playerOnEmployeeList.GetEmployeeName())
-                    e.addNewPointsRandomly(day - 1);
-            }
-            day++;
-           
-            if (day > furthestDay)
-            {
-                furthestDay = day;
-            }
-
             if (results.Count <= furthestDay && furthestDay == day)
             {
                 print("added" + investigationState);
@@ -545,10 +532,10 @@ public class GameManager : MonoBehaviour, ISavable
             }
             else
             {
-                results[day - 2] = investigationState;
+                results[day] = investigationState;
             } 
 
-            if (day == 2)
+            if (day == 1)
             {
                 narration.PlaySequence(investigationState == investigationStates.SuspectFound ? "firstDayFeedbackPositive" : "firstDayFeedbackNegative");
             }
@@ -556,7 +543,14 @@ public class GameManager : MonoBehaviour, ISavable
             {
                 NextDaySequence();
             }
-            
+            if(investigationState == investigationStates.SuspectFound){
+            day++;
+            }
+           
+            if (day > furthestDay)
+            {
+                furthestDay = day;
+            }
             SaveManager.instance.SaveGame();
 
         }
