@@ -23,6 +23,10 @@ public class InputOverlay : MonoBehaviour
 
     [SerializeField] private Image image;
     [SerializeField] private Image bg;
+    [SerializeField] private GameObject helpUILeft;
+    [SerializeField] private GameObject helpUIRight;
+    [SerializeField] private TMPro.TextMeshProUGUI helpUILeftText;
+    [SerializeField] private TMPro.TextMeshProUGUI helpUIRightText;
 
     private bool isHolding = false;
 
@@ -46,6 +50,8 @@ public class InputOverlay : MonoBehaviour
         bg.enabled = false;
         GetComponentInChildren<TextMeshProUGUI>().gameObject.SetActive(false);
         defaultPosition = transform.position;
+        helpUILeft.SetActive(false);
+        helpUIRight.SetActive(false);
     }
     public void SetIfFollowCursor(bool b)
     {
@@ -60,6 +66,8 @@ public class InputOverlay : MonoBehaviour
         currentIcon = imageName;
         image.enabled = true;
         bg.enabled = true;
+        helpUILeft.SetActive(false);
+        helpUIRight.SetActive(false);
         // don't allow any icon changes while moving pins only empty
         if (!forceIcon && image.sprite == handClosed && imageName != "handOpen" && imageName != "")
         {
@@ -72,26 +80,49 @@ public class InputOverlay : MonoBehaviour
                 break;
             case "handOpen":
                 image.sprite = handOpen;
+                helpUILeft.SetActive(true);
+                helpUIRight.SetActive(true);
+                helpUILeftText.text = "Move";
+                helpUIRightText.text = "Span thread";
+                break;  
+            case "radio":
+            image.sprite = handOpen;
+            helpUILeft.SetActive(true);
+            helpUILeftText.text = "Change frequency";
                 break;
             case "handClosed":
+                helpUILeft.SetActive(true);
+                helpUILeftText.text = "Release";
                 image.sprite = handClosed;
                 break;
             case "handThread":
+                helpUILeft.SetActive(true);
+                helpUILeftText.text = "Connect";
                 image.sprite = handThread;
                 break;
             case "trash":
+                helpUILeft.SetActive(true);
+                helpUILeftText.text = "Remove";
                 image.sprite = trash;
                 break;
             case "scissors":
+                helpUILeft.SetActive(true);
+                helpUILeftText.text = "Cut";
                 image.sprite = scissors;
                 break;
             case "inspect":
+                helpUILeft.SetActive(true);
+                helpUILeftText.text = "Inspect";
                 image.sprite = inspect;
                 break;
             case "exit":
                 image.sprite = exit;
                 break;
             case "pen":
+                helpUILeft.SetActive(true);
+                helpUIRight.SetActive(true);
+                helpUILeftText.text = "Circle";
+                helpUIRightText.text = "Cross out";
                 image.sprite = pen;
                 break;
             case "draw":

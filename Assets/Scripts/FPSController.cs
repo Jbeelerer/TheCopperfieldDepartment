@@ -251,7 +251,7 @@ public class FPSController : MonoBehaviour
                                 inputOverlay.SetIcon("inspect");
                                 break;
                             case "Radio":
-                                inputOverlay.SetIcon("handOpen");
+                                inputOverlay.SetIcon("radio");
                                 break;
                             case "Block":
                                 inputOverlay.SetIcon("handOpen");
