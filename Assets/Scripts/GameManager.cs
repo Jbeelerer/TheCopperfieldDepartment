@@ -8,6 +8,9 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Rendering;
+using System;
+
 
 
 public enum investigationStates
@@ -55,6 +58,8 @@ public class GameManager : MonoBehaviour, ISavable
     private DMConversation[] conversations;
     private ArchiveData[] archiveData;
 
+    private Material[] seenReports;
+
     [SerializeField] private string[] dayOrder;
 
     private Vector3 startPosition;
@@ -92,6 +97,7 @@ public class GameManager : MonoBehaviour, ISavable
     private bool instantiateLoadedDay = false;
 
     private Pinboard pinboard;
+    [SerializeField] private GameObject lastSuspectForm;
 
     public bool GetInstantiateLoadedDay()
     {
