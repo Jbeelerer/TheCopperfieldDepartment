@@ -1,9 +1,11 @@
+using Cinemachine;
+using SaveSystem;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
-using SaveSystem;
 using UnityEngine.UI;
-using Cinemachine;
 
 public enum TitleOption
 {
@@ -21,17 +23,20 @@ public class TitleMenu : MonoBehaviour
     [SerializeField] private GameObject settingsPage;
     [SerializeField] private Button continueButton;
     [SerializeField] private Animator doorAnim;
+    [SerializeField] private CinemachineBrain cinemachineBrain;
     [SerializeField] private CinemachineVirtualCamera doorCam;
     [SerializeField] private CinemachineVirtualCamera pinboardMainCam;
     [SerializeField] private CinemachineVirtualCamera newGameCam;
     [SerializeField] private CinemachineVirtualCamera settingsCam;
     [SerializeField] private CinemachineVirtualCamera continueCam;
+    [SerializeField] private AudioMixer bgmMixer;
 
     private Animator anim;
     private AudioSource doorAudio;
     private List<CinemachineVirtualCamera> cameras;
     private bool startNewGame = false;
     private bool logosShown = false;
+    private bool doorOpened = false;
     private GameObject currentSelectedOption;
     private RaycastHit hit;
     private Ray r;
@@ -53,7 +58,7 @@ public class TitleMenu : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
+        if (!doorOpened && (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Mouse0)))
         {
             if (!logosShown)
             {
@@ -61,8 +66,7 @@ public class TitleMenu : MonoBehaviour
             } 
             else
             {
-                doorAnim.Play("DoorOpen");
-                SetCamPriority(pinboardMainCam);
+                OpenDoor();
             }
         }
 
@@ -81,25 +85,36 @@ public class TitleMenu : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Mouse0) && currentSelectedOption)
         {
             SelectOption(currentSelectedOption.transform.GetComponent<TitleMenuOption>().optionType);
-            print("option selected: " + currentSelectedOption.transform.GetComponent<TitleMenuOption>().optionType);
+            //print("option selected: " + currentSelectedOption.transform.GetComponent<TitleMenuOption>().optionType);
         }
     }
 
     private void SelectOption(TitleOption option)
     {
+        cinemachineBrain.m_DefaultBlend.m_Time = 0.3f;
         switch (option)
         {
             case TitleOption.QUIT:
+                QuitGame();
                 break;
             case TitleOption.SETTINGS:
+                //SetCamPriority(settingsCam);
+                OpenSettings();
                 break;
             case TitleOption.CONTINUE:
+                PlayStartAnimation();
+                cinemachineBrain.m_DefaultBlend.m_Time = 2f;
+                SetCamPriority(continueCam);
                 break;
             case TitleOption.NEW_GAME:
+                SetCamPriority(newGameCam);
                 break;
             case TitleOption.NEW_GAME_CONFIRM:
+                startNewGame = true;
+                PlayStartAnimation();
                 break;
             case TitleOption.BACK:
+                SetCamPriority(pinboardMainCam);
                 break;
         }
     }
@@ -110,16 +125,41 @@ public class TitleMenu : MonoBehaviour
         cam.Priority = 1;
     }
 
-    public void PlayStartAnimation(bool isNewGame = false)
+    public void PlayStartAnimation()
     {
-        startNewGame = isNewGame;
-        doorAudio.Play();
+        //startNewGame = isNewGame;
+        //doorAudio.Play();
         anim.SetTrigger("StartGame");
     }
 
     public void StopBGM()
     {
         bgm.Stop();
+    }
+
+    private IEnumerator LowPassFadeOut()
+    {
+        float fadeTime = 3f;
+        float t = fadeTime;
+        float lowpassStartValue = 290f;
+        float lowpassEndValue = 22000f;
+        float lowpassDifference = lowpassEndValue - lowpassStartValue;
+        while (t > 0)
+        {
+            yield return null;
+            t -= Time.deltaTime;
+            bgmMixer.SetFloat("LowpassCutoff", lowpassEndValue - (lowpassDifference * (t / fadeTime)));
+        }
+        yield break;
+    }
+
+    private void OpenDoor()
+    {
+        doorAnim.Play("DoorOpen");
+        doorAudio.Play();
+        StartCoroutine(LowPassFadeOut());
+        SetCamPriority(pinboardMainCam);
+        doorOpened = true;
     }
 
     public void SkipLogos()
@@ -137,18 +177,20 @@ public class TitleMenu : MonoBehaviour
         SceneManager.LoadScene("NewMainScene");
     }
 
-    public void QuitGame()
+    private void QuitGame()
     {
         Application.Quit();
     }
 
-    public void OpenSettings()
+    private void OpenSettings()
     {
         settingsPage.SetActive(true);
+        SetCamPriority(settingsCam);
     }
 
     public void CloseSettings()
     {
         settingsPage.SetActive(false);
+        SetCamPriority(pinboardMainCam);
     }
 }
