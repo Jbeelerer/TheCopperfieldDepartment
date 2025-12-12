@@ -551,6 +551,7 @@ public class GameManager : MonoBehaviour, ISavable
             }
             if(investigationState == investigationStates.SuspectFound){
             day++;
+             GameObject.Find("LastDayReportManager").GetComponent<LastDayReportManager>().Reset();
             }
            
             if (day > furthestDay)
