@@ -30,9 +30,13 @@ public class TitleMenu : MonoBehaviour
     [SerializeField] private CinemachineVirtualCamera settingsCam;
     [SerializeField] private CinemachineVirtualCamera continueCam;
     [SerializeField] private AudioMixer bgmMixer;
+    [SerializeField] private AudioClip doorCreakSound;
+    [SerializeField] private AudioClip paperRustleSound;
+    [SerializeField] private AudioClip wooshSound;
 
     private Animator anim;
-    private AudioSource doorAudio;
+    //private AudioSource audioSource;
+    private AudioManager audioManager;
     private List<CinemachineVirtualCamera> cameras;
     private bool startNewGame = false;
     private bool logosShown = false;
@@ -44,16 +48,17 @@ public class TitleMenu : MonoBehaviour
     void Start()
     {
         anim = GetComponent<Animator>();
-        doorAudio = GetComponent<AudioSource>();
+        audioManager = AudioManager.instance;
 
         settingsPage.GetComponent<SettingsMenu>().AddNativeResolution();
         settingsPage.GetComponent<SettingsMenu>().ApplyCurrentSettings();
+        audioManager.UpdateMixerValue("SFX Volume", settingsPage.GetComponent<SettingsMenu>().sfxVolume);
 
         continueButton.interactable = SaveManager.instance.GetSaveExists();
 
         cameras = new List<CinemachineVirtualCamera>() { doorCam, pinboardMainCam, newGameCam, settingsCam, continueCam };
 
-        SetCamPriority(doorCam);
+        //SetCamPriority(doorCam);
     }
 
     private void Update()
@@ -78,6 +83,7 @@ public class TitleMenu : MonoBehaviour
             if (hit.transform.GetComponent<TitleMenuOption>())
             {
                 hit.transform.GetComponent<TitleMenuOption>().HoverAnimStart();
+                audioManager.PlayAudio(paperRustleSound, 0.7f);
                 currentSelectedOption = hit.transform.gameObject;
             } 
         }
@@ -85,7 +91,6 @@ public class TitleMenu : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Mouse0) && currentSelectedOption)
         {
             SelectOption(currentSelectedOption.transform.GetComponent<TitleMenuOption>().optionType);
-            //print("option selected: " + currentSelectedOption.transform.GetComponent<TitleMenuOption>().optionType);
         }
     }
 
@@ -98,7 +103,6 @@ public class TitleMenu : MonoBehaviour
                 QuitGame();
                 break;
             case TitleOption.SETTINGS:
-                //SetCamPriority(settingsCam);
                 OpenSettings();
                 break;
             case TitleOption.CONTINUE:
@@ -123,13 +127,14 @@ public class TitleMenu : MonoBehaviour
     {
         cameras.ForEach(c => c.Priority = 0);
         cam.Priority = 1;
+
+        audioManager.PlayAudio(wooshSound, 0.7f);
     }
 
     public void PlayStartAnimation()
     {
-        //startNewGame = isNewGame;
-        //doorAudio.Play();
         anim.SetTrigger("StartGame");
+        StartCoroutine(MusicFadeOut());
     }
 
     public void StopBGM()
@@ -153,12 +158,26 @@ public class TitleMenu : MonoBehaviour
         yield break;
     }
 
+    private IEnumerator MusicFadeOut()
+    {
+        float fadeTime = 2f;
+        float t = fadeTime;
+        float musicVolume = settingsPage.GetComponent<SettingsMenu>().musicVolume;
+        while (t > 0)
+        {
+            yield return null;
+            t -= Time.deltaTime;
+            audioManager.UpdateMixerValue("Title Music Volume", musicVolume * (t / fadeTime));
+        }
+        yield break;
+    }
+
     private void OpenDoor()
     {
         doorAnim.Play("DoorOpen");
-        doorAudio.Play();
         StartCoroutine(LowPassFadeOut());
         SetCamPriority(pinboardMainCam);
+        audioManager.PlayAudio(doorCreakSound);
         doorOpened = true;
     }
 
@@ -192,5 +211,6 @@ public class TitleMenu : MonoBehaviour
     {
         settingsPage.SetActive(false);
         SetCamPriority(pinboardMainCam);
+        audioManager.UpdateMixerValue("SFX Volume", settingsPage.GetComponent<SettingsMenu>().sfxVolume);
     }
 }

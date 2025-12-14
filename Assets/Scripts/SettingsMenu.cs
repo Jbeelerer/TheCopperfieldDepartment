@@ -29,7 +29,7 @@ public class SettingsMenu : MonoBehaviour
     [SerializeField] private TMP_Dropdown resolutionDropdown;
 
     public float sfxVolume { get; private set; }
-    private float musicVolume;
+    public float musicVolume { get; private set; }
     private float voiceVolume;
 
     private void OnEnable()
