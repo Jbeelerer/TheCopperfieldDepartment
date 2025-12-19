@@ -207,13 +207,11 @@ public class TitleMenu : MonoBehaviour
 
     private void OpenSettings()
     {
-        settingsPage.SetActive(true);
         SetCamPriority(settingsCam);
     }
 
     public void CloseSettings()
     {
-        settingsPage.SetActive(false);
         SetCamPriority(pinboardMainCam);
         audioManager.UpdateMixerValue("SFX Volume", settingsPage.GetComponent<SettingsMenu>().sfxVolume);
     }
