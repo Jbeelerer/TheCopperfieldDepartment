@@ -38,8 +38,8 @@ public class LastDayReport : MonoBehaviour
         else
         {
             stamp.sprite = stampFailed;
+            StartCoroutine(CaptureRectTransform(paper));
         }
-        StartCoroutine(CaptureRectTransform(paper));
 
     }
     private IEnumerator CaptureRectTransform(RectTransform rt)

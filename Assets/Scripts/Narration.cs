@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using TMPro;
@@ -32,9 +34,17 @@ public class TimedSubtitle
     public string focus;
 }
 [System.Serializable]
+public class SlideWithAnim
+{
+    public int voideLineIndex;
+    public String animation;
+    public Sprite slide;
+}
+[System.Serializable]
 public class Slides
 {
     public string slideName;
+    public String[] animation;
     public Sprite[] slide;
 }
 [System.Serializable]
@@ -69,6 +79,7 @@ public class ShortSubtitles
 public class Narration : MonoBehaviour
 {
     [SerializeField] private Slides[] allSlides;
+    [SerializeField] private SlideWithAnim[] allAnimations;
     [SerializeField] private GameObject slideDisplayer;
     [SerializeField] private AudioMixerGroup voiceMixerGroup;
 
@@ -109,6 +120,7 @@ public class Narration : MonoBehaviour
 
     [SerializeField] private AudioClip phonePickup;
     [SerializeField] private AudioClip phoneHangup;
+    [SerializeField] private Animator animator;
 
     private Requirement requirementToBeMet = Requirement.None;
     private bool requirementMet = false;
@@ -122,6 +134,7 @@ public class Narration : MonoBehaviour
 
     private bool isTalking = false;
     private Quaternion startRotation;
+    private bool animationPlaying = false;
 
     private bool sequenceHadRequirement = false;
 
@@ -447,13 +460,27 @@ public class Narration : MonoBehaviour
 
                         slideDisplayer.transform.GetChild(1).gameObject.SetActive(false);
                         slideCounter++;
-                        if (slideCounter >= allSlides[0].slide.Length)
-                        {
-                        }
-                        else
-                        {
-                            slideDisplayer.transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = allSlides[0].slide[slideCounter];
-                        }
+                       
+                            //check if allAnimation contains a voicelineindex which is slideCounter and if yes get that element
+                            var slide = allAnimations.FirstOrDefault(x => x.voideLineIndex == slideCounter);
+                            if (slide != null)
+                            {
+                                animator.Play(slide.animation);
+                                if (slide.animation == "switchSlides")
+                                {
+                                    animator.GetComponent<AudioSource>().Play();
+                                    animationPlaying = true;
+                                    StartCoroutine(delayNewSlide(1, slide.slide));
+                                }
+                                else
+                                {
+                                    print("not switchSlide -" + slide.animation);
+                                    slideDisplayer.transform.GetChild(2).GetChild(0).GetComponent<Image>().sprite = slide.slide;
+                                }
+                            }
+                           
+                           // slideDisplayer.transform.GetChild(2).GetChild(0).GetComponent<Image>().sprite = allSlides[0].slide[slideCounter];
+                        
                     }
                     skip = false;
                     if (entry.requirement != Requirement.None)
@@ -539,6 +566,14 @@ public class Narration : MonoBehaviour
         currentCall = null;
          
         AudioManager.instance.EndSequenceMix();
+    }   
+    private IEnumerator delayNewSlide(float time, Sprite slide)
+    {
+        yield return new WaitForSeconds(time);
+        slideDisplayer.transform.GetChild(2).GetChild(0).GetComponent<Image>().sprite = slide;
+        animationPlaying = false;
+
+        
     }
 
     private IEnumerator pauseSequence(float time)
@@ -551,6 +586,10 @@ public class Narration : MonoBehaviour
 
     public bool CancelSequence()
     {
+        if (animationPlaying)
+        {
+            return false;
+        }
         if (sequencePlaying)
         {
             StopAllCoroutines();
