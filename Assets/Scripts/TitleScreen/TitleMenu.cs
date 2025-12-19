@@ -19,7 +19,7 @@ public enum TitleOption
 
 public class TitleMenu : MonoBehaviour
 {
-    [SerializeField] private AudioSource bgm;
+    [SerializeField] private GameObject bgmObject;
     [SerializeField] private GameObject settingsPage;
     [SerializeField] private Button continueButton;
     [SerializeField] private Animator doorAnim;
@@ -53,12 +53,21 @@ public class TitleMenu : MonoBehaviour
         settingsPage.GetComponent<SettingsMenu>().AddNativeResolution();
         settingsPage.GetComponent<SettingsMenu>().ApplyCurrentSettings();
         audioManager.UpdateMixerValue("SFX Volume", settingsPage.GetComponent<SettingsMenu>().sfxVolume);
+        var bgmSources = bgmObject.GetComponents<AudioSource>();
+
+        StartCoroutine(PlaySourceAfterTime(bgmSources[1], bgmSources[0].clip.length));
 
         continueButton.interactable = SaveManager.instance.GetSaveExists();
 
         cameras = new List<CinemachineVirtualCamera>() { doorCam, pinboardMainCam, newGameCam, settingsCam, continueCam };
 
         //SetCamPriority(doorCam);
+    }
+
+    private IEnumerator PlaySourceAfterTime(AudioSource source, float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+        source.Play();
     }
 
     private void Update()
@@ -135,11 +144,6 @@ public class TitleMenu : MonoBehaviour
     {
         anim.SetTrigger("StartGame");
         StartCoroutine(MusicFadeOut());
-    }
-
-    public void StopBGM()
-    {
-        bgm.Stop();
     }
 
     private IEnumerator LowPassFadeOut()
