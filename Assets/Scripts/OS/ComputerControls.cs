@@ -472,6 +472,7 @@ public class ComputerControls : MonoBehaviour
     public void LeaveComputer()
     {
         ToggleCursor();
+        gm.SetGameState(GameState.Playing);
     }
 
     public void ToggleCursor()
