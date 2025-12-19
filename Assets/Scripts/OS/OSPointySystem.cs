@@ -98,7 +98,7 @@ public class OSPointySystem : MonoBehaviour, ISavable
     public IEnumerator StartTutorialDelayed(string name, float delay, bool toggledAutomatically = false)
     {
         yield return new WaitForSeconds(delay);
-        computerControls.CloseAllWindows();
+        //computerControls.CloseAllWindows();
         StartTutorial(name, toggledAutomatically);
         yield break;
     }

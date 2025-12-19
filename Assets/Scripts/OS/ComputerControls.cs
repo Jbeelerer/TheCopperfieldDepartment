@@ -437,12 +437,6 @@ public class ComputerControls : MonoBehaviour
                     pointySystem.StartTutorial("InspectionTutorial", toggledAutomatically);
                 }
                 break;
-            case OSAppType.TIPS_PAGE:
-                if (pointySystem.CheckIfTutorialCompleted("TipsPageStart"))
-                {
-                    pointySystem.StartTutorial("TipsPage", toggledAutomatically);
-                }
-                break;
             default:
                 pointySystem.StartTutorial("Default", toggledAutomatically);
                 break;

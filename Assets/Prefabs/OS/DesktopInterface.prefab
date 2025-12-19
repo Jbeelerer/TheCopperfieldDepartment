@@ -1488,9 +1488,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 4208263501332847666}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 110, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 110, y: -49.4747}
   m_SizeDelta: {x: 220, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1155295565521976289
@@ -2759,21 +2759,21 @@ MonoBehaviour:
     stepsToGetToSpecificParent: 0
   stepsDesktop:
   - targetObjectName: ScreenBlockadePointy
-    message: Oh, you called? Well then, ahem...<br><br><b>Click the screen to continue.
+    message: Oh, you called? Well then, ahem...<br><br><b>Click to continue.
     pointAtPointy: 0
     spotlightSizeModifier: {x: 0, y: 0}
     specificParentName: 
     stepsToGetToSpecificParent: 0
   - targetObjectName: ScreenBlockadePointy
     message: Hey there, I'm Pointy!<br><br>I will guide you through the basics of
-      this computer! <br><br><b>Click the screen to continue.
+      this computer! <br><br><b>Click to continue.
     pointAtPointy: 0
     spotlightSizeModifier: {x: 0, y: 0}
     specificParentName: 
     stepsToGetToSpecificParent: 0
   - targetObjectName: ScreenBlockadePointy
     message: By clicking this icon, you can <b>skip a tutorial</b> or <b>call me
-      again when you need help.<br><br>Click the screen to continue.
+      again when you need help.<br><br>Click to continue.
     pointAtPointy: 1
     spotlightSizeModifier: {x: 0, y: 0}
     specificParentName: 
@@ -2816,14 +2816,13 @@ MonoBehaviour:
     stepsToGetToSpecificParent: 0
   stepsPeopleList:
   - targetObjectName: ScreenBlockadePointy
-    message: Hey there, Pointy speaking!<br><br><b>Click the screen to continue.
+    message: Hey there, Pointy speaking!<br><br><b>Click to continue.
     pointAtPointy: 0
     spotlightSizeModifier: {x: 0, y: 0}
     specificParentName: 
     stepsToGetToSpecificParent: 0
   - targetObjectName: ScreenBlockadePointy
-    message: This is the list of suspects for your current case.<br><br><b>Click
-      the screen to continue.
+    message: This is the list of suspects for your current case.
     pointAtPointy: 0
     spotlightSizeModifier: {x: 0, y: 0}
     specificParentName: 
@@ -2836,10 +2835,10 @@ MonoBehaviour:
     specificParentName: 
     stepsToGetToSpecificParent: 0
   - targetObjectName: ScreenBlockadePointy
-    message: 'You can also <b>accuse a person</b> here if you think you''ve found
-      today''s culprit.<br>
+    message: 'Here, you can also <b>accuse a person</b>.<br>
 
-      Use the <b>accuse button</b> next to each person.'
+      To do this, use
+      the <b>accuse button</b> next to each culprit.'
     pointAtPointy: 0
     spotlightSizeModifier: {x: 0.8, y: 0.8}
     specificParentName: 
@@ -2852,7 +2851,7 @@ MonoBehaviour:
     specificParentName: 
     stepsToGetToSpecificParent: 0
   - targetObjectName: ScreenBlockadePointy
-    message: 'Here''s another useful hint for the suspect list:'
+    message: We just added a new feature to the suspect list!
     pointAtPointy: 0
     spotlightSizeModifier: {x: 0.8, y: 0.8}
     specificParentName: 
@@ -2865,50 +2864,49 @@ MonoBehaviour:
     specificParentName: Profile1
     stepsToGetToSpecificParent: 1
   - targetObjectName: PinPerson
-    message: Let's also pin the other person for now.
+    message: Let's also pin another person for now.
     pointAtPointy: 0
     spotlightSizeModifier: {x: 1.2, y: 1.2}
     specificParentName: Profile2
     stepsToGetToSpecificParent: 1
   - targetObjectName: ScreenBlockadePointy
-    message: These people have now been pinned to your <b>real office pinboard.</b>
+    message: Pinned people are then added to your <b>real office pinboard.</b>
     pointAtPointy: 0
     spotlightSizeModifier: {x: 0, y: 0}
     specificParentName: 
     stepsToGetToSpecificParent: 0
   stepsSocialMedia:
   - targetObjectName: ScreenBlockadePointy
-    message: 'The social media app <b>"Qwakr"</b> shows you user posts in this feed.<br>
+    message: 'The social media app <b>"Qwakr"</b> shows you posts in this feed.<br>
 
       <b>Click
-      the screen to continue.'
+      to continue.'
     pointAtPointy: 0
     spotlightSizeModifier: {x: 0, y: 0}
     specificParentName: 
     stepsToGetToSpecificParent: 0
   - targetObjectName: ScreenBlockadePointy
-    message: 'Here, you can see the <b>criminal''s account</b> you are currently
-      searching for: <b>@NOT_Imar</b>'
+    message: 'Here, you can see the <b>account</b> of today''s <b>suspect</b>: <b>@NOT_Imar</b>'
     pointAtPointy: 0
     spotlightSizeModifier: {x: 0, y: 0}
     specificParentName: 
     stepsToGetToSpecificParent: 0
   - targetObjectName: ScreenBlockadePointy
-    message: Try to find out which <b>person</b> from our suspect list is most likely
-      <b>hiding behind this account!</b>
+    message: Which person from our <b>suspect list</b> might be <b>hiding behind
+      this account?</b>
     pointAtPointy: 0
     spotlightSizeModifier: {x: 0, y: 0}
     specificParentName: 
     stepsToGetToSpecificParent: 0
   stepsSocialMediaPinning:
   - targetObjectName: ScreenBlockadePointy
-    message: 'Another tip for using Qwakr:'
+    message: 'Another tip for using <b>Qwakr</b>:'
     pointAtPointy: 0
     spotlightSizeModifier: {x: 0, y: 0}
     specificParentName: 
     stepsToGetToSpecificParent: 0
   - targetObjectName: PinUser
-    message: If a <b>user</b> seems interesting, you can <b>pin them</b> with this
+    message: If a <b>user</b> seems important, you can <b>pin them</b> with this
       button.
     pointAtPointy: 0
     spotlightSizeModifier: {x: 0, y: 0}
@@ -2921,10 +2919,7 @@ MonoBehaviour:
     specificParentName: Post1
     stepsToGetToSpecificParent: 2
   - targetObjectName: ScreenBlockadePointy
-    message: 'Posts and users are pinned to your <b>real office pinboard.</b><br>
-
-      It
-      can help you <b>keep an overview</b> in more complex situations!'
+    message: Posts and users are pinned to your <b>real office pinboard.
     pointAtPointy: 0
     spotlightSizeModifier: {x: 0, y: 0}
     specificParentName: 
@@ -3077,11 +3072,17 @@ MonoBehaviour:
     spotlightSizeModifier: {x: 0, y: 0}
     specificParentName: 
     stepsToGetToSpecificParent: 0
-  - targetObjectName: App4
-    message: This folder contains a collection of <b>useful hints</b>, to make your
-      work even more efficient!
+  - targetObjectName: ScreenBlockadePointy
+    message: There's a folder with <b>useful hints</b> on your desktop.
     pointAtPointy: 0
-    spotlightSizeModifier: {x: 1.8, y: 1.8}
+    spotlightSizeModifier: {x: 0, y: 0}
+    specificParentName: 
+    stepsToGetToSpecificParent: 0
+  - targetObjectName: ScreenBlockadePointy
+    message: It also contains an in depth tutorial for the <b>office pinboard</b>,
+      if you're interested!
+    pointAtPointy: 0
+    spotlightSizeModifier: {x: 0, y: 0}
     specificParentName: 
     stepsToGetToSpecificParent: 0
   stepsTipsPageTutorial:
