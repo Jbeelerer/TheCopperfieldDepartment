@@ -807,7 +807,6 @@ public class ComputerControls : MonoBehaviour
         newWindow.GetComponent<OSWindow>().videoFile = videoFile;
         newWindow.GetComponent<OSWindow>().dmUser = dmUser;
         newWindow.GetComponent<OSWindow>().dmUserPasswordFound = dmUserPasswordFound;
-        BringWindowToFront(newWindow.GetComponent<OSWindow>());
         windows.Add(newWindow.GetComponent<OSWindow>());
         // Resize custom sized small windows
         if (newWindow.GetComponent<OSWindow>().appType == OSAppType.WARNING)
@@ -821,6 +820,8 @@ public class ComputerControls : MonoBehaviour
         // Set window position (only if pointy isnt active, else keep in the middle)
         if (!pointySystem.GetIsPointyActive())
             SetWindowOpenPosition(newWindow.GetComponent<OSWindow>());
+
+        BringWindowToFront(newWindow.GetComponent<OSWindow>());
     }
 
     private void SetWindowOpenPosition(OSWindow window)
