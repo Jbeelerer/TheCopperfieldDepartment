@@ -200,7 +200,7 @@ public class GameManager : MonoBehaviour, ISavable
 
     public bool isOccupied()
     {
-        return gameState == GameState.OnPC || gameState == GameState.Inspecting|| gameState == GameState.DayOver || gameState == GameState.InArchive;
+        return gameState == GameState.OnPC || gameState == GameState.Inspecting/*|| gameState == GameState.DayOver*/ || gameState == GameState.InArchive;
     }
 
     public bool isFrozen()

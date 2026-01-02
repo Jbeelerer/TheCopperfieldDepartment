@@ -37,6 +37,7 @@ public class TitleMenu : MonoBehaviour
     [SerializeField] private AudioClip doorCreakSound;
     [SerializeField] private AudioClip paperRustleSound;
     [SerializeField] private AudioClip wooshSound;
+    [SerializeField] private GameObject mousePrompt;
 
     private Animator anim;
     //private AudioSource audioSource;
@@ -62,6 +63,7 @@ public class TitleMenu : MonoBehaviour
         StartCoroutine(PlaySourceAfterTime(bgmSources[1], bgmSources[0].clip.length));
 
         continueButton.interactable = SaveManager.instance.GetSaveExists();
+        mousePrompt.SetActive(false);
 
         cameras = new List<CinemachineVirtualCamera>() { doorCam, pinboardMainCam, newGameCam, settingsCam, continueCam };
 
@@ -81,7 +83,7 @@ public class TitleMenu : MonoBehaviour
             if (!logosShown)
             {
                 SkipLogos();
-            } 
+            }
             else
             {
                 OpenDoor();
@@ -98,7 +100,7 @@ public class TitleMenu : MonoBehaviour
                 hit.transform.GetComponent<TitleMenuOption>().HoverAnimStart();
                 audioManager.PlayAudio(paperRustleSound, 0.7f);
                 currentSelectedOption = hit.transform.gameObject;
-            } 
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.Mouse0) && currentSelectedOption)
@@ -198,6 +200,7 @@ public class TitleMenu : MonoBehaviour
         StartCoroutine(LowPassFadeOut());
         SetCamPriority(pinboardMainCam);
         audioManager.PlayAudio(doorCreakSound);
+        HideMousePrompt();
         doorOpened = true;
     }
 
@@ -219,6 +222,23 @@ public class TitleMenu : MonoBehaviour
     private void QuitGame()
     {
         Application.Quit();
+    }
+
+    // Used in animation event, when TitleFadeIn starts
+    public void ShowMousePrompt()
+    {
+        StartCoroutine(ShowMousePromptCoroutine()); 
+    }
+    private IEnumerator ShowMousePromptCoroutine()
+    {
+        yield return new WaitForSeconds(7f);
+        if (!doorOpened)
+            mousePrompt.SetActive(true);
+    }
+
+    private void HideMousePrompt()
+    {
+        mousePrompt.SetActive(false);
     }
 
     private void OpenSettings()
