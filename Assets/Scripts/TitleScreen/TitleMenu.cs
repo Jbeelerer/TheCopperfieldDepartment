@@ -60,9 +60,10 @@ public class TitleMenu : MonoBehaviour
         audioManager.UpdateMixerValue("SFX Volume", settingsMenu.sfxVolume);
         var bgmSources = bgmObject.GetComponents<AudioSource>();
 
-        StartCoroutine(PlaySourceAfterTime(bgmSources[1], bgmSources[0].clip.length));
+        bgmSources[1].PlayDelayed(bgmSources[0].clip.length);
 
         continueButton.interactable = SaveManager.instance.GetSaveExists();
+
         mousePrompt.SetActive(false);
 
         cameras = new List<CinemachineVirtualCamera>() { doorCam, pinboardMainCam, newGameCam, settingsCam, continueCam };
@@ -70,11 +71,6 @@ public class TitleMenu : MonoBehaviour
         cinemachineBrain.m_DefaultBlend.m_Time = 2f;
     }
 
-    private IEnumerator PlaySourceAfterTime(AudioSource source, float waitTime)
-    {
-        yield return new WaitForSeconds(waitTime);
-        source.Play();
-    }
 
     private void Update()
     {
