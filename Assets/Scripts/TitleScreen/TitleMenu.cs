@@ -14,13 +14,17 @@ public enum TitleOption
     CONTINUE,
     NEW_GAME,
     NEW_GAME_CONFIRM,
-    SETTINGS
+    SETTINGS,
+    SETTINGS_GAME_TAB,
+    SETTINGS_DISPLAY_TAB,
+    SETTINGS_SOUND_TAB,
+    SETTINGS_CLOSE
 }
 
 public class TitleMenu : MonoBehaviour
 {
     [SerializeField] private GameObject bgmObject;
-    [SerializeField] private GameObject settingsPage;
+    [SerializeField] private SettingsMenu settingsMenu;
     [SerializeField] private Button continueButton;
     [SerializeField] private Animator doorAnim;
     [SerializeField] private CinemachineBrain cinemachineBrain;
@@ -33,6 +37,7 @@ public class TitleMenu : MonoBehaviour
     [SerializeField] private AudioClip doorCreakSound;
     [SerializeField] private AudioClip paperRustleSound;
     [SerializeField] private AudioClip wooshSound;
+    [SerializeField] private GameObject mousePrompt;
 
     private Animator anim;
     //private AudioSource audioSource;
@@ -50,25 +55,22 @@ public class TitleMenu : MonoBehaviour
         anim = GetComponent<Animator>();
         audioManager = AudioManager.instance;
 
-        settingsPage.GetComponent<SettingsMenu>().AddNativeResolution();
-        settingsPage.GetComponent<SettingsMenu>().ApplyCurrentSettings();
-        audioManager.UpdateMixerValue("SFX Volume", settingsPage.GetComponent<SettingsMenu>().sfxVolume);
+        settingsMenu.AddNativeResolution();
+        settingsMenu.ApplyCurrentSettings();
+        audioManager.UpdateMixerValue("SFX Volume", settingsMenu.sfxVolume);
         var bgmSources = bgmObject.GetComponents<AudioSource>();
 
-        StartCoroutine(PlaySourceAfterTime(bgmSources[1], bgmSources[0].clip.length));
+        bgmSources[1].PlayDelayed(bgmSources[0].clip.length);
 
         continueButton.interactable = SaveManager.instance.GetSaveExists();
 
+        mousePrompt.SetActive(false);
+
         cameras = new List<CinemachineVirtualCamera>() { doorCam, pinboardMainCam, newGameCam, settingsCam, continueCam };
 
-        //SetCamPriority(doorCam);
+        cinemachineBrain.m_DefaultBlend.m_Time = 2f;
     }
 
-    private IEnumerator PlaySourceAfterTime(AudioSource source, float waitTime)
-    {
-        yield return new WaitForSeconds(waitTime);
-        source.Play();
-    }
 
     private void Update()
     {
@@ -77,7 +79,7 @@ public class TitleMenu : MonoBehaviour
             if (!logosShown)
             {
                 SkipLogos();
-            } 
+            }
             else
             {
                 OpenDoor();
@@ -94,7 +96,7 @@ public class TitleMenu : MonoBehaviour
                 hit.transform.GetComponent<TitleMenuOption>().HoverAnimStart();
                 audioManager.PlayAudio(paperRustleSound, 0.7f);
                 currentSelectedOption = hit.transform.gameObject;
-            } 
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.Mouse0) && currentSelectedOption)
@@ -113,6 +115,18 @@ public class TitleMenu : MonoBehaviour
                 break;
             case TitleOption.SETTINGS:
                 OpenSettings();
+                break;
+            case TitleOption.SETTINGS_GAME_TAB:
+                settingsMenu.ShowGameSettings();
+                break;
+            case TitleOption.SETTINGS_DISPLAY_TAB:
+                settingsMenu.ShowDisplaySettings();
+                break;
+            case TitleOption.SETTINGS_SOUND_TAB:
+                settingsMenu.ShowSoundSettings();
+                break;
+            case TitleOption.SETTINGS_CLOSE:
+                CloseSettings();
                 break;
             case TitleOption.CONTINUE:
                 PlayStartAnimation();
@@ -166,7 +180,7 @@ public class TitleMenu : MonoBehaviour
     {
         float fadeTime = 2f;
         float t = fadeTime;
-        float musicVolume = settingsPage.GetComponent<SettingsMenu>().musicVolume;
+        float musicVolume = settingsMenu.musicVolume;
         while (t > 0)
         {
             yield return null;
@@ -182,6 +196,7 @@ public class TitleMenu : MonoBehaviour
         StartCoroutine(LowPassFadeOut());
         SetCamPriority(pinboardMainCam);
         audioManager.PlayAudio(doorCreakSound);
+        HideMousePrompt();
         doorOpened = true;
     }
 
@@ -194,8 +209,13 @@ public class TitleMenu : MonoBehaviour
     // Used in animation event, after start animation has played
     public void StartGame()
     {
-        if (startNewGame)
+        if (startNewGame){
+            //delete gamemanager if one exists
+            if(GameObject.Find("GameManager") != null){
+                Destroy(GameObject.Find("GameManager"));
+            }
             SaveManager.instance.DeleteSave();
+        }
 
         SceneManager.LoadScene("NewMainScene");
     }
@@ -205,16 +225,32 @@ public class TitleMenu : MonoBehaviour
         Application.Quit();
     }
 
+    // Used in animation event, when TitleFadeIn starts
+    public void ShowMousePrompt()
+    {
+        StartCoroutine(ShowMousePromptCoroutine()); 
+    }
+    private IEnumerator ShowMousePromptCoroutine()
+    {
+        yield return new WaitForSeconds(7f);
+        if (!doorOpened)
+            mousePrompt.SetActive(true);
+    }
+
+    private void HideMousePrompt()
+    {
+        mousePrompt.SetActive(false);
+    }
+
     private void OpenSettings()
     {
-        settingsPage.SetActive(true);
         SetCamPriority(settingsCam);
     }
 
-    public void CloseSettings()
+    private void CloseSettings()
     {
-        settingsPage.SetActive(false);
         SetCamPriority(pinboardMainCam);
-        audioManager.UpdateMixerValue("SFX Volume", settingsPage.GetComponent<SettingsMenu>().sfxVolume);
+        settingsMenu.ApplySoundSettings();
+        audioManager.UpdateMixerValue("SFX Volume", settingsMenu.sfxVolume);
     }
 }

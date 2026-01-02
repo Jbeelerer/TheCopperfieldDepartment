@@ -55,7 +55,7 @@ public class Phone : MonoBehaviour
         if (gm.GetGameState() == GameState.Playing && wasOnPc && gm.GetDay() == 2 && !isRinging && !gm.GetAnswerCommited())
         {
             wasOnPc = false; 
-            string callName = FindObjectOfType<Pinboard>().tutorialElementOnBoard();
+            string callName = "phoneCallIntro";//FindObjectOfType<Pinboard>().tutorialElementOnBoard();
             Ring(callName);
             if (callName == "phoneCallIntro")   
             {

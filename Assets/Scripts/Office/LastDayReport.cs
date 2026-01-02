@@ -31,19 +31,21 @@ public class LastDayReport : MonoBehaviour
         explenation.text = gm.GetFeedBackExplanation();
         print(gm.GetFeedBackExplanation()); 
         print(gm.GetDay()-1); 
-        if (gm.GetResultForDay(gm.GetDay()) == investigationStates.SuspectFound)
+        if (gm.GetCurrentInvestigationState() == investigationStates.SuspectFound)
         {
-            stamp.sprite = stampSuccess; 
+            stamp.sprite = stampSuccess;
         }
         else
         {
             stamp.sprite = stampFailed;
             StartCoroutine(CaptureRectTransform(paper));
         }
+      
 
     }
     private IEnumerator CaptureRectTransform(RectTransform rt)
 {
+      
     // Force layout and graphics to update
     Canvas.ForceUpdateCanvases();
 

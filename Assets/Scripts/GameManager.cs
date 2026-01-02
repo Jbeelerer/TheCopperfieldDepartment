@@ -84,6 +84,7 @@ public class GameManager : MonoBehaviour, ISavable
     private GameObject inspectionCam;
 
     private GameObject mainCam;
+    private investigationStates currentInvestigationState = investigationStates.SuspectNotFound;
 
     private Person currentlyAccused;
 
@@ -200,7 +201,7 @@ public class GameManager : MonoBehaviour, ISavable
 
     public bool isOccupied()
     {
-        return gameState == GameState.OnPC || gameState == GameState.Inspecting|| gameState == GameState.DayOver || gameState == GameState.InArchive;
+        return gameState == GameState.OnPC || gameState == GameState.Inspecting/*|| gameState == GameState.DayOver*/ || gameState == GameState.InArchive;
     }
 
     public bool isFrozen()
@@ -219,6 +220,7 @@ public class GameManager : MonoBehaviour, ISavable
     {
         return results[i];
     }
+
     public investigationStates GetFirstTryResultsForDay(int i)
     {
         return firstTryResults[i];
@@ -402,6 +404,7 @@ public class GameManager : MonoBehaviour, ISavable
         }
         else
         {
+            print("reeeal neeew game!!!");
           //  DayIntro();
             StartCoroutine(DelayFirstDay());
             //LoadNewDay(day); 
@@ -448,6 +451,7 @@ public class GameManager : MonoBehaviour, ISavable
     {
         yield return new WaitForSeconds(delay);
         currentlyAccused = null;
+        currentInvestigationState = investigationStates.SuspectNotFound;
     }
     public void LoadNewDay(int day, bool loaded = false)
     {
@@ -527,6 +531,7 @@ public class GameManager : MonoBehaviour, ISavable
     { 
         SetGameState(GameState.DayOver);   
         int pointsThisDay = investigationState == investigationStates.SuspectFound ? 100 : investigationState == investigationStates.SuspectSaved ? 0 : -100;
+        currentInvestigationState = investigationState;
         answerCommited = false;
         if (!firstDay)
         {
@@ -582,10 +587,17 @@ public class GameManager : MonoBehaviour, ISavable
     public Person GetCurrentlyAccused()
     {
         return currentlyAccused;
+    } 
+    
+    public investigationStates GetCurrentInvestigationState()
+    {
+        return currentInvestigationState;
     }
+    
     public void checkSuspicionRemoved(Person p)
     {
         currentlyAccused = null;
+        currentInvestigationState = investigationStates.SuspectNotFound;
         if (p == currentCase.guiltyPerson && investigationState == investigationStates.SuspectFound)
         {
             investigationState = investigationStates.SuspectNotFound;
@@ -607,6 +619,7 @@ public class GameManager : MonoBehaviour, ISavable
         {
             investigationState = investigationStates.SuspectNotFound;
         }
+        currentInvestigationState = investigationState;
         if (currentCase != null && currentCase.personReasoning != null && currentCase.personReasoning.Count != 0)
         {
             foreach (PersonReasoning pr in currentCase.personReasoning)

@@ -247,6 +247,11 @@ public class OSSocialMediaContent : MonoBehaviour
         {
             profilePageheader.Find("PinUser").GetComponent<Image>().sprite = pinUserDefaultSprite;
         }
+        // Dont show pin button on day 1
+        if (GameManager.instance.GetDay() == 1)
+        {
+            profilePageheader.Find("PinUser").gameObject.SetActive(false);
+        }
 
         // Show only posts from current user profile
         foreach (Transform post in profilePageContent.transform)

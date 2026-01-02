@@ -91,7 +91,7 @@ public class OSPerson : MonoBehaviour
     {
         if (!gm.checkIfPersonAccused(person))
         {
-            computerControls.OpenWindow(OSAppType.WARNING, "You are about to accuse this person. <b>This can still be changed later.</b><br><br>Do you want to proceed?", AccusePersonSuccess);
+            computerControls.OpenWindow(OSAppType.WARNING, "Accuse this person? <br><b>This can still be changed later.</b>", AccusePersonSuccess);
         }
         else
         {

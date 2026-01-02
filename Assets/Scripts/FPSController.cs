@@ -549,6 +549,10 @@ public class FPSController : MonoBehaviour
                 #region Handle left click
                 if (Input.GetMouseButtonDown(0))
                 {
+                    if(hit.collider == null)
+                    {
+                        return;
+                    }
                     //inputOverlay.SetIcon("");
                     if (hit.collider.gameObject.name == "Trash")
                     {
