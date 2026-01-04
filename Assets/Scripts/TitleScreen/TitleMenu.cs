@@ -40,7 +40,6 @@ public class TitleMenu : MonoBehaviour
     [SerializeField] private GameObject mousePrompt;
 
     private Animator anim;
-    //private AudioSource audioSource;
     private AudioManager audioManager;
     private List<CinemachineVirtualCamera> cameras;
     private bool startNewGame = false;
@@ -58,8 +57,9 @@ public class TitleMenu : MonoBehaviour
         settingsMenu.AddNativeResolution();
         settingsMenu.ApplyCurrentSettings();
         audioManager.UpdateMixerValue("SFX Volume", settingsMenu.sfxVolume);
-        var bgmSources = bgmObject.GetComponents<AudioSource>();
+        bgmMixer.SetFloat("LowpassCutoff", 290f);
 
+        var bgmSources = bgmObject.GetComponents<AudioSource>();
         bgmSources[1].PlayDelayed(bgmSources[0].clip.length);
 
         continueButton.interactable = SaveManager.instance.GetSaveExists();
