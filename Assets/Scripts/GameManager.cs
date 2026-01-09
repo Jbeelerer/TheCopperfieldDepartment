@@ -693,23 +693,28 @@ public class GameManager : MonoBehaviour, ISavable
     {
         if (day != 1)
         {
+            print("cool");
             StartCoroutine(DayIntroCoroutine(delay));
         }
         else
         {
+            print("cringe");
              SetGameState(GameState.Playing);
         }
     } 
     public IEnumerator DayIntroCoroutine(float delay = 0)
     {
+        print("delaay "+delay);
         yield return new WaitForSeconds(delay);
         while (GameObject.Find("Virtual Camera") == null)
         { 
+        print("looking For cam ");
             yield return new WaitForSeconds(0.1f);
         } 
         
         SetGameState(GameState.Playing);
         GameObject instantiatedDayIntro = Instantiate(dayIntro);
+        print("instantiated dayintro "+instantiatedDayIntro);
         instantiatedDayIntro.transform.GetChild(0).GetChild(0).GetComponent<TMPro.TextMeshProUGUI>().text = "Day " + day + ":";
         instantiatedDayIntro.transform.GetChild(0).GetChild(1).GetComponent<TMPro.TextMeshProUGUI>().text = currentCase.caseName;
         instantiatedDayIntro.SetActive(true);

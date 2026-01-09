@@ -25,6 +25,10 @@ public class DestroyAfterTime : MonoBehaviour
 
     public IEnumerator DestroyAfterSeconds(float seconds)
     {
+        while (GameObject.Find("Virtual Camera") == null)
+        { 
+            yield return new WaitForSeconds(0.1f);
+        }
         if (fadeAway)
         {
             yield return new WaitForSeconds(seconds - 0.5f);
@@ -50,6 +54,7 @@ public class DestroyAfterTime : MonoBehaviour
             print("DayIntro");
             GameManager.instance.DayIntro();
         }
+        print("DEstroying!!!!¨!!!¨!!!¨!!!¨!!!¨!!!¨");
         Destroy(gameObject);
     }
     IEnumerator FadeText(TMP_Text text, float duration)

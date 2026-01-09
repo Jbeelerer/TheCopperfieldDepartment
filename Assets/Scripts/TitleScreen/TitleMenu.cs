@@ -35,12 +35,12 @@ public class TitleMenu : MonoBehaviour
     [SerializeField] private CinemachineVirtualCamera continueCam;
     [SerializeField] private AudioMixer bgmMixer;
     [SerializeField] private AudioClip doorCreakSound;
-    [SerializeField] private AudioClip doorOpenSound;
     [SerializeField] private AudioClip paperRustleSound;
     [SerializeField] private AudioClip wooshSound;
     [SerializeField] private GameObject mousePrompt;
 
     private Animator anim;
+    //private AudioSource audioSource;
     private AudioManager audioManager;
     private List<CinemachineVirtualCamera> cameras;
     private bool startNewGame = false;
@@ -58,9 +58,8 @@ public class TitleMenu : MonoBehaviour
         settingsMenu.AddNativeResolution();
         settingsMenu.ApplyCurrentSettings();
         audioManager.UpdateMixerValue("SFX Volume", settingsMenu.sfxVolume);
-        bgmMixer.SetFloat("LowpassCutoff", 290f);
-
         var bgmSources = bgmObject.GetComponents<AudioSource>();
+
         bgmSources[1].PlayDelayed(bgmSources[0].clip.length);
 
         continueButton.interactable = SaveManager.instance.GetSaveExists();
@@ -95,7 +94,7 @@ public class TitleMenu : MonoBehaviour
             if (hit.transform.GetComponent<TitleMenuOption>())
             {
                 hit.transform.GetComponent<TitleMenuOption>().HoverAnimStart();
-                audioManager.PlayAudio(paperRustleSound, 0.9f);
+                audioManager.PlayAudio(paperRustleSound, 0.7f);
                 currentSelectedOption = hit.transform.gameObject;
             }
         }
@@ -108,6 +107,12 @@ public class TitleMenu : MonoBehaviour
 
     private void SelectOption(TitleOption option)
     {
+        if(option == TitleOption.CONTINUE || option == TitleOption.NEW_GAME)
+        {
+        if(GameObject.Find("GameManager") != null){
+            Destroy(GameObject.Find("GameManager"));
+        }
+        }
         cinemachineBrain.m_DefaultBlend.m_Time = 0.3f;
         switch (option)
         {
@@ -152,7 +157,7 @@ public class TitleMenu : MonoBehaviour
         cameras.ForEach(c => c.Priority = 0);
         cam.Priority = 1;
 
-        audioManager.PlayAudio(wooshSound, 0.9f);
+        audioManager.PlayAudio(wooshSound, 0.7f);
     }
 
     public void PlayStartAnimation()
@@ -197,12 +202,10 @@ public class TitleMenu : MonoBehaviour
         StartCoroutine(LowPassFadeOut());
         SetCamPriority(pinboardMainCam);
         audioManager.PlayAudio(doorCreakSound);
-        audioManager.PlayAudio(doorOpenSound, 0.8f);
         HideMousePrompt();
         doorOpened = true;
     }
 
-    // Used in animation event, after logos where shown
     public void SkipLogos()
     {
         anim.Play("TitleFadeIn");
@@ -213,10 +216,6 @@ public class TitleMenu : MonoBehaviour
     public void StartGame()
     {
         if (startNewGame){
-            //delete gamemanager if one exists
-            if(GameObject.Find("GameManager") != null){
-                Destroy(GameObject.Find("GameManager"));
-            }
             SaveManager.instance.DeleteSave();
         }
 
