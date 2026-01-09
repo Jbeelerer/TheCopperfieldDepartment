@@ -35,6 +35,7 @@ public class TitleMenu : MonoBehaviour
     [SerializeField] private CinemachineVirtualCamera continueCam;
     [SerializeField] private AudioMixer bgmMixer;
     [SerializeField] private AudioClip doorCreakSound;
+    [SerializeField] private AudioClip doorOpenSound;
     [SerializeField] private AudioClip paperRustleSound;
     [SerializeField] private AudioClip wooshSound;
     [SerializeField] private GameObject mousePrompt;
@@ -94,7 +95,7 @@ public class TitleMenu : MonoBehaviour
             if (hit.transform.GetComponent<TitleMenuOption>())
             {
                 hit.transform.GetComponent<TitleMenuOption>().HoverAnimStart();
-                audioManager.PlayAudio(paperRustleSound, 0.7f);
+                audioManager.PlayAudio(paperRustleSound, 0.9f);
                 currentSelectedOption = hit.transform.gameObject;
             }
         }
@@ -151,7 +152,7 @@ public class TitleMenu : MonoBehaviour
         cameras.ForEach(c => c.Priority = 0);
         cam.Priority = 1;
 
-        audioManager.PlayAudio(wooshSound, 0.7f);
+        audioManager.PlayAudio(wooshSound, 0.9f);
     }
 
     public void PlayStartAnimation()
@@ -196,10 +197,12 @@ public class TitleMenu : MonoBehaviour
         StartCoroutine(LowPassFadeOut());
         SetCamPriority(pinboardMainCam);
         audioManager.PlayAudio(doorCreakSound);
+        audioManager.PlayAudio(doorOpenSound, 0.8f);
         HideMousePrompt();
         doorOpened = true;
     }
 
+    // Used in animation event, after logos where shown
     public void SkipLogos()
     {
         anim.Play("TitleFadeIn");
