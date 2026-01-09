@@ -56,6 +56,8 @@ public class FPSController : MonoBehaviour
     [SerializeField] private AudioClip pickupSound;
     [SerializeField] private AudioClip deleteSound;
     [SerializeField] private AudioClip chairRollSound;
+    [SerializeField] private AudioClip doorOpenSound;
+    [SerializeField] private AudioClip pcAccessSound;
 
     private Narration narration;
 
@@ -626,6 +628,7 @@ public class FPSController : MonoBehaviour
                                         gm.SetGameState(GameState.OnPC);
                                         inputOverlay.SetIcon("");
                                         computerControls.ToggleCursor();
+                                        am.PlayAudio(pcAccessSound);
                                     }
                                     break;
                                 case "threadCollider":
@@ -692,6 +695,7 @@ public class FPSController : MonoBehaviour
                                         {
                                             inputOverlay.SetIcon("");
                                             gm.setNewDay();
+                                            am.PlayAudio(doorOpenSound);
                                             // Reset player position
                                             ResetPlayer();
                                         }

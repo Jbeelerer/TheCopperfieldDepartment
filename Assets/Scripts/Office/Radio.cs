@@ -1,6 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -10,6 +8,7 @@ public class Radio : MonoBehaviour
     [SerializeField] private AudioClip[] radioMusicChanel2;
     [SerializeField] private AudioClip[] radioTalkShow2;
     [SerializeField] private AudioClip staticSound;
+    [SerializeField] private AudioClip switchSound;
 
     [SerializeField] private AudioMixerGroup musicMixerGroup;
 
@@ -33,6 +32,7 @@ public class Radio : MonoBehaviour
     public void ChangeChanel()
     {
         audioManager.PlayAudio(staticSound, 0.3f);
+        audioManager.PlayAudio(switchSound);
         currentChanel++;
         if (currentChanel > chanelAmount)
         {
