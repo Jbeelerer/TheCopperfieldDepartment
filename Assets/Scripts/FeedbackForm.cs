@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class FeedbackForm : MonoBehaviour
@@ -24,12 +26,12 @@ public class FeedbackForm : MonoBehaviour
     {
         
     }
-    public void SetRating(int rating)
+    public void SetRating(int r)
     {
-     rating = int.Parse(rating.ToString());   
+     rating = int.Parse(r.ToString());   
     }
     public void Send()
-    {
+    { 
         StartCoroutine(SendFeedback(rating, disliked.text, liked.text));
         form.SetActive(false);
         success.SetActive(true);
@@ -42,5 +44,10 @@ public class FeedbackForm : MonoBehaviour
         form.AddField("entry.1174536770", disliked);
         UnityWebRequest www = UnityWebRequest.Post(url, form);
         yield return www.SendWebRequest();
+    }
+
+    public void BackToMenu()
+    {
+        SceneManager.LoadScene(0);
     }
 }

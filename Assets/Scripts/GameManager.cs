@@ -504,9 +504,11 @@ public class GameManager : MonoBehaviour, ISavable
     {
         if (day == 5)//Resources.LoadAll<Case>(dayOrder[day]).Count()
         {
+            Destroy(GameManager.instance.gameObject);
             // TODO: implement endgame  
-            SceneManager.LoadScene(0);
-            //  return; 
+            SaveManager.instance.DeleteSave(); 
+            SceneManager.LoadScene(3);
+            //  return;
             // todo: Only temp solution...
         }
     }
