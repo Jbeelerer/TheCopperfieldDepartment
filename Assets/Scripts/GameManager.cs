@@ -558,6 +558,10 @@ public class GameManager : MonoBehaviour, ISavable
             day++;
              GameObject.Find("LastDayReportManager").GetComponent<LastDayReportManager>().Reset();
             }
+            else
+            {
+                currentlyAccused = null;
+            }
            
             if (day > furthestDay)
             {

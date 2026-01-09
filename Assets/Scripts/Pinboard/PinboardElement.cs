@@ -506,6 +506,7 @@ public class PinboardElement : MonoBehaviour
                 postItMesh = Instantiate(postItMeshes[UnityEngine.Random.Range(0, postItMeshes.Length)], transform).transform.GetChild(0).gameObject;
                 break;
         }
+        SetAnnotationType(AnnotationType.None);
         if (elementType == PinboardElementType.MainSuspect || elementType == PinboardElementType.NotSetYet || elementType == PinboardElementType.Info)
         {
             postItMesh.transform.parent.Rotate(new Vector3(0, 0, UnityEngine.Random.Range(-10, 10)));
