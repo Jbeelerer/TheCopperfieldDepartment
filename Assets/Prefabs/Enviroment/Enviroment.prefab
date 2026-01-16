@@ -114,8 +114,8 @@ MonoBehaviour:
   profileSync: 1
   useCustomBounds: 0
   bounds:
-    m_Center: {x: 13.768068, y: 6.9207535, z: 6.4181614}
-    m_Extent: {x: 31.814867, y: 28.042915, z: 59.234642}
+    m_Center: {x: 13.768068, y: 6.9546995, z: 6.381362}
+    m_Extent: {x: 31.814867, y: 28.215427, z: 59.124096}
   boundsInLocalSpace: 0
   profile: {fileID: 0}
   customRange: 38.97
@@ -3517,8 +3517,8 @@ MonoBehaviour:
   profileSync: 0
   useCustomBounds: 0
   bounds:
-    m_Center: {x: 0.14, y: 1.0864449, z: 2.0189788}
-    m_Extent: {x: 25.35714, y: 7.5289817, z: 25.553953}
+    m_Center: {x: 0.14, y: 1.0971384, z: 2.013188}
+    m_Extent: {x: 25.35714, y: 7.6622, z: 25.585197}
   boundsInLocalSpace: 0
   profile: {fileID: 11400000, guid: 3e70dc98a35814213a019aae5440e2b7, type: 2}
   customRange: 13.493584
@@ -15123,8 +15123,8 @@ ParticleSystem:
     y:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.100619495
-      minScalar: -0.09938051
+      scalar: 0.10072552
+      minScalar: -0.09927449
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -15176,8 +15176,8 @@ ParticleSystem:
     z:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.080009595
-      minScalar: -0.11999041
+      scalar: 0.08001316
+      minScalar: -0.11998684
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -18573,12 +18573,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!1 &8851554170115251143
 GameObject:
   m_ObjectHideFlags: 0
@@ -18701,12 +18701,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!1 &9128246058424028780
 GameObject:
   m_ObjectHideFlags: 0
@@ -18879,6 +18879,14 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 8778271710859225996}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: fc7a0fd9006c445ae8f2802c094737c0,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7335534422658179304}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: fc7a0fd9006c445ae8f2802c094737c0,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6736596138946219136}
   m_SourcePrefab: {fileID: 100100000, guid: fc7a0fd9006c445ae8f2802c094737c0, type: 3}
 --- !u!4 &543842289167566891 stripped
 Transform:
@@ -18911,8 +18919,50 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.0122026, y: 0.011190849, z: 0.02086927}
-  m_Center: {x: -0.00046425205, y: 0.002863262, z: 0.000050912586}
+  m_Size: {x: 0.013713025, y: 0.011190849, z: 0.004707437}
+  m_Center: {x: -0.001219462, y: 0.0028632612, z: 0.00813183}
+--- !u!65 &7335534422658179304
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 920930059997106833}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.013947643, y: 0.0086752195, z: 0.009148669}
+  m_Center: {x: -0.0013367783, y: 0.0016054462, z: -0.009759661}
+--- !u!65 &6736596138946219136
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 920930059997106833}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.0070458846, y: 0.0086752195, z: 0.021513289}
+  m_Center: {x: 0.002114103, y: 0.0016054462, z: -0.004038512}
 --- !u!1001 &667120957536575076
 PrefabInstance:
   m_ObjectHideFlags: 0

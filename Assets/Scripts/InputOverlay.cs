@@ -80,10 +80,12 @@ public class InputOverlay : MonoBehaviour
                 break;
             case "handOpen":
                 image.sprite = handOpen;
+                if(!GameManager.instance.PinboardBlocked){
                 helpUILeft.SetActive(true);
                 helpUIRight.SetActive(true);
                 helpUILeftText.text = "Move";
                 helpUIRightText.text = "Span thread";
+                }
                 break;  
             case "radio":
             image.sprite = handOpen;
