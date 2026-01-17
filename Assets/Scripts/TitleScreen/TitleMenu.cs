@@ -38,6 +38,7 @@ public class TitleMenu : MonoBehaviour
     [SerializeField] private AudioClip paperRustleSound;
     [SerializeField] private AudioClip wooshSound;
     [SerializeField] private GameObject mousePrompt;
+    [SerializeField] private GameObject continueGameButton;
 
     private Animator anim;
     //private AudioSource audioSource;
@@ -67,6 +68,8 @@ public class TitleMenu : MonoBehaviour
         mousePrompt.SetActive(false);
 
         cameras = new List<CinemachineVirtualCamera>() { doorCam, pinboardMainCam, newGameCam, settingsCam, continueCam };
+
+        if (!SaveManager.instance.GetSaveExists()) continueGameButton.SetActive(false);
 
         cinemachineBrain.m_DefaultBlend.m_Time = 2f;
     }
