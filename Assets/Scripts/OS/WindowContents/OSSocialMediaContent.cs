@@ -199,7 +199,7 @@ public class OSSocialMediaContent : MonoBehaviour
 
     public void ResetHomeFeed()
     {
-        ChangeSearchBar("Home", false);
+        ChangeSearchBar("Hot & Trending", false);
 
         // Display all posts that aren't flagged to be hidden in the home feed
         foreach (Transform post in socialMediaPostContainer.transform)

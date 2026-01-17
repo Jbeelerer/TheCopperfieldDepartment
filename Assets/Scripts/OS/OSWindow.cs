@@ -42,8 +42,8 @@ public class OSWindow : MonoBehaviour
     [HideInInspector] public bool dmUserPasswordFound = false;
     [HideInInspector] public bool multipleInstancesAllowed = false;
 
-    [SerializeField] private Sprite customSocialMediaWindow;
-    [SerializeField] private Sprite customSocialMediaTopBar;
+    //[SerializeField] private Sprite customSocialMediaWindow;
+    //[SerializeField] private Sprite customSocialMediaTopBar;
 
     [SerializeField] private GameObject socialMediaContent;
     [SerializeField] private GameObject govAppContent;
@@ -83,8 +83,8 @@ public class OSWindow : MonoBehaviour
             content = Instantiate(socialMediaContent, transform.Find("Content"));
             resizeButtons = new RectTransform[] { buttonSmall, buttonLong };
             topBarTextMesh.text = "QWAKR";
-            GetComponent<Image>().sprite = customSocialMediaWindow;
-            topBar.GetComponent<Image>().sprite = customSocialMediaTopBar;
+            //GetComponent<Image>().sprite = customSocialMediaWindow;
+            //topBar.GetComponent<Image>().sprite = customSocialMediaTopBar;
         }
         else if (appType == OSAppType.GOV)
         {
