@@ -217,12 +217,13 @@ public class TitleMenu : MonoBehaviour
     {
         if (startNewGame)
         {
-            //delete gamemanager if one exists
-            if (GameObject.Find("GameManager") != null)
-            {
-                Destroy(GameObject.Find("GameManager"));
-            }
             SaveManager.instance.DeleteSave();
+        }
+
+        //delete gamemanager if one exists
+        if (GameObject.Find("GameManager") != null)
+        {
+            Destroy(GameObject.Find("GameManager"));
         }
 
         SceneManager.LoadScene("NewMainScene");
