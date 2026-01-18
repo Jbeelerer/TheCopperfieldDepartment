@@ -339,10 +339,10 @@ public class OSPointySystem : MonoBehaviour, ISavable
         pointyButton.GetComponent<Animator>().Play("buttonPointyQuestion");
         pointyAnim.Play("pinnyIdle");
 
-        // Show social media notif if PeopleList tutorial complete on day 1
-        if (currentTutorial == stepsPeopleList && GameManager.instance.GetDay() == 1 && !computerControls.CheckIfWindowIsOpen(OSAppType.SOCIAL))
+        // Show inbox notif if social media tutorial completed on day 1
+        if (currentTutorial == stepsSocialMedia && GameManager.instance.GetDay() == 1 && !computerControls.CheckIfWindowIsOpen(OSAppType.GOV))
         {
-            computerControls.TriggerAppNotification(OSAppType.SOCIAL);
+            computerControls.TriggerAppNotification(OSAppType.GOV);
         }
 
         // Show delayed tips tutorial if day 2 people list and social media tutorials are completed
