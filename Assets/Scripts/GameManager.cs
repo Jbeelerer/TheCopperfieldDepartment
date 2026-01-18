@@ -104,6 +104,10 @@ public class GameManager : MonoBehaviour, ISavable
     {
         return instantiateLoadedDay;
     }
+    public Pinboard getPinboard()
+    {
+        return pinboard;
+    }
     public bool PinboardBlocked
     {
         get { return _pinboardBlocked; }

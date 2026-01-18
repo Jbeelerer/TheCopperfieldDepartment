@@ -45,6 +45,8 @@ public class Pinboard : MonoBehaviour
 
     [SerializeField] private ScriptableObject[] tutorialRelevantObjects;
 
+    public UnityEvent PinAdded = new UnityEvent();
+
     public void pinboardInteractions(bool t)
     {
         transform.Find("Block").gameObject.SetActive(t);
@@ -67,6 +69,10 @@ public class Pinboard : MonoBehaviour
              FlaggedThread = null;
         }
         
+    }
+    public int PinAmount()
+    {
+        return pinsOnPinboard.Count;
     }
     public void AddTutorialRelevantObjects()
     {
@@ -237,6 +243,7 @@ public class Pinboard : MonoBehaviour
     }
     public void AddPin(ScriptableObject o)
     {
+        PinAdded?.Invoke();
         if (pinsOnPinboard.ContainsKey(o))
             return;
 

@@ -33,7 +33,7 @@ public class Phone : MonoBehaviour
         animator = GetComponent<Animator>();
         gm = GameManager.instance;
         am = AudioManager.instance;
-        gm.StateChanged.AddListener(Ring);
+        gm.getPinboard().PinAdded.AddListener(Ring);
         gm.InvestigationStateChanged.AddListener(ExitTutorial);
     }
     public void ExitTutorial()
@@ -52,11 +52,12 @@ public class Phone : MonoBehaviour
             wasOnPc = true;
             ResetPhone();
         }
-        if (gm.GetGameState() == GameState.Playing && wasOnPc && gm.GetDay() == 2 && !isRinging && !gm.GetAnswerCommited())
+        if (gm.GetDay() == 2 && !isRinging && !gm.GetAnswerCommited())
         {
             wasOnPc = false; 
             string callName = "phoneCallIntro";//FindObjectOfType<Pinboard>().tutorialElementOnBoard();
             Ring(callName);
+            gm.getPinboard().PinAdded.RemoveListener(Ring);
             if (callName == "phoneCallIntro")   
             {
                 gm.StateChanged.RemoveListener(Ring);
@@ -80,7 +81,7 @@ public class Phone : MonoBehaviour
         {
             if (!narration.CancelSequence())
             {
-                gm.StateChanged.AddListener(Ring);
+               // gm.StateChanged.AddListener(Ring);
                 if (lastCallName != null)
                 {
                     narration.Say(lastCallName+"_replay");

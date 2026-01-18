@@ -36,14 +36,14 @@ public class PhoneHighlight : MonoBehaviour
         {
             yield return new WaitForEndOfFrame();
 
-            if (gm.GetGameState() != GameState.Playing)
+          /*  if (gm.GetGameState() != GameState.Playing)
             {
                 rectTransform.localScale = new Vector3(0, 0, 0);
                 while (gm.GetGameState() != GameState.Playing)
                 {
                     yield return new WaitForEndOfFrame();   
                 }
-            }
+            }*/
 
             Vector3 phoneWorldPos = phonePosition.position;
             Vector3 screenPos = Camera.main.WorldToViewportPoint(phoneWorldPos);

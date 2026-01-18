@@ -379,7 +379,7 @@ public class Narration : MonoBehaviour
         int slideCounter = 0;
 
         slideDisplayer.SetActive(slides);
-        slideDisplayer.transform.GetChild(1).gameObject.SetActive(false);
+        slideDisplayer.transform.parent.Find("MousePrompt").gameObject.SetActive(false);
 
 
         foreach (TimedSubtitle entry in content)
@@ -458,7 +458,8 @@ public class Narration : MonoBehaviour
                     if (slides)
                     {
 
-                        slideDisplayer.transform.GetChild(1).gameObject.SetActive(false);
+                        
+                        slideDisplayer.transform.parent.Find("MousePrompt").gameObject.SetActive(false);
                         slideCounter++;
                        
                             //check if allAnimation contains a voicelineindex which is slideCounter and if yes get that element
@@ -468,6 +469,7 @@ public class Narration : MonoBehaviour
                                 animator.Play(slide.animation);
                                 if (slide.animation == "switchSlides")
                                 {
+                                    // todo: mouse effect handling!!!
                                     animator.GetComponent<AudioSource>().Play();
                                     animationPlaying = true;
                                     StartCoroutine(delayNewSlide(1, slide.slide));
@@ -580,7 +582,7 @@ public class Narration : MonoBehaviour
     {
         yield return new WaitForSeconds(time);
         
-        slideDisplayer.transform.GetChild(1).gameObject.SetActive(true);
+        slideDisplayer.transform.parent.Find("MousePrompt").gameObject.SetActive(true);
         audioSource.Stop(); 
     }
 

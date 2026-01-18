@@ -60,12 +60,15 @@ public class Archives : MonoBehaviour
             newFile.transform.localPosition = new Vector3(0, 5, startPositionY + i);
             i += 2f;
         }
-
         anim = GetComponent<Animator>();
         camPos = transform.GetChild(1);
         pinboard = GameObject.Find("Pinboard").GetComponent<Pinboard>();
         gm = FindObjectOfType<GameManager>();
         gm.StateChanged.AddListener(closeIfInArchive);
+        if(i == 0)
+        {
+            locked.SetActive(true);
+        }
     }
 
     private void UpdateArchiveAvailability()
