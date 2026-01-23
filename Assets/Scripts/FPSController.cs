@@ -157,6 +157,7 @@ public class FPSController : MonoBehaviour
         #region Look at things
         if (hasHitSomething && !onHoldDown && gm.GetGameState() == GameState.Playing)
         {
+            print(nameOfThingLookedAt);
             if (Vector3.Distance(hit.collider.gameObject.transform.position, transform.position) <= interactionReach || selectedPinboardElement != null || currentThread != null)
             {
                 string tempName = hit.collider.gameObject.name;
@@ -601,6 +602,7 @@ public class FPSController : MonoBehaviour
                             {
                                 DeselectPen();
                             }
+                                print(currentSelectedObject.name);
                             switch (currentSelectedObject.name)
                             {
                                 case "pinboardElement(Clone)":
@@ -682,8 +684,10 @@ public class FPSController : MonoBehaviour
                                     }
                                     break;
                                 case "Phone":
+                                print(hit.collider.transform.name);
                                     if (hit.collider.transform.GetComponent<Phone>() != null)
                                     {
+                                print(currentSelectedObject.name + "  .... " + hit.collider.transform.name);
                                         inputOverlay.SetIcon("");
                                         hit.collider.transform.GetComponent<Phone>().StartCall();
                                     }
@@ -693,11 +697,9 @@ public class FPSController : MonoBehaviour
                                     {
                                         if (gm.GetAnswerCommited() && !FindObjectOfType<Phone>().GetIsRinging())
                                         {
-                                            inputOverlay.SetIcon("");
-                                            gm.setNewDay();
-                                            am.PlayAudio(doorOpenSound);
+                                            narration.BlackScreen();
+                                            StartCoroutine(EndDay());
                                             // Reset player position
-                                            ResetPlayer();
                                         }
                                         else
                                         {
@@ -964,6 +966,14 @@ public class FPSController : MonoBehaviour
                 pinboard.FlaggedPersonPin = lastSelectedObject.GetComponent<PinboardElement>(); ;
             }
         }
+    }
+    public IEnumerator EndDay()
+    {
+        am.PlayAudio(doorOpenSound);
+        yield return new WaitForSeconds(0.5f);
+        inputOverlay.SetIcon("");
+        gm.setNewDay();
+        ResetPlayer();
     }
 
     public IEnumerator PlayPenAnimation(string animName)

@@ -168,14 +168,26 @@ public class Narration : MonoBehaviour
         }
         else
         {
-         blackScreen.SetActive(false);
+        if(blackScreen.transform.parent.GetComponent<Animator>().GetBool("onPhone")){
+        blackScreen.transform.parent.GetComponent<Animator>().SetBool("onPhone", false);}
+        else{
+         blackScreen.transform.parent.GetComponent<Animator>().SetBool("on", false);
+        }
         }
     }
 
     public void PlaySequence(string sequence, Quaternion[] rotation = null)
     {
         rotations = rotation;
-        blackScreen.GetComponent<Image>().color = rotation != null ? new Color(0, 0, 0, 0f) : new Color(0, 0, 0, 1f);
+        //blackScreen.GetComponent<Image>().color = rotation != null ? new Color(0, 0, 0, 0f) : new Color(0, 0, 0, 1f);
+        
+        if(rotation != null){
+        blackScreen.transform.parent.GetComponent<Animator>().SetBool("onPhone", true);
+        }
+        else
+        {
+        blackScreen.transform.parent.GetComponent<Animator>().SetBool("on", true);
+        }
         StopAllCoroutines();
         // return if a coroutine is already running
         switch (sequence)
@@ -364,7 +376,6 @@ public class Narration : MonoBehaviour
         Radio radio = FindObjectOfType<Radio>();
         startRotation = player.transform.rotation;
         gm.SetGameState(GameState.Frozen);
-        blackScreen.SetActive(true);
         subtitleText.text = "";
         am.PlayAudio(phonePickup);
         yield return new WaitForSeconds(0.05f);
@@ -557,7 +568,12 @@ public class Narration : MonoBehaviour
         {
             phone.ResetPhone();
         }
-        blackScreen.SetActive(false);
+        
+        if(blackScreen.transform.parent.GetComponent<Animator>().GetBool("onPhone")){
+            blackScreen.transform.parent.GetComponent<Animator>().SetBool("onPhone", false);}
+        else{
+            blackScreen.transform.parent.GetComponent<Animator>().SetBool("on", false);
+        }
         if (playNextDayAnimation)
         {
             FindObjectOfType<Radio>().PauseRadio();
@@ -566,6 +582,7 @@ public class Narration : MonoBehaviour
         }
         audioSource.Pause();
         currentCall = null;
+        animationPlaying = false;
          
         AudioManager.instance.EndSequenceMix();
     }   
@@ -577,6 +594,14 @@ public class Narration : MonoBehaviour
 
         
     }
+    public void BlackScreen()
+    {
+        blackScreen.transform.parent.GetComponent<Animator>().SetBool("on", true);
+    } 
+    public void BlackScreenOff()
+    {
+        blackScreen.transform.parent.GetComponent<Animator>().SetBool("on", false);
+    } 
 
     private IEnumerator pauseSequence(float time)
     {
@@ -598,7 +623,11 @@ public class Narration : MonoBehaviour
             audioSource.Stop();
             gm.SetGameState(GameState.Playing);
             subtitleText.text = "";
-            blackScreen.SetActive(false);
+            if(blackScreen.transform.parent.GetComponent<Animator>().GetBool("onPhone")){
+                blackScreen.transform.parent.GetComponent<Animator>().SetBool("onPhone", false);}
+            else{
+                blackScreen.transform.parent.GetComponent<Animator>().SetBool("on", false);
+            }
             sequenceHadRequirement = false;
             sequencePlaying = false;
             requirementMet = false;

@@ -717,6 +717,7 @@ public class GameManager : MonoBehaviour, ISavable
         print("looking For cam ");
             yield return new WaitForSeconds(0.1f);
         } 
+        narration.BlackScreenOff();
         
         SetGameState(GameState.Playing);
         GameObject instantiatedDayIntro = Instantiate(dayIntro);
