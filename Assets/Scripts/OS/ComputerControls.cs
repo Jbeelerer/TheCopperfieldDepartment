@@ -228,7 +228,7 @@ public class ComputerControls : MonoBehaviour
         if (gm.GetDay() == 1)
         {
             OpenWindow(OSAppType.START_SETTINGS);
-            CloseAppNotification(OSAppType.SOCIAL);
+            CloseAppNotification(OSAppType.GOV);
         }
     }
 
