@@ -12,6 +12,7 @@ public class AdditionalInfoBoard : MonoBehaviour
     [SerializeField] private Sprite userInfoBG; 
     [SerializeField] private Sprite personInfoBG;
     [SerializeField] private Sprite postContentInfoBG;
+    [SerializeField] private Sprite paperBG;
 
     // user
     [SerializeField] private GameObject userInfo;
@@ -42,6 +43,9 @@ public class AdditionalInfoBoard : MonoBehaviour
     private Transform personParent;
 
     private Transform contentParent;*/
+    // Big image
+    
+    [SerializeField] private GameObject bigPictureParent;
     [SerializeField] private Renderer bigPicture;
 
     private List<string> newInfo = new List<string>();
@@ -117,6 +121,7 @@ public class AdditionalInfoBoard : MonoBehaviour
         userInfo.SetActive(false); 
         postContentInfo.SetActive(false);
         postContentUserImage.SetActive(false);
+        bigPictureParent.SetActive(false);
         switch (o) 
         {
             case Person:
@@ -163,8 +168,12 @@ public class AdditionalInfoBoard : MonoBehaviour
             case ArchiveData:
                 ArchiveData a = (ArchiveData)o;
                 postContentInfo.SetActive(true);
+                backgroundClipboardImage.GetComponent<Image>().sprite = paperBG;
                 if (a.type == ArchiveType.Image && a.image != null)
-                {
+                {   
+                    backgroundClipboardImage.SetActive(false);
+                    postContentInfo.SetActive(false);
+                    bigPictureParent.SetActive(true);
                     bigPicture.material.SetTexture("_Base", a.image.texture);
                 }
                 else if (a.image != null)

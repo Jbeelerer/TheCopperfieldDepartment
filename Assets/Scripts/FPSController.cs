@@ -245,6 +245,7 @@ public class FPSController : MonoBehaviour
                                 inputOverlay.SetIcon("scissors");
                                 break;
                             case "Door":
+                            if(!narration.TransitionRunning())
                                 inputOverlay.SetIcon("exit");
                                 break;
                             case "Pen":
@@ -697,7 +698,6 @@ public class FPSController : MonoBehaviour
                                     {
                                         if (gm.GetAnswerCommited() && !FindObjectOfType<Phone>().GetIsRinging())
                                         {
-                                            narration.BlackScreen();
                                             StartCoroutine(EndDay());
                                             // Reset player position
                                         }
@@ -970,7 +970,8 @@ public class FPSController : MonoBehaviour
     public IEnumerator EndDay()
     {
         am.PlayAudio(doorOpenSound);
-        yield return new WaitForSeconds(0.5f);
+        yield return narration.BlackScreenEnumerator(true);
+        //yield return new WaitForSeconds(0.5f);
         inputOverlay.SetIcon("");
         gm.setNewDay();
         ResetPlayer();

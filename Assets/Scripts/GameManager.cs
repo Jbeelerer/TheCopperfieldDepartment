@@ -106,6 +106,9 @@ public class GameManager : MonoBehaviour, ISavable
     }
     public Pinboard getPinboard()
     {
+        if (pinboard == null){
+        pinboard = GameObject.Find("Pinboard").GetComponent<Pinboard>();        
+        }
         return pinboard;
     }
     public bool PinboardBlocked
@@ -457,8 +460,13 @@ public class GameManager : MonoBehaviour, ISavable
         currentlyAccused = null;
         currentInvestigationState = investigationStates.SuspectNotFound;
     }
-    public void LoadNewDay(int day, bool loaded = false)
+    public void LoadNewDay(int day = 0, bool loaded = false)
     {
+        if(day == 0)
+        {
+            day = this.day;
+        }
+
         delaySuspectClearing(1);   
 
         instantiateLoadedDay = loaded;
@@ -574,7 +582,6 @@ public class GameManager : MonoBehaviour, ISavable
                 furthestDay = day;
             }
             SaveManager.instance.SaveGame();
-
         }
         LoadNewDay(day);
     }
@@ -710,14 +717,13 @@ public class GameManager : MonoBehaviour, ISavable
     } 
     public IEnumerator DayIntroCoroutine(float delay = 0)
     {
-        print("delaay "+delay);
-        yield return new WaitForSeconds(delay);
         while (GameObject.Find("Virtual Camera") == null)
         { 
         print("looking For cam ");
             yield return new WaitForSeconds(0.1f);
         } 
-        narration.BlackScreenOff();
+        StartCoroutine(narration.BlackScreenEnumerator(false));;
+        //yield return new WaitForSeconds(0.1f);
         
         SetGameState(GameState.Playing);
         GameObject instantiatedDayIntro = Instantiate(dayIntro);

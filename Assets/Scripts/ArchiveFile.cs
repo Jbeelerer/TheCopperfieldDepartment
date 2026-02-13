@@ -98,4 +98,12 @@ public class ArchiveFile : MonoBehaviour
         gm.InspectObject(archive, new Vector3(0, 1f, 2f), GameState.InArchive);
         //   data = d;     
     }
+
+    public void pinned(bool pin)
+    {
+        if (pin)
+        {
+            
+        }
+    }
 }

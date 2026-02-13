@@ -138,7 +138,14 @@ public class Narration : MonoBehaviour
 
     private bool sequenceHadRequirement = false;
 
+    private bool transitionRunning = false;
+
     private IEnumerator currentCall;
+
+    public bool TransitionRunning()
+    {
+        return transitionRunning;
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -571,7 +578,7 @@ public class Narration : MonoBehaviour
         
         if(blackScreen.transform.parent.GetComponent<Animator>().GetBool("onPhone")){
             blackScreen.transform.parent.GetComponent<Animator>().SetBool("onPhone", false);}
-        else{
+        else if(!playNextDayAnimation){
             blackScreen.transform.parent.GetComponent<Animator>().SetBool("on", false);
         }
         if (playNextDayAnimation)
@@ -596,12 +603,35 @@ public class Narration : MonoBehaviour
     }
     public void BlackScreen()
     {
+         transitionRunning = true;
         blackScreen.transform.parent.GetComponent<Animator>().SetBool("on", true);
     } 
     public void BlackScreenOff()
     {
+         transitionRunning = false;
         blackScreen.transform.parent.GetComponent<Animator>().SetBool("on", false);
     } 
+ 
+ public IEnumerator BlackScreenEnumerator(bool on)
+{
+    transitionRunning = on;
+    Animator animator = blackScreen.transform.parent.GetComponent<Animator>();
+
+    animator.SetBool("on", on);
+
+    print("animator on "+animator.GetBool("on"));
+    
+    // Wait until the animator transitions to the target state
+
+    yield return null;  
+
+    // Get current animation info
+    AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+
+    // Wait for the animation to finish
+    yield return new WaitForSeconds(stateInfo.length);
+    print("wait oover -  "+animator.GetBool("on"));
+}
 
     private IEnumerator pauseSequence(float time)
     {

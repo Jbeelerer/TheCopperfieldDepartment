@@ -17,6 +17,8 @@ public class ArchiveManager : MonoBehaviour
     private int currentFile = 0;
     private bool wasInArchvie = false;
 
+    private List<GameObject> pinnedFiles = new List<GameObject>();
+
     //singleton pattern
 
     public static ArchiveManager Instance;
@@ -125,6 +127,8 @@ public class ArchiveManager : MonoBehaviour
                     if (currentSelection != null)
                     {
                         pinboard.AddPin(currentSelection.GetData());
+                        pinnedFiles.Add(currentSelection.gameObject);
+                        currentSelection.gameObject.SetActive(false);
                         StartCoroutine(DelayedClosArchive());
                         return;
 

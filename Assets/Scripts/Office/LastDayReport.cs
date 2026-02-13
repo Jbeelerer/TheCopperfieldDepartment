@@ -94,6 +94,9 @@ public class LastDayReport : MonoBehaviour
     public void Next()
     {
         GameObject g = Instantiate(newDayPrefab);
+        GameObject.Find("Narration").GetComponent<Narration>().BlackScreenOff();
+
+        // todo make sure the next day is instantiated after the last day report 
         GameManager.instance.reloadIfOver();
         Destroy(gameObject);
     }
