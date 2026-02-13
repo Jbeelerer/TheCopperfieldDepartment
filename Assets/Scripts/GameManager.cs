@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Cinemachine;
+using Unity.Cinemachine;
 using SaveSystem;
 using Unity.VisualScripting;
 using UnityEngine;
