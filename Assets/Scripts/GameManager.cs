@@ -86,7 +86,7 @@ public class GameManager : MonoBehaviour, ISavable
     private GameObject mainCam;
     private investigationStates currentInvestigationState = investigationStates.SuspectNotFound;
 
-    private Person currentlyAccused;
+    [SerializeField] private Person currentlyAccused;
 
     private string feedBackExplanation = "";
 
@@ -456,6 +456,7 @@ public class GameManager : MonoBehaviour, ISavable
     }
     public IEnumerator delaySuspectClearing(float delay = 0)
     {
+        print("clearing suspect");
         yield return new WaitForSeconds(delay);
         currentlyAccused = null;
         currentInvestigationState = investigationStates.SuspectNotFound;
@@ -465,9 +466,7 @@ public class GameManager : MonoBehaviour, ISavable
         if(day == 0)
         {
             day = this.day;
-        }
-
-        delaySuspectClearing(1);   
+        } 
 
         instantiateLoadedDay = loaded;
         if (instantiatedDayIntro != null)
@@ -572,11 +571,6 @@ public class GameManager : MonoBehaviour, ISavable
             day++;
              GameObject.Find("LastDayReportManager").GetComponent<LastDayReportManager>().Reset();
             }
-            else
-            {
-                currentlyAccused = null;
-            }
-           
             if (day > furthestDay)
             {
                 furthestDay = day;

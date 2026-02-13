@@ -2,11 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class InputOverlay : MonoBehaviour
 {
+    [SerializeField] private Sprite defaultIconInGame;
     [SerializeField] private Sprite defaultIcon;
     [SerializeField] private Sprite handOpen;
     [SerializeField] private Sprite handClosed;
@@ -18,6 +20,9 @@ public class InputOverlay : MonoBehaviour
     [SerializeField] private Sprite pen;
     [SerializeField] private Sprite draw;
     [SerializeField] private Sprite pin;
+    [SerializeField] private Sprite keyBG;
+    [SerializeField] private Sprite mouseLeft;
+    [SerializeField] private Sprite mouseRight;
 
     private Slider onHoldDisplay;
 
@@ -27,7 +32,11 @@ public class InputOverlay : MonoBehaviour
     [SerializeField] private GameObject helpUIRight;
     [SerializeField] private TMPro.TextMeshProUGUI helpUILeftText;
     [SerializeField] private TMPro.TextMeshProUGUI helpUIRightText;
+    [SerializeField] private TMPro.TextMeshProUGUI helpUIRightKeyText;
+    [SerializeField] private Image helpUILeftImg;
+    [SerializeField] private Image helpUIRightImg;
 
+    private bool customInteractions = false;
     private bool isHolding = false;
 
     private bool followCursor = false;
@@ -46,7 +55,7 @@ public class InputOverlay : MonoBehaviour
         // image = GetComponent<Image>();
         onHoldDisplay = transform.GetComponentInChildren<Slider>();
         onHoldDisplay.gameObject.SetActive(false);
-        image.enabled = false;
+        //image.enabled = false;
         bg.enabled = false;
         GetComponentInChildren<TextMeshProUGUI>().gameObject.SetActive(false);
         defaultPosition = transform.position;
@@ -63,11 +72,21 @@ public class InputOverlay : MonoBehaviour
     }
     public void SetIcon(string imageName, bool forceIcon = false)
     {
+        if (customInteractions)
+        {
+            return;
+        }
         currentIcon = imageName;
         image.enabled = true;
         bg.enabled = true;
         helpUILeft.SetActive(false);
         helpUIRight.SetActive(false);
+        var tempColor = Color.white;
+        tempColor.a = 1f; 
+        image.color = tempColor;
+        helpUILeftImg.sprite = mouseLeft;
+        helpUIRightImg.sprite = mouseRight;
+        helpUIRightKeyText.gameObject.SetActive(false);
         // don't allow any icon changes while moving pins only empty
         if (!forceIcon && image.sprite == handClosed && imageName != "handOpen" && imageName != "")
         {
@@ -133,9 +152,15 @@ public class InputOverlay : MonoBehaviour
             case "pin":
                 image.sprite = pin;
                 break;
-            default:
-                image.sprite = defaultIcon;
+            case "none":
                 image.enabled = false;
+                bg.enabled = false;
+                break;
+            default:
+                image.sprite = defaultIconInGame;
+                tempColor.a = 0.1f;
+                image.color = tempColor;
+                //image.enabled = false;
                 bg.enabled = false;
                 break;
         }
@@ -147,6 +172,11 @@ public class InputOverlay : MonoBehaviour
         {
             SetIcon(imageName);
         }
+    }
+
+    public void SetHelpUI(string type)
+    {
+        
     }
 
     public void startHold(float duration)
@@ -192,5 +222,29 @@ public class InputOverlay : MonoBehaviour
         {
             transform.position = Input.mousePosition;
         }
+    }
+
+    public void SetCustomInteractions(string interaction)
+    { switch (interaction)
+        {
+            case "leavePC":
+                helpUIRight.SetActive(true);
+                helpUIRightText.text = "Leave PC";
+                helpUIRightKeyText.gameObject.SetActive(true);
+                helpUIRightKeyText.text = "S";
+                helpUIRightImg.sprite = keyBG;
+                customInteractions = true;
+            break;
+            default:
+            StartCoroutine(delayCustomInteractionReset(0.5f));
+            break; 
+            }
+    }
+    private IEnumerator delayCustomInteractionReset(float time)
+    {
+        yield return new WaitForSeconds(time);
+        helpUILeft.SetActive(false);
+        helpUIRight.SetActive(false);
+        customInteractions = false;
     }
 }

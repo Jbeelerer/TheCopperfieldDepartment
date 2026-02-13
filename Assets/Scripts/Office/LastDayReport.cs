@@ -26,6 +26,7 @@ public class LastDayReport : MonoBehaviour
     {
         gm = GameManager.instance;
 
+        print(gm.GetCurrentlyAccused().personName);
         suspectName.text = gm.GetCurrentlyAccused().personName;
         suspectImage.sprite = gm.GetCurrentlyAccused().image;
         explenation.text = gm.GetFeedBackExplanation();
@@ -40,6 +41,7 @@ public class LastDayReport : MonoBehaviour
             stamp.sprite = stampFailed;
             StartCoroutine(CaptureRectTransform(paper));
         }
+        gm.SetGameState(GameState.Playing);
       
 
     }
@@ -93,9 +95,9 @@ public class LastDayReport : MonoBehaviour
 
     public void Next()
     {
+        StartCoroutine(GameManager.instance.delaySuspectClearing(0.1f));
         GameObject g = Instantiate(newDayPrefab);
         GameObject.Find("Narration").GetComponent<Narration>().BlackScreenOff();
-
         // todo make sure the next day is instantiated after the last day report 
         GameManager.instance.reloadIfOver();
         Destroy(gameObject);

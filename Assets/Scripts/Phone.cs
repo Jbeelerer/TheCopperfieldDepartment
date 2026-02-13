@@ -41,6 +41,7 @@ public class Phone : MonoBehaviour
         if (gm.GetAnswerCommited() && gm.GetDay() == 1)
         {
             Ring("exit");
+            GameObject.FindObjectOfType<InputOverlay>().SetCustomInteractions("leavePC");
             gm.InvestigationStateChanged.RemoveListener(ExitTutorial);
         }
     }

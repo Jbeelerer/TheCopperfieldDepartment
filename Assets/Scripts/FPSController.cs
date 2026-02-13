@@ -507,6 +507,7 @@ public class FPSController : MonoBehaviour
             if (gm.GetGameState() == GameState.OnPC)
             {
                 computerControls.LeaveComputer();
+                inputOverlay.SetCustomInteractions("");
             }
             StartCoroutine(pauseMenu.StartPauseMenuCooldown());
             gm.SetGameState(GameState.Playing);
@@ -629,7 +630,7 @@ public class FPSController : MonoBehaviour
                                     if (requirementMet)
                                     {
                                         gm.SetGameState(GameState.OnPC);
-                                        inputOverlay.SetIcon("");
+                                        inputOverlay.SetIcon("none");
                                         computerControls.ToggleCursor();
                                         am.PlayAudio(pcAccessSound);
                                     }
@@ -698,7 +699,9 @@ public class FPSController : MonoBehaviour
                                     {
                                         if (gm.GetAnswerCommited() && !FindObjectOfType<Phone>().GetIsRinging())
                                         {
+                                            gm.SetGameState(GameState.Frozen);
                                             StartCoroutine(EndDay());
+                                            inputOverlay.SetIcon("none");
                                             // Reset player position
                                         }
                                         else
@@ -972,7 +975,7 @@ public class FPSController : MonoBehaviour
         am.PlayAudio(doorOpenSound);
         yield return narration.BlackScreenEnumerator(true);
         //yield return new WaitForSeconds(0.5f);
-        inputOverlay.SetIcon("");
+        inputOverlay.SetIcon("none");
         gm.setNewDay();
         ResetPlayer();
     }
