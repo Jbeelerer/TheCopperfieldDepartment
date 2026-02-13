@@ -87,7 +87,7 @@ public class Pinboard : MonoBehaviour
     }
     public string tutorialElementOnBoard()
     {
-        Pinboard pinboard = FindObjectOfType<Pinboard>();
+        Pinboard pinboard = FindFirstObjectByType<Pinboard>();
         int peopleOnBoard = 0;
         int postsOnBoard = 0;
         int usersOnBoard = 0;
@@ -163,8 +163,8 @@ public class Pinboard : MonoBehaviour
         AddPin(threadInfo, new Vector3( (pinboardModel.localScale.x / 3), 0, -pinboardModel.localScale.z / 2));   
         AddPin(rightPenClickInfo, new Vector3(0.5f - (pinboardModel.localScale.x / 2), 0.5f - (pinboardModel.localScale.y / 2), -pinboardModel.localScale.z / 2));
         AddPin(leftPenClickInfo, new Vector3(0.5f + minSpaceBetweenPins - (pinboardModel.localScale.x / 2), 0.5f - (pinboardModel.localScale.y / 2), -pinboardModel.localScale.z / 2));
-        narration = FindObjectOfType<Narration>();  
-        GameObject.FindObjectOfType<ComputerControls>().OnUnpinned.AddListener(RemoveByScriptableObject);
+        narration = FindFirstObjectByType<Narration>();  
+        GameObject.FindFirstObjectByType<ComputerControls>().OnUnpinned.AddListener(RemoveByScriptableObject);
         gm.OnNewDay.AddListener(ResetPinboard);
         gm.InvestigationStateChanged.AddListener(AddAccusation);
     }
@@ -192,6 +192,7 @@ public class Pinboard : MonoBehaviour
             pinsOnPinboard[o].DeleteElement();
         }
     }
+
 
     public void RemoveThingOnPinboardByElement(PinboardElement pe)
     {

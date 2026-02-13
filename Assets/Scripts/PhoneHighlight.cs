@@ -14,7 +14,7 @@ public class PhoneHighlight : MonoBehaviour
     {
         rectTransform = GetComponent<RectTransform>();
         image = GetComponent<Image>();
-        gm = FindObjectOfType<GameManager>();
+        gm = FindFirstObjectByType<GameManager>();
 
     }
 

@@ -114,7 +114,7 @@ public class FPSController : MonoBehaviour
     {
         gm = GameManager.instance;
         am = AudioManager.instance;
-        pinboard = FindObjectOfType<Pinboard>();
+        pinboard = FindFirstObjectByType<Pinboard>();
         characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -126,7 +126,9 @@ public class FPSController : MonoBehaviour
         gm.OnNewDay.AddListener(ResetFoundConnections);
         gm.OnNewDay.AddListener(ResetPlayer);
         threadCamera.enabled = false;
-        pauseMenu = FindObjectOfType<PauseMenu>();
+        pauseMenu = FindFirstObjectByType<PauseMenu>();
+        inputOverlay.SetIcon("none");
+        
     }
     private void FixedUpdate()
     {

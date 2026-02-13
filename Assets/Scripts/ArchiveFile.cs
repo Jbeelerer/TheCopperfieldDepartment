@@ -31,7 +31,7 @@ public class ArchiveFile : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        gm = FindObjectOfType<GameManager>();
+        gm = FindFirstObjectByType<GameManager>();
         anim = GetComponent<Animator>();
 
     }
@@ -43,7 +43,7 @@ public class ArchiveFile : MonoBehaviour
     }
     public void instantiateFile(ArchiveData d)
     {
-        gm = FindObjectOfType<GameManager>();
+        gm = FindFirstObjectByType<GameManager>();
         anim = GetComponent<Animator>();
         data = d;
         fileMapTitle.text = d.archivename;
@@ -99,11 +99,5 @@ public class ArchiveFile : MonoBehaviour
         //   data = d;     
     }
 
-    public void pinned(bool pin)
-    {
-        if (pin)
-        {
-            
-        }
-    }
+
 }

@@ -17,7 +17,7 @@ public class ArchiveManager : MonoBehaviour
     private int currentFile = 0;
     private bool wasInArchvie = false;
 
-    private List<GameObject> pinnedFiles = new List<GameObject>();
+    private Dictionary<ArchiveFile,GameObject> pinnedFiles = new Dictionary<ArchiveFile,GameObject>();
 
     //singleton pattern
 
@@ -44,7 +44,7 @@ public class ArchiveManager : MonoBehaviour
     void Start()
     {
         pinboard = GameObject.Find("Pinboard").GetComponent<Pinboard>();
-        gm = FindObjectOfType<GameManager>();
+        gm = FindFirstObjectByType<GameManager>();
         gm.StateChanged.AddListener(closeIfInArchive);
     }
     private void closeIfInArchive()
@@ -127,7 +127,7 @@ public class ArchiveManager : MonoBehaviour
                     if (currentSelection != null)
                     {
                         pinboard.AddPin(currentSelection.GetData());
-                        pinnedFiles.Add(currentSelection.gameObject);
+                        pinnedFiles.Add(currentSelection,currentSelection.gameObject);
                         currentSelection.gameObject.SetActive(false);
                         StartCoroutine(DelayedClosArchive());
                         return;
@@ -148,6 +148,7 @@ public class ArchiveManager : MonoBehaviour
         }
 
     }
+
     // delayed so that the fps controller doesn't open the archive again
     public IEnumerator DelayedClosArchive()
     {

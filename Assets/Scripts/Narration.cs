@@ -380,7 +380,7 @@ public class Narration : MonoBehaviour
     {
         AudioManager.instance.StartSequenceMix();
         FPSController player = GameObject.Find("Player").GetComponent<FPSController>();
-        Radio radio = FindObjectOfType<Radio>();
+        Radio radio = FindFirstObjectByType<Radio>();
         startRotation = player.transform.rotation;
         gm.SetGameState(GameState.Frozen);
         subtitleText.text = "";
@@ -570,7 +570,7 @@ public class Narration : MonoBehaviour
                 ow.GetComponent<Animator>().SetTrigger("NewDay");
             }
         }
-        Phone phone = FindObjectOfType<Phone>();
+        Phone phone = FindFirstObjectByType<Phone>();
         if (!phone.GetIsRinging())
         {
             phone.ResetPhone();
@@ -583,7 +583,7 @@ public class Narration : MonoBehaviour
         }
         if (playNextDayAnimation)
         {
-            FindObjectOfType<Radio>().PauseRadio();
+            FindFirstObjectByType<Radio>().PauseRadio();
             gm.NextDaySequence();
             gm.SetGameState(GameState.DayOver);
         }

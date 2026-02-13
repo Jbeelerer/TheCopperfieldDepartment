@@ -17,7 +17,7 @@ public class IntroPresentation : MonoBehaviour
 
     void Start()
     {
-        narration = FindObjectOfType<Narration>();
+        narration = FindFirstObjectByType<Narration>();
 
         slideImage.sprite = slides[0];
         mousePrompt.SetActive(false);

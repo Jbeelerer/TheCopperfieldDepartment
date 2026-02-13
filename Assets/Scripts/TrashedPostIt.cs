@@ -9,8 +9,8 @@ public class TrashedPostIt : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        socialMediaContent = FindObjectOfType<OSSocialMediaContent>();
-        peopleListContent = FindObjectOfType<OSPeopleListContent>();
+        socialMediaContent = FindFirstObjectByType<OSSocialMediaContent>();
+        peopleListContent = FindFirstObjectByType<OSPeopleListContent>();
     }
 
     public ScriptableObject GetContent()
@@ -19,7 +19,7 @@ public class TrashedPostIt : MonoBehaviour
     }
     public void SetContent(ScriptableObject content)
     {
-        pinboard = FindObjectOfType<Pinboard>();
+        pinboard = FindFirstObjectByType<Pinboard>();
         this.content = content; 
         pinboard.AddTrashedPin(content, gameObject);
     }

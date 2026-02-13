@@ -63,7 +63,7 @@ public class Archives : MonoBehaviour
         anim = GetComponent<Animator>();
         camPos = transform.GetChild(1);
         pinboard = GameObject.Find("Pinboard").GetComponent<Pinboard>();
-        gm = FindObjectOfType<GameManager>();
+        gm = FindFirstObjectByType<GameManager>();
         gm.StateChanged.AddListener(closeIfInArchive);
         if(i == 0)
         {

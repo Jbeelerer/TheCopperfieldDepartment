@@ -108,7 +108,7 @@ public class OSPointySystem : MonoBehaviour, ISavable
         inspectionOriginalPost = relatedPost;
 
         // Add to list of users with found passwords, if a user password is exposed in this inspection area
-        OSSocialMediaContent socialMediaContent = Object.FindObjectOfType<OSSocialMediaContent>();
+        OSSocialMediaContent socialMediaContent = Object.FindFirstObjectByType<OSSocialMediaContent>();
         if (exposedPasswordUser && !socialMediaContent.GetUsersWithFoundPassword().Contains(exposedPasswordUser))
         {
             socialMediaContent.AddUserWithFoundPassword(exposedPasswordUser);
@@ -248,7 +248,7 @@ public class OSPointySystem : MonoBehaviour, ISavable
             currentTutorial == stepsSocialMediaProfiles && currentStep == 1 ||
             currentTutorial == stepsEvilSocialMedia && currentStep == 4)
         {
-            OSSocialMediaContent socialMediaContent = Object.FindObjectOfType<OSSocialMediaContent>();
+            OSSocialMediaContent socialMediaContent = Object.FindFirstObjectByType<OSSocialMediaContent>();
             socialMediaContent.ResetHomeFeed();
             socialMediaContent.ShowHomeFeed();
             socialMediaContent.EnableFirstPostOptions();

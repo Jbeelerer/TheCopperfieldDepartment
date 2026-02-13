@@ -29,7 +29,7 @@ public class Phone : MonoBehaviour
     void Start()
     {
         phoneHighlight.gameObject.SetActive(false);
-        narration = FindObjectOfType<Narration>();
+        narration = FindFirstObjectByType<Narration>();
         animator = GetComponent<Animator>();
         gm = GameManager.instance;
         am = AudioManager.instance;
@@ -41,7 +41,7 @@ public class Phone : MonoBehaviour
         if (gm.GetAnswerCommited() && gm.GetDay() == 1)
         {
             Ring("exit");
-            GameObject.FindObjectOfType<InputOverlay>().SetCustomInteractions("leavePC");
+            FindFirstObjectByType<InputOverlay>().SetCustomInteractions("leavePC");
             gm.InvestigationStateChanged.RemoveListener(ExitTutorial);
         }
     }

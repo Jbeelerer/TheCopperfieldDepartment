@@ -17,7 +17,7 @@ public class PauseMenu : MonoBehaviour
 
     void Start()
     {
-        fpsController = FindObjectOfType<FPSController>();
+        fpsController = FindFirstObjectByType<FPSController>();
         gm = GameManager.instance;
         am = AudioManager.instance;
         settings = GetComponentInChildren<SettingsMenu>(true);

@@ -101,7 +101,7 @@ public class SettingsMenu : MonoBehaviour
 
     public void ApplyGameSettings()
     {
-        FPSController fpsController = FindObjectOfType<FPSController>();
+        FPSController fpsController = FindFirstObjectByType<FPSController>();
         if (fpsController != null)
         {
             fpsController.lookSpeed = lookSensitivitySlider.value / 25;
