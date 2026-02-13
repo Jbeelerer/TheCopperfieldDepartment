@@ -7,7 +7,7 @@ using Unity.VisualScripting;
 using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.Events;
 using System;
-using Cinemachine;
+using Unity.Cinemachine;
 using SaveSystem;
 using UnityEngine.SceneManagement;
 
@@ -157,7 +157,7 @@ public class FPSController : MonoBehaviour
         #region Look at things
         if (hasHitSomething && !onHoldDown && gm.GetGameState() == GameState.Playing)
         {
-            print(nameOfThingLookedAt);
+            //print(nameOfThingLookedAt);
             if (Vector3.Distance(hit.collider.gameObject.transform.position, transform.position) <= interactionReach || selectedPinboardElement != null || currentThread != null)
             {
                 string tempName = hit.collider.gameObject.name;

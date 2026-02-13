@@ -31,7 +31,7 @@ public class Grabbable : MonoBehaviour
         gameObject.layer = 0;
         isGrabbed = false;
         rb.isKinematic = false;
-        rb.velocity = Vector3.zero;
+        rb.linearVelocity = Vector3.zero;
         rb.AddForce(direction * 1000);
     }
     // Start is called before the first frame update

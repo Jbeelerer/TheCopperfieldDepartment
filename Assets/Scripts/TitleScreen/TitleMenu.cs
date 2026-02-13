@@ -1,4 +1,4 @@
-using Cinemachine;
+using Unity.Cinemachine;
 using SaveSystem;
 using System.Collections;
 using System.Collections.Generic;
@@ -28,11 +28,11 @@ public class TitleMenu : MonoBehaviour
     [SerializeField] private Button continueButton;
     [SerializeField] private Animator doorAnim;
     [SerializeField] private CinemachineBrain cinemachineBrain;
-    [SerializeField] private CinemachineVirtualCamera doorCam;
-    [SerializeField] private CinemachineVirtualCamera pinboardMainCam;
-    [SerializeField] private CinemachineVirtualCamera newGameCam;
-    [SerializeField] private CinemachineVirtualCamera settingsCam;
-    [SerializeField] private CinemachineVirtualCamera continueCam;
+    [SerializeField] private CinemachineCamera doorCam;
+    [SerializeField] private CinemachineCamera pinboardMainCam;
+    [SerializeField] private CinemachineCamera newGameCam;
+    [SerializeField] private CinemachineCamera settingsCam;
+    [SerializeField] private CinemachineCamera continueCam;
     [SerializeField] private AudioMixer bgmMixer;
     [SerializeField] private AudioClip doorCreakSound;
     [SerializeField] private AudioClip doorOpenSound;
@@ -43,7 +43,7 @@ public class TitleMenu : MonoBehaviour
 
     private Animator anim;
     private AudioManager audioManager;
-    private List<CinemachineVirtualCamera> cameras;
+    private List<CinemachineCamera> cameras;
     private bool startNewGame = false;
     private bool logosShown = false;
     private bool doorOpened = false;
@@ -68,11 +68,11 @@ public class TitleMenu : MonoBehaviour
 
         mousePrompt.SetActive(false);
 
-        cameras = new List<CinemachineVirtualCamera>() { doorCam, pinboardMainCam, newGameCam, settingsCam, continueCam };
+        cameras = new List<CinemachineCamera>() { doorCam, pinboardMainCam, newGameCam, settingsCam, continueCam };
 
         if (!SaveManager.instance.GetSaveExists()) continueGameButton.SetActive(false);
 
-        cinemachineBrain.m_DefaultBlend.m_Time = 2f;
+        cinemachineBrain.DefaultBlend.Time = 2f;
     }
 
 
@@ -111,7 +111,7 @@ public class TitleMenu : MonoBehaviour
 
     private void SelectOption(TitleOption option)
     {
-        cinemachineBrain.m_DefaultBlend.m_Time = 0.3f;
+        cinemachineBrain.DefaultBlend.Time = 0.3f;
         switch (option)
         {
             case TitleOption.QUIT:
@@ -134,7 +134,7 @@ public class TitleMenu : MonoBehaviour
                 break;
             case TitleOption.CONTINUE:
                 PlayStartAnimation();
-                cinemachineBrain.m_DefaultBlend.m_Time = 2f;
+                cinemachineBrain.DefaultBlend.Time = 2f;
                 SetCamPriority(continueCam);
                 break;
             case TitleOption.NEW_GAME:
@@ -150,7 +150,7 @@ public class TitleMenu : MonoBehaviour
         }
     }
 
-    private void SetCamPriority(CinemachineVirtualCamera cam)
+    private void SetCamPriority(CinemachineCamera cam)
     {
         cameras.ForEach(c => c.Priority = 0);
         cam.Priority = 1;
