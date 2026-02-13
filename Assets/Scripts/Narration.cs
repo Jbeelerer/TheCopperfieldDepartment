@@ -146,21 +146,26 @@ public class Narration : MonoBehaviour
     {
         return transitionRunning;
     }
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         gm = GameManager.instance;
         am = AudioManager.instance;
-        gm.SetNarration(this);
+        gm.SetNarration(this);  
         audioSource = GetComponent<AudioSource>();
         audioSource.outputAudioMixerGroup = voiceMixerGroup;
         subtitleText = GameObject.Find("Subtitle").GetComponent<TextMeshProUGUI>();
         textAnimator = subtitleText.GetComponent<Animator>();
 
         blackScreen = GameObject.Find("BlackScreen");
+        blackScreen.transform.parent.GetComponent<Animator>().Play("BlackScreen", 0, 0f); 
+        blackScreen.transform.parent.GetComponent<Animator>().Update(0f);
 
         timedSubtitles = JsonUtility.FromJson<TimedSubtitles>(jsonFile.text);
         shortSubtitles = JsonUtility.FromJson<ShortSubtitles>(shortSubtitlesJsonFile.text);
+    }
+    // Start is called before the first frame update
+    void Start()
+    {
 
         StartCoroutine(CheckIntroSequence());
     }
@@ -315,37 +320,37 @@ public class Narration : MonoBehaviour
                 duration = shortSubtitles.suspectFound.duration;
                 break;
             case "phoneNotWorking":
-                audioSource.clip = phoneNotWorkingClip;
+                audioSource.clip = negativeFeedbackVoice;
                 subtitleText.text = shortSubtitles.phoneNotWorking.text;
                 duration = shortSubtitles.phoneNotWorking.duration;
                 break;
             case "blocked":
-                audioSource.clip = null;
+                audioSource.clip = positiveFeedbackVoice;
                 subtitleText.text = shortSubtitles.blocked.text;
                 duration = shortSubtitles.phoneNotWorking.duration;
                 break;
             case "phoneCallIntro_replay":
-                audioSource.clip = null;
+                audioSource.clip = positiveFeedbackVoice;
                 subtitleText.text = shortSubtitles.phoneCallIntro_replay.text;
                 duration = shortSubtitles.phoneCallIntro_replay.duration;
                 break;
             case "phoneReminderNothingAdded_replay":
-                audioSource.clip = null;
+                audioSource.clip = positiveFeedbackVoice;
                 subtitleText.text = shortSubtitles.phoneReminderNothingAdded_replay.text;
                 duration = shortSubtitles.phoneReminderNothingAdded_replay.duration;
                 break;
             case "phoneReminderPersonNotAdded_replay":
-                audioSource.clip = null;
+                audioSource.clip = positiveFeedbackVoice;
                 subtitleText.text = shortSubtitles.phoneReminderPersonNotAdded_replay.text;
                 duration = shortSubtitles.phoneReminderPersonNotAdded_replay.duration;
                 break;
             case "phoneReminderPostNotAdded_replay":
-                audioSource.clip = null;
+                audioSource.clip = positiveFeedbackVoice;
                 subtitleText.text = shortSubtitles.phoneReminderPostNotAdded_replay.text;
                 duration = shortSubtitles.phoneReminderPostNotAdded_replay.duration;
                 break;
             case "exit_replay":
-                audioSource.clip = null;
+                audioSource.clip = notLeavingVoice;
                 subtitleText.text = shortSubtitles.exit_replay.text;
                 duration = shortSubtitles.exit_replay.duration;
                 break;
