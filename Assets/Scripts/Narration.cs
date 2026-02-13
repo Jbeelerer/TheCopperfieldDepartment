@@ -149,7 +149,6 @@ public class Narration : MonoBehaviour
     void Awake()
     {
         gm = GameManager.instance;
-        am = AudioManager.instance;
         gm.SetNarration(this);  
         audioSource = GetComponent<AudioSource>();
         audioSource.outputAudioMixerGroup = voiceMixerGroup;
@@ -166,7 +165,7 @@ public class Narration : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        am = AudioManager.instance;
         StartCoroutine(CheckIntroSequence());
     }
     public IEnumerator CheckIntroSequence()
