@@ -148,7 +148,11 @@ public class Narration : MonoBehaviour
     }
     void Awake()
     {
-        gm = GameManager.instance;
+      
+    }
+    // Start is called before the first frame update
+    void Start()
+    {  gm = GameManager.instance;
         gm.SetNarration(this);  
         audioSource = GetComponent<AudioSource>();
         audioSource.outputAudioMixerGroup = voiceMixerGroup;
@@ -161,10 +165,6 @@ public class Narration : MonoBehaviour
 
         timedSubtitles = JsonUtility.FromJson<TimedSubtitles>(jsonFile.text);
         shortSubtitles = JsonUtility.FromJson<ShortSubtitles>(shortSubtitlesJsonFile.text);
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
         am = AudioManager.instance;
         StartCoroutine(CheckIntroSequence());
     }
