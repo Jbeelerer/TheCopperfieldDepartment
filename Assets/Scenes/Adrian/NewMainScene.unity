@@ -430,7 +430,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &29061359
 Transform:
   m_ObjectHideFlags: 0
@@ -3212,43 +3212,6 @@ RectTransform:
   m_AnchoredPosition: {x: 146.906, y: -47.327698}
   m_SizeDelta: {x: 293.812, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!84 &400120650
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Blur Render Texture
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 6
-  m_Width: 28
-  m_Height: 16
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 90
-  m_ColorFormat: 12
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_UseDynamicScaleExplicit: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_EnableRandomWrite: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!1001 &441683637
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9256,6 +9219,7 @@ GameObject:
   - component: {fileID: 1214831713}
   - component: {fileID: 1214831712}
   - component: {fileID: 1214831711}
+  - component: {fileID: 1214831714}
   m_Layer: 0
   m_Name: Spot Light
   m_TagString: Untagged
@@ -9302,11 +9266,11 @@ Light:
   m_Enabled: 1
   serializedVersion: 12
   m_Type: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.85503006, b: 0.5424528, a: 1}
   m_Intensity: 27.4
-  m_Range: 10
-  m_SpotAngle: 78.07674
-  m_InnerSpotAngle: 54.425583
+  m_Range: 16.596258
+  m_SpotAngle: 133.55542
+  m_InnerSpotAngle: 101.435684
   m_CookieSize2D: {x: 0.5, y: 0.5}
   m_Shadows:
     m_Type: 0
@@ -9372,6 +9336,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!114 &1214831714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1214831710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c8bca95f7c947b4db5fb152a0d693d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: com.cqf.urpvolumetricfog.runtime::VolumetricAdditionalLight
+  anisotropy: 0.25
+  scattering: 1
+  radius: 0.2
 --- !u!1 &1221147885
 GameObject:
   m_ObjectHideFlags: 0
@@ -10612,9 +10591,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 913da6667c58a2545ad804ce8a087a69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RenderTextureManager
-  renderTexture: {fileID: 400120650}
+  renderTexture: {fileID: 2009709122}
   customRenderTexture: {fileID: 0}
-  aspectResolution: {x: 28, y: 16}
+  aspectResolution: {x: 25, y: 11}
   isCustomRenderTexture: 0
   downsampleLevel: 32
   widthScale: 1
@@ -13243,8 +13222,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4e4b5b3996032e4681cda701e89f62f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VolumetricFogControllerStandalone
-  material: {fileID: 2100000, guid: fedf334cf2cc1b44d9ae7b524decb528, type: 2}
-  additionalLightCountBase: 0
 --- !u!4 &1714994737
 Transform:
   m_ObjectHideFlags: 0
@@ -15415,7 +15392,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1932660258
 Transform:
   m_ObjectHideFlags: 0
@@ -15584,6 +15561,43 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2003788578}
   m_CullTransparentMesh: 1
+--- !u!84 &2009709122
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Blur Render Texture
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 6
+  m_Width: 25
+  m_Height: 11
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 90
+  m_ColorFormat: 12
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_UseDynamicScaleExplicit: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_EnableRandomWrite: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!43 &2037757866
 Mesh:
   m_ObjectHideFlags: 0
