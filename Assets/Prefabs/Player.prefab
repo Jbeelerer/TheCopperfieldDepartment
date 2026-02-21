@@ -455,7 +455,7 @@ Transform:
   m_GameObject: {fileID: 1933093137628417923}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.0610001, z: 0}
+  m_LocalPosition: {x: 0, y: 0.89999986, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -550,7 +550,7 @@ MonoBehaviour:
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 1
-  m_Antialiasing: 0
+  m_Antialiasing: 1
   m_AntialiasingQuality: 2
   m_StopNaN: 0
   m_Dithering: 0
@@ -1478,7 +1478,7 @@ MonoBehaviour:
   userInfoBG: {fileID: 21300000, guid: fd615f15997f344e0838aaa37a54f062, type: 3}
   personInfoBG: {fileID: 21300000, guid: d3cba91b1a40f445fabbec8ea6ace5b9, type: 3}
   postContentInfoBG: {fileID: 21300000, guid: 0ca07c2afe20444599d6b360e517ca0c, type: 3}
-  paperBG: {fileID: 0}
+  paperBG: {fileID: 21300000, guid: 092153af79f5448d6acf82e590205c3f, type: 3}
   userInfo: {fileID: 1914209336139854985}
   userImage: {fileID: 7882742306407854186}
   userName: {fileID: 8296669543617224421}
@@ -2482,7 +2482,7 @@ Transform:
   m_GameObject: {fileID: 7205412600146749728}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.061, z: 0}
+  m_LocalPosition: {x: 0, y: 0.9, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2794,13 +2794,13 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 4.3
-  m_Radius: 1.9
+  m_Height: 2
+  m_Radius: 1.6
   m_SlopeLimit: 1
   m_StepOffset: 0
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: -1.5, z: 0}
+  m_Center: {x: 0, y: -1.8, z: 0}
 --- !u!1 &8452850267931029332
 GameObject:
   m_ObjectHideFlags: 0
@@ -2985,17 +2985,17 @@ MonoBehaviour:
     type: 3}
   deletePostVoice: {fileID: 8300000, guid: 6784f2fb3686b43aca4797777aa3f1f7, type: 3}
   suspectFoundVoice: {fileID: 8300000, guid: 50b8887145d0e4b34b303167fcf31335, type: 3}
-  introClip: {fileID: 8300000, guid: 38a6c4a3e387042b4818bba15edb12ad, type: 3}
-  firstDayFeedbackPositiveClip: {fileID: 8300000, guid: ee99f9b5ee5ac4141a8000cdf60b56d0,
+  introClip: {fileID: 8300000, guid: 8908418eb122d4550899293546ec82fb, type: 3}
+  firstDayFeedbackPositiveClip: {fileID: 8300000, guid: 08c996b2884974085a9c3ba0fbd31a6a,
     type: 3}
-  firstDayFeedbackNegativeClip: {fileID: 8300000, guid: c45523c74bc244d14827c96e8d30f09a,
+  firstDayFeedbackNegativeClip: {fileID: 8300000, guid: 08c996b2884974085a9c3ba0fbd31a6a,
     type: 3}
-  exit: {fileID: 8300000, guid: 0e31ca81c859d477ab86ed02cc6d2708, type: 3}
-  phoneCallIntroClip: {fileID: 8300000, guid: 68893926aa2d24b4199f359688a35513, type: 3}
-  phoneCallNothingAddedClip: {fileID: 8300000, guid: ef9b4b71fe0bc4b4b9e19b8f3072bafb,
+  exit: {fileID: 8300000, guid: 08c996b2884974085a9c3ba0fbd31a6a, type: 3}
+  phoneCallIntroClip: {fileID: 8300000, guid: 08c996b2884974085a9c3ba0fbd31a6a, type: 3}
+  phoneCallNothingAddedClip: {fileID: 8300000, guid: 08c996b2884974085a9c3ba0fbd31a6a,
     type: 3}
-  phoneCallNoPostClip: {fileID: 8300000, guid: f37ba46fd512f4eb7814ef5242a49c92, type: 3}
-  phoneCallNoPersonClip: {fileID: 8300000, guid: 167b78d1c25a648d995180e2100ec24e,
+  phoneCallNoPostClip: {fileID: 8300000, guid: 08c996b2884974085a9c3ba0fbd31a6a, type: 3}
+  phoneCallNoPersonClip: {fileID: 8300000, guid: 08c996b2884974085a9c3ba0fbd31a6a,
     type: 3}
   phoneNotWorkingClip: {fileID: 8300000, guid: efa47acc4b1ab4c0ab8bbadca6cd585f, type: 3}
   jsonFile: {fileID: 4900000, guid: f1f0f4d9689774c90b8366c1185a526a, type: 3}
@@ -3256,7 +3256,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1457563436364695163
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3972,6 +3972,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9736170664457546, guid: a9439a789a58b47ae89076e09c23c8f8, type: 3}
       propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 61929570008726599, guid: a9439a789a58b47ae89076e09c23c8f8,
+        type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 94382045998982436, guid: a9439a789a58b47ae89076e09c23c8f8,
@@ -4870,6 +4875,21 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7016608360497266142, guid: a9439a789a58b47ae89076e09c23c8f8,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -522.7794
+      objectReference: {fileID: 0}
+    - target: {fileID: 7016608360497266142, guid: a9439a789a58b47ae89076e09c23c8f8,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 67.486694
+      objectReference: {fileID: 0}
+    - target: {fileID: 7016608360497266142, guid: a9439a789a58b47ae89076e09c23c8f8,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 257.7855
+      objectReference: {fileID: 0}
     - target: {fileID: 7043685235891863566, guid: a9439a789a58b47ae89076e09c23c8f8,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -5029,6 +5049,11 @@ PrefabInstance:
     - target: {fileID: 8084498948246484235, guid: a9439a789a58b47ae89076e09c23c8f8,
         type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8265974900057665701, guid: a9439a789a58b47ae89076e09c23c8f8,
+        type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8270736105992409126, guid: a9439a789a58b47ae89076e09c23c8f8,
@@ -5256,7 +5281,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 901411c5eb1a4f0d8ba5775068f86fd2,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.91
+      value: -2.71
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 901411c5eb1a4f0d8ba5775068f86fd2,
         type: 3}
