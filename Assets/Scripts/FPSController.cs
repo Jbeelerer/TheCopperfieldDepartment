@@ -699,7 +699,7 @@ public class FPSController : MonoBehaviour
                                 case "Door":
                                     if (requirementMet)
                                     {
-                                        if (gm.GetAnswerCommited() && !FindObjectOfType<Phone>().GetIsRinging())
+                                        if (gm.GetAnswerCommited() && !FindFirstObjectByType<Phone>().GetIsRinging())
                                         {
                                             gm.SetGameState(GameState.Frozen);
                                             StartCoroutine(EndDay());
@@ -976,9 +976,10 @@ public class FPSController : MonoBehaviour
     {
         am.PlayAudio(doorOpenSound);
         yield return narration.BlackScreenEnumerator(true);
+
         //yield return new WaitForSeconds(0.5f);
         inputOverlay.SetIcon("none");
-        gm.setNewDay();
+        gm.setNewDay();  
         ResetPlayer();
     }
 

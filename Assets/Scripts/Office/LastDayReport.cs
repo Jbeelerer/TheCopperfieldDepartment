@@ -45,6 +45,14 @@ public class LastDayReport : MonoBehaviour
       
 
     }
+    void Update()
+    {
+      //on click
+        if (Input.GetMouseButtonDown(0))
+        {
+            Next();
+        }  
+    }
     private IEnumerator CaptureRectTransform(RectTransform rt)
 {
       

@@ -700,21 +700,19 @@ public class GameManager : MonoBehaviour, ISavable
     {
         if (day != 1)
         {
-            print("cool");
             StartCoroutine(DayIntroCoroutine(delay));
         }
         else
         {
-            print("cringe");
              SetGameState(GameState.Playing);
         }
     } 
     public IEnumerator DayIntroCoroutine(float delay = 0)
     {
-        while (GameObject.Find("Virtual Camera") == null)
+        while (GameObject.Find("Virtual Camera") == null || narration == null)
         { 
-        print("looking For cam ");
-            yield return new WaitForSeconds(0.1f);
+        print("looking For cam and narration");
+            yield return new WaitForSeconds(0.1f); 
         } 
         StartCoroutine(narration.BlackScreenEnumerator(false));;
         //yield return new WaitForSeconds(0.1f);
