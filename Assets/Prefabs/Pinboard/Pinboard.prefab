@@ -236,7 +236,7 @@ GameObject:
   - component: {fileID: 8929699215835937241}
   - component: {fileID: 4773414295824314924}
   - component: {fileID: 8269233619334063450}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Block
   m_TagString: Interactable
   m_Icon: {fileID: 0}
@@ -437,7 +437,6 @@ GameObject:
   - component: {fileID: 661705079242875445}
   - component: {fileID: 437799945907639983}
   - component: {fileID: 5591699964874105009}
-  - component: {fileID: 3770276910780053542}
   m_Layer: 0
   m_Name: Spot Light (5)
   m_TagString: Untagged
@@ -554,21 +553,6 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
---- !u!114 &3770276910780053542
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2581937624549260165}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c8bca95f7c947b4db5fb152a0d693d8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: com.cqf.urpvolumetricfog.runtime::VolumetricAdditionalLight
-  anisotropy: -0.12
-  scattering: 4.52
-  radius: 0.203
 --- !u!1 &3057371852242697137
 GameObject:
   m_ObjectHideFlags: 0
@@ -876,7 +860,7 @@ Light:
   m_RenderMode: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 576
+    m_Bits: 832
   m_RenderingLayerMask: 1
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
@@ -971,7 +955,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ebcc1d22b5f3492b9abf093af99caf0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  contradictionColor: {r: 0, g: 0, b: 0, a: 0}
+  contradictionColor: {r: 0.6037736, g: 0.19651122, b: 0.19651122, a: 1}
   pinPrefab: {fileID: 651466678983338118, guid: 8352b3e1b767d4116b0f6745bae17d75,
     type: 3}
   thread: {fileID: 7481887188306005012, guid: dc842142f09c3464898e8bf3385462ee, type: 3}
@@ -1363,7 +1347,7 @@ Light:
   m_RenderMode: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 576
+    m_Bits: 832
   m_RenderingLayerMask: 1
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
@@ -1420,7 +1404,6 @@ GameObject:
   - component: {fileID: 5425326880763438333}
   - component: {fileID: 829223056702857756}
   - component: {fileID: 1734714965439287906}
-  - component: {fileID: 6721986228420174216}
   m_Layer: 0
   m_Name: Spot Light (4)
   m_TagString: Untagged
@@ -1537,21 +1520,6 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
---- !u!114 &6721986228420174216
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7883850963465323586}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c8bca95f7c947b4db5fb152a0d693d8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: com.cqf.urpvolumetricfog.runtime::VolumetricAdditionalLight
-  anisotropy: -0.12
-  scattering: 4.52
-  radius: 0.203
 --- !u!1 &7975059821111354246
 GameObject:
   m_ObjectHideFlags: 0
@@ -1563,7 +1531,6 @@ GameObject:
   - component: {fileID: 1848598385944712266}
   - component: {fileID: 605187814779634821}
   - component: {fileID: 6306223332827201547}
-  - component: {fileID: 6425783144086023014}
   m_Layer: 0
   m_Name: Spot Light (6)
   m_TagString: Untagged
@@ -1680,18 +1647,3 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
---- !u!114 &6425783144086023014
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7975059821111354246}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c8bca95f7c947b4db5fb152a0d693d8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: com.cqf.urpvolumetricfog.runtime::VolumetricAdditionalLight
-  anisotropy: -0.12
-  scattering: 4.52
-  radius: 0.203
