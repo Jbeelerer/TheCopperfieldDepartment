@@ -10,8 +10,8 @@ public class OSPopupManager : MonoBehaviour
     private Animator anim;
     private TextMeshProUGUI messageText;
     private ComputerControls computerControls;
+    private float timeOfLastMessage = 0f;
 
-    // Start is called before the first frame update
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -19,87 +19,38 @@ public class OSPopupManager : MonoBehaviour
         computerControls = GetComponentInParent<ComputerControls>();
     }
 
-    public void DisplayPostPinMessage()
-    {
-        messageText.text = "Post added to pinboard!";
-        anim.Play("popupMessageSpawn", -1, 0);
-        computerControls.audioManager.PlayAudio(notificationSound);
-    }
+    public void DisplayPostPinMessage()=> DisplayMessage("Post added to pinboard!");
 
-    public void DisplayUserPinMessage()
-    {
-        messageText.text = "User added to pinboard!";
-        anim.Play("popupMessageSpawn", -1, 0);
-        computerControls.audioManager.PlayAudio(notificationSound);
-    }
+    public void DisplayUserPinMessage() => DisplayMessage("User added to pinboard!");
 
-    public void DisplayPersonPinMessage()
-    {
-        messageText.text = "Person added to pinboard!";
-        anim.Play("popupMessageSpawn", -1, 0);
-        computerControls.audioManager.PlayAudio(notificationSound);
-    }
+    public void DisplayPersonPinMessage() => DisplayMessage("Person added to pinboard!");
 
-    public void DisplayPostUnpinMessage()
-    {
-        messageText.text = "Removed Post Pin";
-        anim.Play("popupMessageSpawn", -1, 0);
-        computerControls.audioManager.PlayAudio(notificationSound);
-    }
+    public void DisplayPostUnpinMessage() => DisplayMessage("Removed Post Pin");
 
-    public void DisplayUserUnpinMessage()
-    {
-        messageText.text = "Removed User Pin";
-        anim.Play("popupMessageSpawn", -1, 0);
-        computerControls.audioManager.PlayAudio(notificationSound);
-    }
+    public void DisplayUserUnpinMessage() => DisplayMessage("Removed User Pin");
 
-    public void DisplayPersonUnpinMessage()
-    {
-        messageText.text = "Removed Person Pin";
-        anim.Play("popupMessageSpawn", -1, 0);
-        computerControls.audioManager.PlayAudio(notificationSound);
-    }
+    public void DisplayPersonUnpinMessage() => DisplayMessage("Removed Person Pin");
 
-    public void DisplayPersonAccusedMessage()
-    {
-        messageText.text = "Marked person as prime suspect!";
-        anim.Play("popupMessageSpawn", -1, 0);
-        computerControls.audioManager.PlayAudio(notificationSound);
-    }
+    public void DisplayPersonAccusedMessage() => DisplayMessage("Marked person as prime suspect!");
 
-    public void DisplayPersonUnaccusedMessage()
-    {
-        messageText.text = "Removed accusation";
-        anim.Play("popupMessageSpawn", -1, 0);
-        computerControls.audioManager.PlayAudio(notificationSound);
-    }
+    public void DisplayPersonUnaccusedMessage() => DisplayMessage("Removed accusation");
 
-    public void DisplayPostDeleteMessage()
-    {
-        messageText.text = "Post flagged for deletion!";
-        anim.Play("popupMessageSpawn", -1, 0);
-        computerControls.audioManager.PlayAudio(notificationSound);
-    }
+    public void DisplayPostDeleteMessage() => DisplayMessage("Post flagged for deletion!");
 
-    public void DisplayPostUndeleteMessage()
-    {
-        messageText.text = "Deletion reverted.";
-        anim.Play("popupMessageSpawn", -1, 0);
-        computerControls.audioManager.PlayAudio(notificationSound);
-    }
+    public void DisplayPostUndeleteMessage() => DisplayMessage("Deletion reverted.");
 
-    public void DisplayAccountLoginMessage()
-    {
-        messageText.text = "Login successful!";
-        anim.Play("popupMessageSpawn", -1, 0);
-        computerControls.audioManager.PlayAudio(notificationSound);
-    }
+    public void DisplayAccountLoginMessage() => DisplayMessage("Login successful!");
 
-    public void DisplayPasswordFoundMessage()
+    public void DisplayPasswordFoundMessage() => DisplayMessage("New password stored!");
+
+    private void DisplayMessage(string msg)
     {
-        messageText.text = "New password stored!";
+        messageText.text = msg;
         anim.Play("popupMessageSpawn", -1, 0);
-        computerControls.audioManager.PlayAudio(notificationSound);
+        if (Time.time - timeOfLastMessage > 0.2f)
+        {
+            computerControls.audioManager.PlayAudio(notificationSound);
+        }
+        timeOfLastMessage = Time.time;
     }
 }

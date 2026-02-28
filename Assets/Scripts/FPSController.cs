@@ -864,7 +864,7 @@ public class FPSController : MonoBehaviour
                 }
             }
 
-            if (am.IsPlaying(chairRollSound))
+            if (am.IsPlayingRepeated(chairRollSound))
                 am.StopAudioRepeating(chairRollSound, 0.3f);
         }
     }

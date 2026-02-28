@@ -132,17 +132,9 @@ public class AudioManager : MonoBehaviour
         Destroy(source);
     }
 
-    public bool IsPlaying(AudioClip audioClip)
+    public bool IsPlayingRepeated(AudioClip audioClip)
     {
-        foreach (AudioSource source in repeatingAudioSources)
-        {
-            if (source.clip == audioClip)
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return repeatingAudioSources.Exists(source => source.clip == audioClip);
     }
 
     private AudioSource CreateNewSfxSource(GameObject parent = null)
