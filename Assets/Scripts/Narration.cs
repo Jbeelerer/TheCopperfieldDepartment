@@ -511,16 +511,22 @@ public class Narration : MonoBehaviour
                     {
                         continue;
                     }
-                    if (entry.duration + totalTime < audioSource.clip.length)
+                    if (totalTime < audioSource.clip.length)
                     {
                         audioSource.Stop();
                         audioSource.time = totalTime;
                         audioSource.Play();
+                    print("playying!!");
                     }
                     else
                     {
                         audioSource.Stop();
+                    print("jover!");
+                    print(entry.duration + totalTime);
+                    print("jover!");
+                    print(audioSource.clip.length);
                     }
+                    print("timer"+totalTime);
                     textAnimator.Play("skip");
                 }
                 isTalking = false;
