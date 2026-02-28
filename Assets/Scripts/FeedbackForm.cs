@@ -1,5 +1,6 @@
 using System.Collections;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
@@ -16,7 +17,8 @@ public class FeedbackForm : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+         Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
     }
 
     // Update is called once per frame
