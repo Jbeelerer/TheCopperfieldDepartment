@@ -2887,6 +2887,10 @@ GameObject:
   - component: {fileID: 5723428296174651718}
   - component: {fileID: 8469155976466149539}
   - component: {fileID: 3238816876298933322}
+  - component: {fileID: 2570482926698751635}
+  - component: {fileID: 1775952181461334646}
+  - component: {fileID: 8573714053814808907}
+  - component: {fileID: 2501035589611457997}
   m_Layer: 0
   m_Name: Narration
   m_TagString: Untagged
@@ -2991,6 +2995,10 @@ MonoBehaviour:
   firstDayFeedbackNegativeClip: {fileID: 8300000, guid: 08c996b2884974085a9c3ba0fbd31a6a,
     type: 3}
   exit: {fileID: 8300000, guid: 08c996b2884974085a9c3ba0fbd31a6a, type: 3}
+  distortionFilter: {fileID: 8573714053814808907}
+  highPassFilter: {fileID: 1775952181461334646}
+  echoFilter: {fileID: 2570482926698751635}
+  chorusFilter: {fileID: 2501035589611457997}
   phoneCallIntroClip: {fileID: 8300000, guid: 08c996b2884974085a9c3ba0fbd31a6a, type: 3}
   phoneCallNothingAddedClip: {fileID: 8300000, guid: 08c996b2884974085a9c3ba0fbd31a6a,
     type: 3}
@@ -3101,6 +3109,53 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!168 &2570482926698751635
+AudioEchoFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8485067078353525086}
+  m_Enabled: 0
+  serializedVersion: 2
+  m_Delay: 10
+  m_DecayRatio: 0.01
+  m_WetMix: 1
+  m_DryMix: 1
+--- !u!165 &1775952181461334646
+AudioHighPassFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8485067078353525086}
+  m_Enabled: 0
+  m_CutoffFrequency: 5000
+  m_HighpassResonanceQ: 1
+--- !u!170 &8573714053814808907
+AudioDistortionFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8485067078353525086}
+  m_Enabled: 0
+  m_DistortionLevel: 0.5
+--- !u!166 &2501035589611457997
+AudioChorusFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8485067078353525086}
+  m_Enabled: 0
+  m_DryMix: 0.5
+  m_WetMix1: 0.5
+  m_WetMix2: 0.5
+  m_WetMix3: 0.5
+  m_Delay: 40
+  m_Rate: 0.8
+  m_Depth: 0.03
 --- !u!1 &8614290423648280337
 GameObject:
   m_ObjectHideFlags: 0

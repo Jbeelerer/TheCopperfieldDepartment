@@ -92,6 +92,13 @@ public class Narration : MonoBehaviour
     [SerializeField] private AudioClip firstDayFeedbackPositiveClip;
     [SerializeField] private AudioClip firstDayFeedbackNegativeClip;
     [SerializeField] private AudioClip exit;
+    [SerializeField] private AudioDistortionFilter distortionFilter;
+    [SerializeField] private AudioHighPassFilter highPassFilter;
+    [SerializeField] private AudioEchoFilter echoFilter;
+    [SerializeField] private AudioChorusFilter chorusFilter;
+
+    
+
 
     [SerializeField] private AudioClip phoneCallIntroClip;
 
@@ -204,32 +211,56 @@ public class Narration : MonoBehaviour
         switch (sequence)
         {
             case "firstDayFeedbackPositive":
+            OnPhoneState(false);
                 currentCall = PlaySequence(timedSubtitles.firstDayFeedbackPositive, firstDayFeedbackPositiveClip);
                 break;
             case "firstDayFeedbackNegative":
+            OnPhoneState(false);
                 currentCall = PlaySequence(timedSubtitles.firstDayFeedbackNegative, firstDayFeedbackNegativeClip);
                 break;
             case "exit":
+            OnPhoneState(true);
                 currentCall = PlaySequence(timedSubtitles.exit, exit, false);
                 break;
             case "intro":
+            OnPhoneState(false);
                 currentCall = PlaySequence(timedSubtitles.intro, introClip, false, false, true);
                 break;
             case "phoneCallIntro":
+            OnPhoneState(true);
                 gm.PinboardBlocked = false;
                 currentCall = PlaySequence(timedSubtitles.phoneCallIntro, phoneCallIntroClip, false);
                 break;
             case "phoneReminderPostNotAdded":
+            OnPhoneState(true);
                 currentCall = PlaySequence(timedSubtitles.phoneReminderPostNotAdded, phoneCallNoPostClip, false);
                 break;
             case "phoneReminderPersonNotAdded":
+            OnPhoneState(true);
                 currentCall = PlaySequence(timedSubtitles.phoneReminderPersonNotAdded, phoneCallNoPersonClip, false);
                 break;
             case "phoneReminderNothingAdded":
+            OnPhoneState(true);
                 currentCall = PlaySequence(timedSubtitles.phoneReminderNothingAdded, phoneCallNothingAddedClip, false);
                 break;
         }
         StartCoroutine(currentCall);
+    }
+    public void OnPhoneState(bool onPhone){
+        print("on phone "+onPhone);
+        if(onPhone){
+            distortionFilter.enabled = true;
+            highPassFilter.enabled = true;
+            echoFilter.enabled = false;
+            chorusFilter.enabled = false;
+    
+        }
+        else{
+            distortionFilter.enabled = false;
+            highPassFilter.enabled = false;
+            echoFilter.enabled = false;
+            chorusFilter.enabled = true;
+        }
     }
 
     public bool HasRequirement()
