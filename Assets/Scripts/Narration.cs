@@ -631,6 +631,7 @@ public class Narration : MonoBehaviour
         audioSource.Pause();
         currentCall = null;
         animationPlaying = false;
+        OnPhoneState(false);
          
         AudioManager.instance.EndSequenceMix();
     }   
