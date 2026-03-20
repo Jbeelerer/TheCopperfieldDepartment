@@ -36,6 +36,7 @@ public class GameManager : MonoBehaviour, ISavable
     private GameState gameState = GameState.Playing;
     private GameState prevGameState = GameState.Playing;
     [SerializeField] private int day = 1;
+    [SerializeField] private int endDay = 4;
     private int furthestDay = 1;
     private int daySegment = 0;
     private int totalDaySegments = 0;
@@ -513,7 +514,7 @@ public class GameManager : MonoBehaviour, ISavable
     }
     public void reloadIfOver()
     {
-        if (day == 5)//Resources.LoadAll<Case>(dayOrder[day]).Count()
+        if (day == endDay)//Resources.LoadAll<Case>(dayOrder[day]).Count()
         {
             Destroy(GameManager.instance.gameObject);
             // TODO: implement endgame  

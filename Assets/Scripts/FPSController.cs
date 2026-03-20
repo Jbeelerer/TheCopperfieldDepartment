@@ -297,6 +297,11 @@ public class FPSController : MonoBehaviour
                         currentSelectedObject = hit.collider.gameObject;
                     }
                 }
+                else
+                {
+                    currentSelectedObject = null;
+                inputOverlay.ChangeIconIfDifferent("");
+                }
             }
             else if (currentSelectedObject != null && removingTime == -1)
             {
