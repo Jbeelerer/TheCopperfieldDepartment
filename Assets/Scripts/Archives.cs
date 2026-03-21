@@ -65,16 +65,31 @@ public class Archives : MonoBehaviour
         pinboard = GameObject.Find("Pinboard").GetComponent<Pinboard>();
         gm = FindFirstObjectByType<GameManager>();
         gm.StateChanged.AddListener(closeIfInArchive);
-        if(i == 0)
-        {
-            locked.SetActive(true);
-        }
+        print("archivees" + i);
+        StartCoroutine(waitForCaseLoad());
     }
+    private IEnumerator waitForCaseLoad()
+    {
+        while (GameManager.instance.GetCurrentCase() == null)
+        { 
+            yield return new WaitForSeconds(0.1f);
+        }
+        UpdateArchiveAvailability();
+    } 
 
     private void UpdateArchiveAvailability()
     {
-        locked.SetActive(!GameManager.instance.GetCurrentCase().hasArchived);
+        int count = 0;
+        foreach (Transform child in transform)
+        {
+            if (child.gameObject.activeSelf)
+            {
+                count++;
+            }
+        }
+        locked.SetActive(!GameManager.instance.GetCurrentCase().hasArchived && count > 0);
     }
+
     private void closeIfInArchive()
     {
         if (wasInArchvie && gm.GetGameState() == GameState.Playing)
@@ -114,9 +129,9 @@ public class Archives : MonoBehaviour
     // Update is called once per frame
     public void OpenArchiveFile()
     {
+        fileOpen = true;
         anim.SetBool("fileOpen", true);
         currentSelection.openFile();
-        fileOpen = true;
     }
     public void CloseArchiveFile()
     {

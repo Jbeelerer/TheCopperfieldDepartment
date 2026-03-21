@@ -185,7 +185,7 @@ public class Pinboard : MonoBehaviour
         FlaggedPersonPin = pinsOnPinboard[p];
     }
 
-    private void RemoveByScriptableObject(ScriptableObject o)
+    public void RemoveByScriptableObject(ScriptableObject o)
     {
         if (pinsOnPinboard.ContainsKey(o))
         {

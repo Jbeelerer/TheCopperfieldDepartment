@@ -14,6 +14,7 @@ public class ArchiveFile : MonoBehaviour
     [SerializeField] private TMP_Text fileMapTitle;
     [SerializeField] private TMP_Text fileText;
     private bool isPinned = false;
+    private GameObject canvas;
 
     [SerializeField] private GameObject stickout;
 
@@ -98,6 +99,18 @@ public class ArchiveFile : MonoBehaviour
         gm.InspectObject(archive, new Vector3(0, 1f, 2f), GameState.InArchive);
         //   data = d;     
     }
+
+    public void pinDoc()
+    {
+        canvas = GetComponentInChildren<Canvas>().gameObject;
+        canvas.SetActive(false);   
+    }
+    
+    public void unpinDoc()
+    {
+        canvas.SetActive(true);
+    }
+    
 
 
 }

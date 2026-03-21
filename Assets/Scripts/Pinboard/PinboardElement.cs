@@ -584,7 +584,6 @@ public class PinboardElement : MonoBehaviour
                 textElement.text = archive.archivename;
                 elementType = archive.image == null ? PinboardElementType.ArchiveData : PinboardElementType.ArchiveDataWithImage;
                 textElement.text = archive.contentShort;
-                print("ArchiveData: " + elementType + " " + archive.image.texture);
                 if (elementType == PinboardElementType.ArchiveDataWithImage)
                 {
                     print("ArchiveData: " + image + "  " + elementType + " " + archive.image.texture);

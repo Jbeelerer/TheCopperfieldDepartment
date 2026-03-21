@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class ArchiveManager : MonoBehaviour
 {
     private bool inUse = false;
-    private bool fileOpen = false;
-    private ArchiveFile currentSelection;
+    public bool fileOpen = false;
+    public ArchiveFile currentSelection;
 
     private Archives currentArchive;
 
@@ -39,6 +40,7 @@ public class ArchiveManager : MonoBehaviour
         currentArchive = archive;
         currentFile = 0;
         currentSelection = null;
+        fileOpen = false;
     }
     // Start is called before the first frame update
     void Start()
@@ -63,9 +65,11 @@ public class ArchiveManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+            print(gm.GetGameState() );
         //shoot raycast from mouse
         if (gm != null && gm.GetGameState() == GameState.InArchive)
         {
+            print("in archive!!!");
             // scroll through files
             //on any key down
             if (Input.anyKeyDown)
@@ -80,7 +84,7 @@ public class ArchiveManager : MonoBehaviour
                 {
                     currentFile = currentFile - 1 < 0 ? currentArchive.GetArchiveFiles().Count - 1 : currentFile - 1;
                 }
-                isScrolling = Input.GetAxis("Vertical") != 0;
+             //   isScrolling = Input.GetAxis("Vertical") != 0;
 
                 if (isScrolling)
                 {
@@ -118,30 +122,55 @@ public class ArchiveManager : MonoBehaviour
                 }
                 currentArchive.SetCurrentSelection(currentSelection);
             }
+           
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit))
             {
-                if (Input.GetMouseButtonDown(0) && hit.collider.gameObject.name == "PinFile")
+                print(hit.collider.gameObject.name);
+                if (hit.collider.gameObject.tag == "ArchiveFile" && !fileOpen)
+                {
+                    if (currentSelection != hit.collider.gameObject.GetComponent<ArchiveFile>() && !isScrolling)
+                    {
+                        SelectFile(hit.collider.gameObject.GetComponent<ArchiveFile>());
+                    }
+                }
+                else if(currentSelection != null && !fileOpen)
+                {
+                        currentSelection.deselect(); 
+                        currentSelection = null;
+                }
+            
+                if (Input.GetMouseButtonDown(0) && fileOpen && hit.collider.gameObject.name == "PinFile")
                 {
                     if (currentSelection != null)
                     {
+                        if (pinnedFiles.ContainsKey(currentSelection))
+                        {
+                        currentSelection.unpinDoc();
+                        pinboard.RemoveByScriptableObject(currentSelection.GetData());
+                        pinnedFiles.Remove(currentSelection);
+                        return; 
+                        }else{
                         pinboard.AddPin(currentSelection.GetData());
                         pinnedFiles.Add(currentSelection,currentSelection.gameObject);
-                        currentSelection.gameObject.SetActive(false);
+                        currentSelection.pinDoc();
                         StartCoroutine(DelayedClosArchive());
-                        return;
+                        currentSelection = null;
+                        fileOpen = false;
+                        return; }
 
                     }
                 }
             }
             if (Input.GetMouseButtonDown(0) && currentSelection != null && !fileOpen)
             {
-
+                fileOpen = true;
                 currentArchive.OpenArchiveFile();
             }
             else if (Input.GetMouseButtonDown(0) && currentSelection != null && fileOpen)
             {
+                fileOpen = false; 
                 currentArchive.CloseArchiveFile();
             }
 

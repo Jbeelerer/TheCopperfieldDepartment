@@ -10,6 +10,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Rendering;
 using System;
+using System.Security.Cryptography;
 
 
 
@@ -510,6 +511,7 @@ public class GameManager : MonoBehaviour, ISavable
         {
             DayIntro();
         }
+        SetGameState(GameState.Playing);
         calendarLoad = false;
     }
     public void reloadIfOver()
