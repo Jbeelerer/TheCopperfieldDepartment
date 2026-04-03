@@ -25,7 +25,6 @@ public class TitleMenu : MonoBehaviour
 {
     [SerializeField] private GameObject bgmObject;
     [SerializeField] private SettingsMenu settingsMenu;
-    [SerializeField] private Button continueButton;
     [SerializeField] private Animator doorAnim;
     [SerializeField] private CinemachineBrain cinemachineBrain;
     [SerializeField] private CinemachineCamera doorCam;
@@ -40,6 +39,13 @@ public class TitleMenu : MonoBehaviour
     [SerializeField] private AudioClip wooshSound;
     [SerializeField] private GameObject mousePrompt;
     [SerializeField] private GameObject continueGameButton;
+
+    [Header("Options")]
+    [SerializeField] private TitleMenuOption settingsOption;
+    [SerializeField] private TitleMenuOption settingsBackOption;
+    [SerializeField] private TitleMenuOption newGameOption;
+    [SerializeField] private TitleMenuOption newGameConfirmOption;
+    [SerializeField] private TitleMenuOption newGameBackOption;
 
     private Animator anim;
     private AudioManager audioManager;
@@ -63,8 +69,6 @@ public class TitleMenu : MonoBehaviour
 
         var bgmSources = bgmObject.GetComponents<AudioSource>();
         bgmSources[1].PlayDelayed(bgmSources[0].clip.length);
-
-        continueButton.interactable = SaveManager.instance.GetSaveExists();
 
         mousePrompt.SetActive(false);
 
@@ -112,6 +116,7 @@ public class TitleMenu : MonoBehaviour
     private void SelectOption(TitleOption option)
     {
         cinemachineBrain.DefaultBlend.Time = 0.3f;
+        EnableAllOptions();
         switch (option)
         {
             case TitleOption.QUIT:
@@ -139,15 +144,25 @@ public class TitleMenu : MonoBehaviour
                 break;
             case TitleOption.NEW_GAME:
                 SetCamPriority(newGameCam);
+                newGameOption.Disable();
                 break;
             case TitleOption.NEW_GAME_CONFIRM:
                 startNewGame = true;
                 PlayStartAnimation();
                 break;
             case TitleOption.BACK:
-                SetCamPriority(pinboardMainCam);
+                FocusPinboardMiddle();
                 break;
         }
+    }
+
+    private void EnableAllOptions()
+    {
+        settingsOption.Enable();
+        settingsBackOption.Enable();
+        newGameOption.Enable();
+        newGameConfirmOption.Enable();
+        newGameBackOption.Enable();
     }
 
     private void SetCamPriority(CinemachineCamera cam)
@@ -198,7 +213,7 @@ public class TitleMenu : MonoBehaviour
     {
         doorAnim.Play("DoorOpen");
         StartCoroutine(LowPassFadeOut());
-        SetCamPriority(pinboardMainCam);
+        FocusPinboardMiddle();
         audioManager.PlayAudio(doorCreakSound);
         audioManager.PlayAudio(doorOpenSound, 0.8f);
         HideMousePrompt();
@@ -254,12 +269,22 @@ public class TitleMenu : MonoBehaviour
     private void OpenSettings()
     {
         SetCamPriority(settingsCam);
+        settingsOption.Disable();
     }
 
     private void CloseSettings()
     {
-        SetCamPriority(pinboardMainCam);
+        FocusPinboardMiddle();
         settingsMenu.ApplySoundSettings();
         audioManager.UpdateMixerValue("SFX Volume", settingsMenu.sfxVolume);
+    }
+
+    private void FocusPinboardMiddle()
+    {
+        SetCamPriority(pinboardMainCam);
+        EnableAllOptions();
+        settingsBackOption.Disable();
+        newGameBackOption.Disable();
+        newGameConfirmOption.Disable();
     }
 }

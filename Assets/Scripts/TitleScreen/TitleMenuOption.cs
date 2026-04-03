@@ -15,4 +15,14 @@ public class TitleMenuOption : MonoBehaviour
     {
         GetComponent<Animator>().SetBool("Hovering", false);
     }
+
+    public void Disable()
+    {
+        GetComponent<Collider>().enabled = false;
+    }
+
+    public void Enable()
+    {
+        GetComponent<Collider>().enabled = true;
+    }
 }
