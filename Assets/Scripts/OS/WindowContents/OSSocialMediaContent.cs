@@ -22,6 +22,11 @@ public class OSSocialMediaContent : MonoBehaviour
     [SerializeField] private GameObject searchTermPrefab;
     [SerializeField] private Sprite searchTermIconHashtag;
     [SerializeField] private Sprite searchTermIconUser;
+    [SerializeField] private Image sideBarImage;
+    [SerializeField] private Color bgColorNormal;
+    [SerializeField] private Sprite logoNormal;
+    [SerializeField] private Color bgColorRewind;
+    [SerializeField] private Sprite logoRewind;
 
     private int postNumber = 1;
     private ComputerControls computerControls;
@@ -378,6 +383,9 @@ public class OSSocialMediaContent : MonoBehaviour
         {
             StartCoroutine(InstanciateContent());
         }
+
+        GetComponent<Image>().color = bgColorRewind;
+        sideBarImage.sprite = logoRewind;
     }
 
     private void ShowNextDay()
@@ -387,6 +395,12 @@ public class OSSocialMediaContent : MonoBehaviour
 
         customDay++;
         ResetHomeFeed();
+
+        if (customDay == GameManager.instance.GetDay())
+        {
+            GetComponent<Image>().color = bgColorNormal;
+            sideBarImage.sprite = logoNormal;
+        }
     }
 
     private bool PostIsFromCurrentDay(SocialMediaPost post)
