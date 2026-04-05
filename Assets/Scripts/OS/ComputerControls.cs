@@ -443,9 +443,9 @@ public class ComputerControls : MonoBehaviour
         }
     }
 
-    public SocialMediaPost[] GetPosts()
+    public SocialMediaPost[] GetPosts(int customDay = 0)
     {
-        return gm.GetPosts();
+        return gm.GetPosts(customDay);
     }
 
     public Person[] GetPeople()

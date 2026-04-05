@@ -112,7 +112,7 @@ MonoBehaviour:
   m_charWidthMaxAdj: 0
   m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 1
+  m_overflowMode: 3
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
@@ -288,6 +288,7 @@ GameObject:
   - component: {fileID: 7113438631381406516}
   - component: {fileID: 2085565004001495212}
   - component: {fileID: 7057588694968972991}
+  - component: {fileID: 768671461150207003}
   m_Layer: 5
   m_Name: NextDayButton
   m_TagString: Untagged
@@ -398,6 +399,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &768671461150207003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 904883363643886383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b1c49704632a794483eed7869721e33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tooltipText: Next day
 --- !u!1 &933390791134837235
 GameObject:
   m_ObjectHideFlags: 0
@@ -1784,7 +1798,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1932,6 +1946,7 @@ GameObject:
   - component: {fileID: 5526790854087879435}
   - component: {fileID: 7433364327945936700}
   - component: {fileID: 3024033600015851983}
+  - component: {fileID: 328279068057096222}
   m_Layer: 5
   m_Name: PreviousDayButton
   m_TagString: Untagged
@@ -2042,6 +2057,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &328279068057096222
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2937590413777675145}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b1c49704632a794483eed7869721e33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tooltipText: Previous day
 --- !u!1 &3069523663431744970
 GameObject:
   m_ObjectHideFlags: 0
@@ -2662,7 +2690,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 579312907080682216}
   m_HandleRect: {fileID: 3605685897631851720}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -2864,7 +2892,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 2241817832874469885}
   m_Direction: 0
   m_Value: 0
-  m_Size: 0.99999917
+  m_Size: 0.9999993
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3892,8 +3920,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5467575507252761169}
   m_HandleRect: {fileID: 4869850423337018218}
   m_Direction: 0
-  m_Value: 0.0032535885
-  m_Size: 0.9996707
+  m_Value: -0.00047856048
+  m_Size: 0.99967074
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3993,7 +4021,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -4068,7 +4096,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -5011,7 +5039,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:

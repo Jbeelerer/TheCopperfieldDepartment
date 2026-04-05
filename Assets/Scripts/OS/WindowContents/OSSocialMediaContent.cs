@@ -29,6 +29,8 @@ public class OSSocialMediaContent : MonoBehaviour
     private List<SocialMediaUser> usersWithFoundPassword = new List<SocialMediaUser>();
     private FPSController fpsController;
     private Sprite pinUserDefaultSprite;
+    private int customDay;
+    private List<int> instantiatedDays = new List<int>();
 
     [HideInInspector] public List<OSSocialMediaPost> postList = new List<OSSocialMediaPost>();
 
@@ -54,15 +56,22 @@ public class OSSocialMediaContent : MonoBehaviour
 
         if (GameManager.instance.GetDay() < 5)
             profilePageheader.Find("HackUser").gameObject.SetActive(false);
+
+        customDay = GameManager.instance.GetDay();
+        // Previous/Next Day Buttons
+        var changeDayButtons = searchBar.Find("ChangeDayButtons").gameObject;
+        changeDayButtons.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(ShowPreviousDay);
+        changeDayButtons.transform.GetChild(1).GetComponent<Button>().onClick.AddListener(ShowNextDay);
     }
 
     private IEnumerator InstanciateContent()
     {
         yield return new WaitForEndOfFrame();
-        foreach (SocialMediaPost s in computerControls.GetPosts())
+        foreach (SocialMediaPost s in computerControls.GetPosts(customDay))
         {
             InstanciatePost(s);
         }
+        instantiatedDays.Add(customDay);
 
         ResetHomeFeed();
     }
@@ -81,6 +90,7 @@ public class OSSocialMediaContent : MonoBehaviour
         newPost.GetComponent<OSSocialMediaPost>().instanctiatePost(post);
         newPost.name = "Post" + postNumber;
         postNumber++;
+        newPost.GetComponent<OSSocialMediaPost>().post.day = customDay;
 
         postList.Add(newPost.GetComponent<OSSocialMediaPost>());
 
@@ -105,7 +115,8 @@ public class OSSocialMediaContent : MonoBehaviour
         newPost.transform.Find("ForbiddenOptions").Find("Comments").GetComponentInChildren<TextMeshProUGUI>().text = GetRandomEngagementNumber(post.author.popularityLevel);
         newPost.transform.Find("ForbiddenOptions").Find("Shares").GetComponentInChildren<TextMeshProUGUI>().text = GetRandomEngagementNumber(post.author.popularityLevel);
         newPost.transform.Find("ForbiddenOptions").Find("Likes").GetComponentInChildren<TextMeshProUGUI>().text = GetRandomEngagementNumber(post.author.popularityLevel);
-        Instantiate(newPost, profilePageContent.transform);
+        var profilePost = Instantiate(newPost, profilePageContent.transform);
+        profilePost.SetActive(false);
     }
 
     private string GetRandomEngagementNumber(PopularityLevel popularityLevel)
@@ -172,7 +183,7 @@ public class OSSocialMediaContent : MonoBehaviour
 
         foreach (Transform post in socialMediaPostContainer.transform)
         {
-            if (post.GetComponent<OSSocialMediaPost>().post.content.Contains(filterTerm))
+            if (post.GetComponent<OSSocialMediaPost>().post.content.Contains(filterTerm) && PostIsFromCurrentDay(post.GetComponent<OSSocialMediaPost>().post))
             {
                 post.gameObject.SetActive(true);
             }
@@ -204,7 +215,7 @@ public class OSSocialMediaContent : MonoBehaviour
         // Display all posts that aren't flagged to be hidden in the home feed
         foreach (Transform post in socialMediaPostContainer.transform)
         {
-            if (!post.GetComponent<OSSocialMediaPost>().post.hiddenInHomeFeed)
+            if (!post.GetComponent<OSSocialMediaPost>().post.hiddenInHomeFeed && PostIsFromCurrentDay(post.GetComponent<OSSocialMediaPost>().post))
             {
                 post.gameObject.SetActive(true);
             }
@@ -258,7 +269,7 @@ public class OSSocialMediaContent : MonoBehaviour
         {
             if (post.GetComponent<OSSocialMediaPost>())
             {
-                if (post.GetComponent<OSSocialMediaPost>().post.author == user)
+                if (post.GetComponent<OSSocialMediaPost>().post.author == user && PostIsFromCurrentDay(post.GetComponent<OSSocialMediaPost>().post))
                 {
                     post.gameObject.SetActive(true);
                 }
@@ -337,16 +348,50 @@ public class OSSocialMediaContent : MonoBehaviour
 
     private void ChangeSearchBar(string text, bool showSearchIcon, UnityAction backButtonFunc = null)
     {
+        var backButton = searchBar.Find("BackButton").gameObject;
+        var changeDayButtons = searchBar.Find("ChangeDayButtons").gameObject;
         searchBar.Find("SearchText").GetComponent<TextMeshProUGUI>().text = text;
-        searchBar.Find("BackButton").gameObject.SetActive(backButtonFunc != null);
+        backButton.SetActive(backButtonFunc != null);
+        // Show day change buttons if on home screen and already unlocked
+        changeDayButtons.SetActive(backButtonFunc == null && GameManager.instance.GetDay() > 6);
+
         if (backButtonFunc != null)
         {
-            searchBar.Find("BackButton").GetComponent<Button>().onClick.RemoveAllListeners();
-            //UnityEvent backButtonEvent = new UnityEvent();
-            //backButtonEvent.AddListener(backButtonFunc);
-            searchBar.Find("BackButton").GetComponent<Button>().onClick.AddListener(() => backButtonFunc());
+            backButton.GetComponent<Button>().onClick.RemoveAllListeners();
+            backButton.GetComponent<Button>().onClick.AddListener(() => backButtonFunc());
         }
         searchBar.Find("Image").gameObject.SetActive(showSearchIcon);
+    }
+
+    private void ShowPreviousDay()
+    {
+        if (customDay <= 1)
+            return;
+
+        customDay--;
+
+        if (instantiatedDays.Contains(customDay))
+        {
+            ResetHomeFeed();
+        }
+        else
+        {
+            StartCoroutine(InstanciateContent());
+        }
+    }
+
+    private void ShowNextDay()
+    {
+        if (customDay >= GameManager.instance.GetDay())
+            return;
+
+        customDay++;
+        ResetHomeFeed();
+    }
+
+    private bool PostIsFromCurrentDay(SocialMediaPost post)
+    {
+        return post.day == customDay;
     }
 
     public void AddUserWithFoundPassword(SocialMediaUser user)

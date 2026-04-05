@@ -331,9 +331,10 @@ public class GameManager : MonoBehaviour, ISavable
         return users;
     }
 
-    public SocialMediaPost[] GetPosts()
+    public SocialMediaPost[] GetPosts(int customDay = 0)
     {
-        return posts;
+        var currentPosts = customDay > 0 ? Resources.LoadAll<SocialMediaPost>(dayOrder[customDay] + "/Posts") : posts;
+        return currentPosts;
     }
 
     public DMConversation[] GetConversations()

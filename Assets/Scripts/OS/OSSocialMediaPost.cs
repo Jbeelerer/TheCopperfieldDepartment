@@ -38,9 +38,9 @@ public class OSSocialMediaPost : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
         fpsController.OnPinDeletion.AddListener(RemovePinned);
         socialMediaContent.OnPinned.AddListener(MarkPinned);
-        socialMediaContent.OnDeletedRefresh.AddListener(MarkDeleted);
         computerControls.OnUnpinned.AddListener(RemovePinned);
-        socialMediaContent.OnDeletedPostClear.AddListener(ClearDeleted);
+        //socialMediaContent.OnDeletedRefresh.AddListener(MarkDeleted);
+        //socialMediaContent.OnDeletedPostClear.AddListener(ClearDeleted);
 
         pinUserDefaultSprite = postOptions.transform.Find("PinUser").GetComponent<Image>().sprite;
         pinPostDefaultSprite = postOptions.transform.Find("PinPost").GetComponent<Image>().sprite;
