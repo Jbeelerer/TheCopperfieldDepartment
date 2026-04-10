@@ -109,7 +109,7 @@ public class SettingsMenu : MonoBehaviour
         PlayerPrefs.SetInt("LookSensitivity", (int)lookSensitivitySlider.value);
 
         if (subtitleObj != null)
-            subtitleObj.SetActive(subtitleToggle.isOn);
+            subtitleObj.GetComponent<TextMeshProUGUI>().enabled = subtitleToggle.isOn;
         PlayerPrefs.SetInt("SubtitlesOn", subtitleToggle.isOn ? 1 : 0);
 
         if (subtitleObj != null) {
