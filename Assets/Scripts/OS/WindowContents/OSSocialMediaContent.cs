@@ -215,7 +215,7 @@ public class OSSocialMediaContent : MonoBehaviour
 
     public void ResetHomeFeed()
     {
-        ChangeSearchBar("Hot & Trending", false);
+        ShowHomeFeed();
 
         // Display all posts that aren't flagged to be hidden in the home feed
         foreach (Transform post in socialMediaPostContainer.transform)
@@ -235,7 +235,10 @@ public class OSSocialMediaContent : MonoBehaviour
 
     public void ShowHomeFeed()
     {
-        ChangeSearchBar("Hot & Trending", false);
+        ChangeSearchBar("Hot & Trending:  <b>" + 
+            (customDay == GameManager.instance.GetDay() ? 
+            "Today" : 
+            computerControls.initialComputerDate.AddDays(customDay - 1).ToString("MM/dd", new System.Globalization.CultureInfo("en-US"))), false);
 
         currentUser = null;
         homePage.transform.SetAsLastSibling();
