@@ -316,9 +316,12 @@ public class GameManager : MonoBehaviour, ISavable
         return startCameraRotation;
     }
 
-    public Person[] GetPeople()
+    public Person[] GetPeople(int customDay = 0)
     {
-        return people;
+        if (customDay <= 0)
+            return people;
+
+        return Resources.LoadAll<Case>(dayOrder[customDay])[0].people.Cast<Person>().ToArray();
     }
     public ArchiveData[] GetArchiveData()
     {
@@ -357,6 +360,10 @@ public class GameManager : MonoBehaviour, ISavable
     public Case GetCurrentCase()
     {
         return currentCase;
+    }
+    public Case GetCase(int day)
+    {
+        return Resources.LoadAll<Case>(dayOrder[day])[0];
     }
     // Start is called before the first frame update
     void Awake()
@@ -426,9 +433,10 @@ public class GameManager : MonoBehaviour, ISavable
         narration = n;
     }
 
-    public Mail[] GetMails()
+    public Mail[] GetMails(int customDay)
     {
-        return mails;
+        var currentMails = customDay > 0 ? Resources.LoadAll<Mail>(dayOrder[customDay] + "/Mails") : mails;
+        return currentMails;
     }
     private bool LoadCase()
     {

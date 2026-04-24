@@ -40,6 +40,7 @@ public class OSWindow : MonoBehaviour
     [HideInInspector] public VideoClip videoFile = null;
     [HideInInspector] public SocialMediaUser dmUser = null;
     [HideInInspector] public bool dmUserPasswordFound = false;
+    [HideInInspector] public int peopleListDay = 0;
     [HideInInspector] public bool multipleInstancesAllowed = false;
 
     //[SerializeField] private Sprite customSocialMediaWindow;
@@ -101,7 +102,9 @@ public class OSWindow : MonoBehaviour
         {
             content = Instantiate(peopleListContent, transform.Find("Content"));
             resizeButtons = new RectTransform[] { buttonSmall, buttonLong };
-            topBarTextMesh.text = "List of Suspects";
+            content.GetComponent<OSPeopleListContent>().LoadList(peopleListDay);
+            multipleInstancesAllowed = true;
+            topBarTextMesh.text = "List of Suspects" + (peopleListDay == GameManager.instance.GetDay() ? "" : " (Case closed)");
         }
         else if (appType == OSAppType.WARNING)
         {

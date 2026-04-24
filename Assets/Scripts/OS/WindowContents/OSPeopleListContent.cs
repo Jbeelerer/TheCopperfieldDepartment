@@ -19,12 +19,11 @@ public class OSPeopleListContent : MonoBehaviour
         computerControls = transform.GetComponentInParent<ComputerControls>();
     }
 
-    void Start()
+    public void LoadList(int day)
     {
-        //Person[] people = Resources.LoadAll<Person>("People");
-        foreach (Person p in computerControls.GetPeople())
+        foreach (Person p in computerControls.GetPeople(day))
         {
-            InstanciatePerson(p);
+            InstanciatePerson(p, day);
         }
     }
 
@@ -36,7 +35,7 @@ public class OSPeopleListContent : MonoBehaviour
         }
     }*/
 
-    public void InstanciatePerson(Person person)
+    public void InstanciatePerson(Person person, int day)
     {
         GameObject newProfile = Instantiate(personProfilePrefab, profileContainer.transform);
         newProfile.GetComponent<OSPerson>().InstantiatePerson(person);
@@ -45,6 +44,15 @@ public class OSPeopleListContent : MonoBehaviour
         newProfile.transform.Find("ImageContainer").Find("Image").GetComponent<Image>().sprite = person.image;
         newProfile.transform.Find("name").GetComponent<TextMeshProUGUI>().text = person.personName;
         newProfile.transform.Find("info").GetComponent<TextMeshProUGUI>().text = person.description;
+
+        var isCurrentDay = day == GameManager.instance.GetDay();
+        newProfile.transform.Find("PinPerson").gameObject.SetActive(isCurrentDay);
+        newProfile.transform.Find("AccusePerson").gameObject.SetActive(isCurrentDay);
+        if (!isCurrentDay && person == GameManager.instance.GetCase(day).guiltyPerson)
+        {
+            newProfile.GetComponent<Image>().color = Color.lightGray;
+            newProfile.transform.Find("GuiltyStamp").gameObject.SetActive(true);
+        }
         peopleList.Add(newProfile.GetComponent<OSPerson>());
     }
 

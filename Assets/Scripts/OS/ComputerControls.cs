@@ -419,14 +419,14 @@ public class ComputerControls : MonoBehaviour
                 pointySystem.StartTutorial("GovApp", toggledAutomatically);
                 break;
             case OSAppType.PEOPLE_LIST:
-                if (gm.GetDay() == 2)
+                /*if (gm.GetDay() == 2)
                 {
                     pointySystem.StartTutorial("PeopleListPinning", toggledAutomatically);
                 }
                 else
-                {
+                {*/
                     pointySystem.StartTutorial("PeopleList", toggledAutomatically);
-                }
+                //}
                 break;
             case OSAppType.START_SETTINGS:
                 pointySystem.StartTutorial("StartSettings", toggledAutomatically);
@@ -448,14 +448,14 @@ public class ComputerControls : MonoBehaviour
         return gm.GetPosts(customDay);
     }
 
-    public Person[] GetPeople()
+    public Person[] GetPeople(int customDay = 0)
     {
-        return gm.GetPeople();
+        return gm.GetPeople(customDay);
     }
 
-    public Mail[] GetMails()
+    public Mail[] GetMails(int customDay = 0)
     {
-        return gm.GetMails();
+        return gm.GetMails(customDay);
     }
 
     public DMConversation[] GetConversations()
@@ -771,7 +771,7 @@ public class ComputerControls : MonoBehaviour
         computerDate.text = initialComputerDate.AddDays(gm.GetDay() - 1).ToString("MM/dd/yyyy", new System.Globalization.CultureInfo("en-US"));
     }
 
-    public void OpenWindow(OSAppType type, string warningMessage = "Warning message", System.Action successFunc = null, bool hasCancelBtn = true, SocialMediaPost imagePost = null, Sprite imageFile = null, VideoClip videoFile = null, SocialMediaUser dmUser = null, bool dmUserPasswordFound = false)
+    public void OpenWindow(OSAppType type, string warningMessage = "Warning message", System.Action successFunc = null, bool hasCancelBtn = true, SocialMediaPost imagePost = null, Sprite imageFile = null, VideoClip videoFile = null, SocialMediaUser dmUser = null, bool dmUserPasswordFound = false, int peopleListDay = 0)
     {
         // Check if the window is already open (if multiple instances of the same type are not allowed)
         foreach (OSWindow window in windows)
@@ -781,6 +781,7 @@ public class ComputerControls : MonoBehaviour
                 || (imageFile != null && window.imageFile == imageFile)
                 || (videoFile != null && window.videoFile == videoFile)
                 || (dmUser != null && window.dmUser == dmUser)
+                || (peopleListDay != 0 && window.peopleListDay == peopleListDay)
                 )
             {
                 // Reveal window and set back to screen middle if it exists but isn't active (also for image viewer windows with an already open image or dm windows with already open user)
@@ -807,6 +808,7 @@ public class ComputerControls : MonoBehaviour
         newWindow.GetComponent<OSWindow>().videoFile = videoFile;
         newWindow.GetComponent<OSWindow>().dmUser = dmUser;
         newWindow.GetComponent<OSWindow>().dmUserPasswordFound = dmUserPasswordFound;
+        newWindow.GetComponent<OSWindow>().peopleListDay = peopleListDay;
         windows.Add(newWindow.GetComponent<OSWindow>());
         // Resize custom sized small windows
         if (newWindow.GetComponent<OSWindow>().appType == OSAppType.WARNING)

@@ -9,4 +9,5 @@ public class Mail : ScriptableObject
     public string title;
     [TextArea] public string message;
     public bool isMainCase;
+    public int day;
 }

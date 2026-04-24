@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -13,24 +12,31 @@ public class OSGovAppContent : MonoBehaviour, IPointerDownHandler, IPointerUpHan
     public GameObject mailContainer;
     public GameObject mailPrefab;
     public ScrollRect textScrollArea;
+    public RectTransform mailListRect;
+    public RectTransform textBoxRect;
+    public Mail currentMail;
 
     private Camera canvasCam;
     private ComputerControls computerControls;
-    private Mail[] mails;
+    private List<Mail> mails = new List<Mail>();
 
     void Start()
     {
         canvasCam = GameObject.Find("computerTextureCam").GetComponent<Camera>();
         computerControls = GetComponentInParent<ComputerControls>();
 
-        print(computerControls);
-        mails = computerControls.GetMails();
-        print(mails.Length);
-        foreach (Mail m in mails)
+        for (int i = 1; i <= GameManager.instance.GetDay(); i++)
         {
-            GameObject newMail = Instantiate(mailPrefab, mailContainer.transform);
-            newMail.GetComponent<OSMail>().mail = m;
+            var retreivedMails = computerControls.GetMails(i);
+            foreach (Mail m in retreivedMails)
+            {
+                GameObject newMail = Instantiate(mailPrefab, mailContainer.transform);
+                newMail.GetComponent<OSMail>().Instantiate(m, i);
+            }
+            mails.AddRange(retreivedMails);
         }
+
+        CloseTextBox();
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -50,7 +56,13 @@ public class OSGovAppContent : MonoBehaviour, IPointerDownHandler, IPointerUpHan
             }
             else
             {
-                computerControls.OpenWindow(OSAppType.PEOPLE_LIST);
+                computerControls.OpenWindow(OSAppType.PEOPLE_LIST, peopleListDay: currentMail.day);
+
+                // Show pin tutorial on day 2 only if the current people list is opened
+                if (GameManager.instance.GetDay() == 2 && currentMail.day == GameManager.instance.GetDay())
+                {
+                    computerControls.pointySystem.StartTutorial("PeopleListPinning");
+                }
             }
         }
     }
@@ -63,6 +75,23 @@ public class OSGovAppContent : MonoBehaviour, IPointerDownHandler, IPointerUpHan
             computerControls.cursor.GetComponent<Image>().sprite = linkIndex != -1 ? computerControls.cursorClickable : computerControls.cursorNormal;
             computerControls.isHoveringOverLink = linkIndex != -1;
         }
+    }
+
+    // Used on the close message button
+    public void CloseTextBox()
+    {
+        mailListRect.offsetMin = new Vector2(0, 35);
+        textBoxRect.offsetMax = new Vector2(0, -228);
+        textBoxRect.transform.GetChild(0).Find("CloseTextBoxButton").gameObject.SetActive(false);
+        textScrollArea.transform.Find("ScrollArea").gameObject.SetActive(false);
+    }
+
+    public void OpenTextBox()
+    {
+        mailListRect.offsetMin = new Vector2(0, 180);
+        textBoxRect.offsetMax = new Vector2(0, -82);
+        textBoxRect.transform.GetChild(0).Find("CloseTextBoxButton").gameObject.SetActive(true);
+        textScrollArea.transform.Find("ScrollArea").gameObject.SetActive(true);
     }
 
     private void OpenVigilanty()
