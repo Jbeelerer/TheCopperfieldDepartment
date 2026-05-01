@@ -241,6 +241,7 @@ public class TitleMenu : MonoBehaviour
             Destroy(GameObject.Find("GameManager"));
         }
 
+        LoadingScreen.Instance.Show();
         SceneManager.LoadScene("NewMainScene");
     }
 
