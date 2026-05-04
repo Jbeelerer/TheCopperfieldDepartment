@@ -178,10 +178,14 @@ public class AdditionalInfoBoard : MonoBehaviour
                 }
                 else if (a.image != null)
                 {
+                    backgroundClipboardImage.SetActive(true);
+                    postContentInfo.SetActive(true);
                     //pbMaterial.material.SetTexture("_Base", a.image.texture);
                 }
                 else
                 {
+                    backgroundClipboardImage.SetActive(true);
+                    postContentInfo.SetActive(true);
                     transform.Find("Image").gameObject.SetActive(false);
                 }
                 postContentText.text = a.content;

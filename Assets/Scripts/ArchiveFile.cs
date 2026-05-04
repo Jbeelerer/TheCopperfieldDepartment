@@ -42,6 +42,7 @@ public class ArchiveFile : MonoBehaviour
     {
 
     }
+    public string GetTitle() { return fileTitle.text; } 
     public void instantiateFile(ArchiveData d)
     {
         gm = FindFirstObjectByType<GameManager>();

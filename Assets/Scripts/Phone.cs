@@ -35,6 +35,11 @@ public class Phone : MonoBehaviour
         am = AudioManager.instance;
         gm.getPinboard().PinAdded.AddListener(Ring);
         gm.InvestigationStateChanged.AddListener(ExitTutorial);
+        
+        if (gm.GetDay() == 6)
+        {
+            Ring("archiveIntro");
+        }
     }
     public void ExitTutorial()
     {

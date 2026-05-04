@@ -8,6 +8,7 @@ public class Archives : MonoBehaviour
     [SerializeField] private GameObject[] files;
     [SerializeField] private GameObject filePrefab;
     [SerializeField] private GameObject locked;
+     private bool isLocked = true;
     [SerializeField] private GameObject fotoFilePrefab;
     [SerializeField] private GameObject textFilePrefab;
     [SerializeField] private List<ArchiveFile> archiveFiles = new List<ArchiveFile>();
@@ -24,11 +25,22 @@ public class Archives : MonoBehaviour
     private bool isScrolling = false;
 
     private int currentFile = 0;
+    public string categoryName = "";
     private bool wasInArchvie = false;
     // Start is called before the first frame update
     public List<ArchiveFile> GetArchiveFiles()
     {
         return archiveFiles;
+    }
+
+    public string GetCurrentCategory()
+    {
+        return categoryName;
+    }
+
+    public bool GetIsLocked()
+    {
+        return isLocked;
     }
 
     public void SetCurrentSelection(ArchiveFile file)
@@ -54,8 +66,9 @@ public class Archives : MonoBehaviour
 
             GameObject newFile = Instantiate(fp, transform.GetChild(0));
             ArchiveFile f = newFile.GetComponentInChildren<ArchiveFile>();
+            categoryName = fileData.categoryName;
             f.instantiateFile(fileData);
-            f.SetStickoutPosition(i);
+           // f.SetStickoutPosition(i);
             archiveFiles.Add(f);
             newFile.transform.localPosition = new Vector3(0, 5, startPositionY + i);
             i += 2f;
@@ -87,7 +100,8 @@ public class Archives : MonoBehaviour
                 count++;
             }
         }
-        locked.SetActive(!GameManager.instance.GetCurrentCase().hasArchived && count > 0);
+        isLocked = !GameManager.instance.GetCurrentCase().hasArchived && count > 0;
+        locked.SetActive(isLocked);
     }
 
     private void closeIfInArchive()

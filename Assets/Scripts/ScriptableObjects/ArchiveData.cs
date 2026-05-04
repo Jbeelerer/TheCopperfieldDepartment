@@ -20,6 +20,7 @@ public class ArchiveData : ScriptableObject, IPinnable
     public string date;
     [TextArea] public string content;
     [TextArea] public string contentShort;
+    [TextArea] public string categoryName;
     public bool suspicious; public bool notSuspicious;
     public bool isSmall;
     bool IPinnable.isSmall { get => isSmall; }

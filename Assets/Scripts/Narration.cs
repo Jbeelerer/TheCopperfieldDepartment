@@ -58,6 +58,7 @@ public class TimedSubtitles
     public TimedSubtitle[] firstDayFeedbackPositive;
     public TimedSubtitle[] firstDayFeedbackNegative;
     public TimedSubtitle[] exit;
+    public TimedSubtitle[] archiveIntro;
 }
 [System.Serializable]
 public class ShortSubtitles
@@ -74,6 +75,7 @@ public class ShortSubtitles
     public TimedSubtitle phoneReminderPersonNotAdded_replay;
     public TimedSubtitle phoneReminderPostNotAdded_replay;
     public TimedSubtitle exit_replay;
+    public TimedSubtitle archiveIntro_replay;
 }
 
 public class Narration : MonoBehaviour
@@ -92,6 +94,7 @@ public class Narration : MonoBehaviour
     [SerializeField] private AudioClip firstDayFeedbackPositiveClip;
     [SerializeField] private AudioClip firstDayFeedbackNegativeClip;
     [SerializeField] private AudioClip exit;
+    [SerializeField] private AudioClip archiveIntroClip;
     [SerializeField] private AudioDistortionFilter distortionFilter;
     [SerializeField] private AudioHighPassFilter highPassFilter;
     [SerializeField] private AudioEchoFilter echoFilter;
@@ -221,6 +224,10 @@ public class Narration : MonoBehaviour
             case "exit":
             OnPhoneState(true);
                 currentCall = PlaySequence(timedSubtitles.exit, exit, false);
+                break;
+            case "archiveIntro":
+            OnPhoneState(true);
+                currentCall = PlaySequence(timedSubtitles.archiveIntro, archiveIntroClip, false);
                 break;
             case "intro":
             OnPhoneState(false);
@@ -383,6 +390,11 @@ public class Narration : MonoBehaviour
                 audioSource.clip = notLeavingVoice;
                 subtitleText.text = shortSubtitles.exit_replay.text;
                 duration = shortSubtitles.exit_replay.duration;
+                break;
+            case "archiveIntro_replay":
+                audioSource.clip = notLeavingVoice;
+                subtitleText.text = shortSubtitles.archiveIntro_replay.text;
+                duration = shortSubtitles.archiveIntro_replay.duration;
                 break;
         }
         StartCoroutine(DisableSubtitle(duration));
