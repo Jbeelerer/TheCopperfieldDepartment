@@ -44,6 +44,9 @@ public class TitleMenu : MonoBehaviour
     [Header("Options")]
     [SerializeField] private TitleMenuOption settingsOption;
     [SerializeField] private TitleMenuOption settingsBackOption;
+    [SerializeField] private TitleMenuOption settingsGameOption;
+    [SerializeField] private TitleMenuOption settingsAudioOption;
+    [SerializeField] private TitleMenuOption settingsDisplayOption;
     [SerializeField] private TitleMenuOption newGameOption;
     [SerializeField] private TitleMenuOption newGameConfirmOption;
     [SerializeField] private TitleMenuOption newGameBackOption;
@@ -74,6 +77,8 @@ public class TitleMenu : MonoBehaviour
         bgmSources[1].PlayDelayed(bgmSources[0].clip.length);
 
         mousePrompt.SetActive(false);
+
+        BringSettingsTabToFront(settingsGameOption);
 
         cameras = new List<CinemachineCamera>() { doorCam, pinboardMainCam, newGameCam, settingsCam, continueCam };
 
@@ -130,12 +135,15 @@ public class TitleMenu : MonoBehaviour
                 break;
             case TitleOption.SETTINGS_GAME_TAB:
                 settingsMenu.ShowGameSettings();
+                BringSettingsTabToFront(settingsGameOption);
                 break;
             case TitleOption.SETTINGS_DISPLAY_TAB:
                 settingsMenu.ShowDisplaySettings();
+                BringSettingsTabToFront(settingsDisplayOption);
                 break;
             case TitleOption.SETTINGS_SOUND_TAB:
                 settingsMenu.ShowSoundSettings();
+                BringSettingsTabToFront(settingsAudioOption);
                 break;
             case TitleOption.SETTINGS_CLOSE:
                 CloseSettings();
@@ -167,6 +175,9 @@ public class TitleMenu : MonoBehaviour
     {
         settingsOption.Enable();
         settingsBackOption.Enable();
+        settingsGameOption.Enable();
+        settingsAudioOption.Enable();
+        settingsDisplayOption.Enable();
         newGameOption.Enable();
         newGameConfirmOption.Enable();
         newGameBackOption.Enable();
@@ -291,11 +302,27 @@ public class TitleMenu : MonoBehaviour
         audioManager.UpdateMixerValue("SFX Volume", settingsMenu.sfxVolume);
     }
 
+    private void BringSettingsTabToFront(TitleMenuOption option)
+    {
+        setZPos(settingsGameOption, 0.04f);
+        setZPos(settingsAudioOption, 0.04f);
+        setZPos(settingsDisplayOption, 0.04f);
+        setZPos(option, 0f);
+    
+        void setZPos(TitleMenuOption option, float zValue)
+        {
+            option.transform.localPosition = new Vector3(option.transform.localPosition.x, option.transform.localPosition.y, zValue);
+        }
+    }
+
     private void FocusPinboardMiddle()
     {
         SetCamPriority(pinboardMainCam);
         EnableAllOptions();
         settingsBackOption.Disable();
+        settingsGameOption.Disable();
+        settingsAudioOption.Disable();
+        settingsDisplayOption.Disable();
         newGameBackOption.Disable();
         newGameConfirmOption.Disable();
         creditsBackOption.Disable();
