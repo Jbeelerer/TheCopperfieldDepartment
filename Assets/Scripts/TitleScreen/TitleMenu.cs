@@ -4,8 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public enum TitleOption
 {
@@ -39,6 +37,7 @@ public class TitleMenu : MonoBehaviour
     [SerializeField] private AudioClip wooshSound;
     [SerializeField] private GameObject mousePrompt;
     [SerializeField] private GameObject continueGameButton;
+    [SerializeField] private Transform spotLight;
 
     [Header("Options")]
     [SerializeField] private TitleMenuOption settingsOption;
@@ -167,6 +166,9 @@ public class TitleMenu : MonoBehaviour
 
     private void SetCamPriority(CinemachineCamera cam)
     {
+        if (doorOpened && spotLight.parent != cinemachineBrain.transform)
+            spotLight.SetParent(cinemachineBrain.transform);
+
         cameras.ForEach(c => c.Priority = 0);
         cam.Priority = 1;
 
