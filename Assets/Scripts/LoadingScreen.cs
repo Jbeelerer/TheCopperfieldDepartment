@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 public class LoadingScreen : MonoBehaviour
@@ -32,6 +33,8 @@ public class LoadingScreen : MonoBehaviour
 
         var oldScene = SceneManager.GetActiveScene().name;
 
+        EventSystem.current.gameObject.SetActive(false);
+
         AsyncOperation op = SceneManager.LoadSceneAsync(targetScene, LoadSceneMode.Additive);
         op.allowSceneActivation = false;
 
@@ -46,7 +49,7 @@ public class LoadingScreen : MonoBehaviour
         Scene newScene = SceneManager.GetSceneByName(targetScene);
         SceneManager.SetActiveScene(newScene);
 
-        SceneManager.UnloadSceneAsync(oldScene);
+        yield return SceneManager.UnloadSceneAsync(oldScene);
 
         anim.SetBool("Hide", true);
     }
