@@ -16,7 +16,8 @@ public enum TitleOption
     SETTINGS_GAME_TAB,
     SETTINGS_DISPLAY_TAB,
     SETTINGS_SOUND_TAB,
-    SETTINGS_CLOSE
+    SETTINGS_CLOSE,
+    CREDITS
 }
 
 public class TitleMenu : MonoBehaviour
@@ -30,6 +31,7 @@ public class TitleMenu : MonoBehaviour
     [SerializeField] private CinemachineCamera newGameCam;
     [SerializeField] private CinemachineCamera settingsCam;
     [SerializeField] private CinemachineCamera continueCam;
+    [SerializeField] private CinemachineCamera creditsCam;
     [SerializeField] private AudioMixer bgmMixer;
     [SerializeField] private AudioClip doorCreakSound;
     [SerializeField] private AudioClip doorOpenSound;
@@ -45,6 +47,8 @@ public class TitleMenu : MonoBehaviour
     [SerializeField] private TitleMenuOption newGameOption;
     [SerializeField] private TitleMenuOption newGameConfirmOption;
     [SerializeField] private TitleMenuOption newGameBackOption;
+    [SerializeField] private TitleMenuOption creditsOption;
+    [SerializeField] private TitleMenuOption creditsBackOption;
 
     private Animator anim;
     private AudioManager audioManager;
@@ -149,6 +153,10 @@ public class TitleMenu : MonoBehaviour
                 startNewGame = true;
                 PlayStartAnimation();
                 break;
+            case TitleOption.CREDITS:
+                SetCamPriority(creditsCam);
+                creditsOption.Disable();
+                break;
             case TitleOption.BACK:
                 FocusPinboardMiddle();
                 break;
@@ -162,6 +170,8 @@ public class TitleMenu : MonoBehaviour
         newGameOption.Enable();
         newGameConfirmOption.Enable();
         newGameBackOption.Enable();
+        creditsOption.Enable();
+        creditsBackOption.Enable();
     }
 
     private void SetCamPriority(CinemachineCamera cam)
@@ -288,5 +298,6 @@ public class TitleMenu : MonoBehaviour
         settingsBackOption.Disable();
         newGameBackOption.Disable();
         newGameConfirmOption.Disable();
+        creditsBackOption.Disable();
     }
 }
