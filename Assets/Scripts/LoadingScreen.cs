@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LoadingScreen : MonoBehaviour
 {
@@ -20,13 +22,32 @@ public class LoadingScreen : MonoBehaviour
         anim = GetComponentInChildren<Animator>();
     }
 
-    public void Show()
+    public void SwitchScene(string targetScene) => StartCoroutine(SwitchSceneCoroutine(targetScene));
+
+    private IEnumerator SwitchSceneCoroutine(string targetScene)
     {
         anim.SetBool("Hide", false);
-    }
 
-    public void Hide(bool instant = false)
-    {
+        yield return null;
+
+        var oldScene = SceneManager.GetActiveScene().name;
+
+        AsyncOperation op = SceneManager.LoadSceneAsync(targetScene, LoadSceneMode.Additive);
+        op.allowSceneActivation = false;
+
+        while (op.progress < 0.9f)
+            yield return null;
+
+        op.allowSceneActivation = true;
+
+        while (!op.isDone)
+            yield return null;
+
+        Scene newScene = SceneManager.GetSceneByName(targetScene);
+        SceneManager.SetActiveScene(newScene);
+
+        SceneManager.UnloadSceneAsync(oldScene);
+
         anim.SetBool("Hide", true);
     }
 }

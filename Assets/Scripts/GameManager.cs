@@ -516,7 +516,7 @@ public class GameManager : MonoBehaviour, ISavable
         SortCompetingEmployees();
         OnNewDay?.Invoke();
         reload();
-        LoadingScreen.Instance.Hide();
+        //LoadingScreen.Instance.Hide();
         if (calendarLoad && day != 1)
         {
             DayIntro();
