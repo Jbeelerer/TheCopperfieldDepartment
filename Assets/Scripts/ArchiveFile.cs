@@ -67,7 +67,7 @@ public class ArchiveFile : MonoBehaviour
         {
             return;
         }
-        if (gm.GetCurrentCase().id >= data.startDay && gm.GetCurrentCase().id <= data.endDay)
+        if (gm.GetDay() >= data.startDay && gm.GetDay() <= data.endDay)
         {
             gameObject.SetActive(true);
         }

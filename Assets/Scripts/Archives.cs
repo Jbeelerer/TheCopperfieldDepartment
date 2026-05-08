@@ -102,7 +102,7 @@ public class Archives : MonoBehaviour
         }
         isLocked = count <= 0; 
         locked.SetActive(isLocked); 
-        print(isLocked + " ... " + count);
+        print(categoryName + " ... " + count);
     }
 
     private void closeIfInArchive()
