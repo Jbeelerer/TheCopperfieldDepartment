@@ -100,8 +100,9 @@ public class Archives : MonoBehaviour
                 count++;
             }
         }
-        isLocked = !GameManager.instance.GetCurrentCase().hasArchived && count > 0;
-        locked.SetActive(isLocked);
+        isLocked = count <= 0; 
+        locked.SetActive(isLocked); 
+        print(isLocked + " ... " + count);
     }
 
     private void closeIfInArchive()
