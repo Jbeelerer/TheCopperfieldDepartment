@@ -18,7 +18,9 @@ public class ArchiveManager : MonoBehaviour
     private int currentFile = 0;
     private bool wasInArchvie = false;
 
-    private Dictionary<ArchiveFile,GameObject> pinnedFiles = new Dictionary<ArchiveFile,GameObject>();
+    private InputOverlay inputOverlay;
+
+    private Dictionary<ArchiveFile, GameObject> pinnedFiles = new Dictionary<ArchiveFile, GameObject>();
 
     //singleton pattern
 
@@ -34,6 +36,7 @@ public class ArchiveManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        inputOverlay = GameObject.Find("inputOverlay").GetComponent<InputOverlay>();
     }
     public void SetCurrentArchive(Archives archive)
     {
@@ -65,7 +68,7 @@ public class ArchiveManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-            print(gm.GetGameState() );
+        print(gm.GetGameState());
         //shoot raycast from mouse
         if (gm != null && gm.GetGameState() == GameState.InArchive)
         {
@@ -84,7 +87,7 @@ public class ArchiveManager : MonoBehaviour
                 {
                     currentFile = currentFile - 1 < 0 ? currentArchive.GetArchiveFiles().Count - 1 : currentFile - 1;
                 }
-             //   isScrolling = Input.GetAxis("Vertical") != 0;
+                //   isScrolling = Input.GetAxis("Vertical") != 0;
 
                 if (isScrolling)
                 {
@@ -112,6 +115,7 @@ public class ArchiveManager : MonoBehaviour
                     currentSelection = currentArchive.GetArchiveFiles()[currentFile].gameObject.GetComponent<ArchiveFile>();
                     // gm.LookAt(currentSelection.transform);
                     currentSelection.select();
+
                 }
                 if (Input.GetButtonDown("Submit"))
                 {
@@ -122,7 +126,7 @@ public class ArchiveManager : MonoBehaviour
                 }
                 currentArchive.SetCurrentSelection(currentSelection);
             }
-           
+
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit))
@@ -130,35 +134,53 @@ public class ArchiveManager : MonoBehaviour
                 print(hit.collider.gameObject.name);
                 if (hit.collider.gameObject.tag == "ArchiveFile" && !fileOpen)
                 {
+                    print(currentSelection);
                     if (currentSelection != hit.collider.gameObject.GetComponent<ArchiveFile>() && !isScrolling)
                     {
                         SelectFile(hit.collider.gameObject.GetComponent<ArchiveFile>());
+                        //   inputOverlay.SetIcon("inspect");
+                        inputOverlay.OverwriteText(currentSelection.GetTitle());
                     }
                 }
-                else if(currentSelection != null && !fileOpen)
+                else if (currentSelection != null && !fileOpen)
                 {
-                        currentSelection.deselect(); 
-                        currentSelection = null;
+                    currentSelection.deselect();
+                    currentSelection = null;
+                    inputOverlay.SetIcon("");
                 }
-            
-                if (Input.GetMouseButtonDown(0) && fileOpen && hit.collider.gameObject.name == "PinFile")
+                if (currentSelection != null && fileOpen)
                 {
-                    if (currentSelection != null)
+                    if (hit.collider.gameObject.name == "PinFile")
+                    {
+                        inputOverlay.OverwriteText("Pin");
+                    }
+                    else
+                    {
+                        inputOverlay.OverwriteText("Close");
+                    }
+                }
+
+                if (Input.GetMouseButtonDown(0) && fileOpen)
+                {
+                    if (hit.collider.gameObject.name == "PinFile" && currentSelection != null)
                     {
                         if (pinnedFiles.ContainsKey(currentSelection))
                         {
-                        currentSelection.unpinDoc();
-                        pinboard.RemoveByScriptableObject(currentSelection.GetData());
-                        pinnedFiles.Remove(currentSelection);
-                        return; 
-                        }else{
-                        pinboard.AddPin(currentSelection.GetData());
-                        pinnedFiles.Add(currentSelection,currentSelection.gameObject);
-                        currentSelection.pinDoc();
-                        StartCoroutine(DelayedClosArchive());
-                        currentSelection = null;
-                        fileOpen = false;
-                        return; }
+                            currentSelection.unpinDoc();
+                            pinboard.RemoveByScriptableObject(currentSelection.GetData());
+                            pinnedFiles.Remove(currentSelection);
+                            return;
+                        }
+                        else
+                        {
+                            pinboard.AddPin(currentSelection.GetData());
+                            pinnedFiles.Add(currentSelection, currentSelection.gameObject);
+                            currentSelection.pinDoc();
+                            StartCoroutine(DelayedClosArchive());
+                            currentSelection = null;
+                            fileOpen = false;
+                            return;
+                        }
 
                     }
                 }
@@ -170,7 +192,7 @@ public class ArchiveManager : MonoBehaviour
             }
             else if (Input.GetMouseButtonDown(0) && currentSelection != null && fileOpen)
             {
-                fileOpen = false; 
+                fileOpen = false;
                 currentArchive.CloseArchiveFile();
             }
 

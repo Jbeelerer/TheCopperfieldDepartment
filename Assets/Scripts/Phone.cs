@@ -35,6 +35,11 @@ public class Phone : MonoBehaviour
         am = AudioManager.instance;
         gm.getPinboard().PinAdded.AddListener(Ring);
         gm.InvestigationStateChanged.AddListener(ExitTutorial);
+        
+        if (gm.GetDay() == 6)
+        {
+            Ring("archiveIntro");
+        }
     }
     public void ExitTutorial()
     {
@@ -44,6 +49,16 @@ public class Phone : MonoBehaviour
             FindFirstObjectByType<InputOverlay>().SetCustomInteractions("leavePC");
             gm.InvestigationStateChanged.RemoveListener(ExitTutorial);
         }
+    }
+    public IEnumerator RingWhenReady(string callName)
+    {
+        while(am == null || animator == null)
+        {
+            print(am + " " + animator);
+            yield return new WaitForEndOfFrame();
+        }
+        Ring(callName);
+        
     }
 
     public void Ring()

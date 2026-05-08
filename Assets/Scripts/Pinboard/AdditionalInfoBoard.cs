@@ -117,11 +117,12 @@ public class AdditionalInfoBoard : MonoBehaviour
         // additionalInfos.text = "";
         // transform.Find("Image").gameObject.SetActive(true);
         // check if scribtable object is type person  
-       personInfo.SetActive(false);
+        personInfo.SetActive(false);
         userInfo.SetActive(false); 
         postContentInfo.SetActive(false);
         postContentUserImage.SetActive(false);
         bigPictureParent.SetActive(false);
+        backgroundClipboardImage.SetActive(true);
         switch (o) 
         {
             case Person:
@@ -178,10 +179,14 @@ public class AdditionalInfoBoard : MonoBehaviour
                 }
                 else if (a.image != null)
                 {
+                    backgroundClipboardImage.SetActive(true);
+                    postContentInfo.SetActive(true);
                     //pbMaterial.material.SetTexture("_Base", a.image.texture);
                 }
                 else
                 {
+                    backgroundClipboardImage.SetActive(true);
+                    postContentInfo.SetActive(true);
                     transform.Find("Image").gameObject.SetActive(false);
                 }
                 postContentText.text = a.content;

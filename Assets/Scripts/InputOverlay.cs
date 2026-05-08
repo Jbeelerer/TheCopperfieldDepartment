@@ -70,6 +70,17 @@ public class InputOverlay : MonoBehaviour
             transform.position = defaultPosition;
         }
     }
+
+    public void OverwriteText(string text, bool left = true)
+    {
+        if (left){
+                helpUILeft.SetActive(true);
+                helpUILeftText.text =  text;}
+                else{
+                    helpUIRight.SetActive(true);
+                    helpUIRightText.text = text;
+                }
+    }
     public void SetIcon(string imageName, bool forceIcon = false)
     {
         if (customInteractions)
