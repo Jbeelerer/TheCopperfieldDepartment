@@ -4,8 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public enum TitleOption
 {
@@ -18,7 +16,8 @@ public enum TitleOption
     SETTINGS_GAME_TAB,
     SETTINGS_DISPLAY_TAB,
     SETTINGS_SOUND_TAB,
-    SETTINGS_CLOSE
+    SETTINGS_CLOSE,
+    CREDITS
 }
 
 public class TitleMenu : MonoBehaviour
@@ -32,6 +31,7 @@ public class TitleMenu : MonoBehaviour
     [SerializeField] private CinemachineCamera newGameCam;
     [SerializeField] private CinemachineCamera settingsCam;
     [SerializeField] private CinemachineCamera continueCam;
+    [SerializeField] private CinemachineCamera creditsCam;
     [SerializeField] private AudioMixer bgmMixer;
     [SerializeField] private AudioClip doorCreakSound;
     [SerializeField] private AudioClip doorOpenSound;
@@ -39,13 +39,19 @@ public class TitleMenu : MonoBehaviour
     [SerializeField] private AudioClip wooshSound;
     [SerializeField] private GameObject mousePrompt;
     [SerializeField] private GameObject continueGameButton;
+    [SerializeField] private Transform spotLight;
 
     [Header("Options")]
     [SerializeField] private TitleMenuOption settingsOption;
     [SerializeField] private TitleMenuOption settingsBackOption;
+    [SerializeField] private TitleMenuOption settingsGameOption;
+    [SerializeField] private TitleMenuOption settingsAudioOption;
+    [SerializeField] private TitleMenuOption settingsDisplayOption;
     [SerializeField] private TitleMenuOption newGameOption;
     [SerializeField] private TitleMenuOption newGameConfirmOption;
     [SerializeField] private TitleMenuOption newGameBackOption;
+    [SerializeField] private TitleMenuOption creditsOption;
+    [SerializeField] private TitleMenuOption creditsBackOption;
 
     private Animator anim;
     private AudioManager audioManager;
@@ -71,6 +77,8 @@ public class TitleMenu : MonoBehaviour
         bgmSources[1].PlayDelayed(bgmSources[0].clip.length);
 
         mousePrompt.SetActive(false);
+
+        BringSettingsTabToFront(settingsGameOption);
 
         cameras = new List<CinemachineCamera>() { doorCam, pinboardMainCam, newGameCam, settingsCam, continueCam };
 
@@ -127,12 +135,15 @@ public class TitleMenu : MonoBehaviour
                 break;
             case TitleOption.SETTINGS_GAME_TAB:
                 settingsMenu.ShowGameSettings();
+                BringSettingsTabToFront(settingsGameOption);
                 break;
             case TitleOption.SETTINGS_DISPLAY_TAB:
                 settingsMenu.ShowDisplaySettings();
+                BringSettingsTabToFront(settingsDisplayOption);
                 break;
             case TitleOption.SETTINGS_SOUND_TAB:
                 settingsMenu.ShowSoundSettings();
+                BringSettingsTabToFront(settingsAudioOption);
                 break;
             case TitleOption.SETTINGS_CLOSE:
                 CloseSettings();
@@ -150,6 +161,10 @@ public class TitleMenu : MonoBehaviour
                 startNewGame = true;
                 PlayStartAnimation();
                 break;
+            case TitleOption.CREDITS:
+                SetCamPriority(creditsCam);
+                creditsOption.Disable();
+                break;
             case TitleOption.BACK:
                 FocusPinboardMiddle();
                 break;
@@ -160,13 +175,21 @@ public class TitleMenu : MonoBehaviour
     {
         settingsOption.Enable();
         settingsBackOption.Enable();
+        settingsGameOption.Enable();
+        settingsAudioOption.Enable();
+        settingsDisplayOption.Enable();
         newGameOption.Enable();
         newGameConfirmOption.Enable();
         newGameBackOption.Enable();
+        creditsOption.Enable();
+        creditsBackOption.Enable();
     }
 
     private void SetCamPriority(CinemachineCamera cam)
     {
+        if (doorOpened && spotLight.parent != cinemachineBrain.transform)
+            spotLight.SetParent(cinemachineBrain.transform);
+
         cameras.ForEach(c => c.Priority = 0);
         cam.Priority = 1;
 
@@ -241,7 +264,7 @@ public class TitleMenu : MonoBehaviour
             Destroy(GameObject.Find("GameManager"));
         }
 
-        SceneManager.LoadScene("NewMainScene");
+        LoadingScreen.Instance.SwitchScene("NewMainScene");
     }
 
     private void QuitGame()
@@ -279,12 +302,29 @@ public class TitleMenu : MonoBehaviour
         audioManager.UpdateMixerValue("SFX Volume", settingsMenu.sfxVolume);
     }
 
+    private void BringSettingsTabToFront(TitleMenuOption option)
+    {
+        setZPos(settingsGameOption, 0.04f);
+        setZPos(settingsAudioOption, 0.04f);
+        setZPos(settingsDisplayOption, 0.04f);
+        setZPos(option, 0f);
+    
+        void setZPos(TitleMenuOption option, float zValue)
+        {
+            option.transform.localPosition = new Vector3(option.transform.localPosition.x, option.transform.localPosition.y, zValue);
+        }
+    }
+
     private void FocusPinboardMiddle()
     {
         SetCamPriority(pinboardMainCam);
         EnableAllOptions();
         settingsBackOption.Disable();
+        settingsGameOption.Disable();
+        settingsAudioOption.Disable();
+        settingsDisplayOption.Disable();
         newGameBackOption.Disable();
         newGameConfirmOption.Disable();
+        creditsBackOption.Disable();
     }
 }

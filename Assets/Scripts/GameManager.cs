@@ -109,7 +109,7 @@ public class GameManager : MonoBehaviour, ISavable
     public Pinboard getPinboard()
     {
         if (pinboard == null){
-        pinboard = GameObject.Find("Pinboard").GetComponent<Pinboard>();        
+        pinboard = GameObject.FindFirstObjectByType<Pinboard>();        
         }
         return pinboard;
     }
@@ -118,7 +118,7 @@ public class GameManager : MonoBehaviour, ISavable
         get { return _pinboardBlocked; }
         set
         {
-            GameObject.Find("Pinboard").GetComponent<Pinboard>().pinboardInteractions(value);
+            GameObject.FindFirstObjectByType<Pinboard>().pinboardInteractions(value);
             _pinboardBlocked = value;
         }
     }
@@ -522,6 +522,7 @@ public class GameManager : MonoBehaviour, ISavable
         SortCompetingEmployees();
         OnNewDay?.Invoke();
         reload();
+        //LoadingScreen.Instance.Hide();
         if (calendarLoad && day != 1)
         {
             DayIntro();
