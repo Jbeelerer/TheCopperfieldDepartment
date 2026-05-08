@@ -117,11 +117,12 @@ public class AdditionalInfoBoard : MonoBehaviour
         // additionalInfos.text = "";
         // transform.Find("Image").gameObject.SetActive(true);
         // check if scribtable object is type person  
-       personInfo.SetActive(false);
+        personInfo.SetActive(false);
         userInfo.SetActive(false); 
         postContentInfo.SetActive(false);
         postContentUserImage.SetActive(false);
         bigPictureParent.SetActive(false);
+        backgroundClipboardImage.SetActive(true);
         switch (o) 
         {
             case Person:

@@ -463,7 +463,13 @@ public class GameManager : MonoBehaviour, ISavable
         // mails[tempMails.Count()] = feedBackMail;        
         posts = Resources.LoadAll<SocialMediaPost>(dayOrder[day] + "/Posts");
         conversations = Resources.LoadAll<DMConversation>(dayOrder[day] + "/Conversations");
+        print(day + "----");
+        if (day == 6)
+        {    print(day + "----.....");
+            FindFirstObjectByType<Phone>().RingWhenReady("archiveIntro");
+        } 
         return false;
+        
     }
     public IEnumerator delaySuspectClearing(float delay = 0)
     {

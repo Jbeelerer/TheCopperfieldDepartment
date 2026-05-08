@@ -50,6 +50,16 @@ public class Phone : MonoBehaviour
             gm.InvestigationStateChanged.RemoveListener(ExitTutorial);
         }
     }
+    public IEnumerator RingWhenReady(string callName)
+    {
+        while(am == null || animator == null)
+        {
+            print(am + " " + animator);
+            yield return new WaitForEndOfFrame();
+        }
+        Ring(callName);
+        
+    }
 
     public void Ring()
     {
