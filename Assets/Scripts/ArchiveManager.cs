@@ -68,11 +68,11 @@ public class ArchiveManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        print(gm.GetGameState());
+        //print(gm.GetGameState());
         //shoot raycast from mouse
         if (gm != null && gm.GetGameState() == GameState.InArchive)
         {
-            print("in archive!!!");
+            //print("in archive!!!");
             // scroll through files
             //on any key down
             if (Input.anyKeyDown)

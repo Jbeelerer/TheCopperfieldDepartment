@@ -402,7 +402,7 @@ public class ComputerControls : MonoBehaviour
                     pointySystem.StartTutorial("EvilSocialMedia", toggledAutomatically);
                 }*/
                 //else
-                if (gm.GetDay() == 3)
+                if (gm.GetDay() == 4)
                 {
                     pointySystem.StartTutorial("SocialMediaProfiles", toggledAutomatically);
                 }

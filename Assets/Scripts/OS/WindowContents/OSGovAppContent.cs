@@ -61,7 +61,7 @@ public class OSGovAppContent : MonoBehaviour, IPointerDownHandler, IPointerUpHan
                 // Show pin tutorial on day 2 only if the current people list is opened
                 if (GameManager.instance.GetDay() == 2 && currentMail.day == GameManager.instance.GetDay())
                 {
-                    computerControls.pointySystem.StartTutorial("PeopleListPinning");
+                    computerControls.pointySystem.StartTutorial("PeopleListPinning", toggledAutomatically: true);
                 }
             }
         }

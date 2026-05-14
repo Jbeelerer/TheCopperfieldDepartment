@@ -65,6 +65,9 @@ public class TitleMenu : MonoBehaviour
 
     void Start()
     {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
         anim = GetComponent<Animator>();
         audioManager = AudioManager.instance;
 

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class SettingsMenu : MonoBehaviour
 {
-    [SerializeField] private AudioManager audioManager;
+    private AudioManager audioManager;
 
     [SerializeField] private GameObject gameSettings;
     [SerializeField] private GameObject soundSettings;
@@ -40,6 +40,11 @@ public class SettingsMenu : MonoBehaviour
     private void OnDisable()
     {
         ApplySoundSettings();
+    }
+
+    public void Awake()
+    {
+        audioManager = FindFirstObjectByType<AudioManager>();
     }
 
     public void AddNativeResolution()
