@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -93,16 +94,16 @@ public class Archives : MonoBehaviour
     private void UpdateArchiveAvailability()
     {
         int count = 0;
-        foreach (Transform child in transform)
+        print(transform.GetChild(0));
+        foreach (Transform child in transform.GetChild(0))
         {
-            if (child.gameObject.activeSelf)
+            if (child.GetComponentInChildren<ArchiveFile>() != null)
             {
                 count++;
             }
         }
         print(count);
-        // camera pos and plane. TODO: IF MODEL IS REDONE PROBABLY NEEDS TO BE FIXED!!!
-        isLocked = count <= 2; 
+        isLocked = count <= 0; 
         locked.SetActive(isLocked); 
         print(categoryName + " ... " + count);
     }

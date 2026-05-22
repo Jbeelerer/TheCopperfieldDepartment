@@ -97,7 +97,7 @@ public class ArchiveFile : MonoBehaviour
     public void closeFile(Transform archive)
     {
         anim.SetBool("open", false);
-        gm.InspectObject(archive, new Vector3(0, 1f, 2f), GameState.InArchive);
+        gm.InspectObject(archive, new Vector3(0, 1.3f, 2.5f), GameState.InArchive);
         //   data = d;     
     }
 
