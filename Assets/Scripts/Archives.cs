@@ -100,7 +100,9 @@ public class Archives : MonoBehaviour
                 count++;
             }
         }
-        isLocked = count <= 0; 
+        print(count);
+        // camera pos and plane. TODO: IF MODEL IS REDONE PROBABLY NEEDS TO BE FIXED!!!
+        isLocked = count <= 2; 
         locked.SetActive(isLocked); 
         print(categoryName + " ... " + count);
     }
