@@ -303,9 +303,9 @@ public class OSSocialMediaContent : MonoBehaviour
         newSearchTerm.GetComponent<OSSearchTerm>().user = user;
 
         // Show automatic Pointy DM Tutorial
-        if (GameManager.instance.GetDay() == 6)
+        if (GameManager.instance.GetDay() == 7)
         {
-            computerControls.pointySystem.StartTutorial("DmPassword");
+            computerControls.pointySystem.StartTutorial("DmPassword", toggledAutomatically: true);
         }
     }
 
