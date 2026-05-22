@@ -507,6 +507,10 @@ public class FPSController : MonoBehaviour
     }
     void Update()
     {
+        if(am == null)
+        {
+            am = AudioManager.instance;
+        }
         if (gm == null)
         {
             gm = GameManager.instance;

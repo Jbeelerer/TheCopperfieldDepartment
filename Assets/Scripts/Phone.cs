@@ -54,7 +54,6 @@ public class Phone : MonoBehaviour
     {
         while(am == null || animator == null)
         {
-            print(am + " " + animator);
             yield return new WaitForEndOfFrame();
         }
         Ring(callName);

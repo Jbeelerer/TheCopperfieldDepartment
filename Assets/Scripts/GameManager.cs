@@ -464,10 +464,6 @@ public class GameManager : MonoBehaviour, ISavable
         posts = Resources.LoadAll<SocialMediaPost>(dayOrder[day] + "/Posts");
         conversations = Resources.LoadAll<DMConversation>(dayOrder[day] + "/Conversations");
         print(day + "----");
-        if (day == 6)
-        {    print(day + "----.....");
-            FindFirstObjectByType<Phone>().RingWhenReady("archiveIntro");
-        } 
         return false;
         
     }
@@ -528,7 +524,12 @@ public class GameManager : MonoBehaviour, ISavable
             DayIntro();
         }
         SetGameState(GameState.Playing);
-        calendarLoad = false;
+        calendarLoad = false; 
+         if (day == 6)
+        { 
+            StartCoroutine(FindFirstObjectByType<Phone>().RingWhenReady("archiveIntro"));
+        } 
+      
     }
     public void reloadIfOver()
     {
@@ -573,7 +574,7 @@ public class GameManager : MonoBehaviour, ISavable
                 results.Add(investigationState);
                 firstTryResults.Add(investigationState);
             }
-            else
+            else if(results.Count > furthestDay && furthestDay == day)
             {
                 results[day] = investigationState;
             } 
@@ -702,6 +703,10 @@ public class GameManager : MonoBehaviour, ISavable
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKey(KeyCode.P) && devMode)
+        {
+                LoadNewDay(5);
+        }
         if (Input.GetKeyDown(KeyCode.O) && devMode)
         {
             furthestDay = 1;
