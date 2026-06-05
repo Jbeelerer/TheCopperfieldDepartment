@@ -52,7 +52,7 @@ public class Archives : MonoBehaviour
     {
         GameManager.instance.OnNewDay.AddListener(UpdateArchiveAvailability);
         float i = 0;
-        float startPositionY = -5;
+        float startPosition = 0.007f;
         foreach (ArchiveData fileData in archiveData)
         {
             GameObject fp = filePrefab;
@@ -71,14 +71,15 @@ public class Archives : MonoBehaviour
             f.instantiateFile(fileData);
            // f.SetStickoutPosition(i);
             archiveFiles.Add(f);
-            newFile.transform.localPosition = new Vector3(0, 5, startPositionY + i);
-            i += 2f;
+            newFile.transform.localEulerAngles = new Vector3(180,90,90);
+            newFile.transform.localScale = new Vector3(0.0004f,0.0004f,0.0004f);
+            newFile.transform.localPosition = new Vector3(startPosition+i, 0.0002f, -0.0019f);
+            i -= 0.0015f;
         }
         anim = GetComponent<Animator>();
         camPos = transform.GetChild(1);
         pinboard = GameObject.Find("Pinboard").GetComponent<Pinboard>();
         gm = FindFirstObjectByType<GameManager>();
-        gm.StateChanged.AddListener(closeIfInArchive);
         print("archivees" + i);
         StartCoroutine(waitForCaseLoad());
     }
@@ -108,18 +109,6 @@ public class Archives : MonoBehaviour
         print(categoryName + " ... " + count);
     }
 
-    private void closeIfInArchive()
-    {
-        if (wasInArchvie && gm.GetGameState() == GameState.Playing)
-        {
-            wasInArchvie = false;
-            close();
-        }
-        else if (gm.GetGameState() == GameState.InArchive)
-        {
-            wasInArchvie = true;
-        }
-    }
 
     public Transform getCamPos()
     {
@@ -131,6 +120,7 @@ public class Archives : MonoBehaviour
         print("open");
         anim.SetBool("open", true);
     }
+    
     public void close()
     {
         anim.SetBool("open", false);
@@ -160,7 +150,16 @@ public class Archives : MonoBehaviour
     // delayed so that the fps controller doesn't open the archive again
     public IEnumerator DelayedClosArchive()
     {
+        print("closing: " + fileOpen + currentSelection);
+        if (currentSelection != null && fileOpen)
+        {
+             yield return currentSelection.closeFileAnim();   
+        }
+        else
+        {
         yield return new WaitForSeconds(0.5f);
+        }
+        print("done closing");
         close();
         gm.SetGameState(GameState.Playing);
         currentSelection = null;

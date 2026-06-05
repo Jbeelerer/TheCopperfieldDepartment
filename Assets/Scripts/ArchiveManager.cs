@@ -57,7 +57,7 @@ public class ArchiveManager : MonoBehaviour
         if (wasInArchvie && gm.GetGameState() == GameState.Playing)
         {
             wasInArchvie = false;
-            currentArchive.close();
+            StartCoroutine(currentArchive.DelayedClosArchive());
         }
         else if (gm.GetGameState() == GameState.InArchive)
         {
@@ -202,8 +202,14 @@ public class ArchiveManager : MonoBehaviour
 
     // delayed so that the fps controller doesn't open the archive again
     public IEnumerator DelayedClosArchive()
-    {
-        yield return new WaitForSeconds(0.5f);
+    {  if (currentSelection != null)
+        {
+             yield return currentSelection.closeFileAnim();   
+        }
+        else
+        {
+            yield return new WaitForSeconds(0.5f);
+        }
         currentArchive.close();
         gm.SetGameState(GameState.Playing);
         currentSelection = null;

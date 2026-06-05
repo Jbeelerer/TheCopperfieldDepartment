@@ -128,7 +128,12 @@ public class FPSController : MonoBehaviour
         threadCamera.enabled = false;
         pauseMenu = FindFirstObjectByType<PauseMenu>();
         inputOverlay.SetIcon("none");
-        
+        gm.StateChanged.AddListener(OnStateChanged);
+    }
+
+    private void OnStateChanged()
+    { 
+            transform.GetChild(2).gameObject.SetActive(gm.GetGameState() != GameState.InArchive);
     }
     private void FixedUpdate()
     {
@@ -159,7 +164,6 @@ public class FPSController : MonoBehaviour
         #region Look at things
         if (hasHitSomething && !onHoldDown && gm.GetGameState() == GameState.Playing)
         {
-            //print(nameOfThingLookedAt);
             if (Vector3.Distance(hit.collider.gameObject.transform.position, transform.position) <= interactionReach || selectedPinboardElement != null || currentThread != null)
             {
                 string tempName = hit.collider.gameObject.name;
@@ -693,7 +697,7 @@ public class FPSController : MonoBehaviour
                                         inputOverlay.SetIcon("");
                                         //  gm.InspectObject(hit.collider.transform.GetChild(0), new Vector3(0, 2f, 2f));
                                         // gm.InspectObject(currentSelectedObject.transform.GetChild(0), new Vector3(0, 2f, 3f), GameState.InArchive);
-                                        gm.InspectObject(currentSelectedObject.transform, new Vector3(0, 1.3f, 2.5f), GameState.InArchive);
+                                        gm.InspectObject(currentSelectedObject.transform, new Vector3(0, 1.5f, 2.8f), GameState.InArchive);
                                         archives.open();  
                                         ArchiveManager.Instance.SetCurrentArchive(archives);
                                         // gm.SetGameState(GameState.Inspecting);  
@@ -703,7 +707,6 @@ public class FPSController : MonoBehaviour
                                 print(hit.collider.transform.name);
                                     if (hit.collider.transform.GetComponent<Phone>() != null)
                                     {
-                                print(currentSelectedObject.name + "  .... " + hit.collider.transform.name);
                                         inputOverlay.SetIcon("");
                                         hit.collider.transform.GetComponent<Phone>().StartCall();
                                     }

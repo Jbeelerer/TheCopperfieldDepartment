@@ -106,6 +106,10 @@ public class GameManager : MonoBehaviour, ISavable
     {
         return instantiateLoadedDay;
     }
+    public Transform GetCamPos()
+    {
+        return inspectionCam.transform;
+    }
     public Pinboard getPinboard()
     {
         if (pinboard == null){
@@ -401,7 +405,6 @@ public class GameManager : MonoBehaviour, ISavable
     }
     void Start()
     {
-        print("Day: " + calendarLoad);
         if (calendarLoad)
         {  
             return;
@@ -421,7 +424,6 @@ public class GameManager : MonoBehaviour, ISavable
         }
         else
         {
-            print("reeeal neeew game!!!");
           //  DayIntro();
             StartCoroutine(DelayFirstDay());
             //LoadNewDay(day); 
@@ -463,13 +465,11 @@ public class GameManager : MonoBehaviour, ISavable
         // mails[tempMails.Count()] = feedBackMail;        
         posts = Resources.LoadAll<SocialMediaPost>(dayOrder[day] + "/Posts");
         conversations = Resources.LoadAll<DMConversation>(dayOrder[day] + "/Conversations");
-        print(day + "----");
         return false;
         
     }
     public IEnumerator delaySuspectClearing(float delay = 0)
     {
-        print("clearing suspect");
         yield return new WaitForSeconds(delay);
         currentlyAccused = null;
         currentInvestigationState = investigationStates.SuspectNotFound;
@@ -499,8 +499,6 @@ public class GameManager : MonoBehaviour, ISavable
         //using lists to add new values dynamicly, afterwards convert to array, because it won't change and will be more performant
         List<Person> tempPeople = new List<Person>();
         List<SocialMediaUser> tempUsers = new List<SocialMediaUser>();
-        print("Day: " + day);
-        print("Case: " + currentCase);
         foreach (Person p in currentCase.people)
         {
             tempPeople.Add(p);
@@ -570,7 +568,6 @@ public class GameManager : MonoBehaviour, ISavable
         {
             if (results.Count <= furthestDay && furthestDay == day)
             {
-                print("added" + investigationState);
                 results.Add(investigationState);
                 firstTryResults.Add(investigationState);
             }
@@ -735,7 +732,6 @@ public class GameManager : MonoBehaviour, ISavable
     {
         while (GameObject.Find("Virtual Camera") == null || narration == null)
         { 
-        print("looking For cam and narration");
             yield return new WaitForSeconds(0.1f); 
         } 
         StartCoroutine(narration.BlackScreenEnumerator(false));;
@@ -743,7 +739,6 @@ public class GameManager : MonoBehaviour, ISavable
         
         SetGameState(GameState.Playing);
         GameObject instantiatedDayIntro = Instantiate(dayIntro);
-        print("instantiated dayintro "+instantiatedDayIntro);
         instantiatedDayIntro.transform.GetChild(0).GetChild(0).GetComponent<TMPro.TextMeshProUGUI>().text = "Day " + day + ":";
         instantiatedDayIntro.transform.GetChild(0).GetChild(1).GetComponent<TMPro.TextMeshProUGUI>().text = currentCase.caseName;
         instantiatedDayIntro.SetActive(true);
