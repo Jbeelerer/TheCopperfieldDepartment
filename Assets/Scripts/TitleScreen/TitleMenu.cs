@@ -122,6 +122,8 @@ public class TitleMenu : MonoBehaviour
         {
             SelectOption(currentSelectedOption.transform.GetComponent<TitleMenuOption>().optionType);
         }
+
+        spotLight.position = new Vector3(pinboardMainCam.transform.position.x, cinemachineBrain.transform.position.y, cinemachineBrain.transform.position.z);
     }
 
     private void SelectOption(TitleOption option)
@@ -190,9 +192,6 @@ public class TitleMenu : MonoBehaviour
 
     private void SetCamPriority(CinemachineCamera cam)
     {
-        if (doorOpened && spotLight.parent != cinemachineBrain.transform)
-            spotLight.SetParent(cinemachineBrain.transform);
-
         cameras.ForEach(c => c.Priority = 0);
         cam.Priority = 1;
 
