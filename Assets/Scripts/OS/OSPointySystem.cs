@@ -346,10 +346,10 @@ public class OSPointySystem : MonoBehaviour, ISavable
         }
 
         // Show delayed tips tutorial if day 2 people list and social media tutorials are completed
-        if (CheckIfTutorialCompleted("SocialMediaPinning") && CheckIfTutorialCompleted("PeopleListPinning") && !CheckIfTutorialCompleted("TipsPageStart"))
+        /*if (CheckIfTutorialCompleted("SocialMediaPinning") && CheckIfTutorialCompleted("PeopleListPinning") && !CheckIfTutorialCompleted("TipsPageStart"))
         {
             StartCoroutine(StartTutorialDelayed("TipsPageStart", 4f, true));
-        }
+        }*/
 
         nextTargetObject = null;
         currentTutorial = null;

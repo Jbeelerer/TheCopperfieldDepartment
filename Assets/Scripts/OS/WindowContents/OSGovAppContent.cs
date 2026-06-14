@@ -11,6 +11,7 @@ public class OSGovAppContent : MonoBehaviour, IPointerDownHandler, IPointerUpHan
     public TMP_Text mailSender;
     public GameObject mailContainer;
     public GameObject mailPrefab;
+    public GameObject mailSeparatorPrefab;
     public ScrollRect textScrollArea;
     public RectTransform mailListRect;
     public RectTransform textBoxRect;
@@ -27,6 +28,9 @@ public class OSGovAppContent : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 
         for (int i = 1; i <= GameManager.instance.GetDay(); i++)
         {
+            if (i == GameManager.instance.GetDay())
+                Instantiate(mailSeparatorPrefab, mailContainer.transform);
+
             var retreivedMails = computerControls.GetMails(i);
             foreach (Mail m in retreivedMails)
             {
