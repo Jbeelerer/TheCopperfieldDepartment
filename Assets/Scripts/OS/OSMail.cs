@@ -38,7 +38,6 @@ public class OSMail : MonoBehaviour
         govAppContent.mailTitle.text = "<b>" + mail.title;
         govAppContent.mailSender.text = "From: " + mail.sender;
         govAppContent.mailTextMesh.text = mail.message;
-        govAppContent.textScrollArea.GetComponentInChildren<Scrollbar>(true).value = 1;
         govAppContent.OpenTextBox();
     }
 

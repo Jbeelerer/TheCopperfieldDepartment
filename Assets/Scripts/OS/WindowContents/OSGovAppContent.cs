@@ -95,7 +95,12 @@ public class OSGovAppContent : MonoBehaviour, IPointerDownHandler, IPointerUpHan
         mailListRect.offsetMin = new Vector2(0, 180);
         textBoxRect.offsetMax = new Vector2(0, -82);
         textBoxRect.transform.GetChild(0).Find("CloseTextBoxButton").gameObject.SetActive(true);
+        Canvas.ForceUpdateCanvases();
+        textScrollArea.GetComponentInChildren<VerticalLayoutGroup>(true).gameObject.SetActive(false);
+        textScrollArea.GetComponentInChildren<VerticalLayoutGroup>(true).gameObject.SetActive(true);
+
         textScrollArea.transform.Find("ScrollArea").gameObject.SetActive(true);
+        textScrollArea.GetComponentInChildren<Scrollbar>(true).value = 1;
     }
 
     private void OpenVigilanty()
