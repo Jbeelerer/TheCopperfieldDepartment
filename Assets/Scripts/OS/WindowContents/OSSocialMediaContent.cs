@@ -361,7 +361,7 @@ public class OSSocialMediaContent : MonoBehaviour
         searchBar.Find("SearchText").GetComponent<TextMeshProUGUI>().text = text;
         backButton.SetActive(backButtonFunc != null);
         // Show day change buttons if on home screen and already unlocked
-        changeDayButtons.SetActive(backButtonFunc == null && GameManager.instance.GetDay() > 6);
+        changeDayButtons.SetActive(backButtonFunc == null && GameManager.instance.GetDay() > 7);
 
         if (backButtonFunc != null)
         {

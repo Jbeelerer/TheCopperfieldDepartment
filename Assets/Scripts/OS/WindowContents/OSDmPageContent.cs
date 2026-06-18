@@ -83,7 +83,7 @@ public class OSDmPageContent : MonoBehaviour
             InstantiateConversations();
             passwordField.text = "********";
         }
-        loginButton.interactable = passwordFound;
+        loginButton.enabled = passwordFound;
         loginFailedMessage.SetActive(!passwordFound);
     }
 

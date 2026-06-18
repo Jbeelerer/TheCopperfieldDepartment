@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -48,6 +46,9 @@ public class OSTab : MonoBehaviour
                 break;
             case OSAppType.TIPS_PAGE:
                 tabText = "Tips & Tricks";
+                break;
+            case OSAppType.DM_PAGE:
+                tabText = "DMs";
                 break;
         }
         transform.Find("Text").GetComponent<TextMeshProUGUI>().text = tabText;

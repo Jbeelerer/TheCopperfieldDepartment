@@ -224,7 +224,10 @@ public class OSPointySystem : MonoBehaviour, ISavable
         // Reset size and position of affected window (if not inspection mode)
         if (computerControls.currentFocusedWindow && name != "ImageInspection")
         {
-            computerControls.ResizeWindowSmall(computerControls.currentFocusedWindow);
+            // Only reset size for windows that have "small" window size available
+            if (computerControls.currentFocusedWindow.resizeButtons.Contains(computerControls.currentFocusedWindow.buttonSmall))
+                computerControls.ResizeWindowSmall(computerControls.currentFocusedWindow);
+
             computerControls.currentFocusedWindow.rectTrans.position = computerControls.screen.position;
         }
 
