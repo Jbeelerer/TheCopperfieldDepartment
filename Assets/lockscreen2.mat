@@ -7,34 +7,26 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: PBImage
-  m_Shader: {fileID: -6465566751694194690, guid: e7c9fd245a80e4057ad8a6dd18204489,
-    type: 3}
+  m_Name: lockscreen2
+  m_Shader: {fileID: 4800000, guid: 912853a34ef79c445a00ce06e28673ff, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _DISPLAY_COLOR
+  - _PIP_ON
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
-  disabledShaderPasses:
-  - MOTIONVECTORS
+  disabledShaderPasses: []
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _AnnotationSprite:
-        m_Texture: {fileID: 2800000, guid: 81df670c17b62496ba60e318e810b09f, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Base:
-        m_Texture: {fileID: 2800000, guid: 4bc44a34785a1b843b5669843d9f5413, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 0567eaf17fadc4095bb738144e512b5d, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -58,35 +50,35 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 0567eaf17fadc4095bb738144e512b5d, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
+        m_Texture: {fileID: 2800000, guid: c6e904892753f4b65a414cfca55b5f2a, type: 3}
+        m_Scale: {x: 1.5, y: 1.5}
+        m_Offset: {x: -0.25, y: -0.25}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _NormalFromTexture_fb72a8c1226f41beb7959b3b227d1622_Texture_0_Texture2D:
-        m_Texture: {fileID: 2800000, guid: 73a3a708bb77949938d2c21a5c8ae295, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _OverlayTex:
+        m_Texture: {fileID: 2800000, guid: 97ea38ff1168c4c3ea51efc5c2bccc07, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _SecondTexture:
-        m_Texture: {fileID: 2800000, guid: 1da09b44fcf8b4eaf8a0b13163484f8a, type: 3}
+    - _PiPTex:
+        m_Texture: {fileID: 2800000, guid: 5647ad8c94b85439797eedaedc5345fe, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ShadowMask:
+        m_Texture: {fileID: 2800000, guid: 4dd295f1c287d864288436e245b05bea, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
         m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _StrikeThroughAnnotation:
-        m_Texture: {fileID: 2800000, guid: 6546fa729839c4e51b544b4df6ff44c0, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -105,50 +97,61 @@ Material:
     m_Floats:
     - _AlphaClip: 0
     - _AlphaToMask: 0
-    - _AnnotationAlpha: 0.8
+    - _Binary: 0
+    - _Bleed: 0.13
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
-    - _Contrast: 1
+    - _ColorBleed: 0
+    - _Composite: -1.16
     - _Cull: 2
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
+    - _Display: 0
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _Height: 515
+    - _Intensity: 5.31
+    - _Lcd: 0
     - _Metallic: 0
     - _OcclusionStrength: 1
+    - _Overlay: 0
+    - _OverlayAlpha: 1
+    - _Overscan: 0
+    - _OverscanX: 0.023
+    - _OverscanY: 0
     - _Parallax: 0.005
-    - _QueueControl: 0
+    - _PiP: 1
+    - _PiPAlpha: 0.641
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
+    - _SourceRes: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
+    - _Width: 100
     - _WorkflowMode: 1
     - _ZWrite: 1
-    - _height: 100
-    - _width: 0
     m_Colors:
-    - _AnnotationColor: {r: 1, g: 0, b: 0, a: 0}
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _BaseColor: {r: 0.254717, g: 0.22723146, b: 0.19824672, a: 1}
+    - _Color: {r: 0.25471696, g: 0.22723141, b: 0.19824669, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _MultiplicationColor: {r: 1, g: 1, b: 1, a: 0}
+    - _OverscanColor: {r: 0.44829082, g: 0.5660378, b: 0.3818085, a: 1}
+    - _RGBA: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _TextColor: {r: 0.28301886, g: 0.23945355, b: 0.16420436, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!114 &6682628315251634609
+--- !u!114 &4438701696014566638
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -160,4 +163,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  version: 10
+  version: 7

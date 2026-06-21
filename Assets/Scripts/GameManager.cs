@@ -101,6 +101,8 @@ public class GameManager : MonoBehaviour, ISavable
 
     private Pinboard pinboard;
     [SerializeField] private GameObject lastSuspectForm;
+    [SerializeField] private GameObject keyPrefab;
+    [SerializeField] private Transform keySpawnPos;
 
     public bool GetInstantiateLoadedDay()
     {
@@ -132,6 +134,12 @@ public class GameManager : MonoBehaviour, ISavable
     {
         yield return new WaitForSeconds(0.5f);
         PinboardBlocked = t;
+    }
+
+    public void SpawnKey(string name)
+    {
+        GameObject key = Instantiate(keyPrefab, keySpawnPos.position, keySpawnPos.rotation);
+        key.GetComponent<Grabbable>().SetKey(name);
     }
 
     public bool GetIfDevMode()

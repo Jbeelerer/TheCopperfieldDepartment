@@ -14,11 +14,15 @@ using UnityEngine.SceneManagement;
 
 [System.Serializable]
 public class DeletionEvent : UnityEvent<ScriptableObject> { }
+[System.Serializable]
+public class GrabEvent : UnityEvent<Grabbable> { }
 
 
 [RequireComponent(typeof(CharacterController))]
 public class FPSController : MonoBehaviour
 {
+    private bool hasKey = false;
+    private string keyName = "";
     public Camera playerCamera;
     public Transform cameraObject;
     public float walkSpeed = 6f;
@@ -74,6 +78,8 @@ public class FPSController : MonoBehaviour
     private bool onHoldDown = false;
 
     public DeletionEvent OnPinDeletion;
+
+    public GrabEvent pickupEvent;
 
     private Vector3 originalPosition;
 
@@ -242,10 +248,12 @@ public class FPSController : MonoBehaviour
                                 inputOverlay.SetIcon("inspect");
                                 break;
                             case "Archive":
+                            
                             string category = hit.collider.gameObject.GetComponent<Archives>().GetCurrentCategory();
+                            if(hit.collider.gameObject.GetComponent<Archives>().GetIsKeyUsed()){
                                 inputOverlay.SetIcon("inspect");
                                 //if()
-                                inputOverlay.OverwriteText("Open Archive: " +category);
+                                inputOverlay.OverwriteText("Open Archive: " +category);}
                                 break;
                             case "pin":
                                 inputOverlay.SetIcon("trash");
@@ -586,24 +594,36 @@ public class FPSController : MonoBehaviour
                     if (hit.collider.gameObject.tag == "Grabbable")
                     {
                         grabbedObject = hit.collider.gameObject.GetComponent<Grabbable>();
+                        keyName = grabbedObject.GetKey();
+                        hasKey = keyName != "";
+                        pickupEvent?.Invoke(grabbedObject);  
+                       
                         grabbedObject.Grab(grabPos);
                     }
-                    else if (grabbedObject != null)
+                    else if (grabbedObject != null && !(hasKey && currentSelectedObject != null &&currentSelectedObject.name == "Archive"))
                     {
                         if (hit.collider.gameObject.name == "PinboardModel" && grabbedObject.GetComponent<TrashedPostIt>() != null)
                         {
                             grabbedObject.GetComponent<TrashedPostIt>().ReAddPostIt();
                             Destroy(grabbedObject.gameObject);
                             grabbedObject = null;
+                            keyName = "";
+                            pickupEvent?.Invoke(grabbedObject);
+                            
+                            hasKey = false;
                         }
                         else
                         {
                             grabbedObject.shoot(cameraObject.transform.forward);//Vector3.forward);  
                             grabbedObject = null;
+                            keyName = "";
+                            pickupEvent.Invoke(grabbedObject);
+                            
+                            hasKey = false;
                         }
                     }
 
-                    else if (currentSelectedObject != null)
+                    else if (currentSelectedObject != null || (hasKey && currentSelectedObject.name == "Archive"))
                     {
                         //Connect threat to pinboardElement
                         if (currentThread != null)
@@ -694,13 +714,29 @@ public class FPSController : MonoBehaviour
                                     if (requirementMet && gm.GetGameState() != GameState.InArchive)
                                     {
                                         archives = currentSelectedObject.transform.gameObject.GetComponent<Archives>();
+                                        if(archives.GetIsKeyUsed()){
+                                            
+                                        if(archives.GetIsKeyUsed()){
                                         inputOverlay.SetIcon("");
                                         //  gm.InspectObject(hit.collider.transform.GetChild(0), new Vector3(0, 2f, 2f));
                                         // gm.InspectObject(currentSelectedObject.transform.GetChild(0), new Vector3(0, 2f, 3f), GameState.InArchive);
                                         gm.InspectObject(currentSelectedObject.transform, new Vector3(0, 1.5f, 2.8f), GameState.InArchive);
                                         archives.open();  
                                         ArchiveManager.Instance.SetCurrentArchive(archives);
-                                        // gm.SetGameState(GameState.Inspecting);  
+                                            // gm.SetGameState(GameState.Inspecting);  
+                                        }
+                                        }
+                                        else if(hasKey && keyName == archives.GetArchiveName())
+                                        {
+                                            archives.UnlockArchive();
+                                            Destroy(grabbedObject.gameObject); 
+                                            grabbedObject = null;
+                                            pickupEvent.Invoke(grabbedObject);
+                                          
+                                            hasKey = false;
+                                            keyName = "";
+                                        }
+                                        print(archives.GetArchiveName());
                                     }
                                     break;
                                 case "Phone":

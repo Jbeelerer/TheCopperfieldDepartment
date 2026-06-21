@@ -53,7 +53,10 @@ public class ArchiveFile : MonoBehaviour
         fileMapTitle.text = d.archivename;
         if (d.type != ArchiveType.Text)
         {
+            print(d.image.texture);
+            print(fileImage);
             fileImage.material.SetTexture("_Base", d.image.texture);
+            print(fileImage.material.GetTexture("_Base"));
         }
         if (d.type != ArchiveType.Image)
         {

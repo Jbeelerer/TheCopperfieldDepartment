@@ -7,9 +7,16 @@ using UnityEngine;
 public class Archives : MonoBehaviour
 {
     [SerializeField] private GameObject[] files;
+    [SerializeField] private Material lockedSprite;
+    [SerializeField] private Material unlockedSprite;
+    [SerializeField] private Material keySprite;
+    [SerializeField] private GameObject screen;
     [SerializeField] private GameObject filePrefab;
-    [SerializeField] private GameObject locked;
+    [SerializeField] private Transform lockHinge;
+    [SerializeField] private Transform key;
+    [SerializeField] private int startDay;
      private bool isLocked = true;
+     private bool keyUsed = false;
     [SerializeField] private GameObject fotoFilePrefab;
     [SerializeField] private GameObject textFilePrefab;
     [SerializeField] private List<ArchiveFile> archiveFiles = new List<ArchiveFile>();
@@ -28,6 +35,8 @@ public class Archives : MonoBehaviour
     private int currentFile = 0;
     public string categoryName = "";
     private bool wasInArchvie = false;
+
+    [SerializeField] private CharacterJoint joint;
     // Start is called before the first frame update
     public List<ArchiveFile> GetArchiveFiles()
     {
@@ -39,18 +48,86 @@ public class Archives : MonoBehaviour
         return categoryName;
     }
 
+
     public bool GetIsLocked()
     {
         return isLocked;
     }
 
+    public bool GetIsKeyUsed()
+    {
+        return keyUsed;
+    }
+    public void UnlockArchive()
+    {
+        StartCoroutine(DelayUnlock(0.5f));
+    }
+
+    public string GetArchiveName()
+    {
+        return categoryName;
+    }
+      public Vector3 startPos;
+    public Vector3 endPos;
+    public float startRot;
+    public float endRot;
+    public float duration;
+
+    private int DayChecked = 0;
+
+    private IEnumerator DelayUnlock(float duration) // Changed 'time' to 'duration' to match your loop
+    {
+        float elapsedTime = 0f; // Make sure this is initialized to 0
+        // Smoothly interpolate using Quaternions directly for cleaner rotation handling
+        Vector3 startPos = key.localPosition;        
+        Vector3 endPos = key.localPosition + new Vector3(0f, -0.5f, 0f); // Rotates 45 degrees on the local Y axis
+        key.gameObject.SetActive(true);
+          while (elapsedTime < duration)
+        {
+            float t = elapsedTime / duration;
+            key.localPosition = Vector3.Lerp(startPos, endPos, t);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        Quaternion startRot = lockHinge.localRotation;
+        Quaternion endRot = startRot * Quaternion.Euler(0f, 90, 0f); // Rotates 45 degrees on the local Y axis
+
+        while (elapsedTime < duration)
+        {
+            float t = elapsedTime / duration; // Mathf.Clamp01 isn't strictly necessary if the while condition catches it, but it's safe
+                        lockHinge.localRotation = Quaternion.Lerp(startRot, endRot, t);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        lockHinge.localRotation = endRot;
+        // set material
+        screen.GetComponent<Renderer>().material = unlockedSprite;
+        Destroy(joint);
+        yield return new WaitForSeconds(0.8f);
+        keyUsed = true;
+    } 
+    public void UpdateScreen(Grabbable grabbable)
+    {
+        if(grabbable == null && !keyUsed)
+        {
+            screen.GetComponent<Renderer>().material = lockedSprite;
+        }
+        else if (grabbable != null && grabbable.GetKey() == categoryName)
+        {
+            screen.GetComponent<Renderer>().material = keySprite;
+        }
+    }
+  
     public void SetCurrentSelection(ArchiveFile file)
     {
         currentSelection = file;
     }
     void Start()
     {
-        GameManager.instance.OnNewDay.AddListener(UpdateArchiveAvailability);
+        PlayerPrefs.SetInt("archiveLocked_"+categoryName,0);
+        FindFirstObjectByType<FPSController>().pickupEvent.AddListener(UpdateScreen);
+        GameManager.instance.OnNewDay.AddListener(UpdateArchiveAvailabilityCoroutineManager);
         float i = 0;
         float startPosition = 0.007f;
         foreach (ArchiveData fileData in archiveData)
@@ -67,7 +144,6 @@ public class Archives : MonoBehaviour
 
             GameObject newFile = Instantiate(fp, transform.GetChild(0));
             ArchiveFile f = newFile.GetComponentInChildren<ArchiveFile>();
-            categoryName = fileData.categoryName;
             f.instantiateFile(fileData);
            // f.SetStickoutPosition(i);
             archiveFiles.Add(f);
@@ -81,6 +157,10 @@ public class Archives : MonoBehaviour
         pinboard = GameObject.Find("Pinboard").GetComponent<Pinboard>();
         gm = FindFirstObjectByType<GameManager>();
         print("archivees" + i);
+        
+    }
+    private void UpdateArchiveAvailabilityCoroutineManager()
+    {
         StartCoroutine(waitForCaseLoad());
     }
     private IEnumerator waitForCaseLoad()
@@ -103,9 +183,30 @@ public class Archives : MonoBehaviour
                 count++;
             }
         }
-        print(count);
-        isLocked = count <= 0; 
-        locked.SetActive(isLocked); 
+        isLocked = startDay > GameManager.instance.GetDay(); 
+        print(isLocked);
+        print(startDay);
+        print("----"+GameManager.instance.GetDay());
+
+        if (!isLocked && startDay <= GameManager.instance.GetDay())
+        {
+            print("LOOCKED"+isLocked); 
+
+            DayChecked = GameManager.instance.GetDay();
+            if(startDay == GameManager.instance.GetDay())
+            {
+                GameManager.instance.SpawnKey(categoryName);
+                PlayerPrefs.SetInt("archiveLocked_"+categoryName,1);
+            }
+            else
+            { 
+                key.localPosition = key.localPosition + new Vector3(0f, -0.5f, 0f); ;
+                lockHinge.localRotation = lockHinge.localRotation* Quaternion.Euler(0f, 90, 0f);
+                screen.GetComponent<Renderer>().material = unlockedSprite;
+                Destroy(joint);
+                keyUsed = true;
+            }
+        }
         print(categoryName + " ... " + count);
     }
 
