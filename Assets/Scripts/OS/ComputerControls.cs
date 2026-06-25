@@ -481,6 +481,7 @@ public class ComputerControls : MonoBehaviour
         eventSystem.GetComponent<StandaloneInputModule>().enabled = !cursorActive;
         eventSystem.GetComponent<VirtualInputModule>().enabled = cursorActive;
         cursor.anchoredPosition = cursorActive ? new Vector2(0, 0) : new Vector2(-1000, -1000);
+        GetComponent<GraphicRaycaster>().enabled = cursorActive;
     }
 
     private void CheckForTooltip()
