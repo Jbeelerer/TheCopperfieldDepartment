@@ -413,6 +413,8 @@ public class GameManager : MonoBehaviour, ISavable
     }
     void Start()
     {
+        // ensure picked up objects don't collide with the world
+        Physics.IgnoreLayerCollision(0, 2, true);
         if (calendarLoad)
         {  
             return;

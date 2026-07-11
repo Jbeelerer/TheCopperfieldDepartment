@@ -587,9 +587,6 @@ public class FPSController : MonoBehaviour
                     //inputOverlay.SetIcon("");
                     if (hit.collider.gameObject.name == "Trash")
                     {
-                        SaveManager.instance.DeleteSave();
-                        gm.ResetGame();
-                        SceneManager.LoadScene(0);
                     }
                     if (hit.collider.gameObject.tag == "Grabbable")
                     {

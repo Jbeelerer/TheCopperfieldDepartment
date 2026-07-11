@@ -28,7 +28,9 @@ public class Grabbable : MonoBehaviour
     }
     public void Grab(Transform pos)
     {
-        gameObject.layer = 2;
+        
+        SetLayerRecursively(gameObject, 2);
+        //gameObject.layer = 2;
         transform.localPosition = Vector3.zero + Vector3.up*positionOffset;
         transform.localRotation = Quaternion.identity * Quaternion.Euler(0, 0,rotationOffset);
         position = pos;
@@ -38,6 +40,14 @@ public class Grabbable : MonoBehaviour
         GetComponent<Collider>().enabled = false;
         isGrabbed = true;
 
+    }
+    public static void SetLayerRecursively(GameObject obj, int layer)
+    {
+        foreach (Transform t in obj.GetComponentsInChildren<Transform>(true))
+        {
+            t.gameObject.layer = layer;
+        
+        }
     }
     public void shoot(Vector3 direction)
     {
@@ -50,7 +60,7 @@ public class Grabbable : MonoBehaviour
         transform.SetParent(null);
         transform.rotation = Quaternion.identity;
         rb.freezeRotation = false;
-        gameObject.layer = 0;
+        SetLayerRecursively(gameObject, 0);
         isGrabbed = false;
         rb.isKinematic = false;
         rb.linearVelocity = Vector3.zero;
@@ -72,4 +82,9 @@ public class Grabbable : MonoBehaviour
         }
 
     }
+
+    void OnCollisionEnter(Collision collision)
+    {
+      print(collision.transform.name);  
+    } 
 }
