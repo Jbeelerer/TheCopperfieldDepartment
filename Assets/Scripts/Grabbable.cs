@@ -26,15 +26,26 @@ public class Grabbable : MonoBehaviour
         objectType = key;
         return objectType;
     }
+    public void SetCollision(bool b)
+    {
+        if(b){
+            GetComponent<Collider>().enabled = true;
+            SetLayerRecursively(gameObject, 0);
+        }else{
+            GetComponent<Collider>().enabled = false;
+            SetLayerRecursively(gameObject, 2);
+            }
+            
+    }
     public void Grab(Transform pos)
     {
         
         SetLayerRecursively(gameObject, 2);
         //gameObject.layer = 2;
+        transform.localRotation = Quaternion.identity;// * Quaternion.Euler(0, 0,rotationOffset)
         transform.localPosition = Vector3.zero + Vector3.up*positionOffset;
-        transform.localRotation = Quaternion.identity * Quaternion.Euler(0, 0,rotationOffset);
         position = pos;
-        transform.SetParent(pos); 
+        transform.SetParent(pos);  
         rb.isKinematic = true;
         rb.freezeRotation = true;
         GetComponent<Collider>().enabled = false;

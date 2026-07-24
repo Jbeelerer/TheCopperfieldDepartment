@@ -103,6 +103,7 @@ public class GameManager : MonoBehaviour, ISavable
     [SerializeField] private GameObject lastSuspectForm;
     [SerializeField] private GameObject keyPrefab;
     [SerializeField] private Transform keySpawnPos;
+    [SerializeField] private Animator doorKeyAnim;
 
     public bool GetInstantiateLoadedDay()
     {
@@ -138,8 +139,19 @@ public class GameManager : MonoBehaviour, ISavable
 
     public void SpawnKey(string name)
     {
+        StartCoroutine(DelayKeySpawn(name));
+    }
+
+    private IEnumerator DelayKeySpawn(string name)
+    {
+        yield return new WaitForSeconds(1.3f);  
+        doorKeyAnim.GetComponent<Animator>().SetTrigger("spawn");
+        yield return new WaitForSeconds(1f);
         GameObject key = Instantiate(keyPrefab, keySpawnPos.position, keySpawnPos.rotation);
+        Grabbable grabbable = key.GetComponent<Grabbable>();
+        key.GetComponent<Rigidbody>().AddForce(Vector3.right * 10, ForceMode.Impulse);
         key.GetComponent<Grabbable>().SetKey(name);
+        yield return new WaitForSeconds(0.5f); 
     }
 
     public bool GetIfDevMode()
@@ -539,17 +551,20 @@ public class GameManager : MonoBehaviour, ISavable
         } 
       
     }
-    public void reloadIfOver()
+    public bool reloadIfOver()
     {
-        if (day == endDay)//Resources.LoadAll<Case>(dayOrder[day]).Count()
-        {
+        if (day >= endDay)//Resources.LoadAll<Case>(dayOrder[day]).Count()
+        { 
+            Destroy(GameObject.Find("LastDayReportManager"));
             Destroy(GameManager.instance.gameObject);
             // TODO: implement endgame  
             SaveManager.instance.DeleteSave(); 
             SceneManager.LoadScene(3);
             //  return;
             // todo: Only temp solution...
+            return true;
         }
+        return false;
     }
 
     public void SortCompetingEmployees()
@@ -589,6 +604,9 @@ public class GameManager : MonoBehaviour, ISavable
             if (day == 1)
             {
                 narration.PlaySequence(investigationState == investigationStates.SuspectFound ? "firstDayFeedbackPositive" : "firstDayFeedbackNegative");
+            } else if (day == endDay-1 && investigationState == investigationStates.SuspectFound)
+            {
+                narration.PlaySequence("FinalDayFeedback");
             }
             else
             {

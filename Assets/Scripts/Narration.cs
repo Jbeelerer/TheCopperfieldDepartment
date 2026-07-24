@@ -56,6 +56,7 @@ public class TimedSubtitles
     public TimedSubtitle[] phoneReminderNothingAdded;
     public TimedSubtitle[] phoneCallIntro;
     public TimedSubtitle[] firstDayFeedbackPositive;
+    public TimedSubtitle[] FinalDayFeedback;
     public TimedSubtitle[] firstDayFeedbackNegative;
     public TimedSubtitle[] exit;
     public TimedSubtitle[] archiveIntro;
@@ -92,6 +93,7 @@ public class Narration : MonoBehaviour
     [SerializeField] private AudioClip suspectFoundVoice;
     [SerializeField] private AudioClip introClip;
     [SerializeField] private AudioClip firstDayFeedbackPositiveClip;
+    [SerializeField] private AudioClip FinalDayFeedbackClip;
     [SerializeField] private AudioClip firstDayFeedbackNegativeClip;
     [SerializeField] private AudioClip exit;
     [SerializeField] private AudioClip archiveIntroClip;
@@ -249,6 +251,10 @@ public class Narration : MonoBehaviour
             case "phoneReminderNothingAdded":
             OnPhoneState(true);
                 currentCall = PlaySequence(timedSubtitles.phoneReminderNothingAdded, phoneCallNothingAddedClip, false);
+                break;
+            case "FinalDayFeedback":
+            OnPhoneState(false);
+                currentCall = PlaySequence(timedSubtitles.FinalDayFeedback, FinalDayFeedbackClip);
                 break;
         }
         StartCoroutine(currentCall);

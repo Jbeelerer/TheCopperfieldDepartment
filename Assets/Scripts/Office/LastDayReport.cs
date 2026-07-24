@@ -26,24 +26,29 @@ public class LastDayReport : MonoBehaviour
     {
         gm = GameManager.instance;
 
-        print(gm.GetCurrentlyAccused().personName);
-        suspectName.text = gm.GetCurrentlyAccused().personName;
-        suspectImage.sprite = gm.GetCurrentlyAccused().image;
-        explenation.text = gm.GetFeedBackExplanation();
-        print(gm.GetFeedBackExplanation()); 
-        print(gm.GetDay()-1); 
-        if (gm.GetCurrentInvestigationState() == investigationStates.SuspectFound)
+        // todo make sure the next day is instantiated after the last day report 
+        bool isOver = GameManager.instance.reloadIfOver();
+        if (!isOver)
         {
-            stamp.sprite = stampSuccess;
+            print(gm.GetCurrentlyAccused().personName);
+            suspectName.text = gm.GetCurrentlyAccused().personName;
+            suspectImage.sprite = gm.GetCurrentlyAccused().image;
+            explenation.text = gm.GetFeedBackExplanation();
+            print(gm.GetFeedBackExplanation()); 
+            print(gm.GetDay()-1); 
+            if (gm.GetCurrentInvestigationState() == investigationStates.SuspectFound)
+            {
+                stamp.sprite = stampSuccess;
+            }
+            else
+            {
+                stamp.sprite = stampFailed;
+                StartCoroutine(CaptureRectTransform(paper));
+            }
+            gm.SetGameState(GameState.Playing);
+        }else{
+            Destroy(gameObject);
         }
-        else
-        {
-            stamp.sprite = stampFailed;
-            StartCoroutine(CaptureRectTransform(paper));
-        }
-        gm.SetGameState(GameState.Playing);
-      
-
     }
     void Update()
     {
@@ -106,8 +111,6 @@ public class LastDayReport : MonoBehaviour
         StartCoroutine(GameManager.instance.delaySuspectClearing(0.1f));
         GameObject g = Instantiate(newDayPrefab);
         GameObject.Find("Narration").GetComponent<Narration>().BlackScreenOff();
-        // todo make sure the next day is instantiated after the last day report 
-        GameManager.instance.reloadIfOver();
         Destroy(gameObject);
     }
 }
