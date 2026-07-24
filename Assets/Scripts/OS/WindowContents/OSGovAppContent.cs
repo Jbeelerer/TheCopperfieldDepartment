@@ -28,7 +28,7 @@ public class OSGovAppContent : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 
         for (int i = 1; i <= GameManager.instance.GetDay(); i++)
         {
-            if (i == GameManager.instance.GetDay())
+            if (i == GameManager.instance.GetDay() && i > 1)
                 Instantiate(mailSeparatorPrefab, mailContainer.transform);
 
             var retreivedMails = computerControls.GetMails(i);
