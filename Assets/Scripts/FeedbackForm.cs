@@ -1,40 +1,51 @@
 using System.Collections;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class FeedbackForm : MonoBehaviour
 {
+    [SerializeField] GameObject message;
     [SerializeField] GameObject form;
     [SerializeField] GameObject success;
     private int rating = 0;
     [SerializeField] TMP_InputField liked ;
-    [SerializeField] TMP_InputField disliked;  
+    [SerializeField] TMP_InputField disliked;
+
+    [SerializeField] private AudioClip DramaticHit1;
+    [SerializeField] private AudioClip DramaticHit2;
+    [SerializeField] private AudioClip PaperSound;
     static string url = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSfCG5pp32DBLsfTYhQ2MIVmU1Scle8FtYXlEd_9nbGHAk5Z8A/formResponse";
+
+    private AudioManager am;
+
     // Start is called before the first frame update
     void Start()
     {
          Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+
+        am = FindFirstObjectByType<AudioManager>();
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        
-    }
     public void SetRating(int r)
     {
      rating = int.Parse(r.ToString());   
     }
+    public void ProceedToForm()
+    {
+        //message.SetActive(false);
+        form.SetActive(true);
+        am.PlayAudio(PaperSound, 0.7f);
+    }
     public void Send()
     { 
         StartCoroutine(SendFeedback(rating, disliked.text, liked.text));
-        form.SetActive(false);
+        //form.SetActive(false);
         success.SetActive(true);
+        am.PlayAudio(PaperSound, 0.7f);
     }
     IEnumerator SendFeedback(int rating, string disliked, string liked)
     {
@@ -49,5 +60,14 @@ public class FeedbackForm : MonoBehaviour
     public void BackToMenu()
     {
         SceneManager.LoadScene(0);
+    }
+
+    public void PlaySoundDuringAnimation(AudioClip clip)
+    {
+        if (am == null)
+        {
+            am = FindFirstObjectByType<AudioManager>();
+        }
+        am.PlayAudio(clip);
     }
 }
