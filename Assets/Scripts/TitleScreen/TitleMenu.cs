@@ -352,6 +352,6 @@ public class TitleMenu : MonoBehaviour
 
     private void OpenSteamWishlist()
     {
-
+        Application.OpenURL("steam://openurl/https://store.steampowered.com/app/3772040/The_Copperfield_Department/");
     }
 }
