@@ -17,7 +17,9 @@ public enum TitleOption
     SETTINGS_DISPLAY_TAB,
     SETTINGS_SOUND_TAB,
     SETTINGS_CLOSE,
-    CREDITS
+    CREDITS,
+    TITLE_ZOOM,
+    WISHLIST
 }
 
 public class TitleMenu : MonoBehaviour
@@ -32,6 +34,7 @@ public class TitleMenu : MonoBehaviour
     [SerializeField] private CinemachineCamera settingsCam;
     [SerializeField] private CinemachineCamera continueCam;
     [SerializeField] private CinemachineCamera creditsCam;
+    [SerializeField] private CinemachineCamera titleZoomCam;
     [SerializeField] private AudioMixer bgmMixer;
     [SerializeField] private AudioClip doorCreakSound;
     [SerializeField] private AudioClip doorOpenSound;
@@ -83,7 +86,7 @@ public class TitleMenu : MonoBehaviour
 
         BringSettingsTabToFront(settingsGameOption);
 
-        cameras = new List<CinemachineCamera>() { doorCam, pinboardMainCam, newGameCam, settingsCam, continueCam };
+        cameras = new List<CinemachineCamera>() { doorCam, pinboardMainCam, newGameCam, settingsCam, continueCam, creditsCam, titleZoomCam };
 
         if (!SaveManager.instance.GetSaveExists()) continueGameButton.SetActive(false);
 
@@ -141,14 +144,17 @@ public class TitleMenu : MonoBehaviour
             case TitleOption.SETTINGS_GAME_TAB:
                 settingsMenu.ShowGameSettings();
                 BringSettingsTabToFront(settingsGameOption);
+                settingsOption.Disable();
                 break;
             case TitleOption.SETTINGS_DISPLAY_TAB:
                 settingsMenu.ShowDisplaySettings();
                 BringSettingsTabToFront(settingsDisplayOption);
+                settingsOption.Disable();
                 break;
             case TitleOption.SETTINGS_SOUND_TAB:
                 settingsMenu.ShowSoundSettings();
                 BringSettingsTabToFront(settingsAudioOption);
+                settingsOption.Disable();
                 break;
             case TitleOption.SETTINGS_CLOSE:
                 CloseSettings();
@@ -170,8 +176,14 @@ public class TitleMenu : MonoBehaviour
                 SetCamPriority(creditsCam);
                 creditsOption.Disable();
                 break;
+            case TitleOption.TITLE_ZOOM:
+                ToggleTitleZoom();
+                break;
             case TitleOption.BACK:
                 FocusPinboardMiddle();
+                break;
+            case TitleOption.WISHLIST:
+                OpenSteamWishlist();
                 break;
         }
     }
@@ -304,6 +316,14 @@ public class TitleMenu : MonoBehaviour
         audioManager.UpdateMixerValue("SFX Volume", settingsMenu.sfxVolume);
     }
 
+    private void ToggleTitleZoom()
+    {
+        if (titleZoomCam.Priority == 1)
+            SetCamPriority(pinboardMainCam);
+        else
+            SetCamPriority(titleZoomCam);
+    }
+
     private void BringSettingsTabToFront(TitleMenuOption option)
     {
         setZPos(settingsGameOption, 0.04f);
@@ -328,5 +348,10 @@ public class TitleMenu : MonoBehaviour
         newGameBackOption.Disable();
         newGameConfirmOption.Disable();
         creditsBackOption.Disable();
+    }
+
+    private void OpenSteamWishlist()
+    {
+
     }
 }
