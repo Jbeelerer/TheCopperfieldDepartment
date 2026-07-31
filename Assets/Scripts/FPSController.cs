@@ -179,7 +179,7 @@ public class FPSController : MonoBehaviour
                         threadCamera.enabled = true;
                 }
 
-                if (hit.collider.gameObject.tag == "Grabbable")
+                if (hit.collider.gameObject.tag == "Grabbable" && grabbedObject == null)
                 {
                     nameOfThingLookedAt = hit.collider.gameObject.name;
                     inputOverlay.SetIcon("handOpen");
@@ -588,7 +588,7 @@ public class FPSController : MonoBehaviour
                     if (hit.collider.gameObject.name == "Trash")
                     {
                     }
-                    if (hit.collider.gameObject.tag == "Grabbable")
+                    if (hit.collider.gameObject.tag == "Grabbable" && grabbedObject == null)
                     {
                         grabbedObject = hit.collider.gameObject.GetComponent<Grabbable>();
                         keyName = grabbedObject.GetKey();

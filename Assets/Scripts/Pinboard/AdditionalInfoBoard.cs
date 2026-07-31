@@ -176,7 +176,7 @@ public class AdditionalInfoBoard : MonoBehaviour
                     postContentInfo.SetActive(false);
                     bigPictureParent.SetActive(true);
                     bigPicture.material.SetTexture("_Base", a.image.texture);
-                }
+                    FitBigPictureAspect(a.image);                }
                 else if (a.image != null)
                 {
                     backgroundClipboardImage.SetActive(true);
@@ -193,7 +193,15 @@ public class AdditionalInfoBoard : MonoBehaviour
                 break;
         }
     }
+[SerializeField] private float bigPictureHeight = 17f;
 
+private void FitBigPictureAspect(Sprite sprite)
+{
+    float texAspect = sprite.rect.width / sprite.rect.height;
+    float width = bigPictureHeight * texAspect;
+
+    bigPicture.transform.localScale = new Vector3(1, bigPictureHeight, width);
+}
 
     // Update is called once per frame
     void Update()

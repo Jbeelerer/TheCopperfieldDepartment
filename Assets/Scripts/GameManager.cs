@@ -40,6 +40,7 @@ public class GameManager : MonoBehaviour, ISavable
     [SerializeField] private int endDay = 4;
     private int furthestDay = 1;
     private int daySegment = 0;
+    private int firstArchiveDay = 6;
     private int totalDaySegments = 0;
     private List<CompetingEmployee> competingEmployees = new List<CompetingEmployee>();
     private CompetingEmployee playerOnEmployeeList;
@@ -84,6 +85,8 @@ public class GameManager : MonoBehaviour, ISavable
     private List<investigationStates> results = new List<investigationStates>();
     private GameObject computerCam;
     private GameObject inspectionCam;
+
+    private bool spawnKeys = false;
 
     private GameObject mainCam;
     private investigationStates currentInvestigationState = investigationStates.SuspectNotFound;
@@ -144,12 +147,22 @@ public class GameManager : MonoBehaviour, ISavable
 
     private IEnumerator DelayKeySpawn(string name)
     {
-        yield return new WaitForSeconds(1.3f);  
+        while(spawnKeys == false || day < firstArchiveDay)
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+        if(day < firstArchiveDay){
+        yield return new WaitForSeconds(1.3f);
+        }
+        else
+        {
+        yield return new WaitForSeconds(0.1f);
+        }  
         doorKeyAnim.GetComponent<Animator>().SetTrigger("spawn");
         yield return new WaitForSeconds(1f);
-        GameObject key = Instantiate(keyPrefab, keySpawnPos.position, keySpawnPos.rotation);
-        Grabbable grabbable = key.GetComponent<Grabbable>();
-        key.GetComponent<Rigidbody>().AddForce(Vector3.right * 10, ForceMode.Impulse);
+        GameObject key = Instantiate(keyPrefab, keySpawnPos.position , keySpawnPos.rotation);
+        Grabbable grabbable = key.GetComponent<Grabbable>(); 
+        key.GetComponent<Rigidbody>().AddForce(Vector3.right +new Vector3(UnityEngine.Random.Range(0, 0.5f),UnityEngine.Random.Range(0, 0.5f),0.0f) * 10, ForceMode.Impulse);
         key.GetComponent<Grabbable>().SetKey(name);
         yield return new WaitForSeconds(0.5f); 
     }
@@ -545,11 +558,17 @@ public class GameManager : MonoBehaviour, ISavable
         }
         SetGameState(GameState.Playing);
         calendarLoad = false; 
-         if (day == 6)
-        { 
+            print("ringing--- ---> neeew: "+day);
+         if (day == firstArchiveDay || devCase == firstArchiveDay)
+        {
             StartCoroutine(FindFirstObjectByType<Phone>().RingWhenReady("archiveIntro"));
         } 
       
+    }
+    public void TriggerKeySpawnKey()
+    {
+        spawnKeys = true;
+        
     }
     public bool reloadIfOver()
     {

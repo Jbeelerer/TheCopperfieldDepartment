@@ -32,6 +32,7 @@ public class TimedSubtitle
     public string text;
     public Requirement requirement = Requirement.None;
     public string focus;
+    public string trigger;
 }
 [System.Serializable]
 public class SlideWithAnim
@@ -485,6 +486,10 @@ public class Narration : MonoBehaviour
                 {
                     player.ResetCameraRotation(startRotation);
                     lookedAway = false;
+                }
+                if(entry.trigger == "spawnKey")
+                {
+                    gm.TriggerKeySpawnKey();
                 }
                 //set requirement if there is one
                 if (entry.requirement != Requirement.None)
