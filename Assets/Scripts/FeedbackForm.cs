@@ -13,7 +13,10 @@ public class FeedbackForm : MonoBehaviour
     [SerializeField] TMP_InputField liked ;
     [SerializeField] TMP_InputField disliked;
 
-    [SerializeField] private AudioClip DramaticHit1;
+    [SerializeField] private AudioClip DramaticHit1;    
+    [SerializeField] private AudioClip newLine;    
+    [SerializeField] private AudioClip tickoff;    
+    [SerializeField] private AudioClip[] typeWritterSounds;
     [SerializeField] private AudioClip DramaticHit2;
     [SerializeField] private AudioClip PaperSound;
     static string url = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSfCG5pp32DBLsfTYhQ2MIVmU1Scle8FtYXlEd_9nbGHAk5Z8A/formResponse";
@@ -27,6 +30,23 @@ public class FeedbackForm : MonoBehaviour
             Cursor.visible = true;
 
         am = FindFirstObjectByType<AudioManager>();
+    }
+    void Update()
+    {
+        if (form.activeSelf){
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            am.PlayAudio(newLine, 1f);
+        }
+        //mouse click
+        else if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
+        {
+        am.PlayAudio(typeWritterSounds[Random.Range(0, typeWritterSounds.Length)], 0.7f);
+        }
+        else if (Input.anyKeyDown)
+        {
+        am.PlayAudio(typeWritterSounds[Random.Range(0, typeWritterSounds.Length)], 0.7f);
+        }}
     }
 
     // Update is called once per frame
