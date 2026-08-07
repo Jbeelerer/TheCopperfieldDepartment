@@ -10,6 +10,7 @@ public class InputOverlay : MonoBehaviour
 {
     [SerializeField] private Sprite defaultIconInGame;
     [SerializeField] private Sprite defaultIcon;
+    [SerializeField] private Sprite keyIcon;
     [SerializeField] private Sprite handOpen;
     [SerializeField] private Sprite handClosed;
     [SerializeField] private Sprite handThread;
@@ -107,6 +108,9 @@ public class InputOverlay : MonoBehaviour
         {
             case "defaultIcon":
                 image.sprite = defaultIcon;
+                break;
+            case "key":
+                image.sprite = keyIcon;
                 break;
             case "handOpen":
                 image.sprite = handOpen;

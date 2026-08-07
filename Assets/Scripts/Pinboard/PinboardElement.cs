@@ -588,6 +588,14 @@ public class PinboardElement : MonoBehaviour
                 {
                     print("ArchiveData: " + image + "  " + elementType + " " + archive.image.texture);
                     image.GetComponent<Renderer>().material.SetTexture("_Base", archive.image.texture);
+                    
+                    float bigPictureHeight = 1f;
+
+                    float texAspect = archive.image.rect.width / archive.image.rect.height;
+                    float width = bigPictureHeight * texAspect;
+
+                    image.transform.localScale = new Vector3(1, width, bigPictureHeight);
+
                 }
                 break;
             default:

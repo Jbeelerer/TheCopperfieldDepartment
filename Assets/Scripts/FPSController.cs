@@ -195,6 +195,14 @@ public class FPSController : MonoBehaviour
                         {
                             inputOverlay.SetIcon("pin");
                         }
+                        else if(hasKey && hit.collider.gameObject.GetComponent<Archives>() != null && keyName == hit.collider.gameObject.GetComponent<Archives>().GetArchiveName())
+                        {
+                            inputOverlay.SetIcon("key");// key
+                        } else
+                        {
+                            inputOverlay.SetIcon("");
+                        }
+                        
                     }
                     else if (lastSelectedObject == null)
                     {
@@ -250,10 +258,16 @@ public class FPSController : MonoBehaviour
                             case "Archive":
                             
                             string category = hit.collider.gameObject.GetComponent<Archives>().GetCurrentCategory();
+                          
                             if(hit.collider.gameObject.GetComponent<Archives>().GetIsKeyUsed()){
                                 inputOverlay.SetIcon("inspect");
                                 //if()
-                                inputOverlay.OverwriteText("Open Archive: " +category);}
+                                inputOverlay.OverwriteText("Open Archive: " +category);
+                                }
+                                else
+                                {
+                                    inputOverlay.SetIcon("");
+                                }
                                 break;
                             case "pin":
                                 inputOverlay.SetIcon("trash");
@@ -618,6 +632,7 @@ public class FPSController : MonoBehaviour
                             
                             hasKey = false;
                         }
+                        inputOverlay.SetIcon("");
                     }
 
                     else if (currentSelectedObject != null || (hasKey && currentSelectedObject.name == "Archive"))

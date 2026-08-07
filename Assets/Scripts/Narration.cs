@@ -254,7 +254,7 @@ public class Narration : MonoBehaviour
                 currentCall = PlaySequence(timedSubtitles.phoneReminderNothingAdded, phoneCallNothingAddedClip, false);
                 break;
             case "FinalDayFeedback":
-            OnPhoneState(false);
+            OnPhoneState(false); 
                 currentCall = PlaySequence(timedSubtitles.FinalDayFeedback, FinalDayFeedbackClip);
                 break;
         }

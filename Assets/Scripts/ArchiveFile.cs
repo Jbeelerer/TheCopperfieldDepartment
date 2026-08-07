@@ -57,6 +57,8 @@ public class ArchiveFile : MonoBehaviour
             print(fileImage);
             fileImage.material.SetTexture("_Base", d.image.texture);
             print(fileImage.material.GetTexture("_Base"));
+            FitBigPictureAspect(d.image);
+            
         }
         if (d.type != ArchiveType.Image)
         {
@@ -179,12 +181,23 @@ public class ArchiveFile : MonoBehaviour
     {
         canvas = GetComponentInChildren<Canvas>().gameObject;
         canvas.SetActive(false);   
+        fileImage.gameObject.SetActive(false);
     }
     
     public void unpinDoc()
     {
         canvas.SetActive(true);
+        fileImage.gameObject.SetActive(true);
     }
+ private float bigPictureHeight = 0.5f;
+
+private void FitBigPictureAspect(Sprite sprite)
+{
+    float texAspect = sprite.rect.width / sprite.rect.height;
+    float width = bigPictureHeight * texAspect;
+
+    fileImage.transform.localScale = new Vector3(width, 1, bigPictureHeight);
+}
     
 
 

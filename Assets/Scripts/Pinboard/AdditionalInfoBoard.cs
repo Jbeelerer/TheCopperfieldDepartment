@@ -193,7 +193,7 @@ public class AdditionalInfoBoard : MonoBehaviour
                 break;
         }
     }
-[SerializeField] private float bigPictureHeight = 17f;
+private float bigPictureHeight = 28f;
 
 private void FitBigPictureAspect(Sprite sprite)
 {
