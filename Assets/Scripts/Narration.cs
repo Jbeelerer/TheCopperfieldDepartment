@@ -78,6 +78,7 @@ public class ShortSubtitles
     public TimedSubtitle phoneReminderPostNotAdded_replay;
     public TimedSubtitle exit_replay;
     public TimedSubtitle archiveIntro_replay;
+    public TimedSubtitle smoke;
 }
 
 public class Narration : MonoBehaviour
@@ -402,6 +403,11 @@ public class Narration : MonoBehaviour
                 audioSource.clip = notLeavingVoice;
                 subtitleText.text = shortSubtitles.archiveIntro_replay.text;
                 duration = shortSubtitles.archiveIntro_replay.duration;
+                break;
+            case "smoke":
+                audioSource.clip = notLeavingVoice;
+                subtitleText.text = shortSubtitles.smoke.text;
+                duration = shortSubtitles.smoke.duration;
                 break;
         }
         StartCoroutine(DisableSubtitle(duration));

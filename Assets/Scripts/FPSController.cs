@@ -759,6 +759,9 @@ public class FPSController : MonoBehaviour
                                         hit.collider.transform.GetComponent<Phone>().StartCall();
                                     }
                                     break;
+                                case "CigaretteBox":
+                                narration.Say("smoke");
+                                break;
                                 case "Door":
                                     if (requirementMet)
                                     {
