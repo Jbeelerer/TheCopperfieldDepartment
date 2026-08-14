@@ -121,7 +121,8 @@ public class OSSocialMediaContent : MonoBehaviour
         newPost.transform.Find("ForbiddenOptions").Find("Shares").GetComponentInChildren<TextMeshProUGUI>().text = GetRandomEngagementNumber(post.author.popularityLevel);
         newPost.transform.Find("ForbiddenOptions").Find("Likes").GetComponentInChildren<TextMeshProUGUI>().text = GetRandomEngagementNumber(post.author.popularityLevel);
         var profilePost = Instantiate(newPost, profilePageContent.transform);
-        profilePost.SetActive(false);
+        // Dont instantly deactivate all profile page posts here, because then they wont immediately react to being pinned on the home feed for some reason
+        //profilePost.SetActive(false);
     }
 
     private string GetRandomEngagementNumber(PopularityLevel popularityLevel)
