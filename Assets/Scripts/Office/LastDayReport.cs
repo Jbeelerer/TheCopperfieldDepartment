@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,6 +7,7 @@ using UnityEngine.UI;
 public class LastDayReport : MonoBehaviour
 {
     private GameManager gm;
+    private AudioManager am;
     [SerializeField] private TextMeshProUGUI suspectName;
     [SerializeField] private TextMeshProUGUI explenation;
     [SerializeField] private Image suspectImage;
@@ -19,12 +19,11 @@ public class LastDayReport : MonoBehaviour
     [SerializeField] private RectTransform paper;
     public Texture2D canvasTexture;
 
-
-
     // Start is called before the first frame update
     void Awake()
     {
         gm = GameManager.instance;
+        am = AudioManager.instance;
 
         // todo make sure the next day is instantiated after the last day report 
         bool isOver = GameManager.instance.reloadIfOver();
@@ -59,52 +58,49 @@ public class LastDayReport : MonoBehaviour
         }  
     }
     private IEnumerator CaptureRectTransform(RectTransform rt)
-{
-      
-    // Force layout and graphics to update
-    Canvas.ForceUpdateCanvases();
+    {
+        // Force layout and graphics to update
+        Canvas.ForceUpdateCanvases();
 
-    // Wait until the end of the frame to ensure everything is drawn
-    yield return new WaitForEndOfFrame();
+        // Wait until the end of the frame to ensure everything is drawn
+        yield return new WaitForEndOfFrame();
 
-    // Get world corners
-    Vector3[] corners = new Vector3[4];
-    rt.GetWorldCorners(corners);
+        // Get world corners
+        Vector3[] corners = new Vector3[4];
+        rt.GetWorldCorners(corners);
 
-    // Convert to screen points
-    Vector2 bl = RectTransformUtility.WorldToScreenPoint(null, corners[0]); // bottom-left
-    Vector2 tr = RectTransformUtility.WorldToScreenPoint(null, corners[2]); // top-right
+        // Convert to screen points
+        Vector2 bl = RectTransformUtility.WorldToScreenPoint(null, corners[0]); // bottom-left
+        Vector2 tr = RectTransformUtility.WorldToScreenPoint(null, corners[2]); // top-right
 
-    // Ensure coordinates are in screen space and clamp to screen
-    float x = Mathf.Clamp(Mathf.Min(bl.x, tr.x), 0, Screen.width);
-    float y = Mathf.Clamp(Mathf.Min(bl.y, tr.y), 0, Screen.height);
-    float width = Mathf.Clamp(Mathf.Abs(tr.x - bl.x), 1, Screen.width - x);
-    float height = Mathf.Clamp(Mathf.Abs(tr.y - bl.y), 1, Screen.height - y);
+        // Ensure coordinates are in screen space and clamp to screen
+        float x = Mathf.Clamp(Mathf.Min(bl.x, tr.x), 0, Screen.width);
+        float y = Mathf.Clamp(Mathf.Min(bl.y, tr.y), 0, Screen.height);
+        float width = Mathf.Clamp(Mathf.Abs(tr.x - bl.x), 1, Screen.width - x);
+        float height = Mathf.Clamp(Mathf.Abs(tr.y - bl.y), 1, Screen.height - y);
 
-    // Create the texture
-    Texture2D tex = new Texture2D(Mathf.RoundToInt(width), Mathf.RoundToInt(height), TextureFormat.RGBA32, false);
+        // Create the texture
+        Texture2D tex = new Texture2D(Mathf.RoundToInt(width), Mathf.RoundToInt(height), TextureFormat.RGBA32, false);
 
-    // Read pixels from screen
-    Rect readRect = new Rect(x, y, width, height);
-    tex.ReadPixels(readRect, 0, 0);
-    tex.Apply();
+        // Read pixels from screen
+        Rect readRect = new Rect(x, y, width, height);
+        tex.ReadPixels(readRect, 0, 0);
+        tex.Apply();
 
-    // Assign to material
-    Material mat = new Material(test.GetComponent<Renderer>().material);
-    mat.SetTexture("_SecondTexture", tex);
-    test.GetComponent<Renderer>().material = mat;
+        // Assign to material
+        Material mat = new Material(test.GetComponent<Renderer>().material);
+        mat.SetTexture("_SecondTexture", tex);
+        test.GetComponent<Renderer>().material = mat;
 
-    // Optional: save the texture if needed
-    canvasTexture = tex;
-    // find lastdayreportmanager and add last day report
-    // find component LastDayReportManager
+        // Optional: save the texture if needed
+        canvasTexture = tex;
+        // find lastdayreportmanager and add last day report
+        // find component LastDayReportManager
 
-    print(GameObject.Find("LastDayReportManager"));
-    print(GameObject.Find("LastDayReportManager").GetComponent<LastDayReportManager>());
-    GameObject.Find("LastDayReportManager").GetComponent<LastDayReportManager>().AddLastDayReport(tex);
-}
-
-
+        print(GameObject.Find("LastDayReportManager"));
+        print(GameObject.Find("LastDayReportManager").GetComponent<LastDayReportManager>());
+        GameObject.Find("LastDayReportManager").GetComponent<LastDayReportManager>().AddLastDayReport(tex);
+    }
 
     public void Next()
     {
@@ -112,5 +108,15 @@ public class LastDayReport : MonoBehaviour
         GameObject g = Instantiate(newDayPrefab);
         GameObject.Find("Narration").GetComponent<Narration>().BlackScreenOff();
         Destroy(gameObject);
+    }
+
+    //Used in animation event
+    public void PlaySoundDuringAnimation(AudioClip clip)
+    {
+        if (am == null)
+        {
+            am = FindFirstObjectByType<AudioManager>();
+        }
+        am.PlayAudio(clip);
     }
 }
