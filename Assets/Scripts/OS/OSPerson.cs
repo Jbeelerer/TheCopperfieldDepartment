@@ -91,12 +91,10 @@ public class OSPerson : MonoBehaviour
     {
         if (!gm.checkIfPersonAccused(person))
         {
-        print("ooopennn");
             computerControls.OpenWindow(OSAppType.WARNING, "Accuse this person? <br><b>This can still be changed later.</b>", AccusePersonSuccess);
         }
         else
         {
-        print("allready accused");
             ClearAccusation();
             popupManager.DisplayPersonUnaccusedMessage();
         }
@@ -104,7 +102,6 @@ public class OSPerson : MonoBehaviour
 
     public void AccusePersonSuccess()
     {
-        print("accused");
         gm.checkSuspect(person);   
     }
 

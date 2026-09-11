@@ -16,7 +16,7 @@ public class SocialMediaPost : ScriptableObject, IPinnable
     public bool notSuspicious;
     public bool isSmall;
     // Day when this post shows up. Is set when loading posts in social media
-    public int day;
+    [HideInInspector] public int day;
     bool IPinnable.isSmall { get => isSmall; }
     public GameObject imageInspectionAreaContainer;
     bool IPinnable.suspicious { get => suspicious; }

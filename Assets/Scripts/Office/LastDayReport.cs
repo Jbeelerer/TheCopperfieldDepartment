@@ -108,7 +108,7 @@ public class LastDayReport : MonoBehaviour
 
     public void Next()
     {
-        StartCoroutine(GameManager.instance.delaySuspectClearing(0.1f));
+        GameManager.instance.StartDelaySuspectClearing(0.1f);
         GameObject g = Instantiate(newDayPrefab);
         GameObject.Find("Narration").GetComponent<Narration>().BlackScreenOff();
         Destroy(gameObject);

@@ -503,6 +503,10 @@ public class GameManager : MonoBehaviour, ISavable
         return false;
         
     }
+    public void StartDelaySuspectClearing(float delay)
+    {
+        StartCoroutine(delaySuspectClearing(delay));
+    }
     public IEnumerator delaySuspectClearing(float delay = 0)
     {
         yield return new WaitForSeconds(delay);
@@ -672,11 +676,11 @@ public class GameManager : MonoBehaviour, ISavable
     public void checkSuspicionRemoved(Person p)
     {
         currentlyAccused = null;
+        answerCommited = false;
         currentInvestigationState = investigationStates.SuspectNotFound;
         if (p == currentCase.guiltyPerson && investigationState == investigationStates.SuspectFound)
         {
             investigationState = investigationStates.SuspectNotFound;
-            answerCommited = false;
         }
         InvestigationStateChanged?.Invoke();
     }
