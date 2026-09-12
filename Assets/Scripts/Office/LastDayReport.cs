@@ -54,7 +54,7 @@ public class LastDayReport : MonoBehaviour
       //on click
         if (Input.GetMouseButtonDown(0))
         {
-            Next();
+            FadeOut();
         }  
     }
     private IEnumerator CaptureRectTransform(RectTransform rt)
@@ -101,12 +101,17 @@ public class LastDayReport : MonoBehaviour
         print(GameObject.Find("LastDayReportManager").GetComponent<LastDayReportManager>());
         GameObject.Find("LastDayReportManager").GetComponent<LastDayReportManager>().AddLastDayReport(tex);
     }
+    private void FadeOut()
+    {
+        GetComponentInChildren<Animator>().Play("ReportFadeOut");
+        GameObject.Find("Narration").GetComponent<Narration>().BlackScreenOff();
+    }
 
-    public void Next()
+    //Used in ReportFadeOut animation event
+    public void ProgressToNextDay()
     {
         GameManager.instance.StartDelaySuspectClearing(0.1f);
         GameObject g = Instantiate(newDayPrefab);
-        GameObject.Find("Narration").GetComponent<Narration>().BlackScreenOff();
         Destroy(gameObject);
     }
 
