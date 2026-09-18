@@ -168,8 +168,8 @@ Transform:
   m_GameObject: {fileID: 252199821858234738}
   serializedVersion: 2
   m_LocalRotation: {x: 0.041662563, y: -0.70510924, z: 0.0022454853, w: 0.7078702}
-  m_LocalPosition: {x: -0.108, y: 0.393, z: -0.036}
-  m_LocalScale: {x: 7, y: 17, z: 30}
+  m_LocalPosition: {x: 0.08, y: 0.023, z: -0.05}
+  m_LocalScale: {x: 7, y: 28, z: 20}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7184706177844034235}
@@ -819,7 +819,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  CustomBlends: {fileID: 0}
+  CustomBlends: {fileID: 11400000, guid: 5275927e3dc75024ab160981b4209e0d, type: 2}
 --- !u!114 &3771646345736913161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2497,7 +2497,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -6478536213147159724, guid: 0914f068f722af5429b90f6385d253cb, type: 3}
+  - {fileID: 2100000, guid: 17bdb2f17211f48048a1d096a87e98fc, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3415,6 +3415,8 @@ MonoBehaviour:
   introClip: {fileID: 8300000, guid: 0c125c5bfd98d406a945e900cd737adb, type: 3}
   firstDayFeedbackPositiveClip: {fileID: 8300000, guid: 9298a97afd7fb4bba8966bf84b4dca0f,
     type: 3}
+  FinalDayFeedbackClip: {fileID: 8300000, guid: d436b39a9fe1749928e63375ec17ac34,
+    type: 3}
   firstDayFeedbackNegativeClip: {fileID: 8300000, guid: 503e94d6647fc4024b52d3544744a651,
     type: 3}
   exit: {fileID: 8300000, guid: 33854fd7b7fed4a98b622605f6d27609, type: 3}
@@ -4072,7 +4074,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &7184706177844034235
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4804,6 +4806,12 @@ PrefabInstance:
       propertyPath: m_AnchorMin.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2588252618105983091, guid: a9439a789a58b47ae89076e09c23c8f8,
+        type: 3}
+      propertyPath: keyIcon
+      value: 
+      objectReference: {fileID: 21300000, guid: 5647ad8c94b85439797eedaedc5345fe,
+        type: 3}
     - target: {fileID: 2851172711185919833, guid: a9439a789a58b47ae89076e09c23c8f8,
         type: 3}
       propertyPath: m_LocalPosition.z

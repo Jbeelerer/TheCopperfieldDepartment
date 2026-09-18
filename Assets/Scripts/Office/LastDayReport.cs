@@ -1,6 +1,6 @@
-using System;
 using System.Collections;
 using TMPro;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,10 +14,11 @@ public class LastDayReport : MonoBehaviour
     [SerializeField] private Image stamp;
     [SerializeField] private Sprite stampSuccess;
     [SerializeField] private Sprite stampFailed;
-    [SerializeField] private GameObject newDayPrefab;
     [SerializeField] private GameObject test;
     [SerializeField] private RectTransform paper;
     public Texture2D canvasTexture;
+
+    private bool continueAllowed = false;
 
     // Start is called before the first frame update
     void Awake()
@@ -42,19 +43,19 @@ public class LastDayReport : MonoBehaviour
             else
             {
                 stamp.sprite = stampFailed;
-                StartCoroutine(CaptureRectTransform(paper));
             }
-            gm.SetGameState(GameState.Playing);
-        }else{
+        }
+        else
+        {
             Destroy(gameObject);
         }
     }
     void Update()
     {
       //on click
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && continueAllowed)
         {
-            FadeOut();
+            StartCoroutine(Proceed());
         }  
     }
     private IEnumerator CaptureRectTransform(RectTransform rt)
@@ -101,21 +102,36 @@ public class LastDayReport : MonoBehaviour
         print(GameObject.Find("LastDayReportManager").GetComponent<LastDayReportManager>());
         GameObject.Find("LastDayReportManager").GetComponent<LastDayReportManager>().AddLastDayReport(tex);
     }
-    private void FadeOut()
+
+    private IEnumerator Proceed()
     {
-        GetComponentInChildren<Animator>().Play("ReportFadeOut");
+        if (gm.GetCurrentInvestigationState() == investigationStates.SuspectFound)
+        {
+            var timeMachine = FindFirstObjectByType<TimeMachine>();
+            timeMachine.NewDayTransition();
+        }
+        else
+        {
+            yield return CaptureRectTransform(paper);
+            gm.SetGameState(GameState.Playing);
+        }
+
+        GameManager.instance.StartDelaySuspectClearing(0.1f);
         GameObject.Find("Narration").GetComponent<Narration>().BlackScreenOff();
+        GetComponentInChildren<Animator>().Play("ReportFadeOut");
     }
 
     //Used in ReportFadeOut animation event
-    public void ProgressToNextDay()
+    public void DestroyReportObject()
     {
-        GameManager.instance.StartDelaySuspectClearing(0.1f);
-        GameObject g = Instantiate(newDayPrefab);
-        Destroy(gameObject);
+        Destroy(transform.parent.gameObject);
     }
 
-    //Used in animation event
+    //Used in ReportSlide animation event
+    public void AllowContinue()
+    {
+        continueAllowed = true;
+    }
     public void PlaySoundDuringAnimation(AudioClip clip)
     {
         if (am == null)

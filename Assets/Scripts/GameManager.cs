@@ -560,7 +560,7 @@ public class GameManager : MonoBehaviour, ISavable
         {
             DayIntro();
         }
-        SetGameState(GameState.Playing);
+        //SetGameState(GameState.Playing);
         calendarLoad = false; 
             print("ringing--- ---> neeew: "+day);
          if (day == firstArchiveDay || devCase == firstArchiveDay)
