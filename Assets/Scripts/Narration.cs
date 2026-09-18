@@ -639,6 +639,7 @@ public class Narration : MonoBehaviour
             {
                 ow.GetComponent<Animator>().SetTrigger("NewDay");
             }
+            am.FadeInMusic(5f);
         }
         Phone phone = FindFirstObjectByType<Phone>();
         if (!phone.GetIsRinging())

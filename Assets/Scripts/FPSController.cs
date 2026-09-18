@@ -1041,6 +1041,7 @@ public class FPSController : MonoBehaviour
     public IEnumerator EndDay()
     {
         am.PlayAudio(doorOpenSound);
+        am.FadeInLowPassMusic(1f);
         yield return narration.BlackScreenEnumerator(true);
 
         //yield return new WaitForSeconds(0.5f);

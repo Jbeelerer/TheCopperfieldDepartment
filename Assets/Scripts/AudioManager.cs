@@ -15,6 +15,9 @@ public class AudioManager : MonoBehaviour
     private float originalMusicVolume = 1f;
     private float originalSFXVolume = 1f;
 
+    private float lowpassOnValue = 290f;
+    private float lowpassOffValue = 22000f;
+
     private List<AudioSource> repeatingAudioSources = new List<AudioSource>();
 
     // Start is called before the first frame update
@@ -95,6 +98,26 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    public void FadeOutMusic(float fadeDuration)
+    {
+        StartCoroutine(FadeOutMusicCoroutine(fadeDuration));
+    }
+
+    public void FadeInMusic(float fadeDuration)
+    {
+        StartCoroutine(FadeInMusicCoroutine(fadeDuration));
+    }
+
+    public void FadeOutLowPassMusic(float fadeDuration)
+    {
+        StartCoroutine(FadeOutLowPassMusicCoroutine(fadeDuration));
+    }
+
+    public void FadeInLowPassMusic(float fadeDuration)
+    {
+        StartCoroutine(FadeInLowPassMusicCoroutine(fadeDuration));
+    }
+
     private IEnumerator FadeIn(AudioSource source, float fadeDuration, float maxVolume)
     {
         source.Play();
@@ -130,6 +153,63 @@ public class AudioManager : MonoBehaviour
 
         source.Stop();
         Destroy(source);
+    }
+
+    private IEnumerator FadeOutMusicCoroutine(float fadeDuration)
+    {
+        //float fadeTime = 2f;
+        float t = fadeDuration;
+        float musicVolume = FindFirstObjectByType<SettingsMenu>(FindObjectsInactive.Include).musicVolume;
+        while (t > 0)
+        {
+            yield return null;
+            t -= Time.deltaTime;
+            UpdateMixerValue("Music Volume", musicVolume * (t / fadeDuration));
+        }
+        yield break;
+    }
+
+    private IEnumerator FadeInMusicCoroutine(float fadeDuration)
+    {
+        float t = fadeDuration;
+        float musicVolume = FindFirstObjectByType<SettingsMenu>(FindObjectsInactive.Include).musicVolume;
+        while (t > 0)
+        {
+            yield return null;
+            t -= Time.deltaTime;
+            UpdateMixerValue("Music Volume", musicVolume * (1 - (t / fadeDuration)));
+        }
+        yield break;
+    }
+
+    private IEnumerator FadeInLowPassMusicCoroutine(float fadeTime)
+    {
+        float t = fadeTime;
+        //float lowpassStartValue = 290f;
+        //float lowpassEndValue = 22000f;
+        float lowpassDifference = lowpassOffValue - lowpassOnValue;
+        while (t > 0)
+        {
+            yield return null;
+            t -= Time.deltaTime;
+            musicMixerGroup.audioMixer.SetFloat("MusicLowpassCutoff", lowpassOnValue + (lowpassDifference * (t / fadeTime)));
+        }
+        yield break;
+    }
+
+    private IEnumerator FadeOutLowPassMusicCoroutine(float fadeTime)
+    {
+        float t = fadeTime;
+        //float lowpassOnValue = 290f;
+        //float lowpassEndValue = 22000f;
+        float lowpassDifference = lowpassOffValue - lowpassOnValue;
+        while (t > 0)
+        {
+            yield return null;
+            t -= Time.deltaTime;
+            musicMixerGroup.audioMixer.SetFloat("MusicLowpassCutoff", lowpassOffValue - (lowpassDifference * (t / fadeTime)));
+        }
+        yield break;
     }
 
     public bool IsPlayingRepeated(AudioClip audioClip)

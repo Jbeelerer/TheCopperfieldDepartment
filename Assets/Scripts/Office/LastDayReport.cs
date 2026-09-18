@@ -1,6 +1,5 @@
 using System.Collections;
 using TMPro;
-using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,7 +19,6 @@ public class LastDayReport : MonoBehaviour
 
     private bool continueAllowed = false;
 
-    // Start is called before the first frame update
     void Awake()
     {
         gm = GameManager.instance;
@@ -30,12 +28,9 @@ public class LastDayReport : MonoBehaviour
         bool isOver = GameManager.instance.reloadIfOver();
         if (!isOver)
         {
-            print(gm.GetCurrentlyAccused().personName);
             suspectName.text = gm.GetCurrentlyAccused().personName;
             suspectImage.sprite = gm.GetCurrentlyAccused().image;
             explenation.text = gm.GetFeedBackExplanation();
-            print(gm.GetFeedBackExplanation()); 
-            print(gm.GetDay()-1); 
             if (gm.GetCurrentInvestigationState() == investigationStates.SuspectFound)
             {
                 stamp.sprite = stampSuccess;
@@ -50,14 +45,16 @@ public class LastDayReport : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
     void Update()
     {
-      //on click
+        //on click
         if (Input.GetMouseButtonDown(0) && continueAllowed)
         {
             StartCoroutine(Proceed());
         }  
     }
+
     private IEnumerator CaptureRectTransform(RectTransform rt)
     {
         // Force layout and graphics to update
@@ -109,11 +106,13 @@ public class LastDayReport : MonoBehaviour
         {
             var timeMachine = FindFirstObjectByType<TimeMachine>();
             timeMachine.NewDayTransition();
+            am.FadeOutMusic(2f);
         }
         else
         {
             yield return CaptureRectTransform(paper);
             gm.SetGameState(GameState.Playing);
+            am.FadeOutLowPassMusic(2f);
         }
 
         GameManager.instance.StartDelaySuspectClearing(0.1f);
@@ -134,10 +133,7 @@ public class LastDayReport : MonoBehaviour
     }
     public void PlaySoundDuringAnimation(AudioClip clip)
     {
-        if (am == null)
-        {
-            am = FindFirstObjectByType<AudioManager>();
-        }
+        //am = FindFirstObjectByType<AudioManager>();
         am.PlayAudio(clip);
     }
 }

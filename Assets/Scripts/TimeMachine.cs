@@ -1,6 +1,6 @@
-using System.Collections;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 public class TimeMachine : MonoBehaviour
 {
@@ -16,6 +16,7 @@ public class TimeMachine : MonoBehaviour
         anim = GetComponent<Animator>();
         cam = GetComponentInChildren<CinemachineCamera>();
         camBrain = FindFirstObjectByType<CinemachineBrain>();
+        am = AudioManager.instance;
     }
 
     /*private void Update()
@@ -38,13 +39,14 @@ public class TimeMachine : MonoBehaviour
         GameObject g = Instantiate(newDayPrefab);
         GameManager.instance.SetGameState(GameState.Playing);
         cam.Priority = 0;
+        am.FadeInMusic(4f);
     }
     public void PlaySoundDuringAnimation(AudioClip clip)
     {
-        if (am == null)
-        {
-            am = AudioManager.instance;
-        }
         am.PlayAudio(clip);
     }
+    public void FadeOutLowpassDuringAnimation()
+    {
+        am.FadeOutLowPassMusic(1f);
+    } 
 }
