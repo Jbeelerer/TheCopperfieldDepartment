@@ -42,6 +42,7 @@ public class GameManager : MonoBehaviour, ISavable
     private int daySegment = 0;
     private int firstArchiveDay = 6;
     private int totalDaySegments = 0;
+    public DateTime initialDate = new DateTime(1982, 5, 1);
     private List<CompetingEmployee> competingEmployees = new List<CompetingEmployee>();
     private CompetingEmployee playerOnEmployeeList;
     // what happens if the person is found and the post deleted?
@@ -174,6 +175,10 @@ public class GameManager : MonoBehaviour, ISavable
     public int GetDay()
     {
         return day;
+    }
+    public DateTime GetCurrentDate()
+    {
+        return initialDate.AddDays(GetDay() - 1);
     }
     public void ResetGame()
     {

@@ -238,8 +238,8 @@ public class OSSocialMediaContent : MonoBehaviour
     {
         ChangeSearchBar("Hot & Trending:  <b>" + 
             (customDay == GameManager.instance.GetDay() ? 
-            "Today" : 
-            computerControls.initialComputerDate.AddDays(customDay - 1).ToString("MM/dd", new System.Globalization.CultureInfo("en-US"))), false);
+            "Today" :
+            GameManager.instance.initialDate.AddDays(customDay - 1).ToString("MM/dd", new System.Globalization.CultureInfo("en-US"))), false);
 
         currentUser = null;
         homePage.transform.SetAsLastSibling();
