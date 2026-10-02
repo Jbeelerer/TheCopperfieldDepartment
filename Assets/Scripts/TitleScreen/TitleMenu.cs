@@ -139,7 +139,7 @@ public class TitleMenu : MonoBehaviour
         switch (option)
         {
             case TitleOption.QUIT:
-                QuitGame();
+                PlayQuitAnimation();
                 break;
             case TitleOption.SETTINGS:
                 OpenSettings();
@@ -220,6 +220,13 @@ public class TitleMenu : MonoBehaviour
         audioManager.FadeOutMusic(2f);
     }
 
+    private void PlayQuitAnimation()
+    {
+        audioManager.FadeOutMusic(1.3f);
+        inputLocked = true;
+        anim.Play("TitleQuit");
+    }
+
     private void OpenDoor()
     {
         inputLocked = true;
@@ -263,15 +270,16 @@ public class TitleMenu : MonoBehaviour
         StartCoroutine(ShowMousePromptCoroutine());
     }
 
+    // Used in animation event, when TitleQuit animation ends
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+
     private IEnumerator UnlockControlsAfterTime(float duration)
     {
         yield return new WaitForSeconds(duration);
         inputLocked = false;
-    }
-
-    private void QuitGame()
-    {
-        Application.Quit();
     }
 
     private IEnumerator ShowMousePromptCoroutine()
