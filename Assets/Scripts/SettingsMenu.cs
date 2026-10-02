@@ -87,7 +87,6 @@ public class SettingsMenu : MonoBehaviour
         if (audioManager)
         {
             audioManager.UpdateMixerValue("Music Volume", value);
-            audioManager.UpdateMixerValue("Title Music Volume", value);
         }
         musicVolume = value;
     }

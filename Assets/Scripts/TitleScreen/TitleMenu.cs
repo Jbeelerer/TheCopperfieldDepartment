@@ -65,6 +65,7 @@ public class TitleMenu : MonoBehaviour
     private GameObject currentSelectedOption;
     private RaycastHit hit;
     private Ray r;
+    private bool inputLocked = false;
 
     void Start()
     {
@@ -77,7 +78,7 @@ public class TitleMenu : MonoBehaviour
         settingsMenu.AddNativeResolution();
         settingsMenu.ApplyCurrentSettings();
         audioManager.UpdateMixerValue("SFX Volume", settingsMenu.sfxVolume);
-        bgmMixer.SetFloat("LowpassCutoff", 290f);
+        bgmMixer.SetFloat("MusicLowpassCutoff", 290f);
 
         var bgmSources = bgmObject.GetComponents<AudioSource>();
         bgmSources[1].PlayDelayed(bgmSources[0].clip.length);
@@ -108,22 +109,24 @@ public class TitleMenu : MonoBehaviour
             }
         }
 
-        r = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(r, out hit) && currentSelectedOption != hit.transform.gameObject)
-        {
-            currentSelectedOption?.GetComponent<TitleMenuOption>().HoverAnimStop();
-            currentSelectedOption = null;
-            if (hit.transform.GetComponent<TitleMenuOption>())
+        if (!inputLocked) {
+            r = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(r, out hit) && currentSelectedOption != hit.transform.gameObject)
             {
-                hit.transform.GetComponent<TitleMenuOption>().HoverAnimStart();
-                audioManager.PlayAudio(paperRustleSound, 0.9f);
-                currentSelectedOption = hit.transform.gameObject;
+                currentSelectedOption?.GetComponent<TitleMenuOption>().HoverAnimStop();
+                currentSelectedOption = null;
+                if (hit.transform.GetComponent<TitleMenuOption>())
+                {
+                    hit.transform.GetComponent<TitleMenuOption>().HoverAnimStart();
+                    audioManager.PlayAudio(paperRustleSound, 0.9f);
+                    currentSelectedOption = hit.transform.gameObject;
+                }
             }
-        }
 
-        if (Input.GetKeyDown(KeyCode.Mouse0) && currentSelectedOption)
-        {
-            SelectOption(currentSelectedOption.transform.GetComponent<TitleMenuOption>().optionType);
+            if (Input.GetKeyDown(KeyCode.Mouse0) && currentSelectedOption)
+            {
+                SelectOption(currentSelectedOption.transform.GetComponent<TitleMenuOption>().optionType);
+            }
         }
 
         spotLight.position = new Vector3(pinboardMainCam.transform.position.x, cinemachineBrain.transform.position.y, cinemachineBrain.transform.position.z);
@@ -212,44 +215,17 @@ public class TitleMenu : MonoBehaviour
 
     public void PlayStartAnimation()
     {
+        inputLocked = true;
         anim.SetTrigger("StartGame");
-        StartCoroutine(MusicFadeOut());
-    }
-
-    private IEnumerator LowPassFadeOut()
-    {
-        float fadeTime = 3f;
-        float t = fadeTime;
-        float lowpassStartValue = 290f;
-        float lowpassEndValue = 22000f;
-        float lowpassDifference = lowpassEndValue - lowpassStartValue;
-        while (t > 0)
-        {
-            yield return null;
-            t -= Time.deltaTime;
-            bgmMixer.SetFloat("LowpassCutoff", lowpassEndValue - (lowpassDifference * (t / fadeTime)));
-        }
-        yield break;
-    }
-
-    private IEnumerator MusicFadeOut()
-    {
-        float fadeTime = 2f;
-        float t = fadeTime;
-        float musicVolume = settingsMenu.musicVolume;
-        while (t > 0)
-        {
-            yield return null;
-            t -= Time.deltaTime;
-            audioManager.UpdateMixerValue("Title Music Volume", musicVolume * (t / fadeTime));
-        }
-        yield break;
+        audioManager.FadeOutMusic(2f);
     }
 
     private void OpenDoor()
     {
+        inputLocked = true;
+        StartCoroutine(UnlockControlsAfterTime(1.5f));
         doorAnim.Play("DoorOpen");
-        StartCoroutine(LowPassFadeOut());
+        audioManager.FadeOutLowPassMusic(3f);
         FocusPinboardMiddle();
         audioManager.PlayAudio(doorCreakSound);
         audioManager.PlayAudio(doorOpenSound, 0.8f);
@@ -281,16 +257,23 @@ public class TitleMenu : MonoBehaviour
         LoadingScreen.Instance.SwitchScene("NewMainScene");
     }
 
-    private void QuitGame()
-    {
-        Application.Quit();
-    }
-
     // Used in animation event, when TitleFadeIn starts
     public void ShowMousePrompt()
     {
         StartCoroutine(ShowMousePromptCoroutine());
     }
+
+    private IEnumerator UnlockControlsAfterTime(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        inputLocked = false;
+    }
+
+    private void QuitGame()
+    {
+        Application.Quit();
+    }
+
     private IEnumerator ShowMousePromptCoroutine()
     {
         yield return new WaitForSeconds(7f);

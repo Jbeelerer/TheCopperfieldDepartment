@@ -52,7 +52,7 @@ public class DestroyAfterTime : MonoBehaviour
         if (isDay)
         {
             print("DayIntro");
-            GameManager.instance.DayIntro();
+            GameManager.instance.DayIntro(triggeredFromNightTransition: true);
         }
         print("DEstroying!!!!¨!!!¨!!!¨!!!¨!!!¨!!!¨");
         Destroy(gameObject);

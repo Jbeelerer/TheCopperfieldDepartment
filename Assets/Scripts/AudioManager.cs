@@ -20,7 +20,6 @@ public class AudioManager : MonoBehaviour
 
     private List<AudioSource> repeatingAudioSources = new List<AudioSource>();
 
-    // Start is called before the first frame update
     void Awake()
     {
         if (instance != null)
@@ -127,7 +126,7 @@ public class AudioManager : MonoBehaviour
         {
             source.volume = Mathf.Lerp(0, maxVolume, timeElapsed / fadeDuration);
             timeElapsed += Time.deltaTime;
-            yield return true;
+            yield return null;
         }
     }
 
@@ -138,7 +137,7 @@ public class AudioManager : MonoBehaviour
         {
             source.volume = Mathf.Lerp(maxVolume, 0, timeElapsed / fadeDuration);
             timeElapsed += Time.deltaTime;
-            yield return true;
+            yield return null;
         }
 
         if (!source)
@@ -157,7 +156,6 @@ public class AudioManager : MonoBehaviour
 
     private IEnumerator FadeOutMusicCoroutine(float fadeDuration)
     {
-        //float fadeTime = 2f;
         float t = fadeDuration;
         float musicVolume = FindFirstObjectByType<SettingsMenu>(FindObjectsInactive.Include).musicVolume;
         while (t > 0)
@@ -185,8 +183,6 @@ public class AudioManager : MonoBehaviour
     private IEnumerator FadeInLowPassMusicCoroutine(float fadeTime)
     {
         float t = fadeTime;
-        //float lowpassStartValue = 290f;
-        //float lowpassEndValue = 22000f;
         float lowpassDifference = lowpassOffValue - lowpassOnValue;
         while (t > 0)
         {
@@ -200,8 +196,6 @@ public class AudioManager : MonoBehaviour
     private IEnumerator FadeOutLowPassMusicCoroutine(float fadeTime)
     {
         float t = fadeTime;
-        //float lowpassOnValue = 290f;
-        //float lowpassEndValue = 22000f;
         float lowpassDifference = lowpassOffValue - lowpassOnValue;
         while (t > 0)
         {
@@ -234,19 +228,20 @@ public class AudioManager : MonoBehaviour
 
     public void UpdateMixerValue(string parameterName, float value)
     {
+        const float minLinear = 0.0001f;
+        float clampedValue = Mathf.Clamp(value, minLinear, 1f);
+        float db = Mathf.Log10(clampedValue) * 20f;
+
         switch (parameterName)
         {
             case "Music Volume":
-                musicMixerGroup.audioMixer.SetFloat(parameterName, Mathf.Log10(value) * 20);
-                break;
-            case "Title Music Volume":
-                musicMixerGroup.audioMixer.SetFloat(parameterName, Mathf.Log10(value) * 20);
+                musicMixerGroup.audioMixer.SetFloat(parameterName, db);
                 break;
             case "SFX Volume":
-                sfxMixerGroup.audioMixer.SetFloat(parameterName, Mathf.Log10(value) * 20);
+                sfxMixerGroup.audioMixer.SetFloat(parameterName, db);
                 break;
             case "Voice Volume":
-                voiceMixerGroup.audioMixer.SetFloat(parameterName, Mathf.Log10(value) * 20);
+                voiceMixerGroup.audioMixer.SetFloat(parameterName, db);
                 break;
         }
     }

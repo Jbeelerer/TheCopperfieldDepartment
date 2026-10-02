@@ -754,7 +754,7 @@ public class GameManager : MonoBehaviour, ISavable
     }
 
     // Update is called once per frame
-    void Update()
+    /*void Update()
     {
         if (Input.GetKey(KeyCode.P) && devMode)
         {
@@ -771,35 +771,37 @@ public class GameManager : MonoBehaviour, ISavable
         {
             Application.Quit();
         }
-    }
+    }*/
 
-    public void DayIntro(float delay = 0)
+    public void DayIntro(float delay = 0, bool triggeredFromNightTransition = false)
     {
         if (day != 1)
         {
-            StartCoroutine(DayIntroCoroutine(delay));
+            StartCoroutine(DayIntroCoroutine(delay, triggeredFromNightTransition));
         }
         else
         {
              SetGameState(GameState.Playing);
         }
     } 
-    public IEnumerator DayIntroCoroutine(float delay = 0)
+    public IEnumerator DayIntroCoroutine(float delay = 0, bool triggeredFromNightTransition = false)
     {
         while (GameObject.Find("Virtual Camera") == null || narration == null)
         { 
             yield return new WaitForSeconds(0.1f); 
         } 
         StartCoroutine(narration.BlackScreenEnumerator(false));;
-        //yield return new WaitForSeconds(0.1f);
-        
+
+        am.FadeInMusic(4f);
         SetGameState(GameState.Playing);
+        if (!triggeredFromNightTransition)
+        {
+            yield return null;
+        }
         GameObject instantiatedDayIntro = Instantiate(dayIntro);
         instantiatedDayIntro.transform.GetChild(0).GetChild(0).GetComponent<TMPro.TextMeshProUGUI>().text = "Day " + day + ":";
         instantiatedDayIntro.transform.GetChild(0).GetChild(1).GetComponent<TMPro.TextMeshProUGUI>().text = currentCase.caseName;
         instantiatedDayIntro.SetActive(true);
-        //yield return new WaitForSeconds(4f);
-        // instantiatedDayIntro.SetActive(false);
     }
     private IEnumerator DelayFirstDay()
     {

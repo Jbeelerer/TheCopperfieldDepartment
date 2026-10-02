@@ -33,6 +33,7 @@ public class TimeMachine : MonoBehaviour
 
     public void NewDayTransition()
     {
+        // Generate info for the workhour receipt
         var underlineSpace = "                         end";
         receiptCanvas.SetActive(true);
         receiptHeadersText.text = $"" +
@@ -48,12 +49,13 @@ public class TimeMachine : MonoBehaviour
         var totalTime = timeOut - timeIn + 12;
         receiptInfosText.text = $"" +
             $"Gary Clueson\n" +
-            $"001842\n\n\n" +
+            $"001949\n\n\n" +
             $"{TimeSpan.FromHours(timeIn):h\\:mm}am\n" +
             $"{TimeSpan.FromHours(timeOut):h\\:mm}pm\n" +
             $"{totalTime}h 00min";
 
         cam.Priority = 15;
+        Cursor.visible = false;
         anim.Play("NightTransition");
     }
 
@@ -61,10 +63,10 @@ public class TimeMachine : MonoBehaviour
     public void StartNewDay()
     {
         receiptCanvas.SetActive(false);
-        GameObject g = Instantiate(newDayPrefab);
+        // TODO: New day prefab is the old unused night transition, which currently just destroys itself after 0 seconds and then triggers the new day. Clean this up at some point
+        Instantiate(newDayPrefab);
         GameManager.instance.SetGameState(GameState.Playing);
         cam.Priority = 0;
-        am.FadeInMusic(4f);
     }
     public void PlaySoundDuringAnimation(AudioClip clip)
     {
