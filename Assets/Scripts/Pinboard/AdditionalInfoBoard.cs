@@ -32,6 +32,7 @@ public class AdditionalInfoBoard : MonoBehaviour
     [SerializeField] private Image postContentImage;
     [SerializeField] private TMP_Text postContentText;
     private ScriptableObject content;
+    private Coroutine fastPullupCoroutine;
     private Animator anim;
 /*
     [SerializeField] private Renderer pbMaterial;
@@ -72,15 +73,15 @@ public class AdditionalInfoBoard : MonoBehaviour
     }
     public void ShowInfo(bool b, ScriptableObject o)
     {
+        if (content == o)
+            return;
+
+        //Debug.LogWarning("Showing Info");
         if (o is IPinnable temp)
         {
             anim.SetBool("isLow", temp.isSmall);
         }
-        if (o != content)
-        {
-            StartCoroutine(fastPullupCooldown());
-            SetContent(o);
-        }
+        SetContent(o);
         ShowInfo(b);
     }
     public void StartPreview(ScriptableObject o)
@@ -90,23 +91,30 @@ public class AdditionalInfoBoard : MonoBehaviour
     }
     public void CancelPreview()
     {
+        //Debug.LogWarning("cancelling");
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("Up") || anim.GetCurrentAnimatorStateInfo(0).IsName("UpLow"))
+        {
+            RestartFastPullupCoroutine();
+        }
         anim.SetBool("showInfo", false);
         anim.SetTrigger("cancelPreview");
+        content = null;
+    }
+
+    private void RestartFastPullupCoroutine()
+    {
+        if (fastPullupCoroutine != null)
+        {
+            StopCoroutine(fastPullupCoroutine);
+        }
+        fastPullupCoroutine = StartCoroutine(fastPullupCooldown());
     }
 
     private IEnumerator fastPullupCooldown()
     {
-        if (anim.GetBool("fast"))
-        {
-            yield break;
-        }
-        else
-        {
-            yield return new WaitForSeconds(0.5f);
-            anim.SetBool("fast", true);
-            yield return new WaitForSeconds(3);
-            anim.SetBool("fast", false);
-        }
+        anim.SetBool("fast", true);
+        yield return new WaitForSeconds(1.5f);
+        anim.SetBool("fast", false);
     }
 
     public void SetContent(ScriptableObject o)
@@ -116,7 +124,8 @@ public class AdditionalInfoBoard : MonoBehaviour
         // personParent.gameObject.SetActive(o is Person || o is SocialMediaUser);
         // additionalInfos.text = "";
         // transform.Find("Image").gameObject.SetActive(true);
-        // check if scribtable object is type person  
+        // check if scribtable object is type person
+        content = o;
         personInfo.SetActive(false);
         userInfo.SetActive(false); 
         postContentInfo.SetActive(false);
