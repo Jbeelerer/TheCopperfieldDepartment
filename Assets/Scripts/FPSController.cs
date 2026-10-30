@@ -49,7 +49,19 @@ public class FPSController : MonoBehaviour
     [SerializeField] private InputOverlay inputOverlay;
     private TextMeshProUGUI inputOverlayText;
 
-    private GameObject selectedPinboardElement;
+    private GameObject selectedPinboardElementPrivate;
+    public GameObject selectedPinboardElement
+    {
+        get
+        {
+            return selectedPinboardElementPrivate;
+        }
+        private set
+        {
+            selectedPinboardElementPrivate = value;
+            OnSelectedPinboardElementChanged?.Invoke();
+        }
+    }
     [SerializeField] private GameObject thread;
     [SerializeField] private GameObject connectionPrefab;
     private LineRenderer currentThread;
@@ -78,8 +90,8 @@ public class FPSController : MonoBehaviour
     private bool onHoldDown = false;
 
     public DeletionEvent OnPinDeletion;
-
     public GrabEvent pickupEvent;
+    public UnityEvent OnSelectedPinboardElementChanged;
 
     private Vector3 originalPosition;
 

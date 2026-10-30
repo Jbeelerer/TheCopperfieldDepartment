@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SocialPlatforms.Impl;
-using Unity.VisualScripting;
 
 public class AdditionalInfoBoard : MonoBehaviour
 {
@@ -32,19 +30,21 @@ public class AdditionalInfoBoard : MonoBehaviour
     [SerializeField] private Image postContentImage;
     [SerializeField] private TMP_Text postContentText;
     private ScriptableObject content;
+    private Coroutine fastPullupCoroutine;
     private Animator anim;
-/*
-    [SerializeField] private Renderer pbMaterial;
-    private TextMeshProUGUI title;
-    private TextMeshProUGUI additionalInfos;
+    private FPSController fpsController;
+    /*
+        [SerializeField] private Renderer pbMaterial;
+        private TextMeshProUGUI title;
+        private TextMeshProUGUI additionalInfos;
 
-    private TextMeshProUGUI contentText;
+        private TextMeshProUGUI contentText;
 
-    private Transform personParent;
+        private Transform personParent;
 
-    private Transform contentParent;*/
+        private Transform contentParent;*/
     // Big image
-    
+
     [SerializeField] private GameObject bigPictureParent;
     [SerializeField] private Renderer bigPicture;
 
@@ -64,7 +64,9 @@ public class AdditionalInfoBoard : MonoBehaviour
 
         additionalInfos.text = "";*/
         anim = GetComponent<Animator>();
+        fpsController = FindFirstObjectByType<FPSController>();
 
+        fpsController.OnSelectedPinboardElementChanged.AddListener(CancelFastPullup);
     }
     public void ShowInfo(bool b)
     {
@@ -72,15 +74,14 @@ public class AdditionalInfoBoard : MonoBehaviour
     }
     public void ShowInfo(bool b, ScriptableObject o)
     {
+        if (content == o)
+            return;
+
         if (o is IPinnable temp)
         {
             anim.SetBool("isLow", temp.isSmall);
         }
-        if (o != content)
-        {
-            StartCoroutine(fastPullupCooldown());
-            SetContent(o);
-        }
+        SetContent(o);
         ShowInfo(b);
     }
     public void StartPreview(ScriptableObject o)
@@ -90,23 +91,34 @@ public class AdditionalInfoBoard : MonoBehaviour
     }
     public void CancelPreview()
     {
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("Up") || anim.GetCurrentAnimatorStateInfo(0).IsName("UpLow"))
+        {
+            RestartFastPullupCoroutine();
+        }
         anim.SetBool("showInfo", false);
         anim.SetTrigger("cancelPreview");
+        content = null;
     }
 
-    private IEnumerator fastPullupCooldown()
+    private void RestartFastPullupCoroutine()
     {
-        if (anim.GetBool("fast"))
+        if (fastPullupCoroutine != null)
         {
-            yield break;
+            StopCoroutine(fastPullupCoroutine);
         }
-        else
-        {
-            yield return new WaitForSeconds(0.5f);
-            anim.SetBool("fast", true);
-            yield return new WaitForSeconds(3);
-            anim.SetBool("fast", false);
-        }
+        fastPullupCoroutine = StartCoroutine(FastPullupCooldown());
+    }
+
+    private IEnumerator FastPullupCooldown()
+    {
+        anim.SetBool("fast", true);
+        yield return new WaitForSeconds(1.5f);
+        anim.SetBool("fast", false);
+    }
+
+    private void CancelFastPullup()
+    {
+        anim.SetBool("fast", false);
     }
 
     public void SetContent(ScriptableObject o)
@@ -116,7 +128,8 @@ public class AdditionalInfoBoard : MonoBehaviour
         // personParent.gameObject.SetActive(o is Person || o is SocialMediaUser);
         // additionalInfos.text = "";
         // transform.Find("Image").gameObject.SetActive(true);
-        // check if scribtable object is type person  
+        // check if scribtable object is type person
+        content = o;
         personInfo.SetActive(false);
         userInfo.SetActive(false); 
         postContentInfo.SetActive(false);
@@ -176,7 +189,8 @@ public class AdditionalInfoBoard : MonoBehaviour
                     postContentInfo.SetActive(false);
                     bigPictureParent.SetActive(true);
                     bigPicture.material.SetTexture("_Base", a.image.texture);
-                    FitBigPictureAspect(a.image);                }
+                    FitBigPictureAspect(a.image);                
+                }
                 else if (a.image != null)
                 {
                     backgroundClipboardImage.SetActive(true);
@@ -193,19 +207,14 @@ public class AdditionalInfoBoard : MonoBehaviour
                 break;
         }
     }
-private float bigPictureHeight = 28f;
 
-private void FitBigPictureAspect(Sprite sprite)
-{
-    float texAspect = sprite.rect.width / sprite.rect.height;
-    float width = bigPictureHeight * texAspect;
+    private float bigPictureHeight = 28f;
 
-    bigPicture.transform.localScale = new Vector3(1, bigPictureHeight, width);
-}
-
-    // Update is called once per frame
-    void Update()
+    private void FitBigPictureAspect(Sprite sprite)
     {
-
+        float texAspect = sprite.rect.width / sprite.rect.height;
+        float width = bigPictureHeight * texAspect;
+    
+        bigPicture.transform.localScale = new Vector3(1, bigPictureHeight, width);
     }
 }
