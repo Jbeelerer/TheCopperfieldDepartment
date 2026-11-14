@@ -1,6 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public class CustomDayDescription
+{
+    public int day;
+    [TextArea] public string customDescription;
+}
+
 [CreateAssetMenu(fileName = "Person", menuName = "ScriptableObjects/Person", order = 3)]
 public class Person : ScriptableObject, IPinnable
 {
@@ -10,6 +17,8 @@ public class Person : ScriptableObject, IPinnable
     public SocialMediaUser socialMediaUser;
     [TextArea] public string nextDayBriefing;
     public string description;
+    [Header("Overwrite default description on certain days")]
+    public CustomDayDescription[] customDayDescriptions;
     // bool indicates
     public List<string> additionalInfos = new List<string>();
     public List<string> hiddenInfos = new List<string>();

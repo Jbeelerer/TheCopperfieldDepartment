@@ -43,7 +43,9 @@ public class OSPeopleListContent : MonoBehaviour
         personNumber++;
         newProfile.transform.Find("ImageContainer").Find("Image").GetComponent<Image>().sprite = person.image;
         newProfile.transform.Find("name").GetComponent<TextMeshProUGUI>().text = person.personName;
-        newProfile.transform.Find("info").GetComponent<TextMeshProUGUI>().text = person.description;
+
+        string? customDescription = person.customDayDescriptions?.FirstOrDefault(c => c.day == day)?.customDescription;
+        newProfile.transform.Find("info").GetComponent<TextMeshProUGUI>().text = customDescription ?? person.description;
 
         var isCurrentDay = day == GameManager.instance.GetDay();
         newProfile.transform.Find("PinPerson").gameObject.SetActive(isCurrentDay);
