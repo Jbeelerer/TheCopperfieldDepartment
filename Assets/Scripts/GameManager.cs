@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour, ISavable
     [SerializeField] private int endDay = 4;
     private int furthestDay = 1;
     private int daySegment = 0;
-    private int firstArchiveDay = 6;
+    private int firstArchiveDay = 8;
     private int totalDaySegments = 0;
     public DateTime initialDate = new DateTime(1982, 5, 1);
     private List<CompetingEmployee> competingEmployees = new List<CompetingEmployee>();
@@ -568,10 +568,14 @@ public class GameManager : MonoBehaviour, ISavable
         //SetGameState(GameState.Playing);
         calendarLoad = false; 
             print("ringing--- ---> neeew: "+day);
-         if (day == firstArchiveDay || devCase == firstArchiveDay)
+        if (day == firstArchiveDay || devCase == firstArchiveDay)
         {
             StartCoroutine(FindFirstObjectByType<Phone>().RingWhenReady("archiveIntro"));
         } 
+        else if (day == 6 || devCase == 6)
+        {
+            StartCoroutine(FindFirstObjectByType<Phone>().RingWhenReady("floorplan"));
+        }
       
     }
     public void TriggerKeySpawnKey()

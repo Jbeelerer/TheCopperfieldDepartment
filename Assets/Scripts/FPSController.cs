@@ -772,8 +772,12 @@ public class FPSController : MonoBehaviour
                                     }
                                     break;
                                 case "CigaretteBox":
-                                narration.Say("smoke");
-                                break;
+                                    narration.Say("smoke");
+                                    break;
+                                case "FloorplanPoster":
+                                    inputOverlay.SetIcon("");
+                                    gm.InspectObject(hit.collider.transform, new Vector3(0, 0, -2));
+                                    break;
                                 case "Door":
                                     if (requirementMet)
                                     {

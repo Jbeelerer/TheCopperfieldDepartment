@@ -61,6 +61,7 @@ public class TimedSubtitles
     public TimedSubtitle[] firstDayFeedbackNegative;
     public TimedSubtitle[] exit;
     public TimedSubtitle[] archiveIntro;
+    public TimedSubtitle[] floorplan;
 }
 [System.Serializable]
 public class ShortSubtitles
@@ -78,6 +79,7 @@ public class ShortSubtitles
     public TimedSubtitle phoneReminderPostNotAdded_replay;
     public TimedSubtitle exit_replay;
     public TimedSubtitle archiveIntro_replay;
+    public TimedSubtitle floorplan_replay;
     public TimedSubtitle smoke;
 }
 
@@ -232,6 +234,10 @@ public class Narration : MonoBehaviour
             case "archiveIntro":
             OnPhoneState(true);
                 currentCall = PlaySequence(timedSubtitles.archiveIntro, archiveIntroClip, false);
+                break;
+            case "floorplan":
+                OnPhoneState(true);
+                currentCall = PlaySequence(timedSubtitles.floorplan, archiveIntroClip, false);
                 break;
             case "intro":
             OnPhoneState(false);
@@ -403,6 +409,11 @@ public class Narration : MonoBehaviour
                 audioSource.clip = notLeavingVoice;
                 subtitleText.text = shortSubtitles.archiveIntro_replay.text;
                 duration = shortSubtitles.archiveIntro_replay.duration;
+                break;
+            case "floorplan_replay":
+                audioSource.clip = notLeavingVoice;
+                subtitleText.text = shortSubtitles.floorplan_replay.text;
+                duration = shortSubtitles.floorplan_replay.duration;
                 break;
             case "smoke":
                 audioSource.clip = notLeavingVoice;

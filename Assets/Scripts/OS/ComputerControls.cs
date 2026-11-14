@@ -431,7 +431,7 @@ public class ComputerControls : MonoBehaviour
                 pointySystem.StartTutorial("StartSettings", toggledAutomatically);
                 break;
             case OSAppType.IMAGE:
-                if (gm.GetDay() == 6)
+                if (gm.GetDay() == 7)
                 {
                     pointySystem.StartTutorial("InspectionTutorial", toggledAutomatically);
                 }

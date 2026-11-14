@@ -144,7 +144,14 @@
     {"text":"Use these keys to open the respective drawers.", "duration": 4, "requirement": 0, "focus":"letterdoorthing","trigger": "spawnKey" }, 
     {"text":"You've got this!", "duration": 1.5, "requirement": 0 }
 ], 
-    
+    "floorplan": 
+[
+    {"text":"Hi there!", "duration": 1, "requirement": 0},
+    {"text":"I forgot to mention some information during your onboarding.", "duration": 4.5, "requirement": 0},
+    {"text":"Next to the door there, you can find the layout of the current floor.", "duration": 4.5, "requirement": 0, "focus":"FloorplanPoster" },
+    {"text":"Keep it in mind in case of an emergency!", "duration": 2, "requirement": 0, "focus":"FloorplanPoster"  },
+    {"text":"That's all for now!", "duration": 1, "requirement": 0 }
+], 
     "phoneCallIntronew": 
 [
     {"text":"Good Morning.", "duration": 1, "requirement": 0},

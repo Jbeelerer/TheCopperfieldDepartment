@@ -35,11 +35,6 @@ public class Phone : MonoBehaviour
         am = AudioManager.instance;
         gm.getPinboard().PinAdded.AddListener(Ring);
         gm.InvestigationStateChanged.AddListener(ExitTutorial);
-        
-        if (gm.GetDay() == 6)
-        {
-            Ring("archiveIntro");
-        }
     }
     public void ExitTutorial()
     {
@@ -87,7 +82,7 @@ public class Phone : MonoBehaviour
         phoneHighlight.gameObject.SetActive(true);
         phoneHighlight.StartCoroutine(phoneHighlight.PhoneRinging(transform));
         this.callName = callName;
-        am.PlayAudioRepeating(phoneRing, volume: 0.5f, parent: gameObject);
+        am.PlayAudioRepeating(phoneRing, volume: 0.4f, parent: gameObject);
     }
 
     public void StartCall()
