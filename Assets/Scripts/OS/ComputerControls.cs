@@ -634,7 +634,8 @@ public class ComputerControls : MonoBehaviour
 
                     return;
                 }
-                else if (Object.ReferenceEquals(hitObject, window.sideswapRight.gameObject))
+                // TODO: long window side swap mechanic disabled for now. Find a better way to visually communicate this feature or remove it entirely
+                /*else if (Object.ReferenceEquals(hitObject, window.sideswapRight.gameObject))
                 {
                     // Swap current left window with the one on the right
                     if (window.currWindowSize == WindowSize.LONG_LEFT)
@@ -661,7 +662,7 @@ public class ComputerControls : MonoBehaviour
                         ResizeWindowLongLeft(window);
                     }
                     return;
-                }
+                }*/
             }
         }
     }
