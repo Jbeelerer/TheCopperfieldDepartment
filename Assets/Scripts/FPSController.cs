@@ -776,7 +776,7 @@ public class FPSController : MonoBehaviour
                                     break;
                                 case "FloorplanPoster":
                                     inputOverlay.SetIcon("");
-                                    gm.InspectObject(hit.collider.transform, new Vector3(0, 0, -2));
+                                    gm.InspectObject(hit.collider.transform, new Vector3(0, 0, -2), turnOnLight: true);
                                     break;
                                 case "Door":
                                     if (requirementMet)

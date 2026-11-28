@@ -79,7 +79,9 @@ public class GameManager : MonoBehaviour, ISavable
     private SaveManager saveManager;
 
     private AudioManager am;
-    [SerializeField] private AudioClip door;
+    [SerializeField] private AudioClip doorSound;
+    [SerializeField] private AudioClip lightOnSound;
+    [SerializeField] private AudioClip lightOffSound;
 
     private bool devMode = true;
     private List<investigationStates> firstTryResults = new List<investigationStates>();
@@ -199,7 +201,7 @@ public class GameManager : MonoBehaviour, ISavable
         inspectionCam.GetComponent<CinemachineVirtualCamera>().LookAt = t;
     }
 
-    public void InspectObject(Transform o, Vector3 lookingDirection, GameState state = GameState.Inspecting)
+    public void InspectObject(Transform o, Vector3 lookingDirection, GameState state = GameState.Inspecting, bool turnOnLight = false)
     {
         if (inspectionCam == null)
         {
@@ -213,6 +215,11 @@ public class GameManager : MonoBehaviour, ISavable
         }
         else
         {
+            if (turnOnLight)
+            {
+                inspectionCam.GetComponentInChildren<Light>(true).gameObject.SetActive(true);
+                AudioManager.instance.PlayAudio(lightOnSound);
+            }
             inspectionCam.transform.position = o.position + lookingDirection;
             vcam.LookAt = o;
             SetGameState(state);
@@ -231,7 +238,15 @@ public class GameManager : MonoBehaviour, ISavable
         reload();
         computerCam.SetActive(state == GameState.OnPC);
         if (inspectionCam)
+        {
+            var inspectionLight = inspectionCam.GetComponentInChildren<Light>(true).gameObject;
+            if (inspectionLight.activeInHierarchy)
+            {
+                inspectionLight.SetActive(false);
+                AudioManager.instance.PlayAudio(lightOffSound);
+            }
             inspectionCam.SetActive(state == GameState.Inspecting ||state == GameState.DayOver|| state == GameState.InArchive);
+        }
 
         mainCam.SetActive(state == GameState.Playing ||state == GameState.DayOver || state == GameState.Paused || state == GameState.Frozen);
 
